@@ -28,7 +28,7 @@ public class AirdParser {
     private Compressor intCompressor;
     private int mzPrecision;
 
-    public AirdParser(String airdIndexFilePath) throws ScanException{
+    public AirdParser(String airdIndexFilePath) throws ScanException {
         this.airdIndexFile = new File(airdIndexFilePath);
         this.airdFile = new File(AirdScanUtil.getAirdFilePath(airdIndexFilePath));
         airdInfo = AirdScanUtil.loadAirdInfo(airdIndexFile);
@@ -176,23 +176,19 @@ public class AirdParser {
      * @param value
      * @return
      */
-    private Float[] getIntValues(byte[] value) throws Exception {
-        try {
-            ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-            byteBuffer.order(intCompressor.getByteOrder());
+    private Float[] getIntValues(byte[] value) {
 
-            FloatBuffer intensities = byteBuffer.asFloatBuffer();
-            Float[] intValues = new Float[intensities.capacity()];
-            for (int i = 0; i < intensities.capacity(); i++) {
-                intValues[i] = intensities.get(i);
-            }
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(intCompressor.getByteOrder());
 
-            byteBuffer.clear();
-            return intValues;
-        } catch (Exception e) {
-            throw e;
+        FloatBuffer intensities = byteBuffer.asFloatBuffer();
+        Float[] intensityValues = new Float[intensities.capacity()];
+        for (int i = 0; i < intensities.capacity(); i++) {
+            intensityValues[i] = intensities.get(i);
         }
 
+        byteBuffer.clear();
+        return intensityValues;
     }
 
     /**
