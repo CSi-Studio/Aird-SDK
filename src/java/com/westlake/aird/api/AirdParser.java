@@ -74,7 +74,15 @@ public class AirdParser {
                 byte[] intensity = ArrayUtils.subarray(result, start, start + intensitySizes.get(i).intValue());
                 start = start + intensitySizes.get(i).intValue();
                 try {
-                    MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(mz), getIntValues(intensity));
+
+                    Float[] intensityArray = null;
+                    if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
+                        intensityArray = getLogedIntValues(intensity);
+                    } else {
+                        intensityArray = getIntValues(intensity);
+                    }
+
+                    MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(mz), intensityArray);
                     map.put(rts.get(i), pairs);
                 } catch (Exception e) {
                     System.out.println("index size error:" + i);
