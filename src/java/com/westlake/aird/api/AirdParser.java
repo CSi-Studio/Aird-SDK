@@ -197,22 +197,18 @@ public class AirdParser {
      * @param value
      * @return
      */
-    private Float[] getLogedIntValues(byte[] value) throws Exception {
-        try {
-            ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-            byteBuffer.order(intCompressor.getByteOrder());
+    private Float[] getLogedIntValues(byte[] value) {
 
-            FloatBuffer intensities = byteBuffer.asFloatBuffer();
-            Float[] intValues = new Float[intensities.capacity()];
-            for (int i = 0; i < intensities.capacity(); i++) {
-                intValues[i] = (float) Math.pow(10, intensities.get(i));
-            }
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(intCompressor.getByteOrder());
 
-            byteBuffer.clear();
-            return intValues;
-        } catch (Exception e) {
-            throw e;
+        FloatBuffer intensities = byteBuffer.asFloatBuffer();
+        Float[] intValues = new Float[intensities.capacity()];
+        for (int i = 0; i < intensities.capacity(); i++) {
+            intValues[i] = (float) Math.pow(10, intensities.get(i));
         }
 
+        byteBuffer.clear();
+        return intValues;
     }
 }
