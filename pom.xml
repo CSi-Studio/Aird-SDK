@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.westlake.aird</groupId>
-    <artifactId>aird</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>aird-sdk-java</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Aird-SDK-Java</name>
@@ -63,6 +63,16 @@
             <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>rdc-releases</id>
+            <url>https://repo.rdc.aliyun.com/repository/4860-release-sTOqLO/</url>
+        </repository>
+        <snapshotRepository>
+            <id>rdc-snapshots</id>
+            <url>https://repo.rdc.aliyun.com/repository/4860-snapshot-uHHgZc/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <finalName>aird-sdk</finalName>
