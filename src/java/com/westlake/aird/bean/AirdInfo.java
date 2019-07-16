@@ -2,7 +2,6 @@ package com.westlake.aird.bean;
 
 import lombok.Data;
 
-import javax.sound.midi.Instrument;
 import java.util.ArrayList;
 import java.util.List;
 

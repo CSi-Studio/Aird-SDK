@@ -28,7 +28,7 @@ public class AirdParser {
     private Compressor intCompressor;
     private int mzPrecision;
 
-    public AirdParser(String airdIndexFilePath) {
+    public AirdParser(String airdIndexFilePath) throws ScanException{
         this.airdIndexFile = new File(airdIndexFilePath);
         this.airdFile = new File(AirdScanUtil.getAirdFilePath(airdIndexFilePath));
         airdInfo = AirdScanUtil.loadAirdInfo(airdIndexFile);
@@ -38,6 +38,10 @@ public class AirdParser {
         mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
         intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
         mzPrecision = mzCompressor.getPrecision();
+    }
+
+    public AirdInfo getAirdInfo() {
+        return airdInfo;
     }
 
     /**
@@ -90,7 +94,7 @@ public class AirdParser {
      * 从一个完整的Swath Block块中取出一条记录
      *
      * @param index
-     * @param rt 获取某一个时刻原始谱图
+     * @param rt    获取某一个时刻原始谱图
      * @return
      */
     public MzIntensityPairs getSpectrum(SwathIndex index, float rt) {
