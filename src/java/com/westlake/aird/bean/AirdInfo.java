@@ -18,6 +18,16 @@ public class AirdInfo {
     List<Compressor> compressors;
 
     /**
+     * 应用版本号
+     */
+    String version = "V1";
+
+    /**
+     * 应用版本编码,从1开始自增
+     */
+    Integer versionCode = 1;
+
+    /**
      * [核心字段]
      * 存储SWATH窗口信息,窗口已经根据overlap进行过调整
      * [Core Field]
@@ -34,6 +44,12 @@ public class AirdInfo {
      * @see SwathIndex
      */
     List<SwathIndex> indexList;
+
+    /**
+     * [核心字段]
+     * 用于存储Block的索引（适用于DDA）
+     */
+    List<BlockIndex> blockIndexList;
 
     /**
      * 仪器设备信息

@@ -22,22 +22,22 @@ import java.util.TreeMap;
 public class AirdParser {
 
     private File airdFile;
-    private File airdIndexFile;
+    private File indexFile;
     private AirdInfo airdInfo;
     private Compressor mzCompressor;
     private Compressor intCompressor;
     private int mzPrecision;
 
-    public AirdParser(String airdIndexFilePath) throws ScanException {
-        this.airdIndexFile = new File(airdIndexFilePath);
-        this.airdFile = new File(AirdScanUtil.getAirdFilePath(airdIndexFilePath));
-        airdInfo = AirdScanUtil.loadAirdInfo(airdIndexFile);
+    public AirdParser(String indexFilePath) throws ScanException {
+        this.indexFile = new File(indexFilePath);
+        this.airdFile = new File(AirdScanUtil.getAirdFilePath(indexFilePath));
+        airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }
         mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
         intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
-        mzPrecision = mzCompressor.getPrecision();
+        mzPrecision = 100000;
     }
 
     public AirdInfo getAirdInfo() {
