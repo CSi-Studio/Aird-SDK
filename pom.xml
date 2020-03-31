@@ -48,6 +48,12 @@
             <artifactId>JavaFastPFOR</artifactId>
             <version>0.1.12</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+        </dependency>
     </dependencies>
 
     <repositories>

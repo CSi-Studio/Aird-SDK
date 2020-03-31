@@ -9,13 +9,13 @@ import lombok.Data;
 @Data
 public class MzIntensityPairs {
 
-    Float[] mzArray;
+    float[] mzArray;
 
-    Float[] intensityArray;
+    float[] intensityArray;
 
     public MzIntensityPairs(){}
 
-    public MzIntensityPairs(Float[] mzArray, Float[] intensityArray){
+    public MzIntensityPairs(float[] mzArray, float[] intensityArray){
         this.mzArray = mzArray;
         this.intensityArray = intensityArray;
     }

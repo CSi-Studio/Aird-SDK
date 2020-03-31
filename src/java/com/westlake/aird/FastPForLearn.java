@@ -2,9 +2,6 @@ package com.westlake.aird;
 
 import com.westlake.aird.util.CompressUtil;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 public class FastPForLearn {
@@ -14,7 +11,7 @@ public class FastPForLearn {
         int[] test2 = new int[900];
         int[] finalTest = new int[1800];
         for (int i = 0; i < test.length; i++) {
-            test[i] = i * 4000000 + (new Random().nextBoolean() ? 1 : 2);
+            test[i] = i * 40000000 + (new Random().nextBoolean() ? 1 : 2);
             finalTest[i] = test[i];
         }
         for (int i = 0; i < test2.length; i++) {
@@ -23,6 +20,7 @@ public class FastPForLearn {
         }
 
         int[] newTest = CompressUtil.fastPForEncoder(test);
+        int[] oldTest = CompressUtil.fastPForDecoder(newTest);
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 

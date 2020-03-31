@@ -68,14 +68,14 @@ public class Compressor {
         return null;
     }
 
-    public ByteOrder getByteOrder(){
+    public ByteOrder getByteOrder() {
         return ByteOrder.LITTLE_ENDIAN;
     }
 
-    public HashSet<String> getMethod(){
-        if(methodSet == null){
+    public HashSet<String> getMethod() {
+        if (methodSet == null) {
             String[] methods = method.split(SymbolConst.COMMA);
-            this.methodSet = new HashSet<String> (Arrays.asList(methods));
+            this.methodSet = new HashSet<String>(Arrays.asList(methods));
         }
         return methodSet;
     }

@@ -37,7 +37,7 @@ public class AirdParser {
         }
         mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
         intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
-        mzPrecision = 100000;
+        mzPrecision = mzCompressor.getPrecision();
     }
 
     public AirdInfo getAirdInfo() {
@@ -75,7 +75,7 @@ public class AirdParser {
                 start = start + intensitySizes.get(i).intValue();
                 try {
 
-                    Float[] intensityArray = null;
+                    float[] intensityArray = null;
                     if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
                         intensityArray = getLogedIntValues(intensity);
                     } else {
@@ -122,13 +122,13 @@ public class AirdParser {
             raf.seek(start);
             byte[] reader = new byte[index.getMzs().get(position).intValue()];
             raf.read(reader);
-            Float[] mzArray = getMzValues(reader);
+            float[] mzArray = getMzValues(reader);
             start += index.getMzs().get(position).intValue();
             raf.seek(start);
             reader = new byte[index.getInts().get(position).intValue()];
             raf.read(reader);
 
-            Float[] intensityArray = null;
+            float[] intensityArray = null;
             if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
                 intensityArray = getLogedIntValues(reader);
             } else {
@@ -152,7 +152,7 @@ public class AirdParser {
      * @param value
      * @return
      */
-    private Float[] getMzValues(byte[] value) {
+    private float[] getMzValues(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
         byteBuffer.order(mzCompressor.getByteOrder());
 
@@ -162,7 +162,7 @@ public class AirdParser {
             intValues[i] = ints.get(i);
         }
         intValues = CompressUtil.fastPForDecoder(intValues);
-        Float[] floatValues = new Float[intValues.length];
+        float[] floatValues = new float[intValues.length];
         for (int index = 0; index < intValues.length; index++) {
             floatValues[index] = (float) intValues[index] / mzPrecision;
         }
@@ -176,13 +176,13 @@ public class AirdParser {
      * @param value
      * @return
      */
-    private Float[] getIntValues(byte[] value) {
+    private float[] getIntValues(byte[] value) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
         byteBuffer.order(intCompressor.getByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
-        Float[] intensityValues = new Float[intensities.capacity()];
+        float[] intensityValues = new float[intensities.capacity()];
         for (int i = 0; i < intensities.capacity(); i++) {
             intensityValues[i] = intensities.get(i);
         }
@@ -197,13 +197,13 @@ public class AirdParser {
      * @param value
      * @return
      */
-    private Float[] getLogedIntValues(byte[] value) {
+    private float[] getLogedIntValues(byte[] value) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
         byteBuffer.order(intCompressor.getByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
-        Float[] intValues = new Float[intensities.capacity()];
+        float[] intValues = new float[intensities.capacity()];
         for (int i = 0; i < intensities.capacity(); i++) {
             intValues[i] = (float) Math.pow(10, intensities.get(i));
         }
