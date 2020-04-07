@@ -1,42 +1,48 @@
 package com.westlake.aird.huffman;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * 构建huffman树的节点
  */
 public class Node implements Comparable<Node>{
-    private float mz; //核质比
+    private float data; //数据
     private int freq; //频数
     private Node parent; //父节点
     private Node leftChild; //左子节点
     private Node rightChild; //右子节点
-    private String code; //编码
+    private int code; //编码
+    private int layer;
 
-    public Node(float mz, int freq, Node parent, Node leftChild, Node rightChild) {
-        this.mz = mz;
+    public Node(float data, int freq, Node parent, Node leftChild, Node rightChild) {
+        this.data = data;
         this.freq = freq;
         this.parent = parent;
         this.leftChild = leftChild;
         this.rightChild = rightChild;
-        this.code = "";
+        this.code = 0;
+        this.layer = 0;
     }
-    public Node(float mz, int freq){
-        this(mz,freq, null, null, null);
+    public Node(float data, int freq){
+        this(data,freq, null, null, null);
     }
 
-    public Node(float mz){
-        this(mz,0, null, null, null);
+    public Node(float data){
+        this(data,0, null, null, null);
     }
 
     public Node(){
         this(-1,0, null, null, null);
     }
 
-    public String getCode() {
-        return code;
+    public int getLayer() {
+        return layer;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public Node setLayer(int layer) {
+        this.layer = layer;
+        return this;
     }
 
     public int getFreq() {
@@ -47,7 +53,7 @@ public class Node implements Comparable<Node>{
         this.freq = freq;
     }
 
-    public void countMz(){
+    public void count(){
         this.freq++;
     }
 
@@ -75,27 +81,33 @@ public class Node implements Comparable<Node>{
         this.rightChild = rightChild;
     }
 
-    public float getMz() {
-        return mz;
+    public float getData() {
+        return data;
     }
 
-    public void setMz(int mz) {
-        this.mz = mz;
+    public void setData(int data) {
+        this.data = data;
     }
 
     // 是否为表示核质比的节点
     public boolean isOrigin(){
-        return mz != -1;
+        return data != -1;
     }
 
-    public Node addCode(String c){
-        setCode(getCode()+c);
+    public int getCode() {
+
+        return code;
+    }
+    public Node setCode(int c){
+        code = c;
         return this;
     }
+
+
     @Override
     public String toString() {
         return "Node{" +
-                "mz=" + mz +
+                "data=" + data +
                 ", freq=" + freq +
                 '}';
     }

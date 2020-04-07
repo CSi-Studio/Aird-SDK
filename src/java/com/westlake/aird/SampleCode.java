@@ -19,7 +19,7 @@ public class SampleCode {
 
 
     public static void main(String[] args) {
-        List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\Test");
+        List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\com.westlake.aird.Test");
         if (files == null || files.size() == 0) {
             return;
         }

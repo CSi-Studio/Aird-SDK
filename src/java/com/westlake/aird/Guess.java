@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Guess {
 
     public static void main(String[] args) {
-        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
+        File indexFile = new File("C:\\Users\\zhang\\Documents\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
 //        File indexFile = new File("E:\\data\\HYE110_6600_32_Fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
 //        File indexFile = new File("E:\\data\\HCC_QE3\\C20181205yix_HCC_DIA_N_38A.json");
 //        File indexFile = new File("E:\\data\\HYE5\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");

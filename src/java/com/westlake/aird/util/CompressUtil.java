@@ -198,12 +198,12 @@ public class CompressUtil {
         return compressedArray;
     }
 
-    public static Float[] transToFloat(byte[] value){
+    public static float[] transToFloat(byte[] value){
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecompress(byteBuffer.array()));
 
         FloatBuffer floats = byteBuffer.asFloatBuffer();
-        Float[] floatValues = new Float[floats.capacity()];
+        float[] floatValues = new float[floats.capacity()];
         for (int i = 0; i < floats.capacity(); i++) {
             floatValues[i] = floats.get(i);
         }
@@ -211,5 +211,6 @@ public class CompressUtil {
         byteBuffer.clear();
         return floatValues;
     }
+
 
 }
