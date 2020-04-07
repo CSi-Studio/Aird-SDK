@@ -21,28 +21,32 @@ public class VisualizeTest {
 //                "HYE110_TTOF6600_32fix_lgillet_I160308_001_with_zero_lossless.json";
 
 
-        String imgDir = "C:\\Users\\zhang\\Documents\\Propro\\projet\\images\\" + fileName.split("\\.")[0];
-        File outDir= new File(imgDir);
-        if(!outDir.exists()  && !outDir.isDirectory()){
+        String imgDir = "F:\\data\\images\\" + fileName.split("\\.")[0];
+        File outDir = new File(imgDir);
+        if (!outDir.exists() && !outDir.isDirectory()) {
             outDir.mkdir();
         }
         System.out.println(fileName.split("\\\\")[0]);
 
-        String path = "C:\\Users\\zhang\\Documents\\Propro\\projet\\data\\";
-        File indexFile = new File(path+fileName);
+        String path = "F:\\data\\HYE110_6600_32_Fix\\";
+        File indexFile = new File(path + fileName);
 
-        AtomicInteger rtCount = new AtomicInteger(0);
-        AtomicInteger iter = new AtomicInteger(0);
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
         List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
-        for(int i = 0; i < swathIndexList.get(0).getRts().size(); i++){
-            MzIntensityPairs pairs1 = airdParser.getSpectrum(swathIndexList.get(0), swathIndexList.get(0).getRts().get(i));
-            System.out.println("scan to image " + i);
-            ScanToImage.transform(String.format("%s//%d.jpg", imgDir, i),
-                    pairs1.getMzArray(),
-                    pairs1.getIntensityArray());
-
-        }
+        swathIndexList.forEach(index -> {
+            String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
+            File outSwathDir = new File(imgSwathDir);
+            if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
+                outSwathDir.mkdir();
+            }
+            index.getRts().forEach(rt -> {
+                MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
+                System.out.println("scan to image " + rt*1000);
+                ScanToImage.transform(String.format("%s//%d.jpg", outSwathDir, (int)(rt*1000)),
+                        pairs.getMzArray(),
+                        pairs.getIntensityArray());
+            });
+        });
     }
 }

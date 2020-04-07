@@ -11,10 +11,11 @@ public class ScanToImage {
         int mzDecRange = 1000;
         int[][] img = new int[mzIntRange][mzDecRange];
         for (int i = 0; i < mz.length; i++) {
-            int intPart = ((int) mz[i]) / 1000;
-            int decPart = ((int) mz[i]) % 1000;
+            int intPart = (int)Math.floor(mz[i]);
+            int decPart = (int)((mz[i]-intPart)*1000);
 
-            img[intPart][decPart] = intensityToRgb(intensity[i]);
+//            img[intPart][decPart] = intensityToRgb(intensity[i]);
+            img[intPart][decPart] = (int)Math.ceil(intensity[i]);
         }
 
         BufferedImage outImage = new BufferedImage(mzIntRange, mzDecRange, BufferedImage.TYPE_BYTE_GRAY);
