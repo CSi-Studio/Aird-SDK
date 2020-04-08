@@ -6,7 +6,6 @@ import com.westlake.aird.bean.SwathIndex;
 
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 
 public class VisualizeTest {
@@ -36,62 +35,36 @@ public class VisualizeTest {
 
         swathIndexList.forEach(index -> {
             String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
+
             File outSwathDir = new File(imgSwathDir);
             if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
                 outSwathDir.mkdir();
             }
-            index.getRts().forEach(rt -> {
+            index.getRts().parallelStream().forEach(rt -> {
                 MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
-                System.out.println("scan to image " + rt*1000);
+//                System.out.println("scan to image " + rt*1000);
 
-                String imgPath = String.format("%s\\%d.jpg", outSwathDir, (int)(rt*1000));
+                String imgPath = String.format("%s\\%d.png", outSwathDir, (int)(rt*1000));
                 float[] mzArray = pairs.getMzArray();
                 float[] intArray = pairs.getIntensityArray();
-                ImageTool.scanToImage(imgPath,
-                        mzArray,
-                        intArray);
+                try{
+                    ImageTool.scanToImage(imgPath,
+                            mzArray,
+                            intArray);
 
-                float[][] imgData = ImageTool.imageToScan(imgPath);
-
-                assert imgData[0].length == mzArray.length;
-
-                for (int i = 0; i < intArray.length; i++) {
-                    if(mzArray[i] - imgData[0][i] > 0.001 || intArray[i] - imgData[1][i] > 0.001)
-                        System.out.println(String.format("(%f, %f) -> (%f, %f)",
-                                mzArray[i],
-                                intArray[i],
-                                imgData[0][i],
-                                imgData[1][i]));
+                }catch (Exception e){
+                    System.out.println(imgPath);
+                    for (int i = 0; i < mzArray.length; i++) {
+                        System.out.println(mzArray[i] + "->" + intArray[i]);
+                    }
+                    e.printStackTrace();
                 }
 
-                System.out.println(imgPath);
-
+            System.out.println(imgPath);
 
             });
         });
 
-        /*
-        MzIntensityPairs pairs = airdParser.getSpectrum( swathIndexList.get(1), swathIndexList.get(1).getRts().get(2000));
-        String imgPath = "C:\\Users\\ADMIN\\Documents\\Propro\\projet\\images\\test.png";
-        float[] mzArray = pairs.getMzArray();
-        float[] intArray = pairs.getIntensityArray();
-        ImageTool.scanToImage(imgPath,
-                mzArray,
-                intArray);
 
-        HashMap<Float, Float> imgData = ImageTool.imageToScan(imgPath);
-        double mse = 0;
-        for (int i = 0; i < mzArray.length; i++) {
-            if(imgData.containsKey(mzArray[i])) {
-                mse += Math.pow(intArray[i] - imgData.get(mzArray[i]), 2);
-//                System.out.println("mz found: " + mzArray[i] + "->" + intArray[i] + "from image: " + imgData.get(mzArray[i]));
-            }
-            else {
-                double decPart = (mzArray[i] - Math.floor(mzArray[i]));
-                System.out.println("mz missed: " + decPart + "->" +(int)(1000*decPart));
-            }
-        }
-        System.out.println(imgPath + " -> MSE: " + mse);
-        */
     }
 }
