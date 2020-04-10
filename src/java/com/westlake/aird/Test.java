@@ -31,7 +31,7 @@ public class Test {
         for (String fileName :
                 fileNames) {
 
-            String path = "C:\\Users\\zhang\\Documents\\Propro\\projet\\data\\";
+            String path = "D:\\Propro\\projet\\data\\";
             System.out.println(fileName);
 
             File indexFile = new File(path+fileName);

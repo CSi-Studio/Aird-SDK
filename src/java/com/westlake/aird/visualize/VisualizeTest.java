@@ -3,12 +3,116 @@ package com.westlake.aird.visualize;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-
-
 import java.io.File;
 import java.util.List;
 
+/**
+ * 数据图像化测试
+ */
 public class VisualizeTest {
+    /**
+     * 对Aird文件中所有swath进行压缩
+     * @param airdParser Aird文件解析器
+     * @param swathIndexList swathIndexList
+     * @param imgDir 图片存放路径
+     */
+    public static void testForAllSwath( AirdParser airdParser,List<SwathIndex> swathIndexList, String imgDir){
+        swathIndexList.forEach(index -> {
+            String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
+            System.out.println(index.getStartPtr());
+            File outSwathDir = new File(imgSwathDir);
+            if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
+                outSwathDir.mkdir();
+            }
+            index.getRts().parallelStream().forEach(rt -> {
+                MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
+                System.out.println("scan to image " + rt*1000);
+                String imgPath = String.format("%s\\%d.png", outSwathDir, (int)(rt*1000));
+                float[] mzArray = pairs.getMzArray();
+                float[] intArray = pairs.getIntensityArray();
+                new ImageWriter().write(imgPath,
+                        mzArray,
+                        intArray);
+//                System.out.println(imgPath);
+            });
+        });
+    }
+
+    /**
+     * 对一个swath进行读写测试，如果存储的数据与原数据有差，print出现差错的文件名和原数据与解析后的数据
+     * @param airdParser Aird文件解析器
+     * @param swathIndexList swathIndexList
+     * @param swath 要测试的swath的位置
+     */
+    public static void testForOneSwath(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath){
+        SwathIndex index = swathIndexList.get(swath);
+        String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathTest";
+        File outSwathDir = new File(imgSwathDir);
+        if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
+            outSwathDir.mkdir();
+        }
+        List<Float> rts = index.getRts();
+        for (int i = 0; i < rts.size(); i++) {
+            MzIntensityPairs pairs = airdParser.getSpectrum(index, rts.get(i));
+            String imgPath = String.format("%s\\%d.png", outSwathDir, i);
+            float[] mzArray = pairs.getMzArray();
+            float[] intArray = pairs.getIntensityArray();
+            //写入图片
+            new ImageWriter().write(imgPath,
+                    mzArray,
+                    intArray);
+            System.out.println(imgPath);
+            //从图片中读出数据
+            ImageReader reader = new ImageReader();
+            reader.read(imgPath);
+            float[] mzGet = reader.getMzArray();
+            float[] intGet = reader.getIntensityArray();
+            //print出现错误的数据
+            for (int j = 0; j < mzArray.length; j++) {
+                if(mzArray[j] - mzGet[j] >= 0.001 || intArray[j] - intGet[j] >= 0.001){
+                    System.out.println(
+                            imgPath + "   "+ mzArray[j] + "-" + intArray[j] + " -> " + mzGet[j] + "-" + intGet[j]);
+                }
+            }
+        }
+    }
+
+    /**
+     * 测试对一张谱图的读写，print出原数据与解析后的数据
+     * @param airdParser Aird文件解析器
+     * @param swathIndexList swathIndexList
+     * @param swath 要测试的swath的位置
+     * @param rt 要测试的帧的位置
+     */
+    public static void testForOneScan(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath, int rt){
+        SwathIndex index = swathIndexList.get(swath);
+        String imgSwathDir = "D:\\Propro\\projet\\images\\OneScanTest";
+        File outSwathDir = new File(imgSwathDir);
+        if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
+            outSwathDir.mkdir();
+        }
+        List<Float> rts = index.getRts();
+        MzIntensityPairs pairs = airdParser.getSpectrum(index, rts.get(rt));
+        String imgPath = String.format("%s\\%d.png", outSwathDir, rt);
+        float[] mzArray = pairs.getMzArray();
+        float[] intArray = pairs.getIntensityArray();
+        //写入图片
+        new ImageWriter().write(imgPath,
+                mzArray,
+                intArray);
+        //从图片中读出数据
+        ImageReader reader = new ImageReader();
+        reader.read(imgPath);
+        float[] mzGet = reader.getMzArray();
+        float[] intGet = reader.getIntensityArray();
+        //print数据
+        for (int i = 0; i < mzArray.length; i++) {
+            System.out.println(
+                    mzArray[i] + "-" + intArray[i] + " -> " + mzGet[i] + "-" + intGet[i]);
+        }
+    }
+
+
     public static void main(String[] args) {
         String fileName =
                 "HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
@@ -19,52 +123,19 @@ public class VisualizeTest {
 //                "D20181207yix_HCC_SW_T_46A_with_zero_lossless.json";
 //                "HYE110_TTOF6600_32fix_lgillet_I160308_001_with_zero_lossless.json";
 
-
-        String imgDir = "C:\\Users\\ADMIN\\Documents\\Propro\\projet\\images\\" + fileName.split("\\.")[0];
+        String imgDir = "D:\\Propro\\projet\\images\\" + fileName.split("\\.")[0];
         File outDir = new File(imgDir);
         if (!outDir.exists() && !outDir.isDirectory()) {
             outDir.mkdir();
         }
         System.out.println(fileName.split("\\\\")[0]);
-
-        String path = "C:\\Users\\ADMIN\\Documents\\Propro\\projet\\data\\";
+        String path = "D:\\Propro\\projet\\data\\";
         File indexFile = new File(path + fileName);
 
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
         List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
-
-        swathIndexList.forEach(index -> {
-            String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
-
-            File outSwathDir = new File(imgSwathDir);
-            if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
-                outSwathDir.mkdir();
-            }
-            index.getRts().parallelStream().forEach(rt -> {
-                MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
-//                System.out.println("scan to image " + rt*1000);
-
-                String imgPath = String.format("%s\\%d.png", outSwathDir, (int)(rt*1000));
-                float[] mzArray = pairs.getMzArray();
-                float[] intArray = pairs.getIntensityArray();
-                try{
-                    ImageTool.scanToImage(imgPath,
-                            mzArray,
-                            intArray);
-
-                }catch (Exception e){
-                    System.out.println(imgPath);
-                    for (int i = 0; i < mzArray.length; i++) {
-                        System.out.println(mzArray[i] + "->" + intArray[i]);
-                    }
-                    e.printStackTrace();
-                }
-
-            System.out.println(imgPath);
-
-            });
-        });
-
-
+//        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
+//        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 1);
+        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
     }
 }
