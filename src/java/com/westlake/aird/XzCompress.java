@@ -3,25 +3,22 @@ package com.westlake.aird;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.huffman.HuffmanCode;
-import com.westlake.aird.huffman.Wrapper;
-import com.westlake.aird.util.AirdScanUtil;
 import com.westlake.aird.util.CompressUtil;
-import org.apache.commons.lang3.ObjectUtils;
-import org.tukaani.xz.FilterOptions;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZInputStream;
 import org.tukaani.xz.XZOutputStream;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ZlibCompressRatio {
-
+public class XzCompress {
 
     public static void main(String[] args) {
 //        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
@@ -31,16 +28,6 @@ public class ZlibCompressRatio {
 //        File indexFile = new File("E:\\data\\SGSNew\\napedro_L120224_010_SW.json");
 //        File indexFile = new File("E:\\metabolomics\\宣武医院 10-19 raw data\\NEG-Convert\\QXA01DNNEG20190627_DIAN1019VWHUMAN_HUMAN_PLASMA1_01.json");
         AtomicInteger rtCount = new AtomicInteger(0);
-        AtomicLong mzCount = new AtomicLong(0);
-
-        // {intensitySize, compressedIntensitySize, XzIntensitySize}
-        AtomicLong intensitySize = new AtomicLong(0);
-        AtomicLong zlibCompressedSize = new AtomicLong(0);
-        AtomicLong xzCompressedSize = new AtomicLong(0);
-
-        AtomicLong zlibTime = new AtomicLong(0);
-        AtomicLong xzTime = new AtomicLong(0);
-
 
         AtomicInteger iter = new AtomicInteger(1);
         System.out.println(indexFile.getAbsolutePath());
@@ -51,32 +38,16 @@ public class ZlibCompressRatio {
             index.getRts().parallelStream().forEach(rt -> {
                 //intensity -> zlib     mz -> fastpfor
                 MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
-
-                byte[] ms2Intensity = transToByte(pairs.getIntensityArray());
-
-                long start = System.currentTimeMillis();
-                byte[] ms2IntensityCompressed = CompressUtil.zlibCompress(ms2Intensity);
-                long end = System.currentTimeMillis();
-                zlibTime.addAndGet(end - start);
-
-                start = System.currentTimeMillis();
-                byte[] ms2IntensityXZ = xzCompress(ms2Intensity, 1);
-                end = System.currentTimeMillis();
-                xzTime.addAndGet(end - start);
-
-                intensitySize.addAndGet(ms2Intensity.length) ;
-                zlibCompressedSize.addAndGet(ms2IntensityCompressed.length) ;
-                xzCompressedSize.addAndGet(ms2IntensityXZ.length) ;
+                float[] intensity = pairs.getIntensityArray();
+                byte[] compressed = xzCompress(transToByte(intensity), 1);
+                float[] decompressed = transToFloat(xzDeCompress(compressed));
+                System.out.println(String.format("%d -> %d", intensity.length, decompressed.length));
 
             });
             rtCount.addAndGet(index.getRts().size());
             iter.addAndGet(1);
 
         });
-
-        System.out.println(String.format("ms2 int: %f MBs ", intensitySize.get()/1024f/1024f));
-        System.out.println(String.format("ms2 zlib: %f MBs, %f percent reduced, in %d s", zlibCompressedSize.get()/1024f/1024f,100*(1.0-(double)zlibCompressedSize.get()/ intensitySize.get()), zlibTime.get()/1000));
-        System.out.println(String.format("ms2 xz: %f MBs, %f percent reduced, in %d s", xzCompressedSize.get()/1024f/1024f,100*(1.0-(double)xzCompressedSize.get()/ intensitySize.get()), xzTime.get()/1000));
     }
 
     public static byte[] transToByte(float[] target) {
@@ -109,7 +80,7 @@ public class ZlibCompressRatio {
         return bos.toByteArray();
     }
 
-    public static byte[] xzDeCompress(byte[] target, int level){
+    public static byte[] xzDeCompress(byte[] target){
         ByteArrayInputStream bis = new ByteArrayInputStream(target);
         byte[] ret = null;
         try{
