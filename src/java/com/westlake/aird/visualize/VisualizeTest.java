@@ -3,16 +3,9 @@ package com.westlake.aird.visualize;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.util.CompressUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.rmi.server.ExportException;
 import java.util.List;
-
-import static com.westlake.aird.util.CompressUtil.transToFloat;
 
 /**
  * 数据图像化测试
