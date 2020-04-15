@@ -24,10 +24,10 @@ public class ZlibCompressRatio {
 
 
     public static void main(String[] args) {
-//        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
+        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
 //        File indexFile = new File("D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
 //        File indexFile = new File("D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json");
-        File indexFile = new File("D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
+//        File indexFile = new File("D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
 //        File indexFile = new File("E:\\data\\SGSNew\\napedro_L120224_010_SW.json");
 //        File indexFile = new File("E:\\metabolomics\\宣武医院 10-19 raw data\\NEG-Convert\\QXA01DNNEG20190627_DIAN1019VWHUMAN_HUMAN_PLASMA1_01.json");
         AtomicInteger rtCount = new AtomicInteger(0);
@@ -64,9 +64,9 @@ public class ZlibCompressRatio {
                 end = System.currentTimeMillis();
                 xzTime.addAndGet(end - start);
 
-                intensitySize.addAndGet(ms2Intensity.length) ;
-                zlibCompressedSize.addAndGet(ms2IntensityCompressed.length) ;
-                xzCompressedSize.addAndGet(ms2IntensityXZ.length) ;
+                intensitySize.addAndGet(ms2Intensity.length);
+                zlibCompressedSize.addAndGet(ms2IntensityCompressed.length);
+                xzCompressedSize.addAndGet(ms2IntensityXZ.length);
 
             });
             rtCount.addAndGet(index.getRts().size());
@@ -74,9 +74,9 @@ public class ZlibCompressRatio {
 
         });
 
-        System.out.println(String.format("ms2 int: %f MBs ", intensitySize.get()/1024f/1024f));
-        System.out.println(String.format("ms2 zlib: %f MBs, %f percent reduced, in %d s", zlibCompressedSize.get()/1024f/1024f,100*(1.0-(double)zlibCompressedSize.get()/ intensitySize.get()), zlibTime.get()/1000));
-        System.out.println(String.format("ms2 xz: %f MBs, %f percent reduced, in %d s", xzCompressedSize.get()/1024f/1024f,100*(1.0-(double)xzCompressedSize.get()/ intensitySize.get()), xzTime.get()/1000));
+        System.out.println(String.format("ms2 int: %f MBs ", intensitySize.get() / 1024f / 1024f));
+        System.out.println(String.format("ms2 zlib: %f MBs, %f percent reduced, in %d s", zlibCompressedSize.get() / 1024f / 1024f, 100 * (1.0 - (double) zlibCompressedSize.get() / intensitySize.get()), zlibTime.get() / 1000));
+        System.out.println(String.format("ms2 xz: %f MBs, %f percent reduced, in %d s", xzCompressedSize.get() / 1024f / 1024f, 100 * (1.0 - (double) xzCompressedSize.get() / intensitySize.get()), xzTime.get() / 1000));
     }
 
     public static byte[] transToByte(float[] target) {
@@ -86,7 +86,7 @@ public class ZlibCompressRatio {
         return bbTarget.array();
     }
 
-    public static float[] transToFloat(byte[] target){
+    public static float[] transToFloat(byte[] target) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(target);
         FloatBuffer floats = byteBuffer.asFloatBuffer();
         float[] floatValues = new float[floats.capacity()];
@@ -98,24 +98,24 @@ public class ZlibCompressRatio {
         return floatValues;
     }
 
-    public static byte[] xzCompress(byte[] target, int level)  {
+    public static byte[] xzCompress(byte[] target, int level) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         try {
             XZOutputStream xzOutputStream = new XZOutputStream(bos, new LZMA2Options(level));
             xzOutputStream.write(target);
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return bos.toByteArray();
     }
 
-    public static byte[] xzDeCompress(byte[] target, int level){
+    public static byte[] xzDeCompress(byte[] target, int level) {
         ByteArrayInputStream bis = new ByteArrayInputStream(target);
         byte[] ret = null;
-        try{
+        try {
             XZInputStream xzInputStream = new XZInputStream(bis);
             ret = xzInputStream.readAllBytes();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

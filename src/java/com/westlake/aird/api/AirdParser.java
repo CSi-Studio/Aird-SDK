@@ -145,6 +145,46 @@ public class AirdParser {
         return null;
     }
 
+    public MzIntensityPairs getSpectrumAsInteger(SwathIndex index, float rt) {
+        RandomAccessFile raf = null;
+        try {
+            raf = new RandomAccessFile(airdFile, "r");
+            List<Float> rts = index.getRts();
+            int position = rts.indexOf(rt);
+
+            long start = index.getStartPtr();
+
+            for (int i = 0; i < position; i++) {
+                start += index.getMzs().get(i);
+                start += index.getInts().get(i);
+            }
+
+            raf.seek(start);
+            byte[] reader = new byte[index.getMzs().get(position).intValue()];
+            raf.read(reader);
+            int[] mzArray = getMzValuesAsInteger(reader);
+            start += index.getMzs().get(position).intValue();
+            raf.seek(start);
+            reader = new byte[index.getInts().get(position).intValue()];
+            raf.read(reader);
+
+            float[] intensityArray = null;
+            if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
+                intensityArray = getLogedIntValues(reader);
+            } else {
+                intensityArray = getIntValues(reader);
+            }
+
+            return new MzIntensityPairs(mzArray, intensityArray);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            FileUtil.close(raf);
+        }
+
+        return null;
+    }
+
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
@@ -168,6 +208,27 @@ public class AirdParser {
         }
         byteBuffer.clear();
         return floatValues;
+    }
+
+    /**
+     * get mz values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
+     *
+     * @param value
+     * @return
+     */
+    private int[] getMzValuesAsInteger(byte[] value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(mzCompressor.getByteOrder());
+
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
+        intValues = CompressUtil.fastPForDecoder(intValues);
+        byteBuffer.clear();
+        return intValues;
     }
 
     /**
