@@ -1,4 +1,4 @@
-package com.westlake.aird;
+package com.westlake.aird.util;
 
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZInputStream;
@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XzCompress {
+public class XzCompressUtil {
 
     public static byte[] transToByte(float[] target) {
         FloatBuffer fbTarget = FloatBuffer.wrap(target);

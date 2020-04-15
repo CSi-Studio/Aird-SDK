@@ -3,15 +3,7 @@ package com.westlake.aird;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.huffman.HuffmanCode;
-import com.westlake.aird.huffman.Wrapper;
-import com.westlake.aird.util.AirdScanUtil;
-import com.westlake.aird.util.CompressUtil;
-import org.apache.commons.lang3.ObjectUtils;
-import org.tukaani.xz.FilterOptions;
-import org.tukaani.xz.LZMA2Options;
-import org.tukaani.xz.XZInputStream;
-import org.tukaani.xz.XZOutputStream;
+import com.westlake.aird.util.XzCompressUtil;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -20,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class ZlibCompressRatio {
+public class CompressBehaviorTest {
 
 
     public static void main(String[] args) {
@@ -61,12 +53,12 @@ public class ZlibCompressRatio {
 //                zlibTime.addAndGet(end - start);
 
                 start = System.currentTimeMillis();
-                byte[] ms2IntensityXZ = XzCompress.xzCompress(ms2Intensity, 5);
+                byte[] ms2IntensityXZ = XzCompressUtil.xzCompress(ms2Intensity, 5);
                 end = System.currentTimeMillis();
                 xzTime.addAndGet(end - start);
 
                 start = System.currentTimeMillis();
-                float[] xzDecompressed = XzCompress.transToFloat(ms2IntensityXZ);
+                float[] xzDecompressed = XzCompressUtil.transToFloat(ms2IntensityXZ);
                 end = System.currentTimeMillis();
                 xzDTime.addAndGet(end - start);
 
