@@ -3,8 +3,16 @@ package com.westlake.aird.visualize;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
+import com.westlake.aird.util.CompressUtil;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.rmi.server.ExportException;
 import java.util.List;
+
+import static com.westlake.aird.util.CompressUtil.transToFloat;
 
 /**
  * 数据图像化测试
@@ -46,7 +54,7 @@ public class VisualizeTest {
      */
     public static void testForOneSwath(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath){
         SwathIndex index = swathIndexList.get(swath);
-        String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathTest";
+        String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathTest\\images";
         File outSwathDir = new File(imgSwathDir);
         if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
             outSwathDir.mkdir();
@@ -63,17 +71,17 @@ public class VisualizeTest {
                     intArray);
             System.out.println(imgPath);
             //从图片中读出数据
-            ImageReader reader = new ImageReader();
-            reader.read(imgPath);
-            float[] mzGet = reader.getMzArray();
-            float[] intGet = reader.getIntensityArray();
-            //print出现错误的数据
-            for (int j = 0; j < mzArray.length; j++) {
-                if(mzArray[j] - mzGet[j] >= 0.001 || intArray[j] - intGet[j] >= 0.001){
-                    System.out.println(
-                            imgPath + "   "+ mzArray[j] + "-" + intArray[j] + " -> " + mzGet[j] + "-" + intGet[j]);
-                }
-            }
+//            ImageReader reader = new ImageReader();
+//            reader.read(imgPath);
+//            float[] mzGet = reader.getMzArray();
+//            float[] intGet = reader.getIntensityArray();
+//            //print出现错误的数据
+//            for (int j = 0; j < mzArray.length; j++) {
+//                if(mzArray[j] - mzGet[j] >= 0.001 || intArray[j] - intGet[j] >= 0.001){
+//                    System.out.println(
+//                            imgPath + "   "+ mzArray[j] + "-" + intArray[j] + " -> " + mzGet[j] + "-" + intGet[j]);
+//                }
+//            }
         }
     }
 
@@ -112,7 +120,6 @@ public class VisualizeTest {
         }
     }
 
-
     public static void main(String[] args) {
         String fileName =
                 "HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
@@ -135,7 +142,23 @@ public class VisualizeTest {
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
         List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 //        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
-//        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 1);
-        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
+        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 1);
+//        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
+//        videoTest(airdParser, swathIndexList, 11);
+    }
+
+    public static void videoTest(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath){
+        SwathIndex index = swathIndexList.get(swath);
+        String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathVideoTest";
+        File outSwathDir = new File(imgSwathDir);
+        if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
+            outSwathDir.mkdir();
+        }
+        String fileName = String.format("%s\\%s_gray_6600_swath_%d", outSwathDir, index.getStartPtr(), swath);
+
+        VideoParser videoParser = new VideoParser();
+        videoParser.writeToVideo(fileName, airdParser, index);
+//        ImageReader imageReader = new ImageReader();
+//        imageReader.readVideo(fileName);
     }
 }

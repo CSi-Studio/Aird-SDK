@@ -1,9 +1,16 @@
 package com.westlake.aird.visualize;
 
+import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.MzIntensityPairs;
+import com.westlake.aird.bean.SwathIndex;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.videoio.VideoWriter;
+
+import java.util.List;
 
 /**
  * 将单帧质谱信息写成图片工具
@@ -55,4 +62,5 @@ public class ImageWriter {
         }
         Imgcodecs.imwrite(fileName, mat);
     }
+
 }

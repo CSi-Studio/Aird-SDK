@@ -3,6 +3,9 @@ package com.westlake.aird.visualize;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.video.Video;
+import org.opencv.videoio.VideoCapture;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -76,4 +79,5 @@ public class ImageReader {
     public float[] getIntensityArray() {
         return intensityArray;
     }
+
 }
