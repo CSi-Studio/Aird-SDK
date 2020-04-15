@@ -3,7 +3,8 @@ package com.westlake.aird;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.util.XzCompressUtil;
+import com.westlake.aird.util.LZ4CompressUtil;
+import com.westlake.aird.util.XZCompressUtil;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -17,8 +18,8 @@ public class CompressBehaviorTest {
 
     public static void main(String[] args) {
 //        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
-        File indexFile = new File("D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
-//        File indexFile = new File("D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json");
+//        File indexFile = new File("D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
+        File indexFile = new File("D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json");
 //        File indexFile = new File("D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
 //        File indexFile = new File("E:\\data\\SGSNew\\napedro_L120224_010_SW.json");
 //        File indexFile = new File("E:\\metabolomics\\宣武医院 10-19 raw data\\NEG-Convert\\QXA01DNNEG20190627_DIAN1019VWHUMAN_HUMAN_PLASMA1_01.json");
@@ -53,12 +54,12 @@ public class CompressBehaviorTest {
 //                zlibTime.addAndGet(end - start);
 
                 start = System.currentTimeMillis();
-                byte[] ms2IntensityXZ = XzCompressUtil.xzCompress(ms2Intensity, 5);
+                byte[] ms2IntensityXZ = XZCompressUtil.xzCompress(ms2Intensity, 1);
                 end = System.currentTimeMillis();
                 xzTime.addAndGet(end - start);
 
                 start = System.currentTimeMillis();
-                float[] xzDecompressed = XzCompressUtil.transToFloat(ms2IntensityXZ);
+                float[] xzDecompressed = XZCompressUtil.transToFloat(ms2IntensityXZ);
                 end = System.currentTimeMillis();
                 xzDTime.addAndGet(end - start);
 

@@ -10,7 +10,7 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class XzCompressUtil {
+public class XZCompressUtil {
 
     public static byte[] transToByte(float[] target) {
         FloatBuffer fbTarget = FloatBuffer.wrap(target);
