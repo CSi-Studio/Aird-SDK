@@ -54,7 +54,7 @@ public class CompressBehaviorTest {
 //                zlibTime.addAndGet(end - start);
 
                 start = System.currentTimeMillis();
-                byte[] ms2IntensityXZ = XZCompressUtil.xzCompress(ms2Intensity, 1);
+                byte[] ms2IntensityXZ = XZCompressUtil.xzCompress(ms2Intensity, 3);
                 end = System.currentTimeMillis();
                 xzTime.addAndGet(end - start);
 

@@ -135,7 +135,7 @@ public class VisualizeTest {
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
         List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 //        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
-        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 1);
+        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 10);
 //        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
 //        videoTest(airdParser, swathIndexList, 11);
     }

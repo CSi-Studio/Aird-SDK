@@ -1,5 +1,6 @@
 package com.westlake.aird.visualize;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
@@ -10,7 +11,10 @@ import java.util.List;
  * 读取图片中质谱信息的工具
  */
 public class ImageReader {
-
+    // 静态代码块定义，会在程序开始运行时先被调用初始化
+    static {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // 得保证先执行该语句，用于加载库，才能调用其他操作库的语句，
+    }
     private float[] mzArray; // m/z的数组
     private float[] intensityArray; // intensity的数组
     private int mzIntRange; // m/z 整数部分的范围

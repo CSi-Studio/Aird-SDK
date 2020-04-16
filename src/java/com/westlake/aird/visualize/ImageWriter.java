@@ -1,5 +1,6 @@
 package com.westlake.aird.visualize;
 
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -8,6 +9,10 @@ import org.opencv.imgcodecs.Imgcodecs;
  * 将单帧质谱信息写成图片工具
  */
 public class ImageWriter {
+    // 静态代码块定义，会在程序开始运行时先被调用初始化
+    static {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // 得保证先执行该语句，用于加载库，才能调用其他操作库的语句，
+    }
 
     private int mzIntRange; // m/z 整数部分的范围
     private int mzDecRange; // m/z 小数部分保留的精度
