@@ -55,11 +55,11 @@ public class VisualizeTest {
         List<Float> rts = index.getRts();
         for (int i = 0; i < rts.size(); i++) {
             MzIntensityPairs pairs = airdParser.getSpectrum(index, rts.get(i));
-            String imgPath = String.format("%s\\%d.png", outSwathDir, i);
+            String imgPath = String.format("%s\\%d", outSwathDir, i);
             float[] mzArray = pairs.getMzArray();
             float[] intArray = pairs.getIntensityArray();
             //写入图片
-            new ImageWriter().write(imgPath,
+            new ImageWriter().write2(imgPath,
                     mzArray,
                     intArray);
             System.out.println(imgPath);

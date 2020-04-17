@@ -3,93 +3,125 @@ package com.westlake.aird;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.util.LZ4CompressUtil;
+import com.westlake.aird.util.CompressUtil;
+import com.westlake.aird.util.GZIPCompressUtil;
 import com.westlake.aird.util.XZCompressUtil;
 
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class CompressBehaviorTest {
 
-
     public static void main(String[] args) {
-//        File indexFile = new File("E:\\data\\HYE124_5600_64_Var\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
-//        File indexFile = new File("D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
-        File indexFile = new File("D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json");
-//        File indexFile = new File("D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json");
-//        File indexFile = new File("E:\\data\\SGSNew\\napedro_L120224_010_SW.json");
-//        File indexFile = new File("E:\\metabolomics\\宣武医院 10-19 raw data\\NEG-Convert\\QXA01DNNEG20190627_DIAN1019VWHUMAN_HUMAN_PLASMA1_01.json");
-        AtomicInteger rtCount = new AtomicInteger(0);
-        AtomicLong mzCount = new AtomicLong(0);
+        
+        String[] fileNames = {
+                "D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json",
+                "D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json",
+                "D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json"
+        };
+        for (String fileName:
+            fileNames) {
+            File indexFile = new File(fileName);
 
-        // {intensitySize, compressedIntensitySize, XzIntensitySize}
-        AtomicLong intensitySize = new AtomicLong(0);
-        AtomicLong zlibCompressedSize = new AtomicLong(0);
-        AtomicLong xzCompressedSize = new AtomicLong(0);
+            AtomicLong intensitySize = new AtomicLong(0);
+            AtomicLong zlibCompressedIntSize = new AtomicLong(0);
+            AtomicLong xzCompressedIntSize = new AtomicLong(0);
+            AtomicLong gzipCompressedIntSize = new AtomicLong(0);
 
-        AtomicLong zlibTime = new AtomicLong(0);
-        AtomicLong xzTime = new AtomicLong(0);
-        AtomicLong xzDTime = new AtomicLong(0);
+            AtomicLong mzSize = new AtomicLong(0);
+            AtomicLong zlibCompressedMzSize = new AtomicLong(0);
+            AtomicLong xzCompressedMzSize = new AtomicLong(0);
+            AtomicLong gzipCompressedMzSize = new AtomicLong(0);
 
-        AtomicInteger iter = new AtomicInteger(1);
-        System.out.println(indexFile.getAbsolutePath());
-        AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-        List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
-        swathIndexList.forEach(index -> {
-            System.out.println("正在扫描:" + iter + "/" + swathIndexList.size());
-            index.getRts().parallelStream().forEach(rt -> {
-                //intensity -> zlib     mz -> fastpfor
-                MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
+            System.out.println();
+            System.out.println(indexFile.getAbsolutePath());
+            AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
+            List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+            swathIndexList.forEach(index -> {
+                index.getRts().parallelStream().forEach(rt -> {
+                    //intensity -> zlib     mz -> fastpfor
+                    MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
 
-                byte[] ms2Intensity = transToByte(pairs.getIntensityArray());
-                long start, end;
+                    // 原数据
+                    byte[] intensity = transToByte(pairs.getIntensityArray());
+                    int[] mz = transToInt(pairs.getMzArray());
 
-//                start = System.currentTimeMillis();
-//                byte[] ms2IntensityCompressed = CompressUtil.zlibCompress(ms2Intensity);
-//                end = System.currentTimeMillis();
-//                zlibTime.addAndGet(end - start);
+                    // zlib压缩数据
+                    byte[] intensityCompressed = CompressUtil.zlibCompress(intensity);
+                    byte[] mzCompressed = CompressUtil.transToByte(CompressUtil.fastPForEncoder(mz));
 
-                start = System.currentTimeMillis();
-                byte[] ms2IntensityXZ = XZCompressUtil.xzCompress(ms2Intensity, 3);
-                end = System.currentTimeMillis();
-                xzTime.addAndGet(end - start);
+                    // Xz压缩数据
+                    byte[] intensityXZ = XZCompressUtil.xzCompress(intensity, 1);
+                    byte[] mzXZ = XZCompressUtil.xzCompress(transToByte(CompressUtil.fastPForEncoder(mz)),1);
 
-                start = System.currentTimeMillis();
-                float[] xzDecompressed = XZCompressUtil.transToFloat(ms2IntensityXZ);
-                end = System.currentTimeMillis();
-                xzDTime.addAndGet(end - start);
+                    // Gzip压缩数据
+                    byte[] intensityGzip = GZIPCompressUtil.gzipCompress(intensity);
+                    byte[] mzGzip = GZIPCompressUtil.gzipCompress(transToByte(CompressUtil.fastPForEncoder(mz)));
 
-                intensitySize.addAndGet(ms2Intensity.length);
-//                zlibCompressedSize.addAndGet(ms2IntensityCompressed.length);
-                xzCompressedSize.addAndGet(ms2IntensityXZ.length);
-
+                    intensitySize.addAndGet(intensity.length);
+                    mzSize.addAndGet(4 * mz.length);
+                    zlibCompressedIntSize.addAndGet(intensityCompressed.length);
+                    zlibCompressedMzSize.addAndGet(mzCompressed.length);
+                    xzCompressedIntSize.addAndGet(intensityXZ.length);
+                    xzCompressedMzSize.addAndGet(mzXZ.length);
+                    gzipCompressedIntSize.addAndGet(intensityGzip.length);
+                    gzipCompressedMzSize.addAndGet(mzGzip.length);
+                });
             });
-            rtCount.addAndGet(index.getRts().size());
-            iter.addAndGet(1);
 
-        });
+            System.out.println(String.format("mz: %f MBs ", mzSize.get() / 1024f / 1024f));
+            System.out.println(String.format("int: %f MBs ", intensitySize.get() / 1024f / 1024f));
 
-        System.out.println(String.format("int: %f MBs ", intensitySize.get() / 1024f / 1024f));
-//        System.out.println(String.format("int zlib: %f MBs, %f percent reduced, in %d s", zlibCompressedSize.get() / 1024f / 1024f, 100 * (1.0 - (double) zlibCompressedSize.get() / intensitySize.get()), zlibTime.get() / 1000));
-        System.out.println(String.format("int xz: %f MBs, %f percent reduced,compressed in %d s, decompressed in %d s",
-                xzCompressedSize.get() / 1024f / 1024f,
-                100 * (1.0 - (double) xzCompressedSize.get() / intensitySize.get()),
-                xzTime.get() / 1000,
-                xzDTime.get() / 1000));
+            printResult("zlib", zlibCompressedMzSize.get(), zlibCompressedIntSize.get(), mzSize.get(), intensitySize.get());
+            printResult("xz", xzCompressedMzSize.get(), xzCompressedIntSize.get(), mzSize.get(), intensitySize.get());
+            printResult("gzip", gzipCompressedMzSize.get(), gzipCompressedIntSize.get(), mzSize.get(), intensitySize.get());
+
+        }
+    }
+
+    public static void printResult(String method, long mzSize, long intSize, long mzSizeO, long intSizeO){
+
+        System.out.println("================" + method + "=================");
+        System.out.println(String.format("mz : %f MBs, %f %% reduced",
+                mzSize / 1024f / 1024f,
+                100 * (1.0 - (double) mzSize / mzSizeO)));
+        System.out.println(String.format("int : %f MBs, %f %% reduced",
+                intSize / 1024f / 1024f,
+                100 * (1.0 - (double) intSize / intSizeO)));
+
     }
 
     public static byte[] transToByte(float[] target) {
+
         FloatBuffer fbTarget = FloatBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
         bbTarget.asFloatBuffer().put(fbTarget);
         return bbTarget.array();
     }
 
+    public static byte[] transToByte(int[] target) {
+
+        IntBuffer ibTarget = IntBuffer.wrap(target);
+        ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
+        bbTarget.asIntBuffer().put(ibTarget);
+        return bbTarget.array();
+    }
+
+    public static int[] transToInt(float[] target){
+
+        int[] out = new int[target.length];
+        for (int i = 0; i < target.length; i++) {
+            out[i] = (int)(target[i] * 1000);
+        }
+        return out;
+    }
+
     public static float[] transToFloat(byte[] target) {
+
         ByteBuffer byteBuffer = ByteBuffer.wrap(target);
         FloatBuffer floats = byteBuffer.asFloatBuffer();
         float[] floatValues = new float[floats.capacity()];

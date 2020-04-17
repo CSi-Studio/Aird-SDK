@@ -5,6 +5,8 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import java.util.Arrays;
+
 /**
  * 将单帧质谱信息写成图片工具
  */
@@ -56,4 +58,37 @@ public class ImageWriter {
         }
         Imgcodecs.imwrite(fileName, mat);
     }
+
+    private byte[] float2bytes(float f){
+        byte[] ret = new byte[4];
+        int exp = (int)Math.ceil(Math.log10(f));
+        ret[0] = (byte)exp;
+        int base = (int)(f * Math.pow(10, 7 - exp));
+        ret[1] = (byte)(base >> 16);
+        ret[2] = (byte)(base >> 8);
+        ret[3] = (byte)(base);
+        return ret;
+    }
+
+
+    public void write2(String fileName, float[] mz, float[] intensity) {
+        Mat mat1 = Mat.zeros(mzIntRange, mzDecRange, CvType.CV_8UC3);
+        Mat mat2 = Mat.zeros(mzIntRange, mzDecRange, CvType.CV_8UC1);
+
+        for (int i = 0; i < mz.length; i++) {
+            int intPart = (int) Math.floor(mz[i]);
+            int decPart = Math.round((mz[i] - intPart) * mzDecRange);
+            if (decPart >= mzDecRange) {
+                intPart++;
+                decPart = 0;
+            }
+            byte[] bytes = float2bytes(intensity[i]);
+            mat1.put(intPart, decPart, Arrays.copyOfRange(bytes,1,4));
+            mat2.put(intPart, decPart, bytes[0]);
+        }
+        Imgcodecs.imwrite(fileName + "_base.png", mat1);
+//        Imgcodecs.imwrite(fileName + "_exp.png", mat2);
+    }
+
+
 }

@@ -75,4 +75,10 @@ public class ImageReader {
     public float[] getIntensityArray() {
         return intensityArray;
     }
+
+    private float bytes2float(byte[] bytes){
+        int exp = bytes[0];
+        int base = ((bytes[1] & 0xff) << 16) + ((bytes[2] &0xff) << 8) + (bytes[3] & 0xff);
+        return (float)(base*Math.pow(10,exp - 7));
+    }
 }
