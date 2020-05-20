@@ -3,8 +3,6 @@ package com.westlake.aird.visualize;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.video.Video;
-import org.opencv.videoio.VideoCapture;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -13,11 +11,10 @@ import java.util.List;
  * 读取图片中质谱信息的工具
  */
 public class ImageReader {
-    // 声明opencv静态库
+    // 静态代码块定义，会在程序开始运行时先被调用初始化
     static {
-        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // 得保证先执行该语句，用于加载库，才能调用其他操作库的语句，
     }
-
     private float[] mzArray; // m/z的数组
     private float[] intensityArray; // intensity的数组
     private int mzIntRange; // m/z 整数部分的范围
@@ -63,7 +60,6 @@ public class ImageReader {
             intensityArray[i] = intList.get(i);
         }
     }
-
     /**
      * 外部获取mzArray方法
      * @return m/z数组
@@ -80,4 +76,9 @@ public class ImageReader {
         return intensityArray;
     }
 
+    private float bytes2float(byte[] bytes){
+        int exp = bytes[0];
+        int base = ((bytes[1] & 0xff) << 16) + ((bytes[2] &0xff) << 8) + (bytes[3] & 0xff);
+        return (float)(base*Math.pow(10,exp - 7));
+    }
 }

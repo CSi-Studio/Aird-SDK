@@ -3,16 +3,9 @@ package com.westlake.aird.visualize;
 import com.westlake.aird.api.AirdParser;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.util.CompressUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.rmi.server.ExportException;
 import java.util.List;
-
-import static com.westlake.aird.util.CompressUtil.transToFloat;
 
 /**
  * 数据图像化测试
@@ -62,11 +55,11 @@ public class VisualizeTest {
         List<Float> rts = index.getRts();
         for (int i = 0; i < rts.size(); i++) {
             MzIntensityPairs pairs = airdParser.getSpectrum(index, rts.get(i));
-            String imgPath = String.format("%s\\%d.png", outSwathDir, i);
+            String imgPath = String.format("%s\\%d", outSwathDir, i);
             float[] mzArray = pairs.getMzArray();
             float[] intArray = pairs.getIntensityArray();
             //写入图片
-            new ImageWriter().write(imgPath,
+            new ImageWriter().write2(imgPath,
                     mzArray,
                     intArray);
             System.out.println(imgPath);
@@ -142,7 +135,7 @@ public class VisualizeTest {
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
         List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 //        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
-        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 1);
+        VisualizeTest.testForOneSwath(airdParser, swathIndexList, 10);
 //        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
 //        videoTest(airdParser, swathIndexList, 11);
     }
