@@ -1,126 +1,98 @@
 package com.westlake.aird;
 
-import com.westlake.aird.api.AirdParser;
-import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
-import com.westlake.aird.huffman.HuffmanCode;
-import com.westlake.aird.huffman.Wrapper;
-import com.westlake.aird.util.AirdScanUtil;
-import com.westlake.aird.util.CompressUtil;
-
-import java.io.File;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Arrays;
 
 public class Test {
 
-
     public static void main(String[] args) {
-        String[] fileNames = {
-                "HYE110_TTOF6600_32fix_lgillet_I160308_001.json",
-                "C20181205yix_HCC_DIA_N_38A.json",
-                "HYE124_TTOF5600_64var_lgillet_L150206_007.json",
-                "napedro_L120224_010_SW.json",
-                "C20181208yix_HCC_DIA_T_46A_with_zero_lossless.json",
-                "D20181207yix_HCC_SW_T_46A_with_zero_lossless.json",
-                "HYE110_TTOF6600_32fix_lgillet_I160308_001_with_zero_lossless.json"
-        };
-        for (String fileName :
-                fileNames) {
+        int dimensions = 10000;
+        double epsilon = 1E-6;
+        double[][] a = initializeA(dimensions);
+        double[] b = initializeB(dimensions);
+        double[] x = initializeX(dimensions);
+        double[] ax = matrixTimesVector(a, x);
+        double[] r = vectorPlusVector(b, vectorTimesNum(ax, -1d));
+        double[] p = Arrays.copyOf(r, r.length);
+        double rho0 = innerProduct(r, r);
+        int loopCount = 0;
+        while (rho0 > epsilon) {
+            //x
+            double[] ap = matrixTimesVector(a, p);
+            double alpha = rho0 / innerProduct(p, ap);
+            x = vectorPlusVector(x, vectorTimesNum(p, alpha));
 
-            String path = "D:\\Propro\\projet\\data\\";
-            System.out.println(fileName);
+            //r
+            r = vectorPlusVector(r, vectorTimesNum(ap, -alpha));
+            double rho1 = innerProduct(r, r);
 
-            File indexFile = new File(path+fileName);
-
-            AtomicInteger rtCount = new AtomicInteger(0);
-//            AtomicLong mzCount = new AtomicLong(0);
-
-            // {intensitySize, compressedIntensitySize, compressTime,huffmanIntensitySize}
-            final long[] sizes = {0, 0, 0, 0};
-            final long[] durant = {0, 0};
-
-
-            Wrapper intensityWrapper = new Wrapper();
-
-            AtomicInteger iter = new AtomicInteger(0);
-            AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-            List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
-
-            long startTime = System.currentTimeMillis();
-//            System.out.println("Zip compress start");
-            swathIndexList.parallelStream().forEach(index -> {
-//                System.out.println("正在扫描:" + iter + "/" + swathIndexList.size());
-                index.getRts().forEach(rt -> {
-                    //intensity -> zlib     mz -> fastpfor
-                    MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
-                    if (index.getLevel() != 1) {
-                        intensityWrapper.offer(pairs.getIntensityArray());
-
-                        byte[] ms2Intensity = transToByte(pairs.getIntensityArray());
-                        byte[] ms2IntensityCompressed = CompressUtil.zlibCompress(ms2Intensity);
-
-                        sizes[0] += ms2Intensity.length;
-                        sizes[1] += ms2IntensityCompressed.length;
-                    }
-                });
-                rtCount.addAndGet(index.getRts().size());
-                iter.addAndGet(1);
-
-            });
-            long endTime = System.currentTimeMillis();
-            durant[0] = (endTime - startTime) / 1000;
-//            System.out.println("Zip compress completed");
-
-//            System.out.println("huffman compress start");
-            startTime = System.currentTimeMillis();
-            HuffmanCode huffmanCode = new HuffmanCode(intensityWrapper.getNodeArray());
-            huffmanCode.createHuffmanTree();
-            huffmanCode.createHuffmanCodeMap();
-//            System.out.println("huffman tree built");
-            swathIndexList.parallelStream().forEach(index -> {
-//                System.out.println("正在扫描:" + iter + "/" + swathIndexList.size());
-                index.getRts().forEach(rt -> {
-                    //intensity -> zlib     mz -> fastpfor
-                    MzIntensityPairs pairs = airdParser.getSpectrum(index, rt);
-                    if (index.getLevel() != 1) {
-                        intensityWrapper.offer(pairs.getIntensityArray());
-
-                        float[] ms2Intensity = pairs.getIntensityArray();
-                        byte[] ms2IntensityCompressed = huffmanCode.huffmanCompress(ms2Intensity);
-                        sizes[2] += ms2IntensityCompressed.length ;
-
-                        byte[] extremeCompress = CompressUtil.zlibCompress(ms2IntensityCompressed);
-                        sizes[3] += extremeCompress.length ;
-                    }
-                });
-            });
-//            System.out.println("huffman compress completed");
-
-            endTime = System.currentTimeMillis();
-            durant[1] = (endTime - startTime) / 1000;
-
-            System.out.println(String.format("ms2 int size: %d Bytes \n" +
-                            "Zip : %d Bytes compressed in %d s\n" +
-                            "Huffman : %d Bytes compressed in %d s\n" +
-                            "Huffman + Zip : %d Bytes \n" ,
-                    sizes[0],
-                    sizes[1],
-                    durant[0],
-                    sizes[2],
-                    durant[1],
-                    sizes[3]));
+            double bk = rho1 / rho0;
+            p = vectorPlusVector(r, vectorTimesNum(p, bk));
+            rho0 = rho1;
+            loopCount++;
+            System.out.println(rho0 + " " + x[0]);
         }
+        System.out.println("loops:" + loopCount);
+        System.out.println("acc:" + rho0);
+        System.out.println("x:" + Arrays.toString(x));
     }
 
-    public static byte[] transToByte(float[] target) {
-        FloatBuffer fbTarget = FloatBuffer.wrap(target);
-        ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
-        bbTarget.asFloatBuffer().put(fbTarget);
-        return bbTarget.array();
+    private static double[][] initializeA(int dimensions) {
+        double[][] matrixA = new double[dimensions][dimensions];
+        for (int i = 0; i < dimensions; i++) {
+            for (int j = i; j < dimensions; j++) {
+                double random = Math.random();
+                matrixA[i][j] = random;
+                matrixA[j][i] = random;
+            }
+        }
+        return matrixA;
     }
 
+    private static double[] initializeB(int dimensions) {
+        double[] vectorB = new double[dimensions];
+        for (int i = 0; i < dimensions; i++) {
+            vectorB[i] = Math.random();
+        }
+        return vectorB;
+    }
+
+    private static double[] initializeX(int dimensions) {
+        double[] x = new double[dimensions];
+        for (int i = 0; i < dimensions; i++) {
+            x[i] = 1;
+        }
+        return x;
+    }
+
+    private static double innerProduct(double[] vector1, double[] vector2) {
+        double innerProduct = 0d;
+        for (int i = 0; i < vector1.length; i++) {
+            innerProduct += vector1[i] * vector2[i];
+        }
+        return innerProduct;
+    }
+
+    private static double[] matrixTimesVector(double[][] matrix, double[] vector) {
+        double[] resultVector = new double[matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            resultVector[i] = innerProduct(matrix[i], vector);
+        }
+        return resultVector;
+    }
+
+    private static double[] vectorPlusVector(double[] vector1, double[] vector2) {
+        double[] vector = new double[vector1.length];
+        for (int i = 0; i < vector.length; i++) {
+            vector[i] = vector1[i] + vector2[i];
+        }
+        return vector;
+    }
+
+    private static double[] vectorTimesNum(double[] vector, double num) {
+        double[] vectorResult = new double[vector.length];
+        for (int i = 0; i < vector.length; i++) {
+            vectorResult[i] = vector[i] * num;
+        }
+        return vectorResult;
+    }
 }
