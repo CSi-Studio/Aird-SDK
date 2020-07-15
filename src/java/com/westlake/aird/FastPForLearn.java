@@ -11,12 +11,12 @@ public class FastPForLearn {
         int[] test2 = new int[900];
         int[] finalTest = new int[1800];
         for (int i = 0; i < test.length; i++) {
-            test[i] = i * 40000000 + (new Random().nextBoolean() ? 1 : 2);
+            test[i] = (i == 0 ? 0 : test[i - 1]) + (new Random().nextInt(10));
             finalTest[i] = test[i];
         }
         for (int i = 0; i < test2.length; i++) {
             test2[i] = test[test.length - 1] + i * 4 + (new Random().nextBoolean() ? 1 : 2);
-            finalTest[i+900] = test2[i];
+            finalTest[i + 900] = test2[i];
         }
 
         int[] newTest = CompressUtil.fastPForEncoder(test);
