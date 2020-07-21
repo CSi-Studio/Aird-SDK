@@ -9,10 +9,12 @@ import com.westlake.aird.util.FileUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -94,12 +96,80 @@ public class AirdParser {
         return null;
     }
 
+    //根据特定BlockIndex取出对应TreeMap
+    public TreeMap<Double, MzIntensityPairs> parseBlockValue(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
+        TreeMap<Double, MzIntensityPairs> map = new TreeMap<>();
+        List<Float> rts = blockIndex.getRts();
+
+        raf.seek(blockIndex.getStartPtr());
+        Long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
+        byte[] result = new byte[delta.intValue()];
+
+        raf.read(result);
+        List<Long> mzSizes = blockIndex.getMzs();
+        List<Long> intensitySizes = blockIndex.getInts();
+
+        int start = 0;
+        for (int i = 0; i < mzSizes.size(); i++) {
+            byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
+            start = start + mzSizes.get(i).intValue();
+            byte[] intensity = ArrayUtils.subarray(result, start, start + intensitySizes.get(i).intValue());
+            start = start + intensitySizes.get(i).intValue();
+            try {
+                MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(mz), getIntValues(intensity));
+                map.put(rts.get(i) / 60d, pairs);
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        return map;
+    }
+
+    public List<MsCycle> parseToMsCycle() throws Exception {
+        RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");
+        List<MsCycle> cycleList = new ArrayList<>();
+        List<BlockIndex> indexList = getAirdInfo().getIndexList();
+        TreeMap<Double, MzIntensityPairs> ms1Map = parseBlockValue(raf, indexList.get(0));
+        List<Integer> ms1ScanNumList = indexList.get(0).getNums();
+        List<Double> rtList = new ArrayList<>(ms1Map.keySet());
+
+        //将ms2 rt单位转换为分钟
+        for (BlockIndex blockIndex : indexList) {
+            List<Float> rts = blockIndex.getRts();
+            for (int i = 0; i < rts.size(); i++) {
+                rts.set(i, rts.get(i) / 60f);
+            }
+        }
+
+        for (int i = 0; i < rtList.size(); i++) {
+            MsCycle tempMsc = new MsCycle();
+            //将ms1 rt单位转换为分钟
+            tempMsc.setRt(rtList.get(i));
+            tempMsc.setMs1Spectrum(ms1Map.get(rtList.get(i)));
+            for (int tempBlockNum = 1; tempBlockNum < indexList.size(); tempBlockNum++) {
+                BlockIndex tempBlockIndex = indexList.get(tempBlockNum);
+                if (tempBlockIndex.getNum().equals(ms1ScanNumList.get(i))) {
+                    tempMsc.setRangeList(tempBlockIndex.getRangeList());
+                    tempMsc.setRts(tempBlockIndex.getRts());
+
+                    TreeMap<Double, MzIntensityPairs> ms2Map = parseBlockValue(raf, tempBlockIndex);
+                    List<MzIntensityPairs> ms2Spectrums = new ArrayList<>(ms2Map.values());
+                    tempMsc.setMs2Spectrums(ms2Spectrums);
+                    break;
+                }
+            }
+            cycleList.add(tempMsc);
+        }
+        FileUtil.close(raf);
+        return cycleList;
+    }
+
     /**
      * 从aird文件中获取某一条记录
      * 从一个完整的Swath Block块中取出一条记录
      *
      * @param index
-     * @param rt    获取某一个时刻原始谱图
+     * @param rt 获取某一个时刻原始谱图
      * @return
      */
     public MzIntensityPairs getSpectrum(BlockIndex index, float rt) {
