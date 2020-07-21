@@ -1,8 +1,8 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 import com.westlake.aird.util.CompressUtil;
 
 import java.io.File;
@@ -29,7 +29,7 @@ public class Guess {
         AtomicInteger iter = new AtomicInteger(0);
         System.out.println(indexFile.getAbsolutePath());
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-        List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+        List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
         testMergePerformance(airdParser);
 
 //        swathIndexList.parallelStream().forEach(index -> {
@@ -59,7 +59,7 @@ public class Guess {
 
 
     public static void testMergePerformance(AirdParser airdParser){
-        List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+        List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
         MzIntensityPairs pairs1 = airdParser.getSpectrum(swathIndexList.get(0), swathIndexList.get(0).getRts().get(1));
         int[] origin = new int[pairs1.getMzArray().length];
         for (int i = 0; i < pairs1.getMzArray().length; i++) {

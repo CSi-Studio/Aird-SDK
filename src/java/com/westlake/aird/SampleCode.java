@@ -1,8 +1,8 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 import com.westlake.aird.util.AirdScanUtil;
 
 import javax.imageio.IIOImage;
@@ -27,9 +27,9 @@ public class SampleCode {
         for (File indexFile : files) {
             System.out.println(indexFile.getAbsolutePath());
             AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-            List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+            List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
-            for (SwathIndex index : swathIndexList) {
+            for (BlockIndex index : swathIndexList) {
                 MzIntensityPairs pairs = airdParser.getSpectrum(index, index.getRts().get(10));
                 Float[][] location = new Float[2000][1000];
                 int[] rgb = new int[2000 * 1000];

@@ -1,8 +1,8 @@
 package com.westlake.aird.visualize;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 
 import java.io.File;
 import java.util.List;
@@ -17,7 +17,7 @@ public class VisualizeTest {
      * @param swathIndexList swathIndexList
      * @param imgDir 图片存放路径
      */
-    public static void testForAllSwath( AirdParser airdParser,List<SwathIndex> swathIndexList, String imgDir){
+    public static void testForAllSwath( AirdParser airdParser,List<BlockIndex> swathIndexList, String imgDir){
         swathIndexList.forEach(index -> {
             String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
             System.out.println(index.getStartPtr());
@@ -45,8 +45,8 @@ public class VisualizeTest {
      * @param swathIndexList swathIndexList
      * @param swath 要测试的swath的位置
      */
-    public static void testForOneSwath(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath){
-        SwathIndex index = swathIndexList.get(swath);
+    public static void testForOneSwath(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath){
+        BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathTest\\images";
         File outSwathDir = new File(imgSwathDir);
         if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
@@ -85,8 +85,8 @@ public class VisualizeTest {
      * @param swath 要测试的swath的位置
      * @param rt 要测试的帧的位置
      */
-    public static void testForOneScan(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath, int rt){
-        SwathIndex index = swathIndexList.get(swath);
+    public static void testForOneScan(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath, int rt){
+        BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneScanTest";
         File outSwathDir = new File(imgSwathDir);
         if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {
@@ -133,15 +133,15 @@ public class VisualizeTest {
         File indexFile = new File(path + fileName);
 
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-        List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+        List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 //        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
         VisualizeTest.testForOneSwath(airdParser, swathIndexList, 10);
 //        VisualizeTest.testForOneScan(airdParser, swathIndexList, 1, 1);
 //        videoTest(airdParser, swathIndexList, 11);
     }
 
-    public static void videoTest(AirdParser airdParser,List<SwathIndex> swathIndexList, int swath){
-        SwathIndex index = swathIndexList.get(swath);
+    public static void videoTest(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath){
+        BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathVideoTest";
         File outSwathDir = new File(imgSwathDir);
         if (!outSwathDir.exists() && !outSwathDir.isDirectory()) {

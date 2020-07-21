@@ -2,6 +2,7 @@ package com.westlake.aird.bean;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +34,7 @@ public class BlockIndex {
     List<Integer> nums;
 
     //所有该块中的rt时间列表
-    List<Double> rts;
+    List<Float> rts;
 
     //一个块中所有子谱图的mz的压缩后的大小列表
     List<Long> mzs;
@@ -43,4 +44,19 @@ public class BlockIndex {
 
     //用于存储KV键值对
     String features;
+
+    public WindowRange getWindowRange() {
+        if (rangeList == null || rangeList.size() == 0) {
+            return null;
+        } else {
+            return rangeList.get(0);
+        }
+    }
+
+    public void setWindowRange(WindowRange windowRange) {
+        if (rangeList == null) {
+            rangeList = new ArrayList<>();
+        }
+        rangeList.add(windowRange);
+    }
 }

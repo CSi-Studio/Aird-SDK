@@ -38,17 +38,14 @@ public class AirdInfo {
 
     /**
      * [核心字段]
-     * 用于存储SWATH块的索引
-     * [Core Field]
-     * Used for store the swath index
-     * @see SwathIndex
+     * 用于存储Block的索引
      */
-    List<SwathIndex> indexList;
+    List<BlockIndex> indexList;
 
     /**
-     * [核心字段]
-     * 用于存储Block的索引（适用于DDA）
+     * 兼容旧版(2.2.2以前)的Aird版本文件
      */
+    @Deprecated
     List<BlockIndex> blockIndexList;
 
     /**

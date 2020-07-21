@@ -1,12 +1,11 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.structure.SortInt;
-import com.westlake.aird.bean.SwathIndex;
 import com.westlake.aird.util.ArrayUtil;
 import com.westlake.aird.util.CompressUtil;
-import com.westlake.aird.util.XZCompressUtil;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
 
@@ -74,7 +73,7 @@ public class TestForNDim {
             AtomicLong totalMzCount = new AtomicLong(0);
             AtomicInteger iter = new AtomicInteger(0);
             AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-            List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+            List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
             swathIndexList.stream().forEach(index -> {
                 int nowIter = iter.incrementAndGet();

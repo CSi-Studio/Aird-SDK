@@ -1,8 +1,8 @@
 package com.westlake.aird.visualize;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
@@ -11,7 +11,6 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.VideoWriter;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class VideoParser {
@@ -53,7 +52,7 @@ public class VideoParser {
         return mats;
     }
 
-    public void writeToVideo(String fileName, AirdParser airdParser, SwathIndex index) {
+    public void writeToVideo(String fileName, AirdParser airdParser, BlockIndex index) {
         VideoWriter[] videoWriters = new VideoWriter[4];
         for (int i = 0; i < 4; i++) {
             videoWriters[i] = new VideoWriter();
@@ -104,7 +103,7 @@ public class VideoParser {
         videoCapture.release();
     }
 
-    public void slipWindowVideo(String fileName, AirdParser airdParser, SwathIndex index){
+    public void slipWindowVideo(String fileName, AirdParser airdParser, BlockIndex index){
         VideoWriter videoWriter = new VideoWriter();
         videoWriter.open(fileName,
                 VideoWriter.fourcc('H', 'F', 'Y', 'U'),

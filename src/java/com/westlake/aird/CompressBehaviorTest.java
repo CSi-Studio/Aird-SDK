@@ -1,8 +1,8 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 import com.westlake.aird.util.CompressUtil;
 import com.westlake.aird.util.GZIPCompressUtil;
 import com.westlake.aird.util.XZCompressUtil;
@@ -40,7 +40,7 @@ public class CompressBehaviorTest {
             System.out.println();
             System.out.println(indexFile.getAbsolutePath());
             AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-            List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+            List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
             swathIndexList.forEach(index -> {
                 index.getRts().parallelStream().forEach(rt -> {
                     //intensity -> zlib     mz -> fastpfor

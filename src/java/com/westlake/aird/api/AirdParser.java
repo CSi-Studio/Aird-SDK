@@ -1,9 +1,6 @@
 package com.westlake.aird.api;
 
-import com.westlake.aird.bean.AirdInfo;
-import com.westlake.aird.bean.Compressor;
-import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
+import com.westlake.aird.bean.*;
 import com.westlake.aird.enums.ResultCodeEnum;
 import com.westlake.aird.exception.ScanException;
 import com.westlake.aird.util.AirdScanUtil;
@@ -52,7 +49,7 @@ public class AirdParser {
      * @return
      * @throws Exception
      */
-    public TreeMap<Float, MzIntensityPairs> getSpectrums(SwathIndex index) {
+    public TreeMap<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -105,7 +102,7 @@ public class AirdParser {
      * @param rt    获取某一个时刻原始谱图
      * @return
      */
-    public MzIntensityPairs getSpectrum(SwathIndex index, float rt) {
+    public MzIntensityPairs getSpectrum(BlockIndex index, float rt) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -145,7 +142,7 @@ public class AirdParser {
         return null;
     }
 
-    public MzIntensityPairs getSpectrumAsInteger(SwathIndex index, float rt) {
+    public MzIntensityPairs getSpectrumAsInteger(BlockIndex index, float rt) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");

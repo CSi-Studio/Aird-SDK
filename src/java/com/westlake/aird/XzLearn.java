@@ -1,8 +1,8 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
-import com.westlake.aird.bean.SwathIndex;
 import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
@@ -69,7 +69,7 @@ public class XzLearn {
         File indexFile = new File(path + fileName);
 
         AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
-        List<SwathIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
+        List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
         try {
             xzUnpack(airdParser, swathIndexList, xzDir, 1);
@@ -79,7 +79,7 @@ public class XzLearn {
 
     }
 
-    private static void xzUnpack(AirdParser airdParser, List<SwathIndex> swathIndexList, String xzDir, int level) throws IOException {
+    private static void xzUnpack(AirdParser airdParser, List<BlockIndex> swathIndexList, String xzDir, int level) throws IOException {
 
 
 //        FileOutputStream mzOutFile = new FileOutputStream(xzDir + "\\\\mz_zlib.xz");
@@ -93,7 +93,7 @@ public class XzLearn {
 
             ArrayList<Float> intArray = new ArrayList<>();
             System.out.println("正在扫描:" + (swath + 1) + "/" + swathIndexList.size());
-            SwathIndex index = swathIndexList.get(swath);
+            BlockIndex index = swathIndexList.get(swath);
 //            System.out.println(index.getStartPtr());
             List<Float> rts = index.getRts();
             for (Float rt :
