@@ -112,7 +112,6 @@ public class CompressUtil {
             byte[] buf = new byte[1024];
             while (!compresser.finished()) {
                 int i = compresser.deflate(buf);
-
                 bos.write(buf, 0, i);
             }
             output = bos.toByteArray();

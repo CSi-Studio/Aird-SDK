@@ -13,6 +13,7 @@ public class AirdInfo {
      * 数组压缩策略
      * [Core Field]
      * Data Compression Strategy
+     *
      * @see Compressor
      */
     List<Compressor> compressors;
@@ -32,6 +33,7 @@ public class AirdInfo {
      * 存储SWATH窗口信息,窗口已经根据overlap进行过调整
      * [Core Field]
      * Store the swath window rangs which have been adjusted with experiment overlap
+     *
      * @see WindowRange
      */
     List<WindowRange> rangeList = new ArrayList<WindowRange>();
@@ -101,4 +103,12 @@ public class AirdInfo {
      * 特征键值对,详情见Features.cs
      */
     String features;
+
+    public List<BlockIndex> getIndexList() {
+        if (blockIndexList != null) {
+            return blockIndexList;
+        } else {
+            return indexList;
+        }
+    }
 }

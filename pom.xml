@@ -66,32 +66,6 @@
             <artifactId>opencv</artifactId>
             <version>4.3.0-0</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>nd4j-native-platform</artifactId>-->
-<!--            <version>1.0.0-beta7</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>nd4j-native</artifactId>-->
-<!--            <version>1.0.0-beta7</version>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-cuda-10.1</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.nd4j</groupId>-->
-<!--            <artifactId>nd4j-api</artifactId>-->
-<!--            <version>1.0.0-beta7</version>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-cuda-10.1</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
     </dependencies>
 
     <repositories>
@@ -124,10 +98,13 @@
 
     <build>
         <finalName>aird-sdk</finalName>
+        <sourceDirectory>src/java</sourceDirectory>
+        <testSourceDirectory>src/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>11</source>
                     <target>11</target>

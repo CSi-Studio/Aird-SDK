@@ -169,16 +169,19 @@ public class AirdParser {
      * 从一个完整的Swath Block块中取出一条记录
      *
      * @param index
-     * @param rt 获取某一个时刻原始谱图
+     * @param rt    获取某一个时刻原始谱图
      * @return
      */
     public MzIntensityPairs getSpectrum(BlockIndex index, float rt) {
+        List<Float> rts = index.getRts();
+        int position = rts.indexOf(rt);
+        return getSpectrum(index, position);
+    }
+
+    public MzIntensityPairs getSpectrum(BlockIndex index, int position) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
-            List<Float> rts = index.getRts();
-            int position = rts.indexOf(rt);
-
             long start = index.getStartPtr();
 
             for (int i = 0; i < position; i++) {
@@ -209,6 +212,23 @@ public class AirdParser {
             FileUtil.close(raf);
         }
 
+        return null;
+    }
+
+    /**
+     * 根据序列号查询光谱
+     * @param index
+     * @return
+     */
+    public MzIntensityPairs getSpectrum(int index) {
+        List<BlockIndex> indexList = getAirdInfo().getIndexList();
+        for (int i = 0; i < indexList.size(); i++) {
+            BlockIndex blockIndex = indexList.get(i);
+            if (blockIndex.getNums().contains(index)) {
+                int targetIndex = blockIndex.getNums().indexOf(index);
+                return getSpectrum(blockIndex, targetIndex);
+            }
+        }
         return null;
     }
 
