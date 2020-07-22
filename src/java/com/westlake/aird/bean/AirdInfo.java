@@ -105,7 +105,7 @@ public class AirdInfo {
     String features;
 
     public List<BlockIndex> getIndexList() {
-        if (blockIndexList != null) {
+        if (blockIndexList != null && blockIndexList.size() != 0) {
             return blockIndexList;
         } else {
             return indexList;
