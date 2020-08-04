@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.westlake.aird</groupId>
-    <artifactId>aird-sdk-java</artifactId>
+    <artifactId>aird-sdk</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Aird-SDK-Java</name>
+    <name>Aird-SDK</name>
     <description>Aird Format SDK</description>
-    <url>www.proteomics.pro</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
