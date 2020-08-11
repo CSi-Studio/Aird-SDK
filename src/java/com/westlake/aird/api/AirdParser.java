@@ -9,7 +9,6 @@ import com.westlake.aird.util.FileUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -75,7 +74,7 @@ public class AirdParser {
                 try {
 
                     float[] intensityArray = null;
-                    if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
+                    if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
                         intensityArray = getLogedIntValues(intensity);
                     } else {
                         intensityArray = getIntValues(intensity);
@@ -199,7 +198,7 @@ public class AirdParser {
             raf.read(reader);
 
             float[] intensityArray = null;
-            if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
+            if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
                 intensityArray = getLogedIntValues(reader);
             } else {
                 intensityArray = getIntValues(reader);
@@ -256,7 +255,7 @@ public class AirdParser {
             raf.read(reader);
 
             float[] intensityArray = null;
-            if (intCompressor.getMethod().contains(Compressor.METHOD_LOG10)) {
+            if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
                 intensityArray = getLogedIntValues(reader);
             } else {
                 intensityArray = getIntValues(reader);

@@ -54,7 +54,12 @@ public class AirdInfo {
      * 仪器设备信息
      * General information about the MS instrument
      */
-    Instrument instrument;
+    List<Instrument> instruments;
+
+    /**
+     * dataProcessing information list
+     */
+    public List<DataProcessing> dataProcessings;
 
     /**
      * 处理的软件信息
@@ -80,6 +85,11 @@ public class AirdInfo {
     Long fileSize;
 
     /**
+     * 总计拥有的光谱数
+     */
+    Long totalScanCount;
+
+    /**
      * 转换压缩后的aird二进制文件路径,默认读取同目录下的同名文件,如果不存在才去去读本字段对应的路径
      */
     String airdPath;
@@ -98,6 +108,11 @@ public class AirdInfo {
      * 实验的创建日期
      */
     String createDate;
+
+    /**
+     * 是否忽略intensity为0的点
+     */
+    Boolean ignoreZeroIntensityPoint = true;
 
     /**
      * 特征键值对,详情见Features.cs

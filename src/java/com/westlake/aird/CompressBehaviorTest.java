@@ -19,9 +19,7 @@ public class CompressBehaviorTest {
     public static void main(String[] args) {
         
         String[] fileNames = {
-                "D:\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json",
-                "D:\\Propro\\projet\\data\\C20181205yix_HCC_DIA_N_38A.json",
-                "D:\\Propro\\projet\\data\\HYE124_TTOF5600_64var_lgillet_L150206_007.json"
+                "\\\\ProproNas\\ProproNAS\\data\\Aird\\HCC_SCIEX_ALL\\D20181207yix_HCC_SW_T_46A.json"
         };
         for (String fileName:
             fileNames) {

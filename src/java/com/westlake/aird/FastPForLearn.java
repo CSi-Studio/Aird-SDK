@@ -1,7 +1,10 @@
 package com.westlake.aird;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.westlake.aird.util.CompressUtil;
 
+import java.io.File;
 import java.util.Random;
 
 public class FastPForLearn {

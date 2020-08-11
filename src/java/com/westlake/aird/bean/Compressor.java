@@ -6,6 +6,7 @@ import lombok.Data;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 @Data
 public class Compressor {
@@ -33,25 +34,23 @@ public class Compressor {
      * 压缩对象,支持mz和intensity两种
      * Compression Target. Support for mz array and intensity array
      */
-    private String target;
+    String target;
 
     /**
      * 压缩方法,使用分号隔开
      * Compression Method, using comma to split the compression method with order.
      */
-    private String method;
+    List<String> methods;
 
     /**
      * 数组的数值精度,10代表精确到小数点后1位,100代表精确到小数点后三位,以此类推
      */
-    private Integer precision;
+    Integer precision;
 
     /**
      * ByteOrder,Aird格式的默认ByteOrder为LITTLE_ENDIAN,此项为扩展项,目前仅支持默认值LITTLE_ENDIAN
      */
-    private String byteOrder;
-
-    private HashSet<String> methodSet;
+    String byteOrder;
 
     public Integer getPrecision() {
         if (precision != null) {
@@ -70,14 +69,6 @@ public class Compressor {
 
     public ByteOrder getByteOrder() {
         return ByteOrder.LITTLE_ENDIAN;
-    }
-
-    public HashSet<String> getMethod() {
-        if (methodSet == null) {
-            String[] methods = method.split(SymbolConst.COMMA);
-            this.methodSet = new HashSet<String>(Arrays.asList(methods));
-        }
-        return methodSet;
     }
 
 }

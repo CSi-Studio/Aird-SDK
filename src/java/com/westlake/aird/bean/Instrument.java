@@ -10,6 +10,10 @@ public class Instrument {
      */
     public String manufacturer;
 
+    public String ionisation;
+
+    public String resolution;
+
     /**
      * 设备类型
      * Instrument Model
