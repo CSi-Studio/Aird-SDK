@@ -8,20 +8,22 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.westlake.aird.bean;
+package com.westlake.aird.enums;
 
-public class ParentFile {
+public enum AirdType {
 
-    /**
-     * 文件名称
-     */
+    COMMON("COMMON", 0), // RT Indexing
+    DIA_SWATH("DIA_SWATH", 1), // Precursor-mz -> MS2 Group
+    DDA("DDA",2), //MS1 -> MS2 Group
+    PRM("PRM",3), //Precursor-mz -> MS2 Group
+    SCANNING_SWATH("SCANNING_SWATH", 4)
+    ; //
+
+    public Integer code;
     public String name;
-    /**
-     * 文件位置
-     */
-    public String location;
-    /**
-     * 文件类型
-     */
-    public String type;
+
+    AirdType(String name, Integer code) {
+        this.name = name;
+        this.code = code;
+    }
 }

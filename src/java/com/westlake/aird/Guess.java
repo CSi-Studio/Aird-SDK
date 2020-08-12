@@ -1,11 +1,25 @@
+/*
+ * Copyright (c) 2020 Propro Studio
+ * Aird and AirdPro are licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.bean.AirdInfo;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.util.CompressUtil;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Marshaller;
 import java.io.File;
+import java.io.PrintStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -13,6 +27,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class Guess {
 
     public static void main(String[] args) {
+
         File indexFile = new File("C:\\Users\\zhang\\Documents\\Propro\\projet\\data\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
 //        File indexFile = new File("E:\\data\\HYE110_6600_32_Fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
 //        File indexFile = new File("E:\\data\\HCC_QE3\\C20181205yix_HCC_DIA_N_38A.json");
@@ -58,7 +73,7 @@ public class Guess {
     }
 
 
-    public static void testMergePerformance(AirdParser airdParser){
+    public static void testMergePerformance(AirdParser airdParser) {
         List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
         MzIntensityPairs pairs1 = airdParser.getSpectrum(swathIndexList.get(0), swathIndexList.get(0).getRts().get(1));
         int[] origin = new int[pairs1.getMzArray().length];

@@ -15,10 +15,16 @@ public class BlockIndex {
 
     private static final long serialVersionUID = -3258834219160663625L;
 
-    //1:MS1;2:MS2
+    /**
+     * MS1->1, MS2->2
+     * @see com.westlake.aird.enums.MsLevel
+     */
     Integer level;
 
-    //在文件中的开始位置
+    /**
+     * 该数据块在文件中的开始位置
+     * The start pointer
+     */
     Long startPtr;
 
     //在文件中的结束位置

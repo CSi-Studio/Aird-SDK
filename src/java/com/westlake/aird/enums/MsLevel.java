@@ -8,20 +8,17 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.westlake.aird.bean;
+package com.westlake.aird.enums;
 
-public class ParentFile {
+public enum MsLevel {
+    MS1("MS1",1),
+    MS2("MS2",2);
 
-    /**
-     * 文件名称
-     */
-    public String name;
-    /**
-     * 文件位置
-     */
-    public String location;
-    /**
-     * 文件类型
-     */
-    public String type;
+    String name;
+    Integer code;
+
+    MsLevel(String name, Integer code){
+        this.name = name;
+        this.code = code;
+    }
 }
