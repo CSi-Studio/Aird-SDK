@@ -297,7 +297,7 @@ public class AirdParser {
         for (int i = 0; i < ints.capacity(); i++) {
             intValues[i] = ints.get(i);
         }
-        intValues = CompressUtil.fastPForDecoder(intValues);
+        intValues = CompressUtil.fastPforDecoder(intValues);
         float[] floatValues = new float[intValues.length];
         for (int index = 0; index < intValues.length; index++) {
             floatValues[index] = (float) intValues[index] / mzPrecision;
@@ -322,7 +322,7 @@ public class AirdParser {
         for (int i = 0; i < ints.capacity(); i++) {
             intValues[i] = ints.get(i);
         }
-        intValues = CompressUtil.fastPForDecoder(intValues);
+        intValues = CompressUtil.fastPforDecoder(intValues);
         byteBuffer.clear();
         return intValues;
     }

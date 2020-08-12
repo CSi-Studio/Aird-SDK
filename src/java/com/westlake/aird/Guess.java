@@ -11,15 +11,11 @@
 package com.westlake.aird;
 
 import com.westlake.aird.api.AirdParser;
-import com.westlake.aird.bean.AirdInfo;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.util.CompressUtil;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
 import java.io.File;
-import java.io.PrintStream;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -80,7 +76,7 @@ public class Guess {
         for (int i = 0; i < pairs1.getMzArray().length; i++) {
             origin[i] = (int) (pairs1.getMzArray()[i] * 1000);
         }
-        int[] temp = CompressUtil.fastPForEncoder(origin);
+        int[] temp = CompressUtil.fastPforEncoder(origin);
         System.out.println("Pairs1--Before FastPFor:" + origin.length + ";After FastPFor: " + temp.length);
 
         MzIntensityPairs pairs2 = airdParser.getSpectrum(swathIndexList.get(0), swathIndexList.get(0).getRts().get(2));
@@ -88,7 +84,7 @@ public class Guess {
         for (int i = 0; i < pairs2.getMzArray().length; i++) {
             origin2[i] = (int) (pairs2.getMzArray()[i] * 1000);
         }
-        int[] temp2 = CompressUtil.fastPForEncoder(origin2);
+        int[] temp2 = CompressUtil.fastPforEncoder(origin2);
         System.out.println("Pairs2--Before FastPFor:" + origin2.length + ";After FastPFor: " + temp2.length);
 
         List<Integer> finalList = new ArrayList<>();
@@ -108,7 +104,7 @@ public class Guess {
         for (int i = 0; i < finalList.size(); i++) {
             origin3[i] = finalList.get(i);
         }
-        int[] temp3 = CompressUtil.fastPForEncoder(origin3);
+        int[] temp3 = CompressUtil.fastPforEncoder(origin3);
         System.out.println("Pairs3--Before FastPFor:" + origin3.length + ";After FastPFor: " + temp3.length);
     }
 }

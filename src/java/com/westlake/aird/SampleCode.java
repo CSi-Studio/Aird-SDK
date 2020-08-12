@@ -29,7 +29,7 @@ public class SampleCode {
 
 
     public static void main(String[] args) {
-        List<File> files = AirdScanUtil.scanIndexFiles("\\ProproNas\\ProproNAS\\data\\Aird\\HCC_SCIEX_ALL\\D20181207yix_HCC_SW_T_46A.json");
+        List<File> files = AirdScanUtil.scanIndexFiles("\\ProproNas\\ProproNAS\\data\\Aird\\HCC_SCIEX_ALL");
         if (files == null || files.size() == 0) {
             return;
         }

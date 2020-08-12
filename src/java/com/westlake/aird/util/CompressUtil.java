@@ -21,6 +21,7 @@ import org.apache.commons.codec.binary.Base64;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -29,6 +30,37 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 public class CompressUtil {
+
+    //byte[]压缩为byte[]
+    public static byte[] zlibEncoder(byte[] data) {
+        byte[] output;
+
+        Deflater compresser = new Deflater();
+
+        compresser.reset();
+        compresser.setInput(data);
+        compresser.finish();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+        try {
+            byte[] buf = new byte[1024];
+            while (!compresser.finished()) {
+                int i = compresser.deflate(buf);
+                bos.write(buf, 0, i);
+            }
+            output = bos.toByteArray();
+        } catch (Exception e) {
+            output = data;
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        compresser.end();
+        return output;
+    }
 
     public static byte[] zlibDecoder(byte[] data) {
         byte[] output = null;
@@ -60,7 +92,7 @@ public class CompressUtil {
         return output;
     }
 
-    public static int[] fastPForDecoder(int[] compressedInts) {
+    public static int[] fastPforDecoder(int[] compressedInts) {
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte());
         int size = compressedInts[0];
         // output vector should be large enough...
@@ -73,7 +105,7 @@ public class CompressUtil {
         return recovered;
     }
 
-    public static int[] fastPForEncoder(int[] sortedInt) {
+    public static int[] fastPforEncoder(int[] sortedInt) {
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte());
         int[] compressed = new int[sortedInt.length + 1024];
         IntWrapper inputoffset = new IntWrapper(0);
@@ -109,73 +141,12 @@ public class CompressUtil {
         return null;
     }
 
-    //byte[]压缩为byte[]
-    public static byte[] zlibCompress(byte[] data) {
-        byte[] output;
-
-        Deflater compresser = new Deflater();
-
-        compresser.reset();
-        compresser.setInput(data);
-        compresser.finish();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
-        try {
-            byte[] buf = new byte[1024];
-            while (!compresser.finished()) {
-                int i = compresser.deflate(buf);
-                bos.write(buf, 0, i);
-            }
-            output = bos.toByteArray();
-        } catch (Exception e) {
-            output = data;
-            e.printStackTrace();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        compresser.end();
-        return output;
-    }
-
-    public static byte[] zlibDecompress(byte[] data) {
-        byte[] output = null;
-
-        Inflater decompresser = new Inflater();
-        decompresser.reset();
-        decompresser.setInput(data);
-
-        ByteArrayOutputStream o = new ByteArrayOutputStream(data.length);
-        try {
-            byte[] buf = new byte[2048];
-            while (!decompresser.finished()) {
-                int i = decompresser.inflate(buf);
-                o.write(buf, 0, i);
-            }
-            output = o.toByteArray();
-        } catch (Exception e) {
-            output = data;
-            e.printStackTrace();
-        } finally {
-            try {
-                o.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        decompresser.end();
-        return output;
-    }
-
     public static String transToString(float[] target) {
         FloatBuffer fbTarget = FloatBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
         bbTarget.asFloatBuffer().put(fbTarget);
         byte[] targetArray = bbTarget.array();
-        byte[] compressedArray = CompressUtil.zlibCompress(targetArray);
+        byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
         String targetStr = new String(new Base64().encode(compressedArray));
         return targetStr;
     }
@@ -185,7 +156,7 @@ public class CompressUtil {
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
         bbTarget.asIntBuffer().put(ibTarget);
         byte[] targetArray = bbTarget.array();
-        byte[] compressedArray = CompressUtil.zlibCompress(targetArray);
+        byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
         String targetStr = new String(new Base64().encode(compressedArray));
         return targetStr;
     }
@@ -195,7 +166,7 @@ public class CompressUtil {
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
         bbTarget.asIntBuffer().put(ibTarget);
         byte[] targetArray = bbTarget.array();
-        byte[] compressedArray = CompressUtil.zlibCompress(targetArray);
+        byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
         return compressedArray;
     }
 
@@ -204,13 +175,13 @@ public class CompressUtil {
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
         bbTarget.asFloatBuffer().put(fbTarget);
         byte[] targetArray = bbTarget.array();
-        byte[] compressedArray = CompressUtil.zlibCompress(targetArray);
+        byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
         return compressedArray;
     }
 
     public static float[] transToFloat(byte[] value){
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
-        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecompress(byteBuffer.array()));
+        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
 
         FloatBuffer floats = byteBuffer.asFloatBuffer();
         float[] floatValues = new float[floats.capacity()];

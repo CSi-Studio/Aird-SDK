@@ -29,8 +29,8 @@ public class FastPForLearn {
             finalTest[i + 900] = test2[i];
         }
 
-        int[] newTest = CompressUtil.fastPForEncoder(test);
-        int[] oldTest = CompressUtil.fastPForDecoder(newTest);
+        int[] newTest = CompressUtil.fastPforEncoder(test);
+        int[] oldTest = CompressUtil.fastPforDecoder(newTest);
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 
