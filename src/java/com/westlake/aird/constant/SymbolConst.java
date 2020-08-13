@@ -15,4 +15,5 @@ public class SymbolConst {
     public static final String COMMA = ",";
     public static final String TAB = "\t";
     public static final String DOT = ".";
+    public static final String CHANGE_LINE = "\r\n";
 }

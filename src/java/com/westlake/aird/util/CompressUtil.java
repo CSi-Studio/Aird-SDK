@@ -26,6 +26,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.List;
+import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
@@ -63,33 +64,19 @@ public class CompressUtil {
     }
 
     public static byte[] zlibDecoder(byte[] data) {
-        byte[] output = null;
-
         Inflater decompresser = new Inflater();
-        decompresser.reset();
-        decompresser.setInput(data);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
+        decompresser.setInput(byteBuffer.array());
+        byte[] decompressedData = new byte[byteBuffer.capacity() * 10];
+        int peakIndex;
 
-        ByteArrayOutputStream o = new ByteArrayOutputStream(data.length);
         try {
-            byte[] buf = new byte[2048];
-            while (!decompresser.finished()) {
-                int i = decompresser.inflate(buf);
-                o.write(buf, 0, i);
-            }
-            output = o.toByteArray();
-        } catch (Exception e) {
-            output = data;
+            peakIndex = decompresser.inflate(decompressedData);
+            byteBuffer = ByteBuffer.wrap(decompressedData, 0, peakIndex);
+        } catch (DataFormatException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                o.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
-
-        decompresser.end();
-        return output;
+        return byteBuffer.array();
     }
 
     public static int[] fastPforDecoder(int[] compressedInts) {
@@ -193,5 +180,17 @@ public class CompressUtil {
         return floatValues;
     }
 
+    public static int[] transToInteger(byte[] value){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(value);
+        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
 
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
+
+        byteBuffer.clear();
+        return intValues;
+    }
 }
