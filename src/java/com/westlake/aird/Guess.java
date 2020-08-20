@@ -10,7 +10,7 @@
 
 package com.westlake.aird;
 
-import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.api.DIAParser;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.util.CompressUtil;
@@ -39,7 +39,7 @@ public class Guess {
 
         AtomicInteger iter = new AtomicInteger(0);
         System.out.println(indexFile.getAbsolutePath());
-        AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
+        DIAParser airdParser = new DIAParser(indexFile.getAbsolutePath());
         List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
         testMergePerformance(airdParser);
 
@@ -69,7 +69,7 @@ public class Guess {
     }
 
 
-    public static void testMergePerformance(AirdParser airdParser) {
+    public static void testMergePerformance(DIAParser airdParser) {
         List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
         MzIntensityPairs pairs1 = airdParser.getSpectrum(swathIndexList.get(0), swathIndexList.get(0).getRts().get(1));
         int[] origin = new int[pairs1.getMzArray().length];

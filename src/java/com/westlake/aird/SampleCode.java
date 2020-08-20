@@ -10,7 +10,7 @@
 
 package com.westlake.aird;
 
-import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.api.DIAParser;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.util.AirdScanUtil;
@@ -36,7 +36,7 @@ public class SampleCode {
 
         for (File indexFile : files) {
             System.out.println(indexFile.getAbsolutePath());
-            AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
+            DIAParser airdParser = new DIAParser(indexFile.getAbsolutePath());
             List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
             for (BlockIndex index : swathIndexList) {

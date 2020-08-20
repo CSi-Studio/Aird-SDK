@@ -10,7 +10,7 @@
 
 package com.westlake.aird.visualize;
 
-import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.api.DIAParser;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 
@@ -27,7 +27,7 @@ public class VisualizeTest {
      * @param swathIndexList swathIndexList
      * @param imgDir 图片存放路径
      */
-    public static void testForAllSwath( AirdParser airdParser,List<BlockIndex> swathIndexList, String imgDir){
+    public static void testForAllSwath(DIAParser airdParser,List<BlockIndex> swathIndexList, String imgDir){
         swathIndexList.forEach(index -> {
             String imgSwathDir = imgDir+"\\"+index.getStartPtr()+"_MS"+index.getLevel();
             System.out.println(index.getStartPtr());
@@ -55,7 +55,7 @@ public class VisualizeTest {
      * @param swathIndexList swathIndexList
      * @param swath 要测试的swath的位置
      */
-    public static void testForOneSwath(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath){
+    public static void testForOneSwath(DIAParser airdParser,List<BlockIndex> swathIndexList, int swath){
         BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathTest\\images";
         File outSwathDir = new File(imgSwathDir);
@@ -95,7 +95,7 @@ public class VisualizeTest {
      * @param swath 要测试的swath的位置
      * @param rt 要测试的帧的位置
      */
-    public static void testForOneScan(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath, int rt){
+    public static void testForOneScan(DIAParser airdParser,List<BlockIndex> swathIndexList, int swath, int rt){
         BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneScanTest";
         File outSwathDir = new File(imgSwathDir);
@@ -142,7 +142,7 @@ public class VisualizeTest {
         String path = "D:\\Propro\\projet\\data\\";
         File indexFile = new File(path + fileName);
 
-        AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
+        DIAParser airdParser = new DIAParser(indexFile.getAbsolutePath());
         List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 //        VisualizeTest.testForAllSwath(airdParser, swathIndexList, imgDir);
         VisualizeTest.testForOneSwath(airdParser, swathIndexList, 10);
@@ -150,7 +150,7 @@ public class VisualizeTest {
 //        videoTest(airdParser, swathIndexList, 11);
     }
 
-    public static void videoTest(AirdParser airdParser,List<BlockIndex> swathIndexList, int swath){
+    public static void videoTest(DIAParser airdParser,List<BlockIndex> swathIndexList, int swath){
         BlockIndex index = swathIndexList.get(swath);
         String imgSwathDir = "D:\\Propro\\projet\\images\\OneSwathVideoTest";
         File outSwathDir = new File(imgSwathDir);

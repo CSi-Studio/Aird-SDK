@@ -10,7 +10,7 @@
 
 package com.westlake.aird.visualize;
 
-import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.api.DIAParser;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import org.opencv.core.Core;
@@ -62,7 +62,7 @@ public class VideoParser {
         return mats;
     }
 
-    public void writeToVideo(String fileName, AirdParser airdParser, BlockIndex index) {
+    public void writeToVideo(String fileName, DIAParser airdParser, BlockIndex index) {
         VideoWriter[] videoWriters = new VideoWriter[4];
         for (int i = 0; i < 4; i++) {
             videoWriters[i] = new VideoWriter();
@@ -113,7 +113,7 @@ public class VideoParser {
         videoCapture.release();
     }
 
-    public void slipWindowVideo(String fileName, AirdParser airdParser, BlockIndex index){
+    public void slipWindowVideo(String fileName, DIAParser airdParser, BlockIndex index){
         VideoWriter videoWriter = new VideoWriter();
         videoWriter.open(fileName,
                 VideoWriter.fourcc('H', 'F', 'Y', 'U'),

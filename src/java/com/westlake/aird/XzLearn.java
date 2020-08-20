@@ -10,7 +10,7 @@
 
 package com.westlake.aird;
 
-import com.westlake.aird.api.AirdParser;
+import com.westlake.aird.api.DIAParser;
 import com.westlake.aird.bean.BlockIndex;
 import com.westlake.aird.bean.MzIntensityPairs;
 import org.tukaani.xz.LZMA2Options;
@@ -78,7 +78,7 @@ public class XzLearn {
         String path = "D:\\Propro\\projet\\data\\";
         File indexFile = new File(path + fileName);
 
-        AirdParser airdParser = new AirdParser(indexFile.getAbsolutePath());
+        DIAParser airdParser = new DIAParser(indexFile.getAbsolutePath());
         List<BlockIndex> swathIndexList = airdParser.getAirdInfo().getIndexList();
 
         try {
@@ -89,7 +89,7 @@ public class XzLearn {
 
     }
 
-    private static void xzUnpack(AirdParser airdParser, List<BlockIndex> swathIndexList, String xzDir, int level) throws IOException {
+    private static void xzUnpack(DIAParser airdParser, List<BlockIndex> swathIndexList, String xzDir, int level) throws IOException {
 
 
 //        FileOutputStream mzOutFile = new FileOutputStream(xzDir + "\\\\mz_zlib.xz");
