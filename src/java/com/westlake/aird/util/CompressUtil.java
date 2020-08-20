@@ -17,6 +17,7 @@ import me.lemire.integercompression.differential.IntegratedBinaryPacking;
 import me.lemire.integercompression.differential.IntegratedVariableByte;
 import me.lemire.integercompression.differential.SkippableIntegratedComposition;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -65,18 +66,17 @@ public class CompressUtil {
 
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
-        ByteBuffer byteBuffer = ByteBuffer.wrap(data);
-        decompresser.setInput(byteBuffer.array());
-        byte[] decompressedData = new byte[byteBuffer.capacity() * 10];
-        int peakIndex;
+        decompresser.setInput(data);
+        byte[] decompressedData = new byte[data.length * 10];
+        int i;
 
         try {
-            peakIndex = decompresser.inflate(decompressedData);
-            byteBuffer = ByteBuffer.wrap(decompressedData, 0, peakIndex);
+            i = decompresser.inflate(decompressedData);
+            decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
         } catch (DataFormatException e) {
             e.printStackTrace();
         }
-        return byteBuffer.array();
+        return decompressedData;
     }
 
     public static int[] fastPforDecoder(int[] compressedInts) {
