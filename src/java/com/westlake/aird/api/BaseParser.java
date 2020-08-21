@@ -109,6 +109,31 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+     *
+     * @param value
+     * @return
+     */
+    public float[] getMzValues(byte[] value, int start, int length) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
+        byteBuffer.order(mzCompressor.getByteOrder());
+
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
+        intValues = CompressUtil.fastPforDecoder(intValues);
+        float[] floatValues = new float[intValues.length];
+        for (int index = 0; index < intValues.length; index++) {
+            floatValues[index] = (float) intValues[index] / mzPrecision;
+        }
+        byteBuffer.clear();
+        return floatValues;
+    }
+
+    /**
+     * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
      *
      * @param value
@@ -149,6 +174,21 @@ public class BaseParser {
         return intensityValues;
     }
 
+    public float[] getIntValues(byte[] value, int start, int length) {
+
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
+        byteBuffer.order(intCompressor.getByteOrder());
+
+        FloatBuffer intensities = byteBuffer.asFloatBuffer();
+        float[] intensityValues = new float[intensities.capacity()];
+        for (int i = 0; i < intensities.capacity(); i++) {
+            intensityValues[i] = intensities.get(i);
+        }
+
+        byteBuffer.clear();
+        return intensityValues;
+    }
+
     /**
      * get mz values only for aird file
      *
@@ -158,6 +198,27 @@ public class BaseParser {
     public float[] getLogedIntValues(byte[] value) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(intCompressor.getByteOrder());
+
+        FloatBuffer intensities = byteBuffer.asFloatBuffer();
+        float[] intValues = new float[intensities.capacity()];
+        for (int i = 0; i < intensities.capacity(); i++) {
+            intValues[i] = (float) Math.pow(10, intensities.get(i));
+        }
+
+        byteBuffer.clear();
+        return intValues;
+    }
+
+    /**
+     * get mz values only for aird file
+     *
+     * @param value
+     * @return
+     */
+    public float[] getLogedIntValues(byte[] value, int start, int length) {
+
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
         byteBuffer.order(intCompressor.getByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();

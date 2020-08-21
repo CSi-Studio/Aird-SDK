@@ -10,15 +10,18 @@
 
 package com.westlake.aird.bean;
 
+import lombok.Data;
+
+@Data
 public class Software {
 
     /**
      * 软件名称
      */
-    public String name;
+    String name;
 
     /**
      * 软件版本号
      */
-    public String version;
+    String version;
 }

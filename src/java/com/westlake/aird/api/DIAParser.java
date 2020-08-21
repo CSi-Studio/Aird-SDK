@@ -15,11 +15,9 @@ import com.westlake.aird.bean.Compressor;
 import com.westlake.aird.bean.MzIntensityPairs;
 import com.westlake.aird.exception.ScanException;
 import com.westlake.aird.util.FileUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.RandomAccessFile;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class DIAParser extends BaseParser {
     public DIAParser(String indexFilePath) throws ScanException {
@@ -34,11 +32,12 @@ public class DIAParser extends BaseParser {
      * @return
      * @throws Exception
      */
-    public TreeMap<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
+    public Map<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
-            TreeMap<Float, MzIntensityPairs> map = new TreeMap<Float, MzIntensityPairs>();
+
+            Map<Float, MzIntensityPairs> map = Collections.synchronizedMap(new TreeMap<>());
             List<Float> rts = index.getRts();
 
             raf.seek(index.getStartPtr());
@@ -50,27 +49,32 @@ public class DIAParser extends BaseParser {
             List<Long> intensitySizes = index.getInts();
 
             int start = 0;
-            for (int i = 0; i < mzSizes.size(); i++) {
-                byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
-                start = start + mzSizes.get(i).intValue();
-                byte[] intensity = ArrayUtils.subarray(result, start, start + intensitySizes.get(i).intValue());
-                start = start + intensitySizes.get(i).intValue();
-                try {
 
+            List<int[]> allPtrList = new ArrayList<>();
+            for (int i = 0; i < mzSizes.size(); i++) {
+                int[] ptrs = new int[3];
+                ptrs[0] = start;
+                ptrs[1] = ptrs[0] + mzSizes.get(i).intValue();
+                ptrs[2] = ptrs[1] + intensitySizes.get(i).intValue();
+                allPtrList.add(ptrs);
+                start = ptrs[2];
+            }
+
+            rts.parallelStream().forEach(rt -> {
+                int[] ptrs = allPtrList.get(rts.indexOf(rt));
+                try {
                     float[] intensityArray = null;
                     if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
-                        intensityArray = getLogedIntValues(intensity);
+                        intensityArray = getLogedIntValues(result, ptrs[1], ptrs[2] - ptrs[1]);
                     } else {
-                        intensityArray = getIntValues(intensity);
+                        intensityArray = getIntValues(result, ptrs[1], ptrs[2] - ptrs[1]);
                     }
-
-                    MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(mz), intensityArray);
-                    map.put(rts.get(i), pairs);
+                    MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(result, ptrs[0], ptrs[1] - ptrs[0]), intensityArray);
+                    map.put(rt, pairs);
                 } catch (Exception e) {
-                    System.out.println("index size error:" + i);
+                    System.out.println("index size error, RT:" + rt);
                 }
-
-            }
+            });
             return map;
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,9 +82,6 @@ public class DIAParser extends BaseParser {
         }
         return null;
     }
-
-
-
 
 
     /**
@@ -136,6 +137,7 @@ public class DIAParser extends BaseParser {
 
     /**
      * 根据序列号查询光谱
+     *
      * @param index
      * @return
      */
@@ -153,6 +155,7 @@ public class DIAParser extends BaseParser {
 
     /**
      * 从Aird文件中读取,但是不要将m/z数组的从Integer改为Float
+     *
      * @param index
      * @param rt
      * @return

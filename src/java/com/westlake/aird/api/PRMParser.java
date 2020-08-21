@@ -8,23 +8,12 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.westlake.aird.bean;
+package com.westlake.aird.api;
 
-import lombok.Data;
+import com.westlake.aird.exception.ScanException;
 
-@Data
-public class ParentFile {
-
-    /**
-     * 文件名称
-     */
-    String name;
-    /**
-     * 文件位置
-     */
-    String location;
-    /**
-     * 文件类型
-     */
-    String type;
+public class PRMParser extends DIAParser {
+    public PRMParser(String indexFilePath) throws ScanException {
+        super(indexFilePath);
+    }
 }

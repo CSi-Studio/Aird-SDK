@@ -79,6 +79,21 @@ public class CompressUtil {
         return decompressedData;
     }
 
+    public static byte[] zlibDecoder(byte[] data, int start, int length) {
+        Inflater decompresser = new Inflater();
+        decompresser.setInput(data, start, length);
+        byte[] decompressedData = new byte[length * 10];
+        int i;
+
+        try {
+            i = decompresser.inflate(decompressedData);
+            decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
+        } catch (DataFormatException e) {
+            e.printStackTrace();
+        }
+        return decompressedData;
+    }
+
     public static int[] fastPforDecoder(int[] compressedInts) {
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte());
         int size = compressedInts[0];
@@ -104,24 +119,24 @@ public class CompressUtil {
         return compressed;
     }
 
-    public static Compressor getMzCompressor(List<Compressor> compressors){
-        if(compressors == null){
+    public static Compressor getMzCompressor(List<Compressor> compressors) {
+        if (compressors == null) {
             return null;
         }
-        for(Compressor compressor : compressors){
-            if (compressor.getTarget().equals(Compressor.TARGET_MZ)){
+        for (Compressor compressor : compressors) {
+            if (compressor.getTarget().equals(Compressor.TARGET_MZ)) {
                 return compressor;
             }
         }
         return null;
     }
 
-    public static Compressor getIntCompressor(List<Compressor> compressors){
-        if(compressors == null){
+    public static Compressor getIntCompressor(List<Compressor> compressors) {
+        if (compressors == null) {
             return null;
         }
-        for(Compressor compressor : compressors){
-            if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)){
+        for (Compressor compressor : compressors) {
+            if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)) {
                 return compressor;
             }
         }
@@ -166,7 +181,7 @@ public class CompressUtil {
         return compressedArray;
     }
 
-    public static float[] transToFloat(byte[] value){
+    public static float[] transToFloat(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
 
@@ -180,7 +195,7 @@ public class CompressUtil {
         return floatValues;
     }
 
-    public static int[] transToInteger(byte[] value){
+    public static int[] transToInteger(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
 
