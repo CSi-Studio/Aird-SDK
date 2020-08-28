@@ -13,6 +13,8 @@ package com.westlake.aird.bean;
 import lombok.Data;
 
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -49,6 +51,9 @@ public class Compressor {
      */
     List<String> methods;
 
+    @Deprecated
+    String method;
+
     /**
      * 数组的数值精度,10代表精确到小数点后1位,100代表精确到小数点后三位,以此类推
      */
@@ -78,4 +83,17 @@ public class Compressor {
         return ByteOrder.LITTLE_ENDIAN;
     }
 
+    /**
+     * 兼容性代码
+     * @return
+     */
+    public List<String> getMethods() {
+        if (methods != null) {
+            return methods;
+        } else if (method != null) {
+            String[] methodArray = method.split(",");
+            return Arrays.asList(methodArray);
+        }
+        return new ArrayList<>();
+    }
 }
