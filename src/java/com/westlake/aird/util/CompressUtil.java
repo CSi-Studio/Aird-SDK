@@ -22,7 +22,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -67,7 +66,7 @@ public class CompressUtil {
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
-        byte[] decompressedData = new byte[data.length * 10];
+        byte[] decompressedData = new byte[data.length * 100];
         int i;
 
         try {

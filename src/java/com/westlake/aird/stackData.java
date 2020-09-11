@@ -5,21 +5,27 @@ import lombok.Data;
 
 import java.util.*;
 
+//不对数组的index进行移位缩短操作，直接使用zlib压缩
 public class stackData {
     public static void main(String[] args) {
-        //生成有序数组
-        List<int[]> arrGroup = new LinkedList<>();
-        for(int i=0;i<2;i++){
-            int[] arr =new int[300+(int)(Math.random()*100)];
-            for (int j = 0; j < arr.length; j++) {
-                arr[j] = (j == 0 ? 0 : arr[j - 1]) + (int)(Math.random()*10);
+        for(int k=1;k<12;k++) {
+            int arrNum = (int) Math.pow(2, k);
+            //生成有序数组
+            List<int[]> arrGroup = new LinkedList<>();
+            for (int i = 0; i < arrNum; i++) {
+                int[] arr = new int[300 + (int) (Math.random() * 100)];
+                for (int j = 0; j < arr.length; j++) {
+                    arr[j] = (j == 0 ? 0 : arr[j - 1]) + (int) (Math.random() * 10);
+                }
+                arrGroup.add(arr);
             }
-            arrGroup.add(arr);
-        }
-        Stack stack=stackEncode(arrGroup);
-        List<int[]> stackDecode =stackDecode(stack);
-        for(int i=0;i<arrGroup.size();i++){
-            System.out.println("对照数组"+i+"是否相同"+ Arrays.equals(arrGroup.get(i),stackDecode.get(i)));
+            Stack stack = stackEncode(arrGroup);
+            List<int[]> stackDecode = stackDecode(stack);
+            Boolean a = Boolean.TRUE;
+            for (int i = 0; i < arrGroup.size(); i++) {
+                a = a & Arrays.equals(arrGroup.get(i), stackDecode.get(i));
+            }
+            System.out.println("对照压缩前后数组是否相同" + a);
         }
     }
 
@@ -48,14 +54,14 @@ public class stackData {
         }
         byte[] comArr= CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
 
-        byte[] byteIndex=new byte[stackLen*4];
-        for(int i=0;i<stackLen;i++){
-            for (int j = 0; j < 4; j++) {
-                byteIndex[4*i+j] = (byte) ((stackIndex[i] >> (8*j)) & 0xff);
-            }
-        }
-        byte[] comIndex= CompressUtil.zlibEncoder(byteIndex);
-//        byte[] comIndex=CompressUtil.transToByte(stackIndex);
+//        byte[] byteIndex=new byte[stackLen*4];
+//        for(int i=0;i<stackLen;i++){
+//            for (int j = 0; j < 4; j++) {
+//                byteIndex[4*i+j] = (byte) ((stackIndex[i] >> (8*j)) & 0xff);
+//            }
+//        }
+//        byte[] comIndex= CompressUtil.zlibEncoder(byteIndex);
+        byte[] comIndex=CompressUtil.transToByte(stackIndex);
         Stack stack = new Stack();
         stack.comArr=comArr;
         stack.comIndex=comIndex;
@@ -65,14 +71,14 @@ public class stackData {
     public static List<int[]> stackDecode(Stack stack){
         int[] stackArr=CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
 
-        byte[] byteIndex=CompressUtil.zlibDecoder(stack.getComIndex());
-        int[] stackIndex=new int[stackArr.length];
-        for(int i=0;i<stackArr.length;i++){
-            for(int j=0;j<4;j++){
-                stackIndex[i] += (byteIndex[4*i+j]& 0xff)<<(8*j);
-            }
-        }
-//        int[] stackIndex=CompressUtil.transToInteger(stack.getComIndex());
+//        byte[] byteIndex=CompressUtil.zlibDecoder(stack.getComIndex());
+//        int[] stackIndex=new int[stackArr.length];
+//        for(int i=0;i<stackArr.length;i++){
+//            for(int j=0;j<4;j++){
+//                stackIndex[i] += (byteIndex[4*i+j]& 0xff)<<(8*j);
+//            }
+//        }
+        int[] stackIndex=CompressUtil.transToInteger(stack.getComIndex());
         //合并
         int[][] stackSort=new int[stackArr.length][2];
         for(int i=0;i<stackArr.length;i++){

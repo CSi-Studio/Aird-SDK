@@ -5,24 +5,28 @@ import lombok.Data;
 
 import java.util.*;
 
+//对数组的index进行移位缩短操作后，使用zlib压缩
 public class stackData2 {
     public static void main(String[] args) {
-        //生成有序数组
-        List<int[]> arrGroup = new LinkedList<>();
-        for(int i=0;i<128;i++){
-            int[] arr =new int[300+(int)(Math.random()*100)];
-            for (int j = 0; j < arr.length; j++) {
-                arr[j] = (j == 0 ? 0 : arr[j - 1]) + (int)(Math.random()*10);
+        for(int k=0;k<12;k++) {
+            int arrNum= (int)Math.pow(2,k);
+            //生成有序数组
+            List<int[]> arrGroup = new LinkedList<>();
+            for (int i = 0; i < arrNum; i++) {
+                int[] arr = new int[300 + (int) (Math.random() * 100)];
+                for (int j = 0; j < arr.length; j++) {
+                    arr[j] = (j == 0 ? 0 : arr[j - 1]) + (int) (Math.random() * 10);
+                }
+                arrGroup.add(arr);
             }
-            arrGroup.add(arr);
+            Stack stack = stackEncode(arrGroup);
+            List<int[]> stackDecode = stackDecode(stack);
+            Boolean a = Boolean.TRUE;
+            for (int i = 0; i < arrGroup.size(); i++) {
+                a = a & Arrays.equals(arrGroup.get(i), stackDecode.get(i));
+            }
+            System.out.println("对照压缩前后数组是否相同" + a);
         }
-        Stack stack=stackEncode(arrGroup);
-        List<int[]> stackDecode =stackDecode(stack);
-        Boolean a = Boolean.TRUE;
-        for(int i=0;i<arrGroup.size();i++){
-            a= a & Arrays.equals(arrGroup.get(i),stackDecode.get(i));
-        }
-        System.out.println("对照压缩前后数组是否相同"+a);
     }
 
     public static Stack stackEncode(List<int[]> arrGroup){
@@ -66,28 +70,6 @@ public class stackData2 {
             }
         }
 
-//        //8个数字为一组，存入digit个byte中
-//        int groupIndex =stackLen/8;
-//        byte num=(byte)(Math.pow(2,digit)-1);//与num取与，截取该数digit位的长度
-//        for(int j=0;j<groupIndex;j++) {
-//            long temp = 0;
-//            for (int i = 0; i < 8; i++) {
-//                temp += (stackSort[i+j*8][1]&num) << (digit * i);
-//            }
-//            for (int i = 0; i < digit; i++) {
-//                indexShift[i+j*digit] = (byte) ((temp >> (8 * i))& 0xFF);
-//            }
-//        }
-//        //存储余下数字
-////        int remainder=stackLen-8*groupIndex;
-//        long temp = 0;
-//        for(int i=8*groupIndex;i<stackLen;i++){
-//            temp += (stackSort[i][1]&num) << (digit * (i-8*groupIndex));
-//        }
-//        for(int i=digit*groupIndex;i<indexLen;i++){
-//            indexShift[i]=(byte) ((temp >> (8 * (i-digit*groupIndex)))& 0xFF);
-//        }
-
         Stack stack = new Stack();
         stack.comArr= CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
         stack.comIndex=CompressUtil.zlibEncoder(indexShift);
@@ -112,28 +94,6 @@ public class stackData2 {
                 stackIndex[i] += value[digit*i+j]<<j;
             }
         }
-
-//        int groupIndex = stackArr.length/8;
-//        //digit个byte为一组，还原为8个index
-//        byte num=(byte)(Math.pow(2,digit)-1);//与num取与，截取该数digit位的长度
-//        for(int j=0;j<groupIndex;j++){
-//            long temp=0;
-//            for(int i=0;i<digit;i++){
-//                temp += (indexShift[i+j*digit]&0xFF)<<(i*8);
-//            }
-//            for(int i=0;i<8;i++){
-//                stackIndex[i+8*j] = (int)((temp >> (digit*i)) & num);
-//            }
-//        }
-//        //还原剩余index
-//        int remainder=stackArr.length-groupIndex*8;
-//        long value=0;
-//        for(int i =digit*groupIndex;i<indexShift.length;i++){
-//            value+=(indexShift[i]&0xFF)<<(8*(i-digit*groupIndex));
-//        }
-//        for(int i=0;i<remainder;i++){
-//            stackIndex[8*groupIndex+i]=(int)((value>>(digit*i)) & num);
-//        }
 
         //合并
         int[][] stackSort=new int[stackArr.length][2];
