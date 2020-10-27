@@ -44,8 +44,8 @@ public class testStack {
             Boolean a = Boolean.TRUE;
             Boolean b = Boolean.TRUE;
             for (int i = 0; i < arrGroup.size(); i++) {
-                a = a & Arrays.equals(arrGroup.get(i), stackDecode.get(i));
-                b = b & Arrays.equals(arrGroup.get(i), stackDecode2.get(i));
+                a = a && Arrays.equals(arrGroup.get(i), stackDecode.get(i));
+                b = b && Arrays.equals(arrGroup.get(i), stackDecode2.get(i));
                 comArr.add(CompressUtil.transToByte(CompressUtil.fastPforEncoder(arrGroup.get(i))));
             }
             System.out.println("对照不移位压缩前后数组是否相同" + a);
