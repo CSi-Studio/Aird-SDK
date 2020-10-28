@@ -26,4 +26,16 @@ public enum AirdType {
         this.name = name;
         this.code = code;
     }
+
+    public Integer getCode(){
+        return code;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public static AirdType getType(String typeName){
+        return valueOf(typeName);
+    }
 }

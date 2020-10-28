@@ -8,7 +8,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.csi.aird.api;
+package com.csi.aird.parser;
 
 import com.csi.aird.bean.BlockIndex;
 import com.csi.aird.bean.MsCycle;

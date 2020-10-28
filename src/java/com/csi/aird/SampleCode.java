@@ -10,7 +10,7 @@
 
 package com.csi.aird;
 
-import com.csi.aird.api.DDAParser;
+import com.csi.aird.parser.DDAParser;
 import com.csi.aird.bean.AirdInfo;
 
 public class SampleCode {

@@ -8,16 +8,16 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package com.csi.aird.api;
+package com.csi.aird.parser;
 
 import com.csi.aird.bean.AirdInfo;
 import com.csi.aird.bean.BlockIndex;
-import com.csi.aird.bean.MzIntensityPairs;
-import com.csi.aird.util.CompressUtil;
 import com.csi.aird.bean.Compressor;
+import com.csi.aird.bean.MzIntensityPairs;
 import com.csi.aird.enums.ResultCodeEnum;
 import com.csi.aird.exception.ScanException;
 import com.csi.aird.util.AirdScanUtil;
+import com.csi.aird.util.CompressUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
@@ -37,9 +37,12 @@ public class BaseParser {
     public Compressor intCompressor;
     public int mzPrecision;
 
-    public BaseParser(String indexFilePath) throws ScanException {
-        this.indexFile = new File(indexFilePath);
-        this.airdFile = new File(AirdScanUtil.getAirdFilePath(indexFilePath));
+    public BaseParser() {
+    }
+
+    public BaseParser(String indexPath) throws ScanException {
+        this.indexFile = new File(indexPath);
+        this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
         airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);

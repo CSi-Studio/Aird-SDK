@@ -29,7 +29,7 @@ public class AirdScanUtil {
      * Scan a folder for all the aird index files(json format file) but not parse the json files
      * Recursive scanning under subfolders is not supported
      * The directory name will display as the Project name
-     *
+     * <p>
      * 扫描一个文件夹下所有的Aird索引文件.但是不解析这些json文件
      * 不支持子文件夹的递归扫描
      * 文件夹名称会显示为项目名称
@@ -44,7 +44,7 @@ public class AirdScanUtil {
         if (!directory.isDirectory()) {
             throw new ScanException(ResultCodeEnum.NOT_DIRECTORY);
         }
-        if(!directory.exists()){
+        if (!directory.exists()) {
             throw new ScanException(ResultCodeEnum.DIRECTORY_NOT_EXISTS);
         }
 
@@ -66,18 +66,18 @@ public class AirdScanUtil {
 
     /**
      * load Aird Index Infomation from index file(JSON Format),and parse into AirdInfo
-     * @see AirdInfo
      *
      * @param indexFile
      * @return
      * @throws IOException
+     * @see AirdInfo
      */
     public static AirdInfo loadAirdInfo(File indexFile) {
         String content = FileUtil.readFile(indexFile);
         AirdInfo airdInfo = null;
-        try{
+        try {
             airdInfo = JSONObject.parseObject(content, AirdInfo.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(indexFile.getAbsolutePath());
             System.out.println(ResultCodeEnum.NOT_AIRD_INDEX_FILE.getMessage());
             e.printStackTrace();
@@ -87,13 +87,13 @@ public class AirdScanUtil {
         return airdInfo;
     }
 
-    public static List<AirdInfo> loadAirdInfoList(List<File> indexFiles){
+    public static List<AirdInfo> loadAirdInfoList(List<File> indexFiles) {
         List<AirdInfo> airdInfos = new ArrayList<AirdInfo>();
-        for(File file : indexFiles){
+        for (File file : indexFiles) {
             AirdInfo airdInfo = loadAirdInfo(file);
-            if(airdInfo != null){
+            if (airdInfo != null) {
                 airdInfos.add(airdInfo);
-            }else{
+            } else {
                 System.out.println(file.getAbsolutePath());
                 System.out.println(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
             }
@@ -102,13 +102,13 @@ public class AirdScanUtil {
         return airdInfos;
     }
 
-    public static HashMap<String, AirdInfo> loadAirdInfoMap(List<File> indexFiles){
+    public static HashMap<String, AirdInfo> loadAirdInfoMap(List<File> indexFiles) {
         HashMap<String, AirdInfo> airdInfoMap = new HashMap<String, AirdInfo>();
-        for(File file : indexFiles){
+        for (File file : indexFiles) {
             AirdInfo airdInfo = loadAirdInfo(file);
-            if(airdInfo != null){
+            if (airdInfo != null) {
                 airdInfoMap.put(file.getAbsolutePath(), airdInfo);
-            }else{
+            } else {
                 System.out.println(file.getAbsolutePath());
                 System.out.println(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
             }
@@ -117,19 +117,31 @@ public class AirdScanUtil {
         return airdInfoMap;
     }
 
-    public static String getAirdIndexFilePath(String airdFilePath) {
-        return airdFilePath.substring(0, airdFilePath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
+    public static String getIndexPathByAirdPath(String airdPath) {
+        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || airdPath.endsWith(SuffixConst.AIRD)){
+            return null;
+        }
+        return airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
     }
 
-    public static String getAirdFilePath(String airdIndexFilePath) {
-        return airdIndexFilePath.substring(0, airdIndexFilePath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
+    public static String getAirdPathByIndexPath(String indexPath) {
+        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || indexPath.endsWith(SuffixConst.JSON)){
+            return null;
+        }
+        return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
     }
 
-    public static boolean isAirdFile(String airdFilePath) {
-        return airdFilePath.toLowerCase().endsWith(SuffixConst.AIRD);
+    public static boolean isAirdFile(String airdPath) {
+        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || airdPath.endsWith(SuffixConst.AIRD)){
+            return false;
+        }
+        return airdPath.toLowerCase().endsWith(SuffixConst.AIRD);
     }
 
-    public static boolean isAirdIndexFile(String airdIndexFilePath) {
-        return airdIndexFilePath.toLowerCase().endsWith(SuffixConst.JSON);
+    public static boolean isIndexFile(String indexPath) {
+        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || indexPath.endsWith(SuffixConst.JSON)){
+            return false;
+        }
+        return indexPath.toLowerCase().endsWith(SuffixConst.JSON);
     }
 }
