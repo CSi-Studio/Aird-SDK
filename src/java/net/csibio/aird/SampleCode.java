@@ -23,6 +23,7 @@ public class SampleCode {
     public static void main(String[] args) {
         DDAParser parser = new DDAParser("E:\\data\\Aird\\QE_3_WithZero\\File-1_with_zero.json");
         AirdInfo airdInfo = parser.getAirdInfo();
+        System.out.println(airdInfo.getVersion());
     }
 
     /**
