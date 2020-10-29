@@ -21,6 +21,7 @@ import com.csi.aird.util.CompressUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -36,13 +37,19 @@ public class BaseParser {
     public Compressor mzCompressor;
     public Compressor intCompressor;
     public int mzPrecision;
-
+    RandomAccessFile raf;
     public BaseParser() {
     }
 
     public BaseParser(String indexPath) throws ScanException {
         this.indexFile = new File(indexPath);
         this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
+        try {
+            raf = new RandomAccessFile(airdFile, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
+        }
         airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);

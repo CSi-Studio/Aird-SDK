@@ -85,7 +85,7 @@
     </repositories>
 
     <build>
-        <finalName>aird-sdk</finalName>
+<!--        <finalName>aird-sdk</finalName>-->
         <sourceDirectory>src/java</sourceDirectory>
         <testSourceDirectory>src/java</testSourceDirectory>
         <plugins>

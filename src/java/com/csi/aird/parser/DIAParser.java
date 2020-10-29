@@ -24,44 +24,48 @@ public class DIAParser extends BaseParser {
         super(indexFilePath);
     }
 
+    public Map<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
+        return getSpectrums(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
+    }
+
     /**
      * the result key is rt,value is the spectrum
      * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息,原始谱图信息包含mz数组和intensity两个相同长度的数组
      *
-     * @param index 需要解析的SWATH窗口
+     * @param startPtr
+     * @param endPtr
+     * @param rtList
+     * @param mzSizeList
+     * @param intensitySizeList
      * @return
-     * @throws Exception
      */
-    public Map<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
-        RandomAccessFile raf = null;
+    public Map<Float, MzIntensityPairs> getSpectrums(long startPtr, long endPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intensitySizeList) {
+
         try {
-            raf = new RandomAccessFile(airdFile, "r");
-
             Map<Float, MzIntensityPairs> map = Collections.synchronizedMap(new TreeMap<>());
-            List<Float> rts = index.getRts();
 
-            raf.seek(index.getStartPtr());
-            Long delta = index.getEndPtr() - index.getStartPtr();
-            byte[] result = new byte[delta.intValue()];
+            raf.seek(startPtr);
+            long delta = endPtr - startPtr;
+            byte[] result = new byte[(int) delta];
 
             raf.read(result);
-            List<Long> mzSizes = index.getMzs();
-            List<Long> intensitySizes = index.getInts();
 
             int start = 0;
 
             List<int[]> allPtrList = new ArrayList<>();
-            for (int i = 0; i < mzSizes.size(); i++) {
+            // 准备多线程读取
+            for (int i = 0; i < mzSizeList.size(); i++) {
                 int[] ptrs = new int[3];
                 ptrs[0] = start;
-                ptrs[1] = ptrs[0] + mzSizes.get(i).intValue();
-                ptrs[2] = ptrs[1] + intensitySizes.get(i).intValue();
+                ptrs[1] = ptrs[0] + mzSizeList.get(i).intValue();
+                ptrs[2] = ptrs[1] + intensitySizeList.get(i).intValue();
                 allPtrList.add(ptrs);
                 start = ptrs[2];
             }
 
-            rts.parallelStream().forEach(rt -> {
-                int[] ptrs = allPtrList.get(rts.indexOf(rt));
+            // 使用多线程进行信息读取
+            rtList.parallelStream().forEach(rt -> {
+                int[] ptrs = allPtrList.get(rtList.indexOf(rt));
                 try {
                     float[] intensityArray = null;
                     if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {

@@ -10,21 +10,20 @@
 
 package com.csi.aird;
 
-import com.csi.aird.bean.AirdInfo;
 import com.csi.aird.parser.BaseParser;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AirdClient {
+public class AirdManager {
 
-    public static AirdClient instance = new AirdClient();
+    public static AirdManager instance = new AirdManager();
 
     // key为path, value为该path下的文件的parser对象
     public ConcurrentHashMap<String, BaseParser> parserMap = new ConcurrentHashMap<>();
 
-    private AirdClient() { }
+    private AirdManager() { }
 
-    public static AirdClient getInstance() {
+    public static AirdManager getInstance() {
         return instance;
     }
 
