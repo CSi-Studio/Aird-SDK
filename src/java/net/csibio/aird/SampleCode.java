@@ -10,8 +10,9 @@
 
 package net.csibio.aird;
 
-import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.bean.AirdInfo;
+import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
 
 import java.io.File;
@@ -21,9 +22,12 @@ public class SampleCode {
 
 
     public static void main(String[] args) {
-        DDAParser parser = new DDAParser("E:\\data\\Aird\\QE_3_WithZero\\File-1_with_zero.json");
+        DIAParser parser = new DIAParser("E:\\data\\Aird\\QE_3_WithZero\\File-1_with_zero.json");
         AirdInfo airdInfo = parser.getAirdInfo();
         System.out.println(airdInfo.getVersion());
+        System.out.println(airdInfo.getType());
+        MzIntensityPairs pairs = parser.getSpectrum(0);
+        System.out.printf(pairs.getMzArray().length+"");
     }
 
     /**
@@ -34,6 +38,5 @@ public class SampleCode {
         files.forEach(file -> {
             AirdManager.getInstance().load(file.getPath());
         });
-
     }
 }

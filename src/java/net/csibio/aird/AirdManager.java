@@ -33,6 +33,18 @@ public class AirdManager {
         return parser;
     }
 
+    /**
+     * 如果是使用的本函数,则在ParserMap里面使用自定义的indexId作为Key值
+     * @param indexPath
+     * @param indexId
+     * @return
+     */
+    public BaseParser load(String indexPath, String indexId){
+        BaseParser parser = new BaseParser(indexPath);
+        parserMap.put(indexId, parser);
+        return parser;
+    }
+
     public BaseParser getParser(String indexPath){
         return parserMap.get(indexPath);
     }
