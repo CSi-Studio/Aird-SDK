@@ -29,8 +29,8 @@ public class DDAParser extends BaseParser{
 
     /**
      * DDA文件采用一次性读入内存的策略
-     * @return
-     * @throws Exception
+     * @return DDA文件中的所有信息,以MsCycle的模型进行存储
+     * @throws Exception 读取文件时的Exception
      */
     public List<MsCycle> parseToMsCycle() throws Exception {
         RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");

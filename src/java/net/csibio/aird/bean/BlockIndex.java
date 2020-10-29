@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @Author: An Shaowei
- * @Date: 2019/11/19 15:33
- * @Description:
+ * @author : An Shaowei
+ * 2019/11/19 15:33
  */
 @Data
 public class BlockIndex {

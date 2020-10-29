@@ -83,10 +83,6 @@ public class Compressor {
         return ByteOrder.LITTLE_ENDIAN;
     }
 
-    /**
-     * 兼容性代码
-     * @return
-     */
     public List<String> getMethods() {
         if (methods != null) {
             return methods;

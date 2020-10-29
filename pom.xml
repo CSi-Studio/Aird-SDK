@@ -7,39 +7,9 @@
     <artifactId>aird-sdk</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-
+    <url>https://github.com/Propro-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
     <description>Aird Format SDK</description>
-
-    <licenses>
-        <license>
-            <name>Mulan PSL v2</name>
-            <url>http://license.coscl.org.cn/MulanPSL2</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <developers>
-        <developer>
-            <name>MiaoShan Lu</name>
-            <email>lms@csibio.net</email>
-            <organization>csi biotech</organization>
-        </developer>
-        <developer>
-            <name>Shaowei An</name>
-            <email>a@csibio.net</email>
-            <organization>csi biotech</organization>
-        </developer>
-        <developer>
-            <name>Ruimin Wang</name>
-            <email>wrm@csibio.net</email>
-            <organization>csi biotech</organization>
-        </developer>
-        <developer>
-            <name>Jinyin Wang</name>
-            <email>wjy@csibio.net</email>
-            <organization>csi biotech</organization>
-        </developer>
-    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,30 +58,30 @@
 
     <repositories>
         <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>alimaven</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <repository>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>snapshots-repo</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--            <releases>-->
+<!--                <enabled>false</enabled>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>pst-release</id>-->
+<!--            <name>EBI Nexus Repository</name>-->
+<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>-->
+<!--        </repository>-->
+<!--        &lt;!&ndash; EBI SNAPSHOT repo &ndash;&gt;-->
+<!--        <repository>-->
+<!--            <id>pst-snapshots</id>-->
+<!--            <name>EBI Nexus Snapshots Repository</name>-->
+<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>-->
+<!--        </repository>-->
     </repositories>
 
     <build>
@@ -128,6 +98,25 @@
                         <phase>package</phase>
                         <goals>
                             <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <aggregate>true</aggregate>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -162,4 +151,38 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <scm>
+        <tag>1.0</tag>
+        <url>git@github.com:Propro-Studio/Aird-SDK.git</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>Mulan PSL v2</name>
+            <url>http://license.coscl.org.cn/MulanPSL2</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>MiaoShan Lu</name>
+            <email>lms@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Shaowei An</name>
+            <email>a@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Ruimin Wang</name>
+            <email>wrm@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Jinyin Wang</name>
+            <email>wjy@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+    </developers>
 </project>

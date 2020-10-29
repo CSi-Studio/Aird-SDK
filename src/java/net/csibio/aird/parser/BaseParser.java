@@ -97,9 +97,8 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-     *
-     * @param value
-     * @return
+     * @param value 压缩后的数组
+     * @return 解压缩后的数组
      */
     public float[] getMzValues(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
@@ -122,9 +121,10 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-     *
-     * @param value
-     * @return
+     * @param value 压缩后的数组
+     * @param start 起始位置
+     * @param length 读取长度
+     * @return 解压缩后的数组
      */
     public float[] getMzValues(byte[] value, int start, int length) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
@@ -147,9 +147,8 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
-     *
-     * @param value
-     * @return
+     * @param value 加密的数组
+     * @return 解压缩后的数组
      */
     public int[] getMzValuesAsInteger(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
@@ -167,9 +166,8 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
-     *
-     * @param value
-     * @return
+     * @param value 压缩的数组
+     * @return 解压缩后的数组
      */
     public float[] getIntValues(byte[] value) {
 
@@ -203,9 +201,8 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
-     *
-     * @param value
-     * @return
+     * @param value 压缩的数组
+     * @return 解压缩后的数组
      */
     public float[] getLogedIntValues(byte[] value) {
 
@@ -224,9 +221,10 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
-     *
-     * @param value
-     * @return
+     * @param value 压缩的数组
+     * @param start 起始位置
+     * @param length 长度
+     * @return 解压缩后的数组
      */
     public float[] getLogedIntValues(byte[] value, int start, int length) {
 

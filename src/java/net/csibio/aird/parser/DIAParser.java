@@ -31,13 +31,12 @@ public class DIAParser extends BaseParser {
     /**
      * the result key is rt,value is the spectrum
      * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息,原始谱图信息包含mz数组和intensity两个相同长度的数组
-     *
-     * @param startPtr
-     * @param endPtr
-     * @param rtList
-     * @param mzSizeList
-     * @param intensitySizeList
-     * @return
+     * @param startPtr 起始指针位置
+     * @param endPtr 结束指针位置
+     * @param rtList rt列表,包含所有的光谱产出时刻
+     * @param mzSizeList mz块的大小列表
+     * @param intensitySizeList intensity块的大小列表
+     * @return 每一个时刻对应的光谱信息
      */
     public Map<Float, MzIntensityPairs> getSpectrums(long startPtr, long endPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intensitySizeList) {
 
@@ -92,9 +91,9 @@ public class DIAParser extends BaseParser {
      * 从aird文件中获取某一条记录
      * 从一个完整的Swath Block块中取出一条记录
      *
-     * @param index
+     * @param index 索引信息
      * @param rt    获取某一个时刻原始谱图
-     * @return
+     * @return 某个时刻的光谱信息
      */
     public MzIntensityPairs getSpectrum(BlockIndex index, float rt) {
         List<Float> rts = index.getRts();
@@ -141,9 +140,8 @@ public class DIAParser extends BaseParser {
 
     /**
      * 根据序列号查询光谱
-     *
-     * @param index
-     * @return
+     * @param index 索引序列号
+     * @return 该索引号对应的光谱信息
      */
     public MzIntensityPairs getSpectrum(int index) {
         List<BlockIndex> indexList = getAirdInfo().getIndexList();
@@ -159,10 +157,9 @@ public class DIAParser extends BaseParser {
 
     /**
      * 从Aird文件中读取,但是不要将m/z数组的从Integer改为Float
-     *
-     * @param index
-     * @param rt
-     * @return
+     * @param index 索引序列号
+     * @param rt 光谱产出时刻
+     * @return 该时刻产生的光谱信息,其中mz数据以int类型返回
      */
     public MzIntensityPairs getSpectrumAsInteger(BlockIndex index, float rt) {
         RandomAccessFile raf = null;
