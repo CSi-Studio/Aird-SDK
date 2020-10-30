@@ -66,12 +66,12 @@ public class BaseParser {
 
     /**
      * 使用直接的关键信息进行初始化
-     * @param airdPath
-     * @param mzCompressor
-     * @param intCompressor
-     * @param mzPrecision
-     * @param airdType
-     * @throws ScanException
+     * @param airdPath Aird文件路径
+     * @param mzCompressor mz压缩策略
+     * @param intCompressor intensity压缩策略
+     * @param mzPrecision mz数字精度
+     * @param airdType aird类型
+     * @throws ScanException 扫描异常
      */
     public BaseParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision, String airdType) throws ScanException {
         this.indexFile = new File(AirdScanUtil.getIndexPathByAirdPath(airdPath));

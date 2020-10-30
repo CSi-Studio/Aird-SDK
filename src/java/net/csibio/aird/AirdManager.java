@@ -37,9 +37,9 @@ public class AirdManager {
     /**
      * 如果是使用的本函数,则在ParserMap里面使用自定义的indexId作为Key值
      *
-     * @param indexPath
-     * @param indexId
-     * @return
+     * @param indexPath aird索引文件路径
+     * @param indexId 外部设定的key值
+     * @return 返回解析器
      */
     public BaseParser load(String indexPath, String indexId) {
         BaseParser parser = new BaseParser(indexPath);
