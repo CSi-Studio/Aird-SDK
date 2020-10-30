@@ -14,6 +14,9 @@ import net.csibio.aird.structure.SortInt;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
 
+import java.util.Iterator;
+import java.util.Set;
+
 public class ArrayUtil {
 
     /**
@@ -79,4 +82,20 @@ public class ArrayUtil {
         }
         return delta;
     }
+
+    public static float[] toPrimitive(Set<Float> floatSet){
+        if (floatSet.size() == 0){
+            return null;
+        }
+        float[] fArray = new float[floatSet.size()];
+        int i=0;
+        Iterator<Float> iterator = floatSet.iterator();
+        while(iterator.hasNext()){
+            fArray[i] = iterator.next();
+            i++;
+        }
+
+        return fArray;
+    }
+
 }

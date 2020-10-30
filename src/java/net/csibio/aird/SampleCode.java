@@ -14,9 +14,12 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
+import net.csibio.aird.util.ArrayUtil;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 public class SampleCode {
 
@@ -28,6 +31,14 @@ public class SampleCode {
         System.out.println(airdInfo.getType());
         MzIntensityPairs pairs = parser.getSpectrum(0);
         System.out.printf(pairs.getMzArray().length+"");
+
+        TreeSet set = new TreeSet<>();
+        set.add(123f);
+        set.add(133f);
+        set.add(143f);
+        set.add(153f);
+        float[] f = ArrayUtil.toPrimitive(set);
+        System.out.println(f.length);
     }
 
     /**

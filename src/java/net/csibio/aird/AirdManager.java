@@ -21,13 +21,14 @@ public class AirdManager {
     // key为path, value为该path下的文件的parser对象
     public ConcurrentHashMap<String, BaseParser> parserMap = new ConcurrentHashMap<>();
 
-    private AirdManager() { }
+    private AirdManager() {
+    }
 
     public static AirdManager getInstance() {
         return instance;
     }
 
-    public BaseParser load(String indexPath){
+    public BaseParser load(String indexPath) {
         BaseParser parser = new BaseParser(indexPath);
         parserMap.put(indexPath, parser);
         return parser;
@@ -35,33 +36,34 @@ public class AirdManager {
 
     /**
      * 如果是使用的本函数,则在ParserMap里面使用自定义的indexId作为Key值
+     *
      * @param indexPath
      * @param indexId
      * @return
      */
-    public BaseParser load(String indexPath, String indexId){
+    public BaseParser load(String indexPath, String indexId) {
         BaseParser parser = new BaseParser(indexPath);
         parserMap.put(indexId, parser);
         return parser;
     }
 
-    public BaseParser getParser(String indexPath){
+    public BaseParser getParser(String indexPath) {
         return parserMap.get(indexPath);
     }
 
-    public BaseParser touchParser(String indexPath){
+    public BaseParser touchParser(String indexPath) {
         BaseParser parser = parserMap.get(indexPath);
-        if (parser == null){
+        if (parser == null) {
             return load(indexPath);
         }
         return parser;
     }
 
-    public void removeParser(String indexPath){
+    public void removeParser(String indexPath) {
         parserMap.remove(indexPath);
     }
 
-    public void clearParser(){
+    public void clearParser() {
         parserMap.values().forEach(BaseParser::close);
         parserMap.clear();
     }

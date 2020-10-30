@@ -38,6 +38,8 @@ public class BaseParser {
     public Compressor mzCompressor;
     public Compressor intCompressor;
     public int mzPrecision;
+    //实验类型 see AirdType
+    public String type;
     RandomAccessFile raf;
 
     public BaseParser() {
@@ -59,6 +61,33 @@ public class BaseParser {
         mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
         intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
         mzPrecision = mzCompressor.getPrecision();
+        type = airdInfo.getType();
+    }
+
+    /**
+     * 使用直接的关键信息进行初始化
+     * @param airdPath
+     * @param mzCompressor
+     * @param intCompressor
+     * @param mzPrecision
+     * @param airdType
+     * @throws ScanException
+     */
+    public BaseParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision, String airdType) throws ScanException {
+        this.indexFile = new File(AirdScanUtil.getIndexPathByAirdPath(airdPath));
+        this.airdFile = new File(airdPath);
+
+        try {
+            raf = new RandomAccessFile(airdFile, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
+        }
+
+        this.mzCompressor = mzCompressor;
+        this.intCompressor = intCompressor;
+        this.mzPrecision = mzPrecision;
+        this.type = airdType;
     }
 
     public AirdInfo getAirdInfo() {
@@ -71,8 +100,8 @@ public class BaseParser {
         List<Float> rts = blockIndex.getRts();
 
         raf.seek(blockIndex.getStartPtr());
-        Long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
-        byte[] result = new byte[delta.intValue()];
+        long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
+        byte[] result = new byte[(int) delta];
 
         raf.read(result);
         List<Long> mzSizes = blockIndex.getMzs();
@@ -97,6 +126,7 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+     *
      * @param value 压缩后的数组
      * @return 解压缩后的数组
      */
@@ -121,8 +151,9 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-     * @param value 压缩后的数组
-     * @param start 起始位置
+     *
+     * @param value  压缩后的数组
+     * @param start  起始位置
      * @param length 读取长度
      * @return 解压缩后的数组
      */
@@ -147,6 +178,7 @@ public class BaseParser {
     /**
      * get mz values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
+     *
      * @param value 加密的数组
      * @return 解压缩后的数组
      */
@@ -166,6 +198,7 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
+     *
      * @param value 压缩的数组
      * @return 解压缩后的数组
      */
@@ -201,6 +234,7 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
+     *
      * @param value 压缩的数组
      * @return 解压缩后的数组
      */
@@ -221,8 +255,9 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
-     * @param value 压缩的数组
-     * @param start 起始位置
+     *
+     * @param value  压缩的数组
+     * @param start  起始位置
      * @param length 长度
      * @return 解压缩后的数组
      */

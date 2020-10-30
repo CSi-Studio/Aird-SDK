@@ -13,6 +13,7 @@ package net.csibio.aird.parser;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
 
@@ -22,6 +23,10 @@ import java.util.*;
 public class DIAParser extends BaseParser {
     public DIAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
+    }
+
+    public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision) throws ScanException {
+        super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
     }
 
     public Map<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
