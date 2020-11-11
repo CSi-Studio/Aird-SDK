@@ -1,6 +1,5 @@
 # AirdPro
   You should use the AirdPro client to transfer the vendor files into Aird format.
-  AirdPro:
 
 # Best Practise
     Aird Index File Suffix: .json
