@@ -28,8 +28,7 @@
   
   
 # Refrence
-  AirdParser: parse Spectrum with rt or parse Spectrums with Swath Window
-  
+ 
 # Detail Description
 ##AirdInfo
 |  Name   | Type  | Required | Description |
