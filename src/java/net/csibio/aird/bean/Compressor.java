@@ -22,21 +22,24 @@ public class Compressor {
 
     /**
      * 压缩策略的指向对象,目前仅支持mz对象和intensity对象两种
+     * The compressed targets. Now only support for m/z and intensity
      */
     public static String TARGET_MZ = "mz";
     public static String TARGET_INTENSITY = "intensity";
 
     /**
      * 目前支持的压缩算法,包括无损的zlib,pFor算法以及有损的log10算法
+     * The compression algorithms. Now support for zlib, fastPFor and log10 algorithms
      */
     public static String METHOD_ZLIB = "zlib";
     public static String METHOD_PFOR = "pFor";
     public static String METHOD_LOG10 = "log10";
 
     /**
-     * 数组中mz和intensity的精度,1000代表精确到小数点后3位,10代表精确到小数点后1位
+     * 数组中mz和intensity的精度,1000代表精确到小数点后4位,10代表精确到小数点后1位
+     * The default precision for m/z is 4dp. The default precision for intensity is 1dp
      */
-    public static int PRECISION_MZ = 1000;
+    public static int PRECISION_MZ = 10000;
     public static int PRECISION_INT = 10;
 
     /**
@@ -55,12 +58,14 @@ public class Compressor {
     String method;
 
     /**
-     * 数组的数值精度,10代表精确到小数点后1位,100代表精确到小数点后三位,以此类推
+     * 数组的数值精度,10代表精确到小数点后1位,1000代表精确到小数点后三位,以此类推
+     * The precision for mz and intensity.
      */
     Integer precision;
 
     /**
      * ByteOrder,Aird格式的默认ByteOrder为LITTLE_ENDIAN,此项为扩展项,目前仅支持默认值LITTLE_ENDIAN
+     * ByteOrder
      */
     String byteOrder;
 

@@ -17,10 +17,12 @@ import net.csibio.aird.util.AirdScanUtil;
 import net.csibio.aird.util.ArrayUtil;
 
 import java.io.File;
-import java.util.HashSet;
 import java.util.List;
 import java.util.TreeSet;
 
+/**
+ * Sample Code for Aird SDK
+ */
 public class SampleCode {
 
 

@@ -17,14 +17,17 @@ public class ParentFile {
 
     /**
      * 文件名称
+     * The parent file name
      */
     String name;
     /**
      * 文件位置
+     * The parent file location
      */
     String location;
     /**
      * 文件类型
+     * The parent file type. Usually refers to the suffix of the file
      */
     String type;
 }

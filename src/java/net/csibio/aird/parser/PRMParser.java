@@ -12,6 +12,10 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.exception.ScanException;
 
+/**
+ * @see DIAParser
+ * PRM Parser now can be replaced by DIA Parser because the have the same inner logic for spectra storage.
+ */
 public class PRMParser extends DIAParser {
     public PRMParser(String indexFilePath) throws ScanException {
         super(indexFilePath);

@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * DDA模式的转换器
+ *
+ */
 public class DDAParser extends BaseParser{
 
     public DDAParser(String indexFilePath) throws ScanException {

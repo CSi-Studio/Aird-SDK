@@ -32,14 +32,45 @@ import java.util.TreeMap;
 
 public class BaseParser {
 
+    /**
+     * the aird file
+     */
     public File airdFile;
+
+    /**
+     * the aird index file. JSON format
+     */
     public File indexFile;
+
+    /**
+     * the airdInfo from the index file.
+     */
     public AirdInfo airdInfo;
+
+    /**
+     * the m/z compressor
+     */
     public Compressor mzCompressor;
+
+    /**
+     * the intensity compressor
+     */
     public Compressor intCompressor;
+
+    /**
+     * the m/z precision
+     */
     public int mzPrecision;
-    //实验类型 see AirdType
+
+    /**
+     * Acquisition Method Type Supported by Aird
+     * @see net.csibio.aird.enums.AirdType
+     */
     public String type;
+
+    /**
+     * Random Access File reader
+     */
     RandomAccessFile raf;
 
     public BaseParser() {
@@ -94,7 +125,13 @@ public class BaseParser {
         return airdInfo;
     }
 
-    //根据特定BlockIndex取出对应TreeMap
+    /**
+     * 根据特定BlockIndex取出对应TreeMap
+     * @param raf the random access file reader
+     * @param blockIndex the block index read from the index file
+     * @return
+     * @throws Exception
+     */
     public TreeMap<Double, MzIntensityPairs> parseBlockValue(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
         TreeMap<Double, MzIntensityPairs> map = new TreeMap<>();
         List<Float> rts = blockIndex.getRts();
@@ -217,6 +254,13 @@ public class BaseParser {
         return intensityValues;
     }
 
+    /**
+     * get intensity values from the start point with a specified length
+     * @param value the original array
+     * @param start the start point
+     * @param length the specified length
+     * @return the decompression intensity array
+     */
     public float[] getIntValues(byte[] value, int start, int length) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));

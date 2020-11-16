@@ -23,8 +23,16 @@ public class Instrument {
      */
     String manufacturer;
 
+    /**
+     * 电离方式
+     * Ionisation Method
+     */
     String ionisation;
 
+    /**
+     * 仪器分辨率
+     * The Instrument Resolution
+     */
     String resolution;
 
     /**
@@ -33,16 +41,21 @@ public class Instrument {
      */
     String model;
 
-
+    /**
+     * 来源
+     * source
+     */
     List<String> source;
 
     /**
      * 分析方式
+     * Analyzer
      */
     List<String> analyzer;
 
     /**
      * 探测器
+     * Detector
      */
     List<String> detector;
 

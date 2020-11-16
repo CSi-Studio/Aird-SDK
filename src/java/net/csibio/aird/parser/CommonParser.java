@@ -19,6 +19,10 @@ import net.csibio.aird.util.FileUtil;
 import java.io.RandomAccessFile;
 import java.util.List;
 
+/**
+ * 常规的格式转换模式,转换后的Aird文件同mzXML和mzML一样,所有的光谱图是以rt为顺序进行排序的
+ * The Parser for normal format just like mzXML or mzML, whose spectras are ordered by retention time
+ */
 public class CommonParser extends BaseParser {
     public CommonParser(String indexFilePath) throws ScanException {
         super(indexFilePath);

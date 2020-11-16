@@ -20,8 +20,14 @@ public class MsCycle implements Serializable {
 
     private static final long serialVersionUID = -123L;
 
+    /**
+     * Retention Time
+     */
     double rt;
 
+    /**
+     * Retention Time Index
+     */
     double ri;
 
     MzIntensityPairs ms1Spectrum;

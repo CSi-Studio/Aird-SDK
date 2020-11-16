@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020 CSi Biotech
  * Aird and AirdPro are licensed under Mulan PSL v2.
@@ -32,7 +31,12 @@ import java.util.zip.Inflater;
 
 public class CompressUtil {
 
-    //byte[]压缩为byte[]
+    /**
+     * compress the data with zlib algorithm
+     *
+     * @param data
+     * @return compressed data
+     */
     public static byte[] zlibEncoder(byte[] data) {
         byte[] output;
 
@@ -63,6 +67,11 @@ public class CompressUtil {
         return output;
     }
 
+    /**
+     * decompress the data with zlib
+     * @param data
+     * @return decompressed data
+     */
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
@@ -78,6 +87,13 @@ public class CompressUtil {
         return decompressedData;
     }
 
+    /**
+     * decompress the data with zlib at a specified start and length
+     * @param data
+     * @param start
+     * @param length
+     * @return decompressed data
+     */
     public static byte[] zlibDecoder(byte[] data, int start, int length) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data, start, length);
@@ -93,6 +109,11 @@ public class CompressUtil {
         return decompressedData;
     }
 
+    /**
+     * decompress the data with fastpfor algorithm
+     * @param compressedInts
+     * @return decompressed data
+     */
     public static int[] fastPforDecoder(int[] compressedInts) {
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte());
         int size = compressedInts[0];
@@ -106,6 +127,11 @@ public class CompressUtil {
         return recovered;
     }
 
+    /**
+     * compress the data with fastpfor algorithm
+     * @param sortedInt
+     * @return compressed data
+     */
     public static int[] fastPforEncoder(int[] sortedInt) {
         SkippableIntegratedComposition codec = new SkippableIntegratedComposition(new IntegratedBinaryPacking(), new IntegratedVariableByte());
         int[] compressed = new int[sortedInt.length + 1024];
@@ -118,6 +144,11 @@ public class CompressUtil {
         return compressed;
     }
 
+    /**
+     * get the compressor for m/z
+     * @param compressors
+     * @return the m/z compressor
+     */
     public static Compressor getMzCompressor(List<Compressor> compressors) {
         if (compressors == null) {
             return null;
@@ -130,6 +161,11 @@ public class CompressUtil {
         return null;
     }
 
+    /**
+     * get the intensity compressor for intensity
+     * @param compressors
+     * @return the intensity compressor
+     */
     public static Compressor getIntCompressor(List<Compressor> compressors) {
         if (compressors == null) {
             return null;
@@ -142,6 +178,11 @@ public class CompressUtil {
         return null;
     }
 
+    /**
+     * compress a float array with zlib and convert the binary data into string with Base64 algorithm
+     * @param target
+     * @return base64 string
+     */
     public static String transToString(float[] target) {
         FloatBuffer fbTarget = FloatBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
@@ -152,6 +193,11 @@ public class CompressUtil {
         return targetStr;
     }
 
+    /**
+     * compress an integer array with zlib and convert the binary data into string with Base64 algorithm
+     * @param target
+     * @return base64 string
+     */
     public static String transToString(int[] target) {
         IntBuffer ibTarget = IntBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
@@ -162,6 +208,11 @@ public class CompressUtil {
         return targetStr;
     }
 
+    /**
+     * compress the int array with zlib algorithm
+     * @param target
+     * @return compressed data
+     */
     public static byte[] transToByte(int[] target) {
         IntBuffer ibTarget = IntBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
@@ -171,6 +222,11 @@ public class CompressUtil {
         return compressedArray;
     }
 
+    /**
+     * compress the float array with zlib algorithm
+     * @param target
+     * @return compressed data
+     */
     public static byte[] transToByte(float[] target) {
         FloatBuffer fbTarget = FloatBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
@@ -180,6 +236,11 @@ public class CompressUtil {
         return compressedArray;
     }
 
+    /**
+     * decompress the binary data with zlib algorithm
+     * @param value
+     * @return decompressed data
+     */
     public static float[] transToFloat(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
@@ -194,6 +255,11 @@ public class CompressUtil {
         return floatValues;
     }
 
+    /**
+     * decompress the binary data with zlib algorithm
+     * @param value
+     * @return decompressed data
+     */
     public static int[] transToInteger(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));

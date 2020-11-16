@@ -20,6 +20,11 @@ import net.csibio.aird.util.FileUtil;
 import java.io.RandomAccessFile;
 import java.util.*;
 
+/**
+ * DIA/SWATH模式的转换器
+ * DIA Parser will convert the original order which is ordered by retention time to a precursor m/z grouped block.
+ * spectras will be grouped by Precursor m/z range
+ */
 public class DIAParser extends BaseParser {
     public DIAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);

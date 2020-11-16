@@ -20,14 +20,17 @@ import lombok.Data;
 public class WindowRange {
 
     /**
+     * 前体质量起始数值
      * precursor mz start
      */
     Double start;
     /**
+     * 前体质量结束数值
      * precursor mz end
      */
     Double end;
     /**
+     * 前体质量精准数值
      * precursor mz
      */
     Double mz;

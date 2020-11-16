@@ -18,7 +18,11 @@ import java.io.*;
  */
 public class FileUtil {
 
-
+    /**
+     * read all the string in the target file
+     * @param file
+     * @return content in the file
+     */
     public static String readFile(File file) {
         FileInputStream fis = null;
         try {
@@ -35,11 +39,20 @@ public class FileUtil {
 
     }
 
+    /**
+     * read file content by filePath
+     * @param filePath
+     * @return content in the file
+     */
     public static String readFile(String filePath) {
         File file = new File(filePath);
         return readFile(file);
     }
 
+    /**
+     * close the random access file object
+     * @param raf
+     */
     public static void close(RandomAccessFile raf) {
         if (raf != null) {
             try {
@@ -50,6 +63,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * close the FileWriter object
+     * @param fw
+     */
     public static void close(FileWriter fw) {
         if (fw != null) {
             try {
@@ -60,6 +77,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * close the BufferWriter object
+     * @param bw
+     */
     public static void close(BufferedWriter bw) {
         if (bw != null) {
             try {
@@ -70,6 +91,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * close the FileOutputStream object
+     * @param fos
+     */
     public static void close(FileOutputStream fos) {
         if (fos != null) {
             try {
@@ -80,6 +105,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * close the FileInputStream object
+     * @param fis
+     */
     public static void close(FileInputStream fis) {
         if (fis != null) {
             try {
@@ -90,6 +119,10 @@ public class FileUtil {
         }
     }
 
+    /**
+     * close the BufferedOutputStream object
+     * @param bos
+     */
     public static void close(BufferedOutputStream bos) {
         if (bos != null) {
             try {

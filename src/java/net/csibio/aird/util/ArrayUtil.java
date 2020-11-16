@@ -73,6 +73,11 @@ public class ArrayUtil {
         return new Pair<>(mz, ArrayUtils.subarray(layerNoteBytes, 0, currentByteLocation + 1));
     }
 
+    /**
+     * Gets the average value of the difference between adjacent numbers in the array
+     * @param array
+     * @return the average value
+     */
     public static long avgDelta(int[] array){
         long delta = 0;
         for (int i = 0; i < array.length - 1; i++) {
@@ -83,6 +88,11 @@ public class ArrayUtil {
         return delta;
     }
 
+    /**
+     * convert the Float type into float type
+     * @param floatSet
+     * @return float array
+     */
     public static float[] toPrimitive(Set<Float> floatSet){
         if (floatSet.size() == 0){
             return null;

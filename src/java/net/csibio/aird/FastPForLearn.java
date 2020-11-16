@@ -14,6 +14,9 @@ import net.csibio.aird.util.CompressUtil;
 
 import java.util.Random;
 
+/**
+ * Test Code for fastpfor
+ */
 public class FastPForLearn {
 
     public static void main(String[] args) {

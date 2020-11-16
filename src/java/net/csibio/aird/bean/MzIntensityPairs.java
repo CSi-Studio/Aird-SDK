@@ -19,10 +19,19 @@ import lombok.Data;
 @Data
 public class MzIntensityPairs {
 
+    /**
+     * m/z array with float type
+     */
     float[] mzArray;
 
+    /**
+     * m/z array with integer type which is directly from Aird file
+     */
     int[] mz;
 
+    /**
+     * intensity array with float type
+     */
     float[] intensityArray;
 
     public MzIntensityPairs(){}

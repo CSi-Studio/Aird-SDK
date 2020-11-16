@@ -18,6 +18,9 @@ import java.nio.FloatBuffer;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * The Gzip Compress algorithm util
+ */
 public class GZIPCompressUtil {
 
     public static byte[] transToByte(float[] target) {

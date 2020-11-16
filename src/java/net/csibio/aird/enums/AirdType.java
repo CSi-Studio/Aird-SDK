@@ -16,8 +16,8 @@ public enum AirdType {
     DIA_SWATH("DIA_SWATH", 1), // Precursor-mz -> MS2 Group
     DDA("DDA",2), //MS1 -> MS2 Group
     PRM("PRM",3), //Precursor-mz -> MS2 Group
-    SCANNING_SWATH("SCANNING_SWATH", 4)
-    ; //
+    SCANNING_SWATH("SCANNING_SWATH", 4) //Not Support now
+    ;
 
     public Integer code;
     public String name;

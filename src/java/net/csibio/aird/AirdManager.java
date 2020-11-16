@@ -14,6 +14,9 @@ import net.csibio.aird.parser.BaseParser;
 
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * the aird manager for vendor file conversion
+ */
 public class AirdManager {
 
     public static AirdManager instance = new AirdManager();
