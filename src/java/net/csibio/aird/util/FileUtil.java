@@ -20,7 +20,7 @@ public class FileUtil {
 
     /**
      * read all the string in the target file
-     * @param file
+     * @param file 文件对象
      * @return content in the file
      */
     public static String readFile(File file) {
@@ -41,7 +41,7 @@ public class FileUtil {
 
     /**
      * read file content by filePath
-     * @param filePath
+     * @param filePath 文件路径
      * @return content in the file
      */
     public static String readFile(String filePath) {
@@ -51,7 +51,7 @@ public class FileUtil {
 
     /**
      * close the random access file object
-     * @param raf
+     * @param raf 文件流
      */
     public static void close(RandomAccessFile raf) {
         if (raf != null) {
@@ -65,7 +65,7 @@ public class FileUtil {
 
     /**
      * close the FileWriter object
-     * @param fw
+     * @param fw 文件流
      */
     public static void close(FileWriter fw) {
         if (fw != null) {
@@ -79,7 +79,7 @@ public class FileUtil {
 
     /**
      * close the BufferWriter object
-     * @param bw
+     * @param bw 文件流
      */
     public static void close(BufferedWriter bw) {
         if (bw != null) {
@@ -93,7 +93,7 @@ public class FileUtil {
 
     /**
      * close the FileOutputStream object
-     * @param fos
+     * @param fos 文件流
      */
     public static void close(FileOutputStream fos) {
         if (fos != null) {
@@ -107,7 +107,7 @@ public class FileUtil {
 
     /**
      * close the FileInputStream object
-     * @param fis
+     * @param fis 文件流
      */
     public static void close(FileInputStream fis) {
         if (fis != null) {
@@ -121,7 +121,7 @@ public class FileUtil {
 
     /**
      * close the BufferedOutputStream object
-     * @param bos
+     * @param bos 文件流
      */
     public static void close(BufferedOutputStream bos) {
         if (bos != null) {

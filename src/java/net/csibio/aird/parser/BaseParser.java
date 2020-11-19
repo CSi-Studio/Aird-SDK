@@ -129,8 +129,8 @@ public class BaseParser {
      * 根据特定BlockIndex取出对应TreeMap
      * @param raf the random access file reader
      * @param blockIndex the block index read from the index file
-     * @return
-     * @throws Exception
+     * @return 解码内容, key为rt, value为光谱中的键值对
+     * @throws Exception 读取文件异常
      */
     public TreeMap<Double, MzIntensityPairs> parseBlockValue(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
         TreeMap<Double, MzIntensityPairs> map = new TreeMap<>();

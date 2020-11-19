@@ -75,7 +75,7 @@ public class ArrayUtil {
 
     /**
      * Gets the average value of the difference between adjacent numbers in the array
-     * @param array
+     * @param array target array
      * @return the average value
      */
     public static long avgDelta(int[] array){
@@ -90,7 +90,7 @@ public class ArrayUtil {
 
     /**
      * convert the Float type into float type
-     * @param floatSet
+     * @param floatSet target set
      * @return float array
      */
     public static float[] toPrimitive(Set<Float> floatSet){

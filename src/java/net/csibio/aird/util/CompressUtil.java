@@ -34,7 +34,7 @@ public class CompressUtil {
     /**
      * compress the data with zlib algorithm
      *
-     * @param data
+     * @param data data to be compressed
      * @return compressed data
      */
     public static byte[] zlibEncoder(byte[] data) {
@@ -69,7 +69,7 @@ public class CompressUtil {
 
     /**
      * decompress the data with zlib
-     * @param data
+     * @param data data to be decompressed
      * @return decompressed data
      */
     public static byte[] zlibDecoder(byte[] data) {
@@ -89,9 +89,9 @@ public class CompressUtil {
 
     /**
      * decompress the data with zlib at a specified start and length
-     * @param data
-     * @param start
-     * @param length
+     * @param data data to be decoded
+     * @param start the start position of the data array
+     * @param length the length for compressor to decode
      * @return decompressed data
      */
     public static byte[] zlibDecoder(byte[] data, int start, int length) {
@@ -111,7 +111,7 @@ public class CompressUtil {
 
     /**
      * decompress the data with fastpfor algorithm
-     * @param compressedInts
+     * @param compressedInts 压缩对象
      * @return decompressed data
      */
     public static int[] fastPforDecoder(int[] compressedInts) {
@@ -129,7 +129,7 @@ public class CompressUtil {
 
     /**
      * compress the data with fastpfor algorithm
-     * @param sortedInt
+     * @param sortedInt data to be decoded
      * @return compressed data
      */
     public static int[] fastPforEncoder(int[] sortedInt) {
@@ -146,7 +146,7 @@ public class CompressUtil {
 
     /**
      * get the compressor for m/z
-     * @param compressors
+     * @param compressors 压缩策略
      * @return the m/z compressor
      */
     public static Compressor getMzCompressor(List<Compressor> compressors) {
@@ -163,7 +163,7 @@ public class CompressUtil {
 
     /**
      * get the intensity compressor for intensity
-     * @param compressors
+     * @param compressors 压缩策略
      * @return the intensity compressor
      */
     public static Compressor getIntCompressor(List<Compressor> compressors) {
@@ -180,7 +180,7 @@ public class CompressUtil {
 
     /**
      * compress a float array with zlib and convert the binary data into string with Base64 algorithm
-     * @param target
+     * @param target 压缩对象
      * @return base64 string
      */
     public static String transToString(float[] target) {
@@ -195,7 +195,7 @@ public class CompressUtil {
 
     /**
      * compress an integer array with zlib and convert the binary data into string with Base64 algorithm
-     * @param target
+     * @param target array to be compressed and transformed
      * @return base64 string
      */
     public static String transToString(int[] target) {
@@ -210,7 +210,7 @@ public class CompressUtil {
 
     /**
      * compress the int array with zlib algorithm
-     * @param target
+     * @param target array to be compressed and transformed
      * @return compressed data
      */
     public static byte[] transToByte(int[] target) {
@@ -224,7 +224,7 @@ public class CompressUtil {
 
     /**
      * compress the float array with zlib algorithm
-     * @param target
+     * @param target array to be compressed and transformed
      * @return compressed data
      */
     public static byte[] transToByte(float[] target) {
@@ -238,7 +238,7 @@ public class CompressUtil {
 
     /**
      * decompress the binary data with zlib algorithm
-     * @param value
+     * @param value array to be decompressed and transformed
      * @return decompressed data
      */
     public static float[] transToFloat(byte[] value) {
@@ -257,7 +257,7 @@ public class CompressUtil {
 
     /**
      * decompress the binary data with zlib algorithm
-     * @param value
+     * @param value array to be decompressed and transformed
      * @return decompressed data
      */
     public static int[] transToInteger(byte[] value) {
