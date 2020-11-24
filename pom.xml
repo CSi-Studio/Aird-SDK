@@ -5,11 +5,11 @@
 
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <url>https://github.com/Propro-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
-    <description>Aird Format SDK</description>
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading and Storage</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -41,6 +41,7 @@ public class DIAParser extends BaseParser {
     /**
      * the result key is rt,value is the spectrum
      * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息,原始谱图信息包含mz数组和intensity两个相同长度的数组
+     * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
      *
      * @param startPtr          起始指针位置
      * @param endPtr            结束指针位置
@@ -49,10 +50,10 @@ public class DIAParser extends BaseParser {
      * @param intSizeList intensity块的大小列表
      * @return 每一个时刻对应的光谱信息
      */
-    public Map<Float, MzIntensityPairs> getSpectrums(long startPtr, long endPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intSizeList) {
+    public TreeMap<Float, MzIntensityPairs> getSpectrums(long startPtr, long endPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intSizeList) {
 
         try {
-            Map<Float, MzIntensityPairs> map = Collections.synchronizedMap(new TreeMap<>());
+            TreeMap<Float, MzIntensityPairs> map = new TreeMap<>();
 
             raf.seek(startPtr);
             long delta = endPtr - startPtr;
@@ -63,7 +64,6 @@ public class DIAParser extends BaseParser {
             int start = 0;
 
             List<int[]> allPtrList = new ArrayList<>();
-            // 准备多线程读取
             for (int i = 0; i < mzSizeList.size(); i++) {
                 int[] ptrs = new int[3];
                 ptrs[0] = start;
@@ -73,8 +73,7 @@ public class DIAParser extends BaseParser {
                 start = ptrs[2];
             }
 
-            // 使用多线程进行信息读取
-            rtList.parallelStream().forEach(rt -> {
+            rtList.forEach(rt -> {
                 int[] ptrs = allPtrList.get(rtList.indexOf(rt));
                 try {
                     float[] intensityArray = null;
@@ -92,7 +91,6 @@ public class DIAParser extends BaseParser {
             return map;
         } catch (Exception e) {
             e.printStackTrace();
-            FileUtil.close(raf);
         }
         return null;
     }
@@ -151,7 +149,6 @@ public class DIAParser extends BaseParser {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FileUtil.close(raf);
         }
 
         return null;
@@ -220,9 +217,12 @@ public class DIAParser extends BaseParser {
 
         } catch (Exception e) {
             e.printStackTrace();
-            FileUtil.close(raf);
         }
 
         return null;
+    }
+
+    public void close(){
+        FileUtil.close(raf);
     }
 }
