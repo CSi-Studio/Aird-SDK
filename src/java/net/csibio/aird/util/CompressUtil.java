@@ -97,16 +97,32 @@ public class CompressUtil {
     public static byte[] zlibDecoder(byte[] data, int start, int length) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data, start, length);
-        byte[] decompressedData = new byte[length * 10];
-        int i;
 
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
         try {
-            i = decompresser.inflate(decompressedData);
-            decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
-        } catch (DataFormatException e) {
+            byte[] buff = new byte[1024];
+            while (!decompresser.finished()) {
+                int count = decompresser.inflate(buff);
+                baos.write(buff, 0, count);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            FileUtil.close(baos);
         }
-        return decompressedData;
+        decompresser.end();
+        byte[] output = baos.toByteArray();
+
+//        byte[] decompressedData = new byte[length * 10];
+//        int i;
+//
+//        try {
+//            i = decompresser.inflate(decompressedData);
+//            decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
+//        } catch (DataFormatException e) {
+//            e.printStackTrace();
+//        }
+        return output;
     }
 
     /**

@@ -14,11 +14,10 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
-import net.csibio.aird.util.ArrayUtil;
 
 import java.io.File;
 import java.util.List;
-import java.util.TreeSet;
+import java.util.Map;
 
 /**
  * Sample Code for Aird SDK
@@ -27,20 +26,16 @@ public class SampleCode {
 
 
     public static void main(String[] args) {
-        DIAParser parser = new DIAParser("E:\\data\\Aird\\QE_3_WithZero\\File-1_with_zero.json");
+        DIAParser parser = new DIAParser("E:\\pData\\SGS4\\napedro_L120224_010_SW.json");
         AirdInfo airdInfo = parser.getAirdInfo();
         System.out.println(airdInfo.getVersion());
         System.out.println(airdInfo.getType());
         MzIntensityPairs pairs = parser.getSpectrum(0);
-        System.out.printf(pairs.getMzArray().length+"");
-
-        TreeSet set = new TreeSet<>();
-        set.add(123f);
-        set.add(133f);
-        set.add(143f);
-        set.add(153f);
-        float[] f = ArrayUtil.toPrimitive(set);
-        System.out.println(f.length);
+        System.out.println(pairs.getMzArray().length+"");
+        airdInfo.getIndexList().forEach(blockIndex -> {
+            Map<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
+            System.out.println(map.size());
+        });
     }
 
     /**

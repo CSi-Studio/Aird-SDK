@@ -43,10 +43,10 @@ public class DIAParser extends BaseParser {
      * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息,原始谱图信息包含mz数组和intensity两个相同长度的数组
      * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
      *
-     * @param startPtr          起始指针位置
-     * @param endPtr            结束指针位置
-     * @param rtList            rt列表,包含所有的光谱产出时刻
-     * @param mzSizeList        mz块的大小列表
+     * @param startPtr    起始指针位置
+     * @param endPtr      结束指针位置
+     * @param rtList      rt列表,包含所有的光谱产出时刻
+     * @param mzSizeList  mz块的大小列表
      * @param intSizeList intensity块的大小列表
      * @return 每一个时刻对应的光谱信息
      */
@@ -58,36 +58,23 @@ public class DIAParser extends BaseParser {
             raf.seek(startPtr);
             long delta = endPtr - startPtr;
             byte[] result = new byte[(int) delta];
-
             raf.read(result);
+            assert rtList.size() == mzSizeList.size();
+            assert mzSizeList.size() == intSizeList.size();
 
             int start = 0;
-
-            List<int[]> allPtrList = new ArrayList<>();
-            for (int i = 0; i < mzSizeList.size(); i++) {
-                int[] ptrs = new int[3];
-                ptrs[0] = start;
-                ptrs[1] = ptrs[0] + mzSizeList.get(i).intValue();
-                ptrs[2] = ptrs[1] + intSizeList.get(i).intValue();
-                allPtrList.add(ptrs);
-                start = ptrs[2];
-            }
-
-            rtList.forEach(rt -> {
-                int[] ptrs = allPtrList.get(rtList.indexOf(rt));
-                try {
-                    float[] intensityArray = null;
-                    if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
-                        intensityArray = getLogedIntValues(result, ptrs[1], ptrs[2] - ptrs[1]);
-                    } else {
-                        intensityArray = getIntValues(result, ptrs[1], ptrs[2] - ptrs[1]);
-                    }
-                    MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(result, ptrs[0], ptrs[1] - ptrs[0]), intensityArray);
-                    map.put(rt, pairs);
-                } catch (Exception e) {
-                    System.out.println("index size error, RT:" + rt);
+            for (int i = 0; i < rtList.size(); i++) {
+                float[] intensityArray = null;
+                float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
+                start = start + mzSizeList.get(i).intValue();
+                if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
+                    intensityArray = getLogedIntValues(result, start, intSizeList.get(i).intValue());
+                } else {
+                    intensityArray = getIntValues(result, start, intSizeList.get(i).intValue());
                 }
-            });
+                start = start + intSizeList.get(i).intValue();
+                map.put(rtList.get(i), new MzIntensityPairs(mzArray, intensityArray));
+            }
             return map;
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,7 +209,7 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
-    public void close(){
+    public void close() {
         FileUtil.close(raf);
     }
 }

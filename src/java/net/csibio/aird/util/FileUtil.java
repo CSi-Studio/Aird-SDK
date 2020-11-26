@@ -132,4 +132,18 @@ public class FileUtil {
             }
         }
     }
+
+    /**
+     * close the ByteArrayOutputStream baos
+     * @param baos 文件流
+     */
+    public static void close(ByteArrayOutputStream baos){
+        if (baos != null) {
+            try {
+                baos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
