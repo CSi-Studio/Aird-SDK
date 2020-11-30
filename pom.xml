@@ -5,9 +5,9 @@
 
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
-    <url>https://github.com/Propro-Studio/Aird-SDK</url>
+    <url>https://github.com/CSi-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
     <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading and Storage</description>
 

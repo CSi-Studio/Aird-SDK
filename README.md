@@ -14,7 +14,7 @@
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
     </dependency>
     
 #Main API Class 
