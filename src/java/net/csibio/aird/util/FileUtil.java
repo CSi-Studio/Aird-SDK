@@ -36,7 +36,6 @@ public class FileUtil {
             close(fis);
             return null;
         }
-
     }
 
     /**
@@ -47,6 +46,22 @@ public class FileUtil {
     public static String readFile(String filePath) {
         File file = new File(filePath);
         return readFile(file);
+    }
+
+    /**
+     * read string content from resources
+     * @param filePath filePath in resources
+     * @return file content
+     * @throws IOException File IO Exception
+     */
+    public static String readFileFromSource(String filePath) throws IOException {
+        File file = new File(FileUtil.class.getClassLoader().getResource(filePath).getPath());
+        FileInputStream fis = new FileInputStream(file);
+        int fileLength = fis.available();
+        byte[] bytes = new byte[fileLength];
+        fis.read(bytes);
+        close(fis);
+        return new String(bytes, 0, fileLength);
     }
 
     /**

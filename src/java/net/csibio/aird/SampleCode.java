@@ -12,28 +12,31 @@ package net.csibio.aird;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
+import net.csibio.aird.util.FileUtil;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Sample Code for Aird SDK
  */
 public class SampleCode {
 
-
     public static void main(String[] args) {
-        DIAParser parser = new DIAParser("E:\\pData\\SGS4\\napedro_L120224_010_SW.json");
+        DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
         System.out.println(airdInfo.getVersion());
         System.out.println(airdInfo.getType());
+
         MzIntensityPairs pairs = parser.getSpectrum(0);
         System.out.println(pairs.getMzArray().length+"");
         airdInfo.getIndexList().forEach(blockIndex -> {
-            Map<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
+            TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
             System.out.println(map.size());
         });
     }

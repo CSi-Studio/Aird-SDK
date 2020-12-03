@@ -34,7 +34,7 @@ public class DIAParser extends BaseParser {
         super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
     }
 
-    public Map<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
+    public TreeMap<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
         return getSpectrums(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
     }
 
