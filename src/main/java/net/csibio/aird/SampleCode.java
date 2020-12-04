@@ -28,6 +28,23 @@ import java.util.TreeMap;
 public class SampleCode {
 
     public static void main(String[] args) {
+
+    }
+
+    /**
+     * 读取某一个文件夹下所有的Aird Index文件
+     */
+    public static void scanDIAFiles(){
+        List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
+        files.forEach(file -> {
+            AirdManager.getInstance().load(file.getPath());
+        });
+    }
+
+    /**
+     * 读取一个Aird文件的元数据文件,并且根据文件中的Block块索引信息读取Aird文件中的光谱图信息
+     */
+    public static void getAirdInfo(){
         DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
         System.out.println(airdInfo.getVersion());
@@ -38,16 +55,6 @@ public class SampleCode {
         airdInfo.getIndexList().forEach(blockIndex -> {
             TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
             System.out.println(map.size());
-        });
-    }
-
-    /**
-     * 读取某一个文件夹下所有的Aird Index文件
-     */
-    public static void scanDIAFiles(){
-        List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
-        files.forEach(file -> {
-            AirdManager.getInstance().load(file.getPath());
         });
     }
 }

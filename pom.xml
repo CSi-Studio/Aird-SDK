@@ -56,6 +56,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jocl</groupId>
+            <artifactId>jocl</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.7.0</version>
@@ -93,8 +99,8 @@
 
     <build>
 <!--        <finalName>aird-sdk</finalName>-->
-        <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/java</testSourceDirectory>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/main/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

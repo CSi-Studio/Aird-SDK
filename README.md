@@ -4,7 +4,7 @@ precision, flexible indexing strategies, and high compression rate for m/z and i
 call ZDPD for m/z data compression,which makes up an amazing compression rate. Compared with Zip, m/z data is about 55% lower 
 in the Aird on average. Aird is a computational friendly algorithm. Through SIMD optimization, the decoding speed of Aird is 
 much higher than that of Zip. <br/>
-Aird SDK is a developer tool written in Java. It is convenient for developer who want to read the spectrum data in the Aird file quickly.
+Aird SDK is a developer tool written in Java. It is convenient for developers who want to read the spectrum data in the Aird file quickly.
 With the high performance of reading and excellent compression rate, developer can develop a lot of application based on Aird for data 
 visualization and analysis.
 

@@ -21,8 +21,9 @@ public class Extractor {
         try {
             //Index of first mz bigger than mzStart
             int rightIndex;
+            int rightIndex2;
+//            rightIndex = betterFindRightIndex(mzArray, mzStart);
             rightIndex = findRightIndex(mzArray, mzStart);
-
             //No element is bigger than mzStart in mzArray
             if (rightIndex == -1) {
                 return 0f;
@@ -61,7 +62,7 @@ public class Extractor {
 
         int leftIndex = 0;
         while (leftIndex + 1 < rightIndex) {
-            int tmp = (leftIndex + rightIndex) / 2;
+            int tmp = (leftIndex + rightIndex) >>> 1;
             if (target < array[tmp]) {
                 rightIndex = tmp;
             } else if (target > array[tmp]) {

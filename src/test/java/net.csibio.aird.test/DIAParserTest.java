@@ -22,26 +22,28 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class DIAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
+        DIAParser parser = new DIAParser("E:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库
         String peptidesStr = FileUtil.readFile(getClass().getClassLoader().getResource("library.test.json").getPath());
-        TreeMap<Double, List<BigDecimal>> peptideJsonList = JSONObject.parseObject(peptidesStr, TreeMap.class);
-        TreeMap<Double, List<Float>> peptideList = new TreeMap<>();
-        peptideJsonList.entrySet().forEach(entry -> {
-            List<Float> mzList = new ArrayList<>();
-            entry.getValue().forEach(mz -> {
-                mzList.add(mz.floatValue());
-            });
-            peptideList.put(entry.getKey(), mzList);
+        TreeMap<String, List<BigDecimal>> peptideJsonList = JSONObject.parseObject(peptidesStr, TreeMap.class);
+        TreeMap<Double, float[]> peptideListMap = new TreeMap<>();
+        AtomicLong count = new AtomicLong();
+        peptideJsonList.forEach((key, mzs) -> {
+            float[] f = new float[mzs.size()];
+            for (int i = 0; i < mzs.size(); i++) {
+                f[i] = mzs.get(i).floatValue();
+            }
+            count.getAndAdd(mzs.size());
+            peptideListMap.put(Double.parseDouble(key), f);
         });
 
         long start = System.currentTimeMillis();
@@ -50,11 +52,13 @@ public class DIAParserTest {
                 System.out.println("Start Analysis For Index:" + blockIndex.getWindowRange().getStart() + ":" + blockIndex.getWindowRange().getEnd());
                 long indexStart = System.currentTimeMillis();
                 TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
-                peptideList.entrySet().parallelStream().forEach(peptideEntry -> {
-                    peptideEntry.getValue().forEach(mz -> {
-                        map.entrySet().forEach(entry -> {
-                            float intensity = Extractor.accumulation(entry.getValue(), mz - 0.025f, mz + 0.025f);
-                        });
+                System.out.println("Total Loop:" + count.get() + "*" + map.size() + "=" + (count.get() * map.size() / 10000 / 10000) + "亿次");
+//                System.out.println("读取文件耗时:"+(System.currentTimeMillis() - indexStart) + "毫秒");
+                peptideListMap.forEach((precursorMz, mzArray) -> {
+                    map.entrySet().parallelStream().forEach((rtPairs) -> {
+                        for (int i = 0; i < mzArray.length; i++) {
+                            float intensity = Extractor.accumulation(rtPairs.getValue(), mzArray[i] - 0.025f, mzArray[i] + 0.025f);
+                        }
                     });
                 });
                 System.out.println("Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");
