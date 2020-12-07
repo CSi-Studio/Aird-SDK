@@ -2,6 +2,8 @@ package net.csibio.aird.eic;
 
 import net.csibio.aird.bean.MzIntensityPairs;
 
+import java.util.List;
+
 public class Extractor {
 
     /**
@@ -20,15 +22,12 @@ public class Extractor {
         float result = 0f;
         try {
             //Index of first mz bigger than mzStart
-            int rightIndex;
-            int rightIndex2;
-//            rightIndex = betterFindRightIndex(mzArray, mzStart);
-            rightIndex = findRightIndex(mzArray, mzStart);
+            int index = lowerBound(mzArray, mzStart);
             //No element is bigger than mzStart in mzArray
-            if (rightIndex == -1) {
+            if (index == -1) {
                 return 0f;
             }
-            int iterIndex = rightIndex;
+            int iterIndex = index;
 
             //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
             while (mzArray[iterIndex] <= mzEnd) {
@@ -41,6 +40,35 @@ public class Extractor {
         return result;
     }
 
+    public static float[] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzStartArray, float[] mzEndArray) {
+
+        int[] results = null;
+        System.out.println("targets数目:"+mzStartArray.length);
+        System.out.println("pairs数目:"+pairsList.size());
+        for (int i = 0; i < pairsList.size(); i++) {
+            results = LowerBound.doSearch(pairsList.get(i).getMzArray(), mzStartArray);
+//            float[] mzArray = pairsList.get(i).getMzArray();
+//            float[] intensityArray = pairsList.get(i).getIntensityArray();
+//            float[] intensitySumArray = new float[mzStartArray.length];
+//            for (int j = 0; j < results.length; i++) {
+//                if (results[j] == -1) {
+//                    intensitySumArray[j] = 0f;
+//                }
+//                int iterIndex = results[j];
+//                float intensitySum = 0;
+//                float mzEnd = mzEndArray[j];
+//
+//                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
+//                while (mzArray[iterIndex] <= mzEnd) {
+//                    intensitySum += intensityArray[iterIndex];
+//                    iterIndex++;
+//                }
+//                intensitySumArray[j] = intensitySum;
+//            }
+        }
+        return null;
+    }
+
     /**
      * 找到从小到大排序的第一个大于等于目标值的索引
      * 当目标值大于等于范围中的最大值时,返回-1
@@ -50,7 +78,7 @@ public class Extractor {
      * @param target
      * @return
      */
-    public static int findRightIndex(float[] array, Float target) {
+    public static int lowerBound(float[] array, Float target) {
         int rightIndex = array.length - 1;
 
         if (target <= array[0]) {
