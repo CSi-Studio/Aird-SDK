@@ -10,7 +10,6 @@ package net.csibio.aird.test;/*
 
 
 import com.alibaba.fastjson.JSONObject;
-import javafx.util.Pair;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.eic.Extractor;
@@ -31,7 +30,7 @@ public class DIAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
+        DIAParser parser = new DIAParser("E:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库
@@ -56,17 +55,6 @@ public class DIAParserTest {
                 TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
                 System.out.println("Total Loop:" + count.get() + "*" + map.size() + "=" + (count.get() * map.size() / 10000 / 10000) + "亿次");
 
-                long indexStart = System.currentTimeMillis();
-//                peptideListMap.forEach((precursorMz, mzArray) -> {
-//                    map.entrySet().parallelStream().forEach((rtPairs) -> {
-//                        for (int i = 0; i < mzArray.length; i++) {
-//                            float intensity = Extractor.accumulation(rtPairs.getValue(), mzArray[i] - 0.025f, mzArray[i] + 0.025f);
-//                        }
-//                    });
-//                });
-//                System.out.println("CPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");
-//
-//                indexStart = System.currentTimeMillis();
                 List<MzIntensityPairs> pairsList = new ArrayList<>();
                 List<Float> mzList = new ArrayList();
                 map.entrySet().forEach(entry -> {
@@ -83,6 +71,24 @@ public class DIAParserTest {
                     startMzArray[i] = mzList.get(i) - 0.025f;
                     endMzArray[i] = mzList.get(i) + 0.025f;
                 }
+                System.out.println("内存对象配置完毕,开始运算");
+
+                long indexStart = System.currentTimeMillis();
+                pairsList.forEach(pairs -> {
+                    mzList.forEach(mz -> {
+                        Extractor.accumulation(pairs, mz - 0.025f, mz + 0.025f);
+                    });
+                });
+//                peptideListMap.forEach((precursorMz, mzArray) -> {
+//                    map.entrySet().parallelStream().forEach((rtPairs) -> {
+//                        for (int i = 0; i < mzArray.length; i++) {
+//                            float intensity = Extractor.accumulation(rtPairs.getValue(), mzArray[i] - 0.025f, mzArray[i] + 0.025f);
+//                        }
+//                    });
+//                });
+                System.out.println("CPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");
+
+                indexStart = System.currentTimeMillis();
                 Extractor.accumulationWithGPU(pairsList, startMzArray, endMzArray);
                 System.out.println("GPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");
             }

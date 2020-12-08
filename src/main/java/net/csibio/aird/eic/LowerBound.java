@@ -46,7 +46,7 @@ public class LowerBound {
 
     }
 
-    private static int[] lowerBoundWithGPU(float[] array, float[] targets) {
+    public static int[] lowerBoundWithGPU(float[] array, float[] targets) {
 
         int[] results = new int[targets.length];
 
@@ -112,7 +112,7 @@ public class LowerBound {
     /**
      * Initialize a default OpenCL context, command queue, program and kernel
      */
-    private static void initialize() {
+    public static void initialize() {
         // The platform, device type and device number
         // that will be used
         final int platformIndex = 0;
@@ -172,7 +172,7 @@ public class LowerBound {
      * Shut down and release all resources that have been allocated
      * in {@link #initialize()}
      */
-    private static void shutdown() {
+    public static void shutdown() {
         clReleaseKernel(kernel);
         clReleaseProgram(program);
         clReleaseCommandQueue(commandQueue);

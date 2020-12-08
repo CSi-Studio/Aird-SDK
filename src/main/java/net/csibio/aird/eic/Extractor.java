@@ -40,33 +40,47 @@ public class Extractor {
         return result;
     }
 
-    public static float[] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzStartArray, float[] mzEndArray) {
+    /**
+     * 使用GPU进行大批量的二分查找
+     *
+     * @param pairsList    需要被查找的光谱图mz原始数据队列,长度为n
+     * @param mzStartArray 需要搜索的目标mz上边界队列,长度为m
+     * @param mzEndArray   需要搜索的目标mz下边界队列,长度为m
+     * @return 每一个目标m/z在各个原始数据队列中的intensity累加值,阵列大小为n*m
+     */
+    public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzStartArray, float[] mzEndArray) {
 
         int[] results = null;
-        System.out.println("targets数目:"+mzStartArray.length);
-        System.out.println("pairs数目:"+pairsList.size());
+        System.out.println("targets数目:" + mzStartArray.length);
+        System.out.println("pairs数目:" + pairsList.size());
+        float[][] resMatrix = new float[pairsList.size()][mzStartArray.length];
+        LowerBound.initialize();
         for (int i = 0; i < pairsList.size(); i++) {
-            results = LowerBound.doSearch(pairsList.get(i).getMzArray(), mzStartArray);
-//            float[] mzArray = pairsList.get(i).getMzArray();
-//            float[] intensityArray = pairsList.get(i).getIntensityArray();
-//            float[] intensitySumArray = new float[mzStartArray.length];
-//            for (int j = 0; j < results.length; i++) {
-//                if (results[j] == -1) {
-//                    intensitySumArray[j] = 0f;
-//                }
-//                int iterIndex = results[j];
-//                float intensitySum = 0;
-//                float mzEnd = mzEndArray[j];
-//
-//                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
-//                while (mzArray[iterIndex] <= mzEnd) {
-//                    intensitySum += intensityArray[iterIndex];
-//                    iterIndex++;
-//                }
-//                intensitySumArray[j] = intensitySum;
-//            }
+            results = LowerBound.lowerBoundWithGPU(pairsList.get(i).getMzArray(), mzStartArray);
+
+            float[] mzArray = pairsList.get(i).getMzArray();
+            float[] intensityArray = pairsList.get(i).getIntensityArray();
+            float[] intensitySumArray = new float[mzStartArray.length];
+            for (int j = 0; j < results.length; j++) {
+                if (results[j] == -1) {
+                    intensitySumArray[j] = 0f;
+                    continue;
+                }
+                int iterIndex = results[j];
+                float intensitySum = 0;
+                float mzEnd = mzEndArray[j];
+
+                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
+                while (iterIndex < mzArray.length && mzArray[iterIndex] <= mzEnd) {
+                    intensitySum += intensityArray[iterIndex];
+                    iterIndex++;
+                }
+                intensitySumArray[j] = intensitySum;
+            }
+            resMatrix[i] = intensitySumArray;
         }
-        return null;
+        LowerBound.shutdown();
+        return resMatrix;
     }
 
     /**
