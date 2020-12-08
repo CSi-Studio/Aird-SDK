@@ -3,21 +3,20 @@
  *
  * Copyright 2009-2019 Marco Hutter - http://www.jocl.org/
  */
-package net.csibio.aird.eic;
+package net.csibio.aird.opencl;
 
 import org.jocl.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Random;
 
 import static org.jocl.CL.*;
 
 /**
  * A sample showing a simple reduction with JOCL
  */
-public class LowerBound {
+public class XIC {
     /**
      * The OpenCL context
      */
@@ -38,34 +37,31 @@ public class LowerBound {
      */
     private static cl_kernel kernel;
 
-    public static int[] doSearch(float[] array, float[] targets) {
-        initialize();
-        int[] result = lowerBoundWithGPU(array, targets);
-        shutdown();
-        return result;
+//    public static int[] doSearch(float[] mzArray, float[] intArray, float[] targets) {
+//        initialize();
+//        int[] result = lowerBoundWithGPU(mzArray, intArray, targets);
+//        shutdown();
+//        return result;
+//    }
 
-    }
+    /**
+     * 在单张光谱图中查找多个目标mz
+     *
+     * @param mzArray
+     * @param intArray
+     * @param targets
+     * @return
+     */
+    public static float[] lowerBoundWithGPU(float[] mzArray, float[] intArray, float[] targets, float mzWindow) {
 
-    public static int[] lowerBoundWithGPU(float[] array, float[] targets) {
-
-        int[] results = new int[targets.length];
+        float[] results = new float[targets.length];
 
         // Allocate the memory objects for the input- and output data
-        cl_mem targetsMem = clCreateBuffer(context,
-                CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * targets.length, Pointer.to(targets), null);
-        cl_mem arrayMem = clCreateBuffer(context,
-                CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * array.length, Pointer.to(array), null);
-        cl_mem resultsMem = clCreateBuffer(context,
-                CL_MEM_READ_WRITE,
-                Sizeof.cl_int * targets.length, Pointer.to(results), null);
-        // Perform the reduction on the GPU: Each work group will 
-        // perform the reduction of 'localWorkSize' elements, and
-        // the results will be written into the output memory
-        lowerBound(arrayMem, array.length,
-                targetsMem, targets.length,
-                resultsMem, targets.length);
+        cl_mem targetsMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * targets.length, Pointer.to(targets), null);
+        cl_mem mzArrayMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * mzArray.length, Pointer.to(mzArray), null);
+        cl_mem intArrayMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * intArray.length, Pointer.to(intArray), null);
+        cl_mem resultsMem = clCreateBuffer(context, CL_MEM_READ_WRITE, Sizeof.cl_int * targets.length, Pointer.to(results), null);
+        lowerBound(mzArrayMem, mzArray.length, intArrayMem, targetsMem, targets.length, resultsMem, mzWindow);
 
         // Read the output data
         clEnqueueReadBuffer(commandQueue, resultsMem, CL_TRUE, 0,
@@ -73,21 +69,24 @@ public class LowerBound {
                 0, null, null);
 
         // Release memory objects
-        clReleaseMemObject(arrayMem);
+        clReleaseMemObject(mzArrayMem);
+        clReleaseMemObject(intArrayMem);
         clReleaseMemObject(targetsMem);
         clReleaseMemObject(resultsMem);
         return results;
     }
 
     private static void lowerBound(
-            cl_mem arrayMem, int arrayLength,
+            cl_mem mzArrayMem, int mzLength, cl_mem intArrayMem,
             cl_mem targetsMem, int targetsLength,
-            cl_mem resultsMem, int resultsLength) {
+            cl_mem resultsMem, float mzWindow) {
         // Set the arguments for the kernel
         clSetKernelArg(kernel, 0, Sizeof.cl_mem, Pointer.to(targetsMem));
-        clSetKernelArg(kernel, 1, Sizeof.cl_mem, Pointer.to(arrayMem));
-        clSetKernelArg(kernel, 2, Sizeof.cl_int, Pointer.to(new int[]{arrayLength}));
-        clSetKernelArg(kernel, 3, Sizeof.cl_mem, Pointer.to(resultsMem));
+        clSetKernelArg(kernel, 1, Sizeof.cl_mem, Pointer.to(mzArrayMem));
+        clSetKernelArg(kernel, 2, Sizeof.cl_mem, Pointer.to(intArrayMem));
+        clSetKernelArg(kernel, 3, Sizeof.cl_int, Pointer.to(new int[]{mzLength}));
+        clSetKernelArg(kernel, 4, Sizeof.cl_float, Pointer.to(new float[]{mzWindow}));
+        clSetKernelArg(kernel, 5, Sizeof.cl_mem, Pointer.to(resultsMem));
 
         // Execute the kernel
         clEnqueueNDRangeKernel(commandQueue, kernel, 1, null,
@@ -157,7 +156,7 @@ public class LowerBound {
                 context, device, properties, null);
 
         // Create the program from the source code
-        String programSource = readFile("src/main/resources/clkernel/LowerBound.cl");
+        String programSource = readFile("src/main/resources/clkernel/XICKernel.cl");
         program = clCreateProgramWithSource(context,
                 1, new String[]{programSource}, null, null);
 

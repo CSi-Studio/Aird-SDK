@@ -1,6 +1,7 @@
 package net.csibio.aird.eic;
 
 import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.opencl.XIC;
 
 import java.util.List;
 
@@ -44,42 +45,38 @@ public class Extractor {
      * 使用GPU进行大批量的二分查找
      *
      * @param pairsList    需要被查找的光谱图mz原始数据队列,长度为n
-     * @param mzStartArray 需要搜索的目标mz上边界队列,长度为m
-     * @param mzEndArray   需要搜索的目标mz下边界队列,长度为m
+     * @param mzArray 需要搜索的目标mz队列,长度为m
+     * @param mzWindow mz搜索宽度,一般为0.05或者0.03
      * @return 每一个目标m/z在各个原始数据队列中的intensity累加值,阵列大小为n*m
      */
-    public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzStartArray, float[] mzEndArray) {
-
-        int[] results = null;
-        System.out.println("targets数目:" + mzStartArray.length);
-        System.out.println("pairs数目:" + pairsList.size());
-        float[][] resMatrix = new float[pairsList.size()][mzStartArray.length];
-        LowerBound.initialize();
+    public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzArray, float mzWindow) {
+        float[][] resMatrix = new float[pairsList.size()][mzArray.length];
+        XIC.initialize();
         for (int i = 0; i < pairsList.size(); i++) {
-            results = LowerBound.lowerBoundWithGPU(pairsList.get(i).getMzArray(), mzStartArray);
-
-            float[] mzArray = pairsList.get(i).getMzArray();
-            float[] intensityArray = pairsList.get(i).getIntensityArray();
-            float[] intensitySumArray = new float[mzStartArray.length];
-            for (int j = 0; j < results.length; j++) {
-                if (results[j] == -1) {
-                    intensitySumArray[j] = 0f;
-                    continue;
-                }
-                int iterIndex = results[j];
-                float intensitySum = 0;
-                float mzEnd = mzEndArray[j];
-
-                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
-                while (iterIndex < mzArray.length && mzArray[iterIndex] <= mzEnd) {
-                    intensitySum += intensityArray[iterIndex];
-                    iterIndex++;
-                }
-                intensitySumArray[j] = intensitySum;
-            }
-            resMatrix[i] = intensitySumArray;
+            float[] results = XIC.lowerBoundWithGPU(pairsList.get(i).getMzArray(),pairsList.get(i).getIntensityArray(), mzArray, mzWindow);
+            resMatrix[i] = results;
+//            float[] mzArray = pairsList.get(i).getMzArray();
+//            float[] intensityArray = pairsList.get(i).getIntensityArray();
+//            float[] intensitySumArray = new float[mzStartArray.length];
+//            for (int j = 0; j < results.length; j++) {
+//                if (results[j] == -1) {
+//                    intensitySumArray[j] = 0f;
+//                    continue;
+//                }
+//                int iterIndex = results[j];
+//                float intensitySum = 0;
+//                float mzEnd = mzEndArray[j];
+//
+//                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
+//                while (iterIndex < mzArray.length && mzArray[iterIndex] <= mzEnd) {
+//                    intensitySum += intensityArray[iterIndex];
+//                    iterIndex++;
+//                }
+//                intensitySumArray[j] = intensitySum;
+//            }
+//            resMatrix[i] = intensitySumArray;
         }
-        LowerBound.shutdown();
+        XIC.shutdown();
         return resMatrix;
     }
 

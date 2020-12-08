@@ -8,8 +8,9 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package net.csibio.aird;
+package net.csibio.aird.sample;
 
+import net.csibio.aird.AirdManager;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.eic.Extractor;
