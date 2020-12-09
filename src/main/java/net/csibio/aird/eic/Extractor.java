@@ -55,26 +55,6 @@ public class Extractor {
         for (int i = 0; i < pairsList.size(); i++) {
             float[] results = XIC.lowerBoundWithGPU(pairsList.get(i).getMzArray(),pairsList.get(i).getIntensityArray(), mzArray, mzWindow);
             resMatrix[i] = results;
-//            float[] mzArray = pairsList.get(i).getMzArray();
-//            float[] intensityArray = pairsList.get(i).getIntensityArray();
-//            float[] intensitySumArray = new float[mzStartArray.length];
-//            for (int j = 0; j < results.length; j++) {
-//                if (results[j] == -1) {
-//                    intensitySumArray[j] = 0f;
-//                    continue;
-//                }
-//                int iterIndex = results[j];
-//                float intensitySum = 0;
-//                float mzEnd = mzEndArray[j];
-//
-//                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
-//                while (iterIndex < mzArray.length && mzArray[iterIndex] <= mzEnd) {
-//                    intensitySum += intensityArray[iterIndex];
-//                    iterIndex++;
-//                }
-//                intensitySumArray[j] = intensitySum;
-//            }
-//            resMatrix[i] = intensitySumArray;
         }
         XIC.shutdown();
         return resMatrix;

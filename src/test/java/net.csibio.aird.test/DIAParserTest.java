@@ -30,7 +30,7 @@ public class DIAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DIAParser parser = new DIAParser("E:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
+        DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库
@@ -79,7 +79,7 @@ public class DIAParserTest {
 //                        }
 //                    }
 //                }
-                System.out.println("经过比对所有XIC结果全部相同");
+//                System.out.println("经过比对所有XIC结果全部相同");
             }
         });
         System.out.println("总计耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
