@@ -44,37 +44,29 @@ public class Extractor {
     /**
      * 使用GPU进行大批量的二分查找
      *
-     * @param pairsList    需要被查找的光谱图mz原始数据队列,长度为n
-     * @param mzArray 需要搜索的目标mz队列,长度为m
-     * @param mzWindow mz搜索宽度,一般为0.05或者0.03
+     * @param pairsList     需要被查找的光谱图mz原始数据队列,长度为n
+     * @param targetMzArray 需要搜索的目标mz队列,长度为m
+     * @param mzWindow      mz搜索宽度,一般为0.05或者0.03
      * @return 每一个目标m/z在各个原始数据队列中的intensity累加值,阵列大小为n*m
      */
-    public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] mzArray, float mzWindow) {
-        float[][] resMatrix = new float[pairsList.size()][mzArray.length];
+    public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] targetMzArray, float mzWindow) {
+        float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
         XIC.initialize();
-        for (int i = 0; i < pairsList.size(); i++) {
-            float[] results = XIC.lowerBoundWithGPU(pairsList.get(i).getMzArray(),pairsList.get(i).getIntensityArray(), mzArray, mzWindow);
+
+        //每一个批次处理的光谱数
+        int countInBatch = 50;
+
+        //准备补齐至countInBatch的整倍数
+        int delta = countInBatch - pairsList.size() % countInBatch;
+        if (delta != countInBatch) {
+            for (int k = 0; k < delta; k++) {
+                pairsList.add(new MzIntensityPairs(new float[0], new float[0]));
+            }
+        }
+
+        for ( int i = 0; i < pairsList.size(); i = i + countInBatch) {
+            float[] results = XIC.lowerBoundWithGPU(pairsList.subList(i, i + countInBatch), targetMzArray, mzWindow);
             resMatrix[i] = results;
-//            float[] mzArray = pairsList.get(i).getMzArray();
-//            float[] intensityArray = pairsList.get(i).getIntensityArray();
-//            float[] intensitySumArray = new float[mzStartArray.length];
-//            for (int j = 0; j < results.length; j++) {
-//                if (results[j] == -1) {
-//                    intensitySumArray[j] = 0f;
-//                    continue;
-//                }
-//                int iterIndex = results[j];
-//                float intensitySum = 0;
-//                float mzEnd = mzEndArray[j];
-//
-//                //Accumulate when iterIndex in (mzStart, mzEnd). Return 0 if rightIndex's mz is bigger than mzEnd.
-//                while (iterIndex < mzArray.length && mzArray[iterIndex] <= mzEnd) {
-//                    intensitySum += intensityArray[iterIndex];
-//                    iterIndex++;
-//                }
-//                intensitySumArray[j] = intensitySum;
-//            }
-//            resMatrix[i] = intensitySumArray;
         }
         XIC.shutdown();
         return resMatrix;

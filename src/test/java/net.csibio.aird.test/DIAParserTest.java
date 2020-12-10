@@ -17,7 +17,6 @@ import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.FileUtil;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -70,16 +69,6 @@ public class DIAParserTest {
                 });
 //                float[][] r1 = xicWithCPU(pairsList, mzList);
                 float[][] r2 = xicWithGPU(pairsList, mzArray);
-//                assert r1.length == r2.length;
-//                for (int i = 0; i < r1.length; i++) {
-//                    assert r1[i].length == r2[i].length;
-//                    for (int k = 0; k < r1[i].length; k++) {
-//                        if (r1[i][k] != r2[i][k]){
-//                            System.out.println("报错了");
-//                        }
-//                    }
-//                }
-                System.out.println("经过比对所有XIC结果全部相同");
             }
         });
         System.out.println("总计耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
@@ -90,7 +79,8 @@ public class DIAParserTest {
         float[][] results = new float[pairsList.size()][mzList.size()];
         for (int i = 0; i < pairsList.size(); i++) {
             for (int j = 0; j < mzList.size(); j++) {
-                results[i][j] = Extractor.accumulation(pairsList.get(i), mzList.get(j) - 0.025f, mzList.get(j) + 0.025f);
+//                results[i][j] = Extractor.accumulation(pairsList.get(i), mzList.get(j) - 0.025f, mzList.get(j) + 0.025f);
+                Extractor.accumulation(pairsList.get(i), mzList.get(j) - 0.025f, mzList.get(j) + 0.025f);
             }
         }
         System.out.println("CPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");

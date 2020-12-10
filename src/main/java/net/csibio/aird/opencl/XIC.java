@@ -5,11 +5,15 @@
  */
 package net.csibio.aird.opencl;
 
+import lombok.Data;
+import net.csibio.aird.bean.MzIntensityPairs;
 import org.jocl.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.jocl.CL.*;
 
@@ -37,56 +41,74 @@ public class XIC {
      */
     private static cl_kernel kernel;
 
-//    public static int[] doSearch(float[] mzArray, float[] intArray, float[] targets) {
-//        initialize();
-//        int[] result = lowerBoundWithGPU(mzArray, intArray, targets);
-//        shutdown();
-//        return result;
-//    }
-
     /**
      * 在单张光谱图中查找多个目标mz
      *
-     * @param mzArray
-     * @param intArray
+     * @param pairsList
      * @param targets
+     * @param mzWindow
      * @return
      */
-    public static float[] lowerBoundWithGPU(float[] mzArray, float[] intArray, float[] targets, float mzWindow) {
+    public static float[] lowerBoundWithGPU(List<MzIntensityPairs> pairsList, float[] targets, float mzWindow) {
 
-        float[] results = new float[targets.length];
+        int countInBatch = pairsList.size();
+        float[] results = new float[targets.length * countInBatch];
 
         // Allocate the memory objects for the input- and output data
         cl_mem targetsMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * targets.length, Pointer.to(targets), null);
-        cl_mem mzArrayMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * mzArray.length, Pointer.to(mzArray), null);
-        cl_mem intArrayMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * intArray.length, Pointer.to(intArray), null);
-        cl_mem resultsMem = clCreateBuffer(context, CL_MEM_READ_WRITE, Sizeof.cl_int * targets.length, Pointer.to(results), null);
-        lowerBound(mzArrayMem, mzArray.length, intArrayMem, targetsMem, targets.length, resultsMem, mzWindow);
+
+        List<XICParams> paramsList = new ArrayList<>();
+        for (int i = 0; i < countInBatch; i++) {
+            float[] mzArray = pairsList.get(i).getMzArray();
+            if (mzArray.length == 0) {
+                paramsList.add(null);
+            } else {
+                paramsList.add(new XICParams(
+                        clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * pairsList.get(i).getMzArray().length, Pointer.to(pairsList.get(i).getMzArray()), null),
+                        clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * pairsList.get(i).getIntensityArray().length, Pointer.to(pairsList.get(i).getIntensityArray()), null),
+                        pairsList.get(i).getMzArray().length));
+            }
+        }
+
+        cl_mem resultsMem = clCreateBuffer(context, CL_MEM_WRITE_ONLY, Sizeof.cl_float * targets.length * countInBatch, Pointer.to(results), null);
+        lowerBound(paramsList, targetsMem, targets.length, resultsMem, mzWindow);
 
         // Read the output data
-        clEnqueueReadBuffer(commandQueue, resultsMem, CL_TRUE, 0,
-                targets.length * Sizeof.cl_float, Pointer.to(results),
-                0, null, null);
+        clEnqueueReadBuffer(commandQueue, resultsMem, CL_TRUE, 0, targets.length * Sizeof.cl_float, Pointer.to(results), 0, null, null);
 
         // Release memory objects
-        clReleaseMemObject(mzArrayMem);
-        clReleaseMemObject(intArrayMem);
+        paramsList.forEach(params -> {
+            if (params != null) {
+                clReleaseMemObject(params.getMzArrayMem());
+                clReleaseMemObject(params.getIntArrayMem());
+            }
+        });
         clReleaseMemObject(targetsMem);
         clReleaseMemObject(resultsMem);
         return results;
     }
 
-    private static void lowerBound(
-            cl_mem mzArrayMem, int mzLength, cl_mem intArrayMem,
-            cl_mem targetsMem, int targetsLength,
-            cl_mem resultsMem, float mzWindow) {
+    private static void lowerBound(List<XICParams> xicParamsList,
+                                   cl_mem targetsMem, int targetsLength,
+                                   cl_mem resultsMem, float mzWindow) {
         // Set the arguments for the kernel
-        clSetKernelArg(kernel, 0, Sizeof.cl_mem, Pointer.to(targetsMem));
-        clSetKernelArg(kernel, 1, Sizeof.cl_mem, Pointer.to(mzArrayMem));
-        clSetKernelArg(kernel, 2, Sizeof.cl_mem, Pointer.to(intArrayMem));
-        clSetKernelArg(kernel, 3, Sizeof.cl_int, Pointer.to(new int[]{mzLength}));
-        clSetKernelArg(kernel, 4, Sizeof.cl_float, Pointer.to(new float[]{mzWindow}));
-        clSetKernelArg(kernel, 5, Sizeof.cl_mem, Pointer.to(resultsMem));
+        int a = 0;
+        clSetKernelArg(kernel, a++, Sizeof.cl_mem, Pointer.to(targetsMem));
+        clSetKernelArg(kernel, a++, Sizeof.cl_int, Pointer.to(new int[]{targetsLength}));
+        for (int i = 0; i < xicParamsList.size(); i++) {
+            if (xicParamsList.get(i) != null) {
+                clSetKernelArg(kernel, a++, Sizeof.cl_mem, Pointer.to(xicParamsList.get(i).getMzArrayMem()));
+                clSetKernelArg(kernel, a++, Sizeof.cl_mem, Pointer.to(xicParamsList.get(i).getIntArrayMem()));
+                clSetKernelArg(kernel, a++, Sizeof.cl_int, Pointer.to(new int[]{xicParamsList.get(i).getLength()}));
+            } else {
+                clSetKernelArg(kernel, a++, Sizeof.cl_mem, null);
+                clSetKernelArg(kernel, a++, Sizeof.cl_mem, null);
+                clSetKernelArg(kernel, a++, Sizeof.cl_int, Pointer.to(new int[]{0}));
+            }
+        }
+
+        clSetKernelArg(kernel, a++, Sizeof.cl_float, Pointer.to(new float[]{mzWindow}));
+        clSetKernelArg(kernel, a++, Sizeof.cl_mem, Pointer.to(resultsMem));
 
         // Execute the kernel
         clEnqueueNDRangeKernel(commandQueue, kernel, 1, null,
@@ -94,12 +116,6 @@ public class XIC {
                 0, null, null);
     }
 
-    /**
-     * Implementation of a Kahan summation reduction in plain Java
-     *
-     * @param array The input
-     * @return The reduction result
-     */
     private static int[] lowerBoundWithCPU(float[] array, float[] targets) {
         int[] results = new int[targets.length];
         for (int i = 0; i < targets.length; i++) {
@@ -156,7 +172,7 @@ public class XIC {
                 context, device, properties, null);
 
         // Create the program from the source code
-        String programSource = readFile("src/main/resources/clkernel/XICKernel.cl");
+        String programSource = readFile("src/main/resources/clkernel/XICKernel50.cpp");
         program = clCreateProgramWithSource(context,
                 1, new String[]{programSource}, null, null);
 
@@ -236,5 +252,21 @@ public class XIC {
         }
 
         return rightIndex;
+    }
+
+    @Data
+    public static class XICParams {
+        cl_mem mzArrayMem;
+        cl_mem intArrayMem;
+        int length;
+
+        public XICParams() {
+        }
+
+        public XICParams(cl_mem mzArrayMem, cl_mem intArrayMem, int length) {
+            this.mzArrayMem = mzArrayMem;
+            this.intArrayMem = intArrayMem;
+            this.length = length;
+        }
     }
 }
