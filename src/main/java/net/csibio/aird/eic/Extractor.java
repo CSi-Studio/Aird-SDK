@@ -8,12 +8,13 @@ import java.util.List;
 public class Extractor {
 
     /**
-     * 计算 mz在[start, end]范围对应的intensity和
-     *
-     * @param pairs   其中mzArray已经从小到到已经排好序
-     * @param mzStart
-     * @param mzEnd
-     * @return
+     * 计算 mz在[mzStart, mzEnd]范围对应的intensity的总和
+     * Get the Low Bound Index for mzStart and High Bound Index for mzEnd in pairs.mzArray,
+     * then accumulate the intensity from the LowBoundIndex to HighBoundIndex
+     * @param pairs   mzArray is an ordered array
+     * @param mzStart target mz start
+     * @param mzEnd target mz end
+     * @return the intensity sum as extractor result
      */
     public static float accumulation(MzIntensityPairs pairs, Float mzStart, Float mzEnd) {
 
@@ -51,10 +52,8 @@ public class Extractor {
      */
     public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] targetMzArray, float mzWindow) {
         float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
-
-
         //每一个批次处理的光谱数
-        int countInBatch = 20;
+        int countInBatch = 1;
 
         //准备补齐至countInBatch的整倍数
         int delta = countInBatch - pairsList.size() % countInBatch;
@@ -83,158 +82,27 @@ public class Extractor {
      * @return
      */
     public static int lowerBound(float[] array, Float target) {
-        int rightIndex = array.length - 1;
+        int high = array.length - 1;
 
         if (target <= array[0]) {
             return 0;
         }
-        if (target >= array[rightIndex]) {
+        if (target >= array[high]) {
             return -1;
         }
 
-        int leftIndex = 0;
-        while (leftIndex + 1 < rightIndex) {
-            int tmp = (leftIndex + rightIndex) >>> 1;
-            if (target < array[tmp]) {
-                rightIndex = tmp;
-            } else if (target > array[tmp]) {
-                leftIndex = tmp;
+        int low = 0;
+        while (low + 1 < high) {
+            int mid = (low + high) >>> 1;
+            if (target < array[mid]) {
+                high = mid;
+            } else if (target > array[mid]) {
+                low = mid;
             } else {
-                return tmp;
+                return mid;
             }
         }
 
-        return rightIndex;
-    }
-
-    /**
-     * 找到从小到大排序的第一个大于目标值的索引
-     * 当目标值小于范围中的最小值时,返回-1
-     * 当目标值大于范围中的最大值时,返回-2
-     *
-     * @param array
-     * @param target
-     * @return
-     */
-    public static int findIndex(float[] array, float target, boolean isLeftIndex) {
-        if (array == null) {
-            return 0;
-        }
-        int leftIndex = 0, rightIndex = array.length - 1;
-        if (isLeftIndex) {
-            if (target < array[0]) {
-                return 0;
-            }
-            if (target > array[rightIndex]) {
-                return -1;
-            }
-        } else {
-            if (target < array[0]) {
-                return -1;
-            }
-            if (target > array[rightIndex]) {
-                return rightIndex;
-            }
-        }
-
-        while (leftIndex + 1 < rightIndex) {
-            int tmp = (leftIndex + rightIndex) / 2;
-            if (target < array[tmp]) {
-                rightIndex = tmp;
-            } else if (target > array[tmp]) {
-                leftIndex = tmp;
-            } else {
-                return tmp;
-            }
-        }
-        if (isLeftIndex) {
-            return rightIndex;
-        } else {
-            return leftIndex;
-        }
-    }
-
-    public static int findIndex(float[] array, float target, int leftIndex, int rightIndex, boolean isLeftIndex) {
-        if (array == null) {
-            return 0;
-        }
-        if (isLeftIndex) {
-            if (target < array[0]) {
-                return leftIndex;
-            }
-            if (target > array[rightIndex]) {
-                return -1;
-            }
-        } else {
-            if (target < array[0]) {
-                return -1;
-            }
-            if (target > array[rightIndex]) {
-                return rightIndex;
-            }
-        }
-
-        while (leftIndex + 1 < rightIndex) {
-            int tmp = (leftIndex + rightIndex) / 2;
-            if (target < array[tmp]) {
-                rightIndex = tmp;
-            } else if (target > array[tmp]) {
-                leftIndex = tmp;
-            } else {
-                return tmp;
-            }
-        }
-        if (isLeftIndex) {
-            return rightIndex;
-        } else {
-            return leftIndex;
-        }
-    }
-
-    /**
-     * 找到从小到大排序的第一个大于目标值的索引
-     * 当目标值小于范围中的最小值时,返回-1
-     * 当目标值大于范围中的最大值时,返回-2
-     *
-     * @param array
-     * @param target
-     * @return
-     */
-    public static int findIndex(Double[] array, Double target, boolean isLeftIndex) {
-        if (array == null) {
-            return 0;
-        }
-        int leftIndex = 0, rightIndex = array.length - 1;
-        if (isLeftIndex) {
-            if (target < array[0]) {
-                return 0;
-            }
-            if (target > array[rightIndex]) {
-                return -1;
-            }
-        } else {
-            if (target < array[0]) {
-                return -1;
-            }
-            if (target > array[rightIndex]) {
-                return rightIndex;
-            }
-        }
-
-        while (leftIndex + 1 < rightIndex) {
-            int tmp = (leftIndex + rightIndex) / 2;
-            if (target < array[tmp]) {
-                rightIndex = tmp;
-            } else if (target > array[tmp]) {
-                leftIndex = tmp;
-            } else {
-                return tmp;
-            }
-        }
-        if (isLeftIndex) {
-            return rightIndex;
-        } else {
-            return leftIndex;
-        }
+        return high;
     }
 }

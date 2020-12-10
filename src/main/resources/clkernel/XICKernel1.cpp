@@ -38,21 +38,12 @@ __kernel void lowerBound(__global const float* targets,
                   const int targetLength,
                   __global const float* mzArray1,
                   __global const float* intArray1,
-                  __global const float* mzArray2,
-                  __global const float* intArray2,
-                  __global const float* mzArray3,
-                  __global const float* intArray3,
                   const int mzLength1,
-                  const int mzLength2,
-                  const int mzLength3,
                   const float mzWindow,
                   __global float* results){
     int id = get_global_id(0);
-    float target = targets[id];
-    float targetStart = target - mzWindow/2;
-    float targetEnd = target + mzWindow/2;
-    acc(mzArray1, intArray1, id,              mzLength1, targetStart, targetEnd, results);
-    acc(mzArray2, intArray2, id+targetLength, mzLength2, targetStart, targetEnd, results);
-    acc(mzArray3, intArray3, id+targetLength+targetLength, mzLength3, targetStart, targetEnd, results);
+    float targetStart = targets[id] - mzWindow/2;
+    float targetEnd = targets[id] + mzWindow/2;
+    acc(mzArray1, intArray1, id, mzLength1, targetStart, targetEnd, results);
     return;
 }
