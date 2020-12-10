@@ -51,10 +51,10 @@ public class Extractor {
      */
     public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] targetMzArray, float mzWindow) {
         float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
-        XIC.initialize();
+
 
         //每一个批次处理的光谱数
-        int countInBatch = 50;
+        int countInBatch = 20;
 
         //准备补齐至countInBatch的整倍数
         int delta = countInBatch - pairsList.size() % countInBatch;
@@ -64,6 +64,7 @@ public class Extractor {
             }
         }
 
+        XIC.initialize(countInBatch);
         for ( int i = 0; i < pairsList.size(); i = i + countInBatch) {
             float[] results = XIC.lowerBoundWithGPU(pairsList.subList(i, i + countInBatch), targetMzArray, mzWindow);
             resMatrix[i] = results;

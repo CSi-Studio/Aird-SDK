@@ -127,7 +127,7 @@ public class XIC {
     /**
      * Initialize a default OpenCL context, command queue, program and kernel
      */
-    public static void initialize() {
+    public static void initialize(int countInBatch) {
         // The platform, device type and device number
         // that will be used
         final int platformIndex = 0;
@@ -172,7 +172,7 @@ public class XIC {
                 context, device, properties, null);
 
         // Create the program from the source code
-        String programSource = readFile("src/main/resources/clkernel/XICKernel50.cpp");
+        String programSource = readFile("src/main/resources/clkernel/XICKernel"+countInBatch+".cpp");
         program = clCreateProgramWithSource(context,
                 1, new String[]{programSource}, null, null);
 
@@ -185,7 +185,6 @@ public class XIC {
 
     /**
      * Shut down and release all resources that have been allocated
-     * in {@link #initialize()}
      */
     public static void shutdown() {
         clReleaseKernel(kernel);
