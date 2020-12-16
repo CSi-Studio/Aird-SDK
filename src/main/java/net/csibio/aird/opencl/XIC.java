@@ -57,13 +57,13 @@ public class XIC {
         // Allocate the memory objects for the input- and output data
         cl_mem targetsMem = clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * targets.length, Pointer.to(targets), null);
 
-        List<XICParams> paramsList = new ArrayList<>();
+        List<Spectrum> paramsList = new ArrayList<>();
         for (int i = 0; i < countInBatch; i++) {
             float[] mzArray = pairsList.get(i).getMzArray();
             if (mzArray.length == 0) {
                 paramsList.add(null);
             } else {
-                paramsList.add(new XICParams(
+                paramsList.add(new Spectrum(
                         clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * pairsList.get(i).getMzArray().length, Pointer.to(pairsList.get(i).getMzArray()), null),
                         clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * pairsList.get(i).getIntensityArray().length, Pointer.to(pairsList.get(i).getIntensityArray()), null),
                         pairsList.get(i).getMzArray().length));
@@ -88,7 +88,7 @@ public class XIC {
         return results;
     }
 
-    private static void lowerBound(List<XICParams> xicParamsList,
+    private static void lowerBound(List<Spectrum> xicParamsList,
                                    cl_mem targetsMem, int targetsLength,
                                    cl_mem resultsMem, float mzWindow) {
         // Set the arguments for the kernel
@@ -254,15 +254,15 @@ public class XIC {
     }
 
     @Data
-    public static class XICParams {
+    public static class Spectrum {
         cl_mem mzArrayMem;
         cl_mem intArrayMem;
         int length;
 
-        public XICParams() {
+        public Spectrum() {
         }
 
-        public XICParams(cl_mem mzArrayMem, cl_mem intArrayMem, int length) {
+        public Spectrum(cl_mem mzArrayMem, cl_mem intArrayMem, int length) {
             this.mzArrayMem = mzArrayMem;
             this.intArrayMem = intArrayMem;
             this.length = length;

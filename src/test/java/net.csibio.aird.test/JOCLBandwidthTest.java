@@ -3,7 +3,7 @@
  * 
  * Copyright 2009-2019 Marco Hutter - http://www.jocl.org/
  */
-package net.csibio.aird.opencl;
+package net.csibio.aird.test;
 
 import org.jocl.*;
 

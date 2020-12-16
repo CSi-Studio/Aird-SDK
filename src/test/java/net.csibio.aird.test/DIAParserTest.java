@@ -88,6 +88,7 @@ public class DIAParserTest {
         long indexStart = System.currentTimeMillis();
         float[][] results = new float[pairsList.size()][mzList.size()];
         for (int i = 0; i < pairsList.size(); i++) {
+
             for (int j = 0; j < mzList.size(); j++) {
 //                results[i][j] = Extractor.accumulation(pairsList.get(i), mzList.get(j) - 0.025f, mzList.get(j) + 0.025f);
                 Extractor.accumulation(pairsList.get(i), mzList.get(j) - 0.025f, mzList.get(j) + 0.025f);
