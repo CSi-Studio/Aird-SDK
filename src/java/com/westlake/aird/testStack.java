@@ -17,7 +17,7 @@ public class testStack {
 //        }
 //        for (File indexFile : files) {
 //            System.out.println(indexFile.getAbsolutePath());
-//        }whether git is ready
+//        }whether git is ready.
 
         DIAParser DIAParser = new DIAParser("\\\\ProproNas\\ProproNAS\\data\\Aird\\DIA\\ThermoQE\\C20181208yix_HCC_DIA_T_46A.json");
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
