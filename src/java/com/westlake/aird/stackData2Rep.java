@@ -2,10 +2,12 @@ package com.westlake.aird;
 
 import com.westlake.aird.util.CompressUtil;
 import lombok.Data;
+import org.apache.commons.math3.util.FastMath;
+
 import java.util.*;
 
 //对数组的index进行移位缩短操作后，使用zlib压缩
-public class stackData2 {
+public class stackData2Rep {
     public static void main(String[] args) {
         for (int k = 10; k < 11; k++) {
             int arrNum = (int) Math.pow(2, k);
@@ -46,24 +48,18 @@ public class stackData2 {
 
     public static Stack stackEncode(List<int[]> arrGroup) {
         //生成堆叠数组和索引
-        long t = System.currentTimeMillis();
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
             stackLen += arr.length;
         }
-        int[][] stackSort = new int[stackLen][2];//二维数组分别存储堆叠数字和层号
-
-        int index = 0;
-        int arrLen = 0;
-        for (int[] arr : arrGroup) {
-            for (int i = 0; i < arr.length; i++) {
-                stackSort[i + arrLen][0] = arr[i];
-                stackSort[i + arrLen][1] = index;
-            }
-            index++;
-            arrLen += arr.length;
+        List<int[]> tempArrGroup = new ArrayList<>();
+        for (int i = 0; i < arrGroup.size(); i ++) {
+            tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
         }
-        Arrays.sort(stackSort, Comparator.comparingInt(a -> a[0]));//根据堆叠数对二维数组升序排列
+        long t = System.currentTimeMillis();
+//        int[][] stackSort = getFullSortArray(tempArrGroup);
+//        int[][] stackSort = getQueueSortArray(tempArrGroup);
+        int[][] stackSort = getPairSortArray(tempArrGroup);
 
 //        int arrsNum = arrGroup.size();
 //        //初始化合并数组
@@ -236,5 +232,122 @@ public class stackData2 {
         private byte[] comArr;
         private byte[] comIndex;
         private int digit;
+    }
+
+
+    private static int[][] getFullSortArray(List<int[]> arrGroup) {
+        int stackLen = 0;//记录堆叠数总长度
+        for (int[] arr : arrGroup) {
+            stackLen += arr.length;
+        }
+        int[][] stackSort = new int[stackLen][2];//二维数组分别存储堆叠数字和层号
+
+        int index = 0;
+        int arrLen = 0;
+        for (int[] arr : arrGroup) {
+            for (int i = 0; i < arr.length; i++) {
+                stackSort[i + arrLen][0] = arr[i];
+                stackSort[i + arrLen][1] = index;
+            }
+            index++;
+            arrLen += arr.length;
+        }
+        Arrays.sort(stackSort, Comparator.comparingInt(a -> a[0]));//根据堆叠数对二维数组升序排列
+        return stackSort;
+    }
+
+    //Comparison in pairs
+    private static int[][] getPairSortArray(List<int[]> arrGroup) {
+        List<int[]> indexGroup = new ArrayList<>();
+        indexGroup.add(new int[arrGroup.get(0).length]);
+        for (int i = 1; i < arrGroup.size(); i ++) {
+            int[] indexes = new int[arrGroup.get(i).length];
+            Arrays.fill(indexes, i);
+            indexGroup.add(indexes);
+        }
+        int mergeTimes = (int)FastMath.log(2, arrGroup.size());
+        for (int i = 1; i <= mergeTimes; i ++) {
+            int stepWidth = (int) Math.pow(2, i);
+            int tempMergeTime = arrGroup.size() / stepWidth;
+            for (int j = 0; j < tempMergeTime; j ++) {
+                int leftIndex = j * stepWidth;
+                int rightIndex = leftIndex + stepWidth / 2;
+                int[] dataArr1 = arrGroup.get(leftIndex);
+                int[] dataArr2 = arrGroup.get(rightIndex);
+                int[] indexArr1 = indexGroup.get(leftIndex);
+                int[] indexArr2 = indexGroup.get(rightIndex);
+                int[] dataArr = new int[dataArr1.length + dataArr2.length];
+                int[] indexArr = new int[dataArr.length];
+                int index1 = 0, index2 = 0, index = 0;
+                for (int k = 0; k < dataArr.length; k ++) {
+                    if (index1 >= dataArr1.length) {
+                        dataArr[index] = dataArr2[index2];
+                        indexArr[index] = indexArr2[index2];
+                        index2 ++;
+                        index ++;
+                        continue;
+                    }
+                    if (index2 >= dataArr2.length) {
+                        dataArr[index] = dataArr1[index1];
+                        indexArr[index] = indexArr1[index1];
+                        index1 ++;
+                        index ++;
+                        continue;
+                    }
+
+                    if (dataArr1[index1] <= dataArr2[index2]) {
+                        dataArr[index] = dataArr1[index1];
+                        indexArr[index] = indexArr1[index1];
+                        index1 ++;
+                    } else {
+                        dataArr[index] = dataArr2[index2];
+                        indexArr[index] = indexArr2[index2];
+                        index2 ++;
+                    }
+                    index++;
+                }
+                indexGroup.set(leftIndex, indexArr);
+                arrGroup.set(leftIndex, dataArr);
+            }
+        }
+        int[] arr = arrGroup.get(0);
+        int[] index = indexGroup.get(0);
+        int[][] resultArr = new int[arr.length][2];
+        for (int i = 0; i < resultArr.length; i ++) {
+            resultArr[i][0] = arr[i];
+            resultArr[i][1] = index[i];
+        }
+        return resultArr;
+    }
+
+    //Maintain a sorted queue
+    private static int[][] getQueueSortArray(List<int[]> arrGroup) {
+        int stackLen = 0;//记录堆叠数总长度
+        for (int[] arr : arrGroup) {
+            stackLen += arr.length;
+        }
+        int[][] resultArr = new int[stackLen][2];
+        int[] indexes = new int[arrGroup.size()];
+        Arrays.fill(indexes, 1);
+        PriorityQueue<int[]> priorityQueue = new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return Integer.compare(o1[0], o2[0]);
+            }
+        });
+        for (int i = 0; i < arrGroup.size(); i ++) {
+            priorityQueue.offer(new int[]{arrGroup.get(i)[0], i});
+        }
+        for (int i = 0; i < stackLen; i ++) {
+            int[] node = priorityQueue.poll();
+            resultArr[i] = node;
+            int groupIndex = node[1];
+            int index = indexes[groupIndex];
+            if (index < arrGroup.get(groupIndex).length) {
+                priorityQueue.offer(new int[]{arrGroup.get(groupIndex)[index], groupIndex});
+                indexes[groupIndex] ++;
+            }
+        }
+        return resultArr;
     }
 }
