@@ -1,22 +1,49 @@
-# Aird-SDK-Java
+# What is Aird?
+Aird is a new format for mass spectrometry data storage. It is an opensource and computation-oriented format with controllable 
+precision, flexible indexing strategies, and high compression rate for m/z and intensity pairs. Aird provides a novel compressor 
+call ZDPD for m/z data compression,which makes up an amazing compression rate. Compared with Zip, m/z data is about 55% lower 
+in the Aird on average. Aird is a computational friendly algorithm. Through SIMD optimization, the decoding speed of Aird is 
+much higher than that of Zip. <br/>
+Aird SDK is a developer tool written in Java. It is convenient for developers who want to read the spectrum data in the Aird file quickly.
+With the high performance of reading and excellent compression rate, developer can develop a lot of application based on Aird for data 
+visualization and analysis.
 
-# Best Practise
-    ### Aird Index File Suffix: .json
-    ### Aird Data File Suffix: .aird
-  Aird Index File and Aird Data File show be stored in the same directory with the same file name but with different suffix, so 
-  that AirdScanUtil.class can scan both of the two files with the same file name;
-  
-  when dealing with Spectra, we advice that you should process with Swath Window one by one so that we can control the Memory
-  
-#Main API Class 
+# AirdPro
+You should use the AirdPro client to transfer the vendor files into Aird format.<br/>
+You can download the AirdPro1.0.1.zip from the FTP server: <br/>
+    `server url: ftp://47.254.93.217/AirdPro` <br/>
+    `username: ftp` <br/>
+    `password: 123456` <br/>
+After downloading, unzip the file, click the AirdPro.exe to start the AirdPro Application
+AirdPro is written in C#, it is also an opensource project. Simple UI is provided by AirdPro for people to convert the vendor file to the 
+Aird file quickly.
+
+# What does Aird format like?
+Aird Index File Suffix: .json <br/>
+Aird Data File Suffix: .aird <br/>
+Aird Index File and Aird Data File show be stored in the same directory with the same file name but with different suffix, so that AirdScanUtil.class can scan both of the two files with the same file name;<br/>
+When dealing with Spectra, we advice that you should process with SWATH Window one by one so that we can control the Memory
+
+# Maven
+    <dependency>
+        <groupId>net.csibio.aird</groupId>
+        <artifactId>aird-sdk</artifactId>
+        <version>1.0.3</version>
+    </dependency>
+
+# Main API Class
+ AirdManager is the entry level class. You can also use the Parsers under the parser package.
+ Aird-SDK 1.0.X is currently support three types of MS file.
+ - DIA/SWATH
+ - DDA
+ - Common type like mzXML
  
-  AirdInfo:Main Info Class that contains all the aird index file(json format) information
-  SwathIndex: Contains all the information about one Swath Window
-  
-  AirdScanUtil : Scan for a directory for all the aird index file
-  
-  AirdParser: parse Spectrum with rt or parse Spectrums with Swath Window
-  
+ Demo code: see SampleCode.java in the project
+ 
+# MetaData JSON Schema
+https://aird.oss-cn-beijing.aliyuncs.com/AirdMetaData.json <br/>
+or refer in the root package of the project: AirdMetaData.json
+
 # Detail Description
 ##AirdInfo
 |  Name   | Type  | Required | Description |
@@ -91,3 +118,5 @@ version|String|False|The software version
 name|String|True|The filename
 location|String|False|The file location
 type|String|False|The file type
+
+Paper see https://www.biorxiv.org/content/10.1101/2020.10.14.338921v1

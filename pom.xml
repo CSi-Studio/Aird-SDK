@@ -3,13 +3,13 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.westlake.aird</groupId>
+    <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.0.3</version>
     <packaging>jar</packaging>
-
+    <url>https://github.com/CSi-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
-    <description>Aird Format SDK</description>
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading and Storage</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -22,25 +22,25 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.4</version>
+            <version>1.18.16</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.7</version>
+            <version>3.11</version>
         </dependency>
 
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.11</version>
+            <version>1.15</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.56</version>
+            <version>1.2.74</version>
         </dependency>
 
         <dependency>
@@ -56,66 +56,159 @@
         </dependency>
 
         <dependency>
-            <groupId>org.tukaani</groupId>
-            <artifactId>xz</artifactId>
-            <version>1.8</version>
+            <groupId>org.jocl</groupId>
+            <artifactId>jocl</artifactId>
+            <version>2.0.2</version>
         </dependency>
 
         <dependency>
-            <groupId>org.openpnp</groupId>
-            <artifactId>opencv</artifactId>
-            <version>4.3.0-0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.lucene</groupId>
-            <artifactId>lucene-core</artifactId>
-            <version>4.0.0</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
     <repositories>
         <repository>
-            <id>snapshots-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>alimaven</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>pst-release</id>
-            <name>EBI Nexus Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
-        </repository>
-        <!-- EBI SNAPSHOT repo -->
-        <repository>
-            <id>pst-snapshots</id>
-            <name>EBI Nexus Snapshots Repository</name>
-            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
-        </repository>
+<!--        <repository>-->
+<!--            <id>snapshots-repo</id>-->
+<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+<!--            <releases>-->
+<!--                <enabled>false</enabled>-->
+<!--            </releases>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>pst-release</id>-->
+<!--            <name>EBI Nexus Repository</name>-->
+<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>-->
+<!--        </repository>-->
+<!--        &lt;!&ndash; EBI SNAPSHOT repo &ndash;&gt;-->
+<!--        <repository>-->
+<!--            <id>pst-snapshots</id>-->
+<!--            <name>EBI Nexus Snapshots Repository</name>-->
+<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>-->
+<!--        </repository>-->
     </repositories>
 
     <build>
-        <finalName>aird-sdk</finalName>
-        <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/java</testSourceDirectory>
+<!--        <finalName>aird-sdk</finalName>-->
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/main/java</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <encoding>UTF-8</encoding>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
                 </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- GPG -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
+    <scm>
+        <tag>1.0</tag>
+        <url>git@github.com:CSi-Studio/Aird-SDK.git</url>
+    </scm>
+    <licenses>
+        <license>
+            <name>Mulan PSL v2</name>
+            <url>http://license.coscl.org.cn/MulanPSL2</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>MiaoShan Lu</name>
+            <email>lms@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Shaowei An</name>
+            <email>a@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Ruimin Wang</name>
+            <email>wrm@csibio.net</email>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <name>Jinyin Wang</name>
+            <email>wjy@csibio.net</email>
+            <organization>{}</organization>
+        </developer>
+    </developers>
 </project>
