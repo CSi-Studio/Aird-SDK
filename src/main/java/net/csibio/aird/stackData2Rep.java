@@ -1,7 +1,7 @@
-package com.westlake.aird;
+package net.csibio.aird;
 
-import com.westlake.aird.util.CompressUtil;
 import lombok.Data;
+import net.csibio.aird.util.CompressUtil;
 import org.apache.commons.math3.util.FastMath;
 
 import java.util.*;

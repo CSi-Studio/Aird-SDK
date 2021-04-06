@@ -1,7 +1,8 @@
-package com.westlake.aird;
+package net.csibio.aird;
 
-import com.westlake.aird.util.CompressUtil;
 import lombok.Data;
+import net.csibio.aird.util.CompressUtil;
+
 import java.util.*;
 
 //对数组的index进行移位缩短操作后，使用zlib压缩
