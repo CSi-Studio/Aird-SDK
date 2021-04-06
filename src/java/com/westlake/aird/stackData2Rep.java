@@ -269,6 +269,14 @@ public class stackData2Rep {
         for (int i = 1; i <= mergeTimes; i ++) {
             int stepWidth = (int) Math.pow(2, i);
             int tempMergeTime = arrGroup.size() / stepWidth;
+
+            //multi threads
+//            List<Integer> tempMergeTimeList = new ArrayList<>();
+//            for (int j = 0; j < tempMergeTime; j ++) {
+//                tempMergeTimeList.add(j);
+//            }
+//            tempMergeTimeList.parallelStream().forEach(j -> {
+            //single thread
             for (int j = 0; j < tempMergeTime; j ++) {
                 int leftIndex = j * stepWidth;
                 int rightIndex = leftIndex + stepWidth / 2;
@@ -308,7 +316,8 @@ public class stackData2Rep {
                 }
                 indexGroup.set(leftIndex, indexArr);
                 arrGroup.set(leftIndex, dataArr);
-            }
+            }//single thread
+//            });//multi threads
         }
         int[] arr = arrGroup.get(0);
         int[] index = indexGroup.get(0);
