@@ -57,9 +57,9 @@ public class stackData2Rep {
             tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
         }
         long t = System.currentTimeMillis();
-//        int[][] stackSort = getFullSortArray(tempArrGroup);
+        int[][] stackSort = getFullSortArray(tempArrGroup);
 //        int[][] stackSort = getQueueSortArray(tempArrGroup);
-        int[][] stackSort = getPairSortArray(tempArrGroup);
+//        int[][] stackSort = getPairSortArray(tempArrGroup);
 
 //        int arrsNum = arrGroup.size();
 //        //初始化合并数组
