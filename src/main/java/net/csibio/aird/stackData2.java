@@ -101,7 +101,7 @@ public class stackData2 {
 //            index++;
 //        }
 
-        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
+//        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
 
         //取出stack数组和index数组
         int[] stackArr = new int[stackSort.length];
@@ -126,7 +126,7 @@ public class stackData2 {
                 value[fromIndex + j] = (byte) ((stackIndex[i] >> j) & 1);
             }
         }
-        System.out.println("移位时间:" + (System.currentTimeMillis() - t0));
+//        System.out.println("移位时间:" + (System.currentTimeMillis() - t0));
 
         //把8个byte并为1个byte，用byte数组存是因为zlib压缩的是byte
         long t1 = System.currentTimeMillis();
@@ -138,13 +138,13 @@ public class stackData2 {
                 indexShift[i] = (byte) temp;
             }
         }
-        System.out.println("合并byte时间:" + (System.currentTimeMillis() - t1));
+//        System.out.println("合并byte时间:" + (System.currentTimeMillis() - t1));
 
         //数组用fastPFor压缩，index用zlib压缩，并记录层数
         Stack stack = new Stack();
         long t3 = System.currentTimeMillis();
         stack.comArr = CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
-        System.out.println("Pfor时间：" + (System.currentTimeMillis() - t3));
+//        System.out.println("Pfor时间：" + (System.currentTimeMillis() - t3));
         stack.comIndex = CompressUtil.zlibEncoder(indexShift);
         stack.digit = digit;
         return stack;
@@ -164,7 +164,7 @@ public class stackData2 {
                 value[8 * i + j] = (byte) (((indexShift[i] & 0xff) >> j) & 1);
             }
         }
-        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
+//        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
 
         //还原为int类型的index
         long t1 = System.currentTimeMillis();
@@ -173,7 +173,7 @@ public class stackData2 {
                 stackIndex[i] += value[digit * i + j] << j;
             }
         }
-        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
+//        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
 
         //合并数组和索引为一个二维数组
         int[][] stackSort = new int[stackArr.length][2];

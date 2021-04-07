@@ -34,69 +34,23 @@ public class stackData2Rep {
         }
     }
 
-    //目前至多测到2048层，把所有的索引以二进制位存储的方式存到map中
-//    private static HashMap<Integer, byte[]> indexMap = new HashMap<>();
-//    static {
-//        for (int i = 0; i < 2048; i++) {
-//            byte[] byteArr = new byte[11];
-//            for (int j = 0; j < 11; j++) {
-//                byteArr[j] = (byte) ((i >> j) & 1);
-//            }
-//            indexMap.put(i, byteArr);
-//        }
-//    }
-
     public static Stack stackEncode(List<int[]> arrGroup) {
-        //生成堆叠数组和索引
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
             stackLen += arr.length;
         }
+
         List<int[]> tempArrGroup = new ArrayList<>();
         for (int i = 0; i < arrGroup.size(); i ++) {
             tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
         }
+
+        //合并排序数组
         long t = System.currentTimeMillis();
 //        int[][] stackSort = getFullSortArray(tempArrGroup);
 //        int[][] stackSort = getQueueSortArray(tempArrGroup);
         int[][] stackSort = getPairSortArray(tempArrGroup);
-
-//        int arrsNum = arrGroup.size();
-//        //初始化合并数组
-//        int[] arr0 = arrGroup.get(0);
-//        int arrLen = arr0.length;
-//        for (int i = 0; i < arrLen; i++) {
-//            stackSort[i][0] = arr0[i];
-//            stackSort[i][1] = 0;
-//        }
-//        int index = 1;
-//        for (int i = 1; i < arrsNum; i++) {
-//            int[] arri = arrGroup.get(i);
-//            int arriLen = arri.length;
-//            int p = arrLen - 1;//合并数组的指针
-//            int pi = arriLen - 1;//新加数组的指针
-//            int tail = arriLen + arrLen - 1;//从尾部开始合并，避免覆盖
-//            while (p >= 0 || pi >= 0) {
-//                if (p == -1) {
-//                    stackSort[tail][0] = arri[pi--];
-//                    stackSort[tail][1] = index;
-//                } else if (pi == -1) {
-//                    stackSort[tail][0] = stackSort[p][0];
-//                    stackSort[tail][1] = stackSort[p--][1];
-//                } else if (stackSort[p][0] > arri[pi]) {
-//                    stackSort[tail][0] = stackSort[p][0];
-//                    stackSort[tail][1] = stackSort[p--][1];
-//                } else {
-//                    stackSort[tail][0] = arri[pi--];
-//                    stackSort[tail][1] = index;
-//                }
-//                tail--;
-//            }
-//            arrLen += arriLen;
-//            index++;
-//        }
-
-        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
+//        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
 
         //取出stack数组和index数组
         int[] stackArr = new int[stackSort.length];
@@ -113,18 +67,12 @@ public class stackData2Rep {
         byte[] value = new byte[8 * indexLen];
         for (int i = 0; i < stackLen; i++) {
             int fromIndex = digit * i;
-//            byte[] byteIndex = indexMap.get(stackIndex[i]);
-//            for (int k = 0; k < digit; k++) {
-//                value[fromIndex + k] = byteIndex[k];
-//            }
             for (int j = 0; j < digit; j++) {
                 value[fromIndex + j] = (byte) ((stackIndex[i] >> j) & 1);
             }
         }
-        System.out.println("移位时间:" + (System.currentTimeMillis() - t0));
 
         //把8个byte并为1个byte，用byte数组存是因为zlib压缩的是byte
-        long t1 = System.currentTimeMillis();
         byte[] indexShift = new byte[indexLen];
         for (int i = 0; i < indexLen; i++) {
             int temp = 0;
@@ -133,13 +81,15 @@ public class stackData2Rep {
                 indexShift[i] = (byte) temp;
             }
         }
-        System.out.println("合并byte时间:" + (System.currentTimeMillis() - t1));
+//        System.out.println("移位时间:" + (System.currentTimeMillis() - t0));
 
         //数组用fastPFor压缩，index用zlib压缩，并记录层数
         Stack stack = new Stack();
-        long t3 = System.currentTimeMillis();
+
+        long t1 = System.currentTimeMillis();
         stack.comArr = CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
-        System.out.println("Pfor时间：" + (System.currentTimeMillis() - t3));
+//        System.out.println("Pfor时间：" + (System.currentTimeMillis() - t1));
+
         stack.comIndex = CompressUtil.zlibEncoder(indexShift);
         stack.digit = digit;
         return stack;
@@ -159,7 +109,7 @@ public class stackData2Rep {
                 value[8 * i + j] = (byte) (((indexShift[i] & 0xff) >> j) & 1);
             }
         }
-        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
+//        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
 
         //还原为int类型的index
         long t1 = System.currentTimeMillis();
@@ -168,7 +118,7 @@ public class stackData2Rep {
                 stackIndex[i] += value[digit * i + j] << j;
             }
         }
-        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
+//        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
 
         //合并数组和索引为一个二维数组
         int[][] stackSort = new int[stackArr.length][2];
