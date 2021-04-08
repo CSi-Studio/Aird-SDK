@@ -47,10 +47,10 @@ public class testStack {
                 stacks.add(stack);
                 fromIndex += arrNum;
             }
-//            //处理余数
-//            List<int[]> arrGroup = mzGroup.subList(fromIndex, mzNum);
-//            stackData2.Stack stack = stackData2.stackEncode(arrGroup);
-//            stacks.add(stack);
+            //处理余数
+            List<int[]> arrGroup = mzGroup.subList(fromIndex, mzNum);
+            stackData2Rep.Stack stack = stackData2Rep.stackEncode(arrGroup,false);
+            stacks.add(stack);
 
             long t3 = System.currentTimeMillis();
             String size3 = RamUsageEstimator.humanSizeOf(stacks);
@@ -58,7 +58,7 @@ public class testStack {
             //计算一代压缩时间
             List<byte[]> comMZs = new LinkedList<>();
             long t0 = System.currentTimeMillis();
-            for (int i = 0; i < fromIndex; i++) {
+            for (int i = 0; i < mzNum; i++) {
                 byte[] comMZ = CompressUtil.zlibEncoder(CompressUtil.transToByte(CompressUtil.fastPforEncoder(mzGroup.get(i))));
                 comMZs.add(comMZ);
             }

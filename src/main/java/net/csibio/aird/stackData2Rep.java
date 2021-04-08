@@ -21,7 +21,7 @@ public class stackData2Rep {
                 }
                 arrGroup.add(arr);
             }
-            Stack stack = stackEncode(arrGroup);
+            Stack stack = stackEncode(arrGroup, false);
             List<int[]> stackDecode = stackDecode(stack);
             boolean a = Boolean.TRUE;
             for (int i = 0; i < arrGroup.size(); i++) {
@@ -34,6 +34,69 @@ public class stackData2Rep {
         }
     }
 
+    //sortMethod：默认采取pair成对排序，设置为0也采取pair排序；设置为1时采用QueueSort
+    public static Stack stackEncode(List<int[]> arrGroup, boolean pair) {
+        int stackLen = 0;//记录堆叠数总长度
+        for (int[] arr : arrGroup) {
+            stackLen += arr.length;
+        }
+
+        //合并排序数组
+        long t = System.currentTimeMillis();
+        List<int[]> tempArrGroup = new ArrayList<>();
+        for (int i = 0; i < arrGroup.size(); i++) {
+            tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
+        }
+        int[][] stackSort;
+        if (pair) {
+            stackSort = getPairSortArray(tempArrGroup);
+        } else {
+            stackSort = getQueueSortArray(tempArrGroup);
+        }
+//        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
+
+        //取出stack数组和index数组
+        int[] stackArr = new int[stackLen];
+        int[] stackIndex = new int[stackLen];
+        for (int i = 0; i < stackLen; i++) {
+            stackArr[i] = stackSort[i][0];
+            stackIndex[i] = stackSort[i][1];
+        }
+
+        //index移位存储
+        long t0 = System.currentTimeMillis();
+        int digit = (int) Math.ceil(Math.log(arrGroup.size()) / Math.log(2));
+        int indexLen = (stackLen * digit - 1) / 8 + 1;
+        byte[] value = new byte[8 * indexLen];
+        for (int i = 0; i < stackLen; i++) {
+            int fromIndex = digit * i;
+            for (int j = 0; j < digit; j++) {
+                value[fromIndex + j] = (byte) ((stackIndex[i] >> j) & 1);
+            }
+        }
+
+        //把8个byte并为1个byte，用byte数组存是因为zlib压缩的是byte
+        byte[] indexShift = new byte[indexLen];
+        for (int i = 0; i < indexLen; i++) {
+            int temp = 0;
+            for (int j = 0; j < 8; j++) {
+                temp += value[8 * i + j] << j;
+                indexShift[i] = (byte) temp;
+            }
+        }
+//        System.out.println("移位时间:" + (System.currentTimeMillis() - t0));
+
+        //数组用fastPFor压缩，index用zlib压缩，并记录层数
+        Stack stack = new Stack();
+
+        long t1 = System.currentTimeMillis();
+        stack.comArr = CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
+//        System.out.println("Pfor时间：" + (System.currentTimeMillis() - t1));
+
+        stack.comIndex = CompressUtil.zlibEncoder(indexShift);
+        stack.digit = digit;
+        return stack;
+    }
     public static Stack stackEncode(List<int[]> arrGroup) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
@@ -41,7 +104,7 @@ public class stackData2Rep {
         }
 
         List<int[]> tempArrGroup = new ArrayList<>();
-        for (int i = 0; i < arrGroup.size(); i ++) {
+        for (int i = 0; i < arrGroup.size(); i++) {
             tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
         }
 
@@ -94,6 +157,7 @@ public class stackData2Rep {
         stack.digit = digit;
         return stack;
     }
+
 
     public static List<int[]> stackDecode(Stack stack) {
         int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
@@ -210,13 +274,13 @@ public class stackData2Rep {
     private static int[][] getPairSortArray(List<int[]> arrGroup) {
         List<int[]> indexGroup = new ArrayList<>();
         indexGroup.add(new int[arrGroup.get(0).length]);
-        for (int i = 1; i < arrGroup.size(); i ++) {
+        for (int i = 1; i < arrGroup.size(); i++) {
             int[] indexes = new int[arrGroup.get(i).length];
             Arrays.fill(indexes, i);
             indexGroup.add(indexes);
         }
-        int mergeTimes = (int)FastMath.log(2, arrGroup.size());
-        for (int i = 1; i <= mergeTimes; i ++) {
+        int mergeTimes = (int) FastMath.log(2, arrGroup.size());
+        for (int i = 1; i <= mergeTimes; i++) {
             int stepWidth = (int) Math.pow(2, i);
             int tempMergeTime = arrGroup.size() / stepWidth;
 
@@ -226,8 +290,9 @@ public class stackData2Rep {
 //                tempMergeTimeList.add(j);
 //            }
 //            tempMergeTimeList.parallelStream().forEach(j -> {
+
             //single thread
-            for (int j = 0; j < tempMergeTime; j ++) {
+            for (int j = 0; j < tempMergeTime; j++) {
                 int leftIndex = j * stepWidth;
                 int rightIndex = leftIndex + stepWidth / 2;
                 int[] dataArr1 = arrGroup.get(leftIndex);
@@ -237,30 +302,30 @@ public class stackData2Rep {
                 int[] dataArr = new int[dataArr1.length + dataArr2.length];
                 int[] indexArr = new int[dataArr.length];
                 int index1 = 0, index2 = 0, index = 0;
-                for (int k = 0; k < dataArr.length; k ++) {
+                for (int k = 0; k < dataArr.length; k++) {
                     if (index1 >= dataArr1.length) {
                         dataArr[index] = dataArr2[index2];
                         indexArr[index] = indexArr2[index2];
-                        index2 ++;
-                        index ++;
+                        index2++;
+                        index++;
                         continue;
                     }
                     if (index2 >= dataArr2.length) {
                         dataArr[index] = dataArr1[index1];
                         indexArr[index] = indexArr1[index1];
-                        index1 ++;
-                        index ++;
+                        index1++;
+                        index++;
                         continue;
                     }
 
                     if (dataArr1[index1] <= dataArr2[index2]) {
                         dataArr[index] = dataArr1[index1];
                         indexArr[index] = indexArr1[index1];
-                        index1 ++;
+                        index1++;
                     } else {
                         dataArr[index] = dataArr2[index2];
                         indexArr[index] = indexArr2[index2];
-                        index2 ++;
+                        index2++;
                     }
                     index++;
                 }
@@ -272,7 +337,7 @@ public class stackData2Rep {
         int[] arr = arrGroup.get(0);
         int[] index = indexGroup.get(0);
         int[][] resultArr = new int[arr.length][2];
-        for (int i = 0; i < resultArr.length; i ++) {
+        for (int i = 0; i < resultArr.length; i++) {
             resultArr[i][0] = arr[i];
             resultArr[i][1] = index[i];
         }
@@ -294,17 +359,17 @@ public class stackData2Rep {
                 return Integer.compare(o1[0], o2[0]);
             }
         });
-        for (int i = 0; i < arrGroup.size(); i ++) {
+        for (int i = 0; i < arrGroup.size(); i++) {
             priorityQueue.offer(new int[]{arrGroup.get(i)[0], i});
         }
-        for (int i = 0; i < stackLen; i ++) {
+        for (int i = 0; i < stackLen; i++) {
             int[] node = priorityQueue.poll();
             resultArr[i] = node;
             int groupIndex = node[1];
             int index = indexes[groupIndex];
             if (index < arrGroup.get(groupIndex).length) {
                 priorityQueue.offer(new int[]{arrGroup.get(groupIndex)[index], groupIndex});
-                indexes[groupIndex] ++;
+                indexes[groupIndex]++;
             }
         }
         return resultArr;
