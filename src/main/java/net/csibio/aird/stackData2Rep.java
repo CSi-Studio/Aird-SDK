@@ -21,8 +21,11 @@ public class stackData2Rep {
                 }
                 arrGroup.add(arr);
             }
-            Stack stack = stackEncode(arrGroup, false);
-            List<int[]> stackDecode = stackDecode(stack);
+            Stack stack = stackEncode(arrGroup);
+            long t = System.currentTimeMillis();
+//            List<int[]> stackDecode = stackDecode(stack);
+            List<int[]> stackDecode = stackDecodeRep(stack);
+            System.out.println("解压时间：" + (System.currentTimeMillis() - t));
             boolean a = Boolean.TRUE;
             for (int i = 0; i < arrGroup.size(); i++) {
                 a = Arrays.equals(arrGroup.get(i), stackDecode.get(i));
@@ -34,7 +37,7 @@ public class stackData2Rep {
         }
     }
 
-    //sortMethod：默认采取pair成对排序，设置为0也采取pair排序；设置为1时采用QueueSort
+    //pair：默认采取pair成对排序，True也采取pair排序；false时采用QueueSort
     public static Stack stackEncode(List<int[]> arrGroup, boolean pair) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
@@ -97,6 +100,7 @@ public class stackData2Rep {
         stack.digit = digit;
         return stack;
     }
+
     public static Stack stackEncode(List<int[]> arrGroup) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
@@ -166,7 +170,7 @@ public class stackData2Rep {
         int digit = stack.getDigit();
 
         //拆分byte为8个bit，并分别存储
-        long t0 = System.currentTimeMillis();
+//        long t0 = System.currentTimeMillis();
         byte[] value = new byte[8 * indexShift.length];
         for (int i = 0; i < indexShift.length; i++) {
             for (int j = 0; j < 8; j++) {
@@ -176,7 +180,7 @@ public class stackData2Rep {
 //        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
 
         //还原为int类型的index
-        long t1 = System.currentTimeMillis();
+//        long t1 = System.currentTimeMillis();
         for (int i = 0; i < stackIndex.length; i++) {
             for (int j = 0; j < digit; j++) {
                 stackIndex[i] += value[digit * i + j] << j;
@@ -185,32 +189,30 @@ public class stackData2Rep {
 //        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
 
         //合并数组和索引为一个二维数组
+        long t2 = System.currentTimeMillis();
         int[][] stackSort = new int[stackArr.length][2];
         for (int i = 0; i < stackArr.length; i++) {
             stackSort[i][0] = stackArr[i];
             stackSort[i][1] = stackIndex[i];
         }
         Arrays.sort(stackSort, (a, b) -> (a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]));
+        System.out.println("合并排序时间：" + (System.currentTimeMillis() - t2));
 
         //统计index数组中各个元素出现的次数
+        long t3 = System.currentTimeMillis();
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-        for (int i = 0; i < stackIndex.length; i++) {
-            if (map.get(stackIndex[i]) != null) {
-                map.put(stackIndex[i], map.get(stackIndex[i]) + 1);
-            } else {
-                map.put(stackIndex[i], 1);
-            }
+        for (int index : stackIndex) {
+            map.merge(index, 1, Integer::sum);
         }
+        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
 
-        //为了不改变原来的stackIndex，clone一个，方便debug；可以不clone，直接对stackIndex排序
-        int[] sortIndex = stackIndex.clone();
-        Arrays.sort(sortIndex);
-        int maxIndex = sortIndex[sortIndex.length - 1];
+//        int maxIndex = stackSort[stackSort.length-1][1];
 
         //根据index拆分stackArr,还原数组
+//        long t4 = System.currentTimeMillis();
         List<int[]> arrGroup = new LinkedList<>();
         int fromIndex = 0;
-        for (int i = 0; i < maxIndex + 1; i++) {
+        for (int i = 0; i < stackSort[stackSort.length - 1][1] + 1; i++) {
             int[] arr = new int[map.get(i)];
             for (int j = 0; j < map.get(i); j++) {
                 arr[j] = stackSort[fromIndex + j][0];
@@ -218,8 +220,58 @@ public class stackData2Rep {
             fromIndex += map.get(i);
             arrGroup.add(arr);
         }
+//        System.out.println("拆分数组时间："+(System.currentTimeMillis() - t4));
         return arrGroup;
     }
+
+    public static List<int[]> stackDecodeRep(Stack stack) {
+        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
+        int[] stackIndex = new int[stackArr.length];
+        byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
+        int digit = stack.getDigit();
+
+        //拆分byte为8个bit，并分别存储
+        long t0 = System.currentTimeMillis();
+        byte[] value = new byte[8 * indexShift.length];
+        for (int i = 0; i < indexShift.length; i++) {
+            for (int j = 0; j < 8; j++) {
+                value[8 * i + j] = (byte) (((indexShift[i] & 0xff) >> j) & 1);
+            }
+        }
+        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
+
+        //还原为int类型的index
+        long t1 = System.currentTimeMillis();
+        for (int i = 0; i < stackIndex.length; i++) {
+            for (int j = 0; j < digit; j++) {
+                stackIndex[i] += value[digit * i + j] << j;
+            }
+        }
+        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
+
+        //统计index数组中各个元素出现的次数
+        long t3 = System.currentTimeMillis();
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        for (int index : stackIndex) {
+            map.merge(index, 1, Integer::sum);
+        }
+        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
+
+        //根据index拆分stackArr,还原数组
+        long t4 = System.currentTimeMillis();
+        List<int[]> arrGroup = new ArrayList<>();
+        int arrNum = map.keySet().size();
+        for (int i = 0; i < arrNum; i++) {
+            arrGroup.add(new int[map.get(i)]);
+        }
+        int[] p = new int[arrNum];
+        for (int i = 0; i < stackIndex.length; i++) {
+            arrGroup.get(stackIndex[i])[p[stackIndex[i]]++] = stackArr[i];
+        }
+        System.out.println("拆分数组时间："+(System.currentTimeMillis() - t4));
+        return arrGroup;
+    }
+
 
     //合并两个有序数组为一个
     public static int[] merge(int[] nums1, int n1, int[] nums2, int n2) {
