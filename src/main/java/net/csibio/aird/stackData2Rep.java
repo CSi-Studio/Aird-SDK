@@ -51,12 +51,17 @@ public class stackData2Rep {
             stackLen += arr.length;
         }
 
+        List<int[]> tempArrGroup = new ArrayList<>();
+        for (int i = 0; i < arrGroup.size(); i++) {
+            tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
+        }
+
         //合并排序数组
         int[][] stackSort;
         if (pair) {
-            stackSort = getPairSortArray(arrGroup);
+            stackSort = getPairSortArray(tempArrGroup);
         } else {
-            stackSort = getQueueSortArray(arrGroup);
+            stackSort = getQueueSortArray(tempArrGroup);
         }
         //取出stack数组和index数组
         int[] stackArr = new int[stackLen];

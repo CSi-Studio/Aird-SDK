@@ -14,9 +14,11 @@ import java.util.List;
 
 public class testCompareStack {
     public static void main(String[] args) throws IOException {
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_64var_lgillet_I160305_001.json";
+        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/newData/HYE110_TTOF6600_32var_lgillet_I160309_001.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
+        System.out.println("block数："+ swathIndexList.size());
+        System.out.println();
         long sizeOrigin = 0;
         long tAird1 = 0;
         long sizeAird1 = 0;
@@ -30,9 +32,9 @@ public class testCompareStack {
 
             //取出一个block的数组
             List<int[]> mzGroup = new ArrayList<>();
-            for (int i = 0; i < mzNum; i++) {
+            for (Float rt : rts) {
                 int[] arr;
-                arr = DIAParser.getSpectrumAsInteger(index, rts.get(i)).getMz();
+                arr = DIAParser.getSpectrumAsInteger(index, rt).getMz();
                 mzGroup.add(arr);
             }
             sizeOrigin += RamUsageEstimator.sizeOf(mzGroup);
@@ -48,11 +50,12 @@ public class testCompareStack {
                 t1 += (System.currentTimeMillis() - tempT);
                 comMZs.add(comMZ);
             }
-            sizeAird1 = RamUsageEstimator.sizeOf(comMZs);
-            tAird1 = t1;
+            sizeAird1 += RamUsageEstimator.sizeOf(comMZs);
+            tAird1 += t1;
 //            String size2 = RamUsageEstimator.humanSizeOf(comMZs);
 //            System.out.println("一代：" + size2);
 //            System.out.println("一代压缩时间：" + t1);
+
             for (int k = 2; k < 11; k++) {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
@@ -75,15 +78,15 @@ public class testCompareStack {
 //                String size3 = RamUsageEstimator.humanSizeOf(stacks);
 //                System.out.println("二代：" + size3);
 //                System.out.println("二代压缩时间：" + (t3 - t2));
-                System.out.println("block" + m + " finished!");
             }
+            System.out.println("block" + m + " finished!");
         }
 
         File file = new File(indexFilePath.replace("json", "csv"));
         FileWriter out = new FileWriter(file);
-        out.write("sizeOrigin" + "," + RamUsageEstimator.humanReadableUnits(sizeOrigin) + "\r\n");
+        out.write("sizeOrigin" + "," + sizeOrigin + "\r\n");
         out.write("k" + "," + "size" + "," + "encodeTime" + "\r\n");
-        out.write("0" + "," + RamUsageEstimator.humanReadableUnits(sizeAird1) + ",");
+        out.write("0" + "," + sizeAird1 + ",");
         out.write(Long.toString(tAird1));
         for (int i = 0; i < 9; i++) {
             out.write("\r\n");
@@ -94,10 +97,9 @@ public class testCompareStack {
                 stackTime += recordEncodeTime[i][j];
             }
             out.write((i + 2) + ",");
-            out.write(RamUsageEstimator.humanReadableUnits(stackSize) + ",");
+            out.write(stackSize + ",");
             out.write(Long.toString(stackTime));
         }
         out.close();
-
     }
 }
