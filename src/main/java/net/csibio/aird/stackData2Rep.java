@@ -23,17 +23,18 @@ public class stackData2Rep {
             }
             Stack stack = stackEncode(arrGroup);
             long t = System.currentTimeMillis();
-//            List<int[]> stackDecode = stackDecode(stack);
-            List<int[]> stackDecode = stackDecodeRep(stack);
+            List<int[]> stackDecode = stackDecode(stack);
+//            List<int[]> stackDecodeAbort = stackDecodeAbort(stack);
+
             System.out.println("解压时间：" + (System.currentTimeMillis() - t));
-            boolean a = Boolean.TRUE;
-            for (int i = 0; i < arrGroup.size(); i++) {
-                a = Arrays.equals(arrGroup.get(i), stackDecode.get(i));
-                if (!a) {
-                    break;
-                }
-            }
-            System.out.println("对照压缩前后数组是否相同" + a);
+//            boolean a = Boolean.TRUE;
+//            for (int i = 0; i < arrGroup.size(); i++) {
+//                a = Arrays.equals(arrGroup.get(i), stackDecode.get(i));
+//                if (!a) {
+//                    break;
+//                }
+//            }
+//            System.out.println("对照压缩前后数组是否相同" + a);
         }
     }
 
@@ -163,7 +164,7 @@ public class stackData2Rep {
     }
 
 
-    public static List<int[]> stackDecode(Stack stack) {
+    public static List<int[]> stackDecodeAbort(Stack stack) {
         int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
         int[] stackIndex = new int[stackArr.length];
         byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
@@ -205,6 +206,9 @@ public class stackData2Rep {
             map.merge(index, 1, Integer::sum);
         }
         System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
+        System.out.println(
+                stackIndex.length
+        );
 
 //        int maxIndex = stackSort[stackSort.length-1][1];
 
@@ -224,7 +228,7 @@ public class stackData2Rep {
         return arrGroup;
     }
 
-    public static List<int[]> stackDecodeRep(Stack stack) {
+    public static List<int[]> stackDecode(Stack stack) {
         int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
         int[] stackIndex = new int[stackArr.length];
         byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
@@ -256,6 +260,9 @@ public class stackData2Rep {
             map.merge(index, 1, Integer::sum);
         }
         System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
+        System.out.println(
+                stackIndex.length
+        );
 
         //根据index拆分stackArr,还原数组
         long t4 = System.currentTimeMillis();
