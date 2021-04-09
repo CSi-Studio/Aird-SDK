@@ -75,7 +75,7 @@ public class CompressUtil {
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
-        byte[] decompressedData = new byte[data.length * 100];
+        byte[] decompressedData = new byte[data.length * 1000];
         int i;
 
         try {

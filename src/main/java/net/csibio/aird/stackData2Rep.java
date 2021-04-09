@@ -159,17 +159,17 @@ public class stackData2Rep {
     }
 
     public static List<int[]> stackDecode(Stack stack) {
-        long t1 = System.currentTimeMillis();
+//        long t1 = System.currentTimeMillis();
         int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
-        System.out.println("pfor+zlib解压数组时间：" + (System.currentTimeMillis() - t1));
+//        System.out.println("pfor+zlib解压数组时间：" + (System.currentTimeMillis() - t1));
         int[] stackIndex = new int[stackArr.length];
-        long t2 = System.currentTimeMillis();
+//        long t2 = System.currentTimeMillis();
         byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
-        System.out.println("zlib索引解压时间：" + (System.currentTimeMillis() - t2));
+//        System.out.println("zlib索引解压时间：" + (System.currentTimeMillis() - t2));
         int digit = stack.getDigit();
 
         //拆分byte为8个bit，并分别存储
-        long t = System.currentTimeMillis();
+//        long t = System.currentTimeMillis();
         byte[] value = new byte[8 * indexShift.length];
         for (int i = 0; i < indexShift.length; i++) {
             for (int j = 0; j < 8; j++) {
@@ -182,18 +182,18 @@ public class stackData2Rep {
                 stackIndex[i] += value[digit * i + j] << j;
             }
         }
-        System.out.println("还原index时间:" + (System.currentTimeMillis() - t));
+//        System.out.println("还原index时间:" + (System.currentTimeMillis() - t));
 
         //统计index数组中各个元素出现的次数
-        long t3 = System.currentTimeMillis();
+//        long t3 = System.currentTimeMillis();
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
         for (int index : stackIndex) {
             map.merge(index, 1, Integer::sum);
         }
-        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
+//        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
 
         //根据index拆分stackArr,还原数组
-        long t4 = System.currentTimeMillis();
+//        long t4 = System.currentTimeMillis();
         List<int[]> arrGroup = new ArrayList<>();
         int arrNum = map.keySet().size();
         for (int i = 0; i < arrNum; i++) {
@@ -203,7 +203,7 @@ public class stackData2Rep {
         for (int i = 0; i < stackIndex.length; i++) {
             arrGroup.get(stackIndex[i])[p[stackIndex[i]]++] = stackArr[i];
         }
-        System.out.println("拆分数组时间：" + (System.currentTimeMillis() - t4));
+//        System.out.println("拆分数组时间：" + (System.currentTimeMillis() - t4));
         return arrGroup;
     }
 
