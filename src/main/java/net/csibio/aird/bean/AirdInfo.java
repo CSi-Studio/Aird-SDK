@@ -31,16 +31,16 @@ public class AirdInfo {
     List<Compressor> compressors;
 
     /**
-     * Version
+     * Format Version
      * 应用版本号
      */
-    String version = "1.0.0";
+    String version = "1.0.3";
 
     /**
      * Version Code. Integer code from 1 to N
      * 应用版本编码,从1开始计数的整型编码
      */
-    Integer versionCode = 1;
+    Integer versionCode = 3;
 
     /**
      * [核心字段]
