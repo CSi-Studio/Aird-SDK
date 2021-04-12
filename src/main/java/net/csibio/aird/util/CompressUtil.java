@@ -76,19 +76,8 @@ public class CompressUtil {
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
-        int container = 0;
-        byte[] decompressedData = null;
         int i;
-        try{
-            if (data.length > Math.pow(2, 12)) {
-                container = Integer.MAX_VALUE-2;
-            } else {
-                container = data.length * 100;
-            }
-            decompressedData = new byte[container];
-        }catch (Exception e){
-            System.out.println(container+"");
-        }
+        byte[] decompressedData = new byte[data.length*100];
         try {
             i = decompresser.inflate(decompressedData);
             decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
@@ -96,6 +85,21 @@ public class CompressUtil {
             e.printStackTrace();
         }
         return decompressedData;
+    }
+
+    public static byte[] zlibDecoderLongArray(byte[] data)throws IOException, DataFormatException {
+        Inflater inflater = new Inflater();
+        inflater.setInput(data);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!inflater.finished()) {
+            int count = inflater.inflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        outputStream.close();
+        byte[] output = outputStream.toByteArray();
+        return output;
     }
 
     /**

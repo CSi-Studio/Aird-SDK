@@ -14,7 +14,7 @@ import java.util.List;
 
 public class testCompareStack {
     public static void main(String[] args) throws IOException {
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_64var_lgillet_I160305_002.json";
+        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
         System.out.println("block数：" + swathIndexList.size());
@@ -71,7 +71,7 @@ public class testCompareStack {
             }
             tAird1Decode += tDecode;
 
-            for (int k = 2; k < 9; k++) {
+            for (int k = 9; k < 11; k++) {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
                 int groupNum = (mzNum - 1) / arrNum + 1;
