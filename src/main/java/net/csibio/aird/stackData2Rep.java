@@ -9,12 +9,12 @@ import java.util.*;
 //对数组的index进行移位缩短操作后，使用zlib压缩
 public class stackData2Rep {
     public static void main(String[] args) {
-        for (int k = 10; k < 11; k++) {
+        for (int k = 4; k < 11; k++) {
             int arrNum = (int) Math.pow(2, k);
             //生成有序数组
             List<int[]> arrGroup = new ArrayList<>();
             for (int i = 0; i < arrNum; i++) {
-                int[] arr = new int[3000 + (int) (Math.random() * 100)];//模拟一张光谱3000多个m/z
+                int[] arr = new int[2000 + (int) (Math.random() * 100)];//模拟一张光谱3000多个m/z
                 arr[0] = 1000000;//每个mz是百万级的整数
                 for (int j = 1; j < arr.length; j++) {
                     arr[j] = arr[j - 1] + (int) (Math.random() * 100000);

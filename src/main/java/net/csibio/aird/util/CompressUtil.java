@@ -69,15 +69,26 @@ public class CompressUtil {
 
     /**
      * decompress the data with zlib
+     *
      * @param data data to be decompressed
      * @return decompressed data
      */
     public static byte[] zlibDecoder(byte[] data) {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
-        byte[] decompressedData = new byte[data.length * 1000];
+        int container = 0;
+        byte[] decompressedData = null;
         int i;
-
+        try{
+            if (data.length > Math.pow(2, 12)) {
+                container = Integer.MAX_VALUE-2;
+            } else {
+                container = data.length * 100;
+            }
+            decompressedData = new byte[container];
+        }catch (Exception e){
+            System.out.println(container+"");
+        }
         try {
             i = decompresser.inflate(decompressedData);
             decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
@@ -89,8 +100,9 @@ public class CompressUtil {
 
     /**
      * decompress the data with zlib at a specified start and length
-     * @param data data to be decoded
-     * @param start the start position of the data array
+     *
+     * @param data   data to be decoded
+     * @param start  the start position of the data array
      * @param length the length for compressor to decode
      * @return decompressed data
      */
@@ -127,6 +139,7 @@ public class CompressUtil {
 
     /**
      * decompress the data with fastpfor algorithm
+     *
      * @param compressedInts 压缩对象
      * @return decompressed data
      */
@@ -145,6 +158,7 @@ public class CompressUtil {
 
     /**
      * compress the data with fastpfor algorithm
+     *
      * @param sortedInt data to be decoded
      * @return compressed data
      */
@@ -162,6 +176,7 @@ public class CompressUtil {
 
     /**
      * get the compressor for m/z
+     *
      * @param compressors 压缩策略
      * @return the m/z compressor
      */
@@ -179,6 +194,7 @@ public class CompressUtil {
 
     /**
      * get the intensity compressor for intensity
+     *
      * @param compressors 压缩策略
      * @return the intensity compressor
      */
@@ -196,6 +212,7 @@ public class CompressUtil {
 
     /**
      * compress a float array with zlib and convert the binary data into string with Base64 algorithm
+     *
      * @param target 压缩对象
      * @return base64 string
      */
@@ -211,6 +228,7 @@ public class CompressUtil {
 
     /**
      * compress an integer array with zlib and convert the binary data into string with Base64 algorithm
+     *
      * @param target array to be compressed and transformed
      * @return base64 string
      */
@@ -226,6 +244,7 @@ public class CompressUtil {
 
     /**
      * compress the int array with zlib algorithm
+     *
      * @param target array to be compressed and transformed
      * @return compressed data
      */
@@ -240,6 +259,7 @@ public class CompressUtil {
 
     /**
      * compress the float array with zlib algorithm
+     *
      * @param target array to be compressed and transformed
      * @return compressed data
      */
@@ -254,6 +274,7 @@ public class CompressUtil {
 
     /**
      * decompress the binary data with zlib algorithm
+     *
      * @param value array to be decompressed and transformed
      * @return decompressed data
      */
@@ -273,6 +294,7 @@ public class CompressUtil {
 
     /**
      * decompress the binary data with zlib algorithm
+     *
      * @param value array to be decompressed and transformed
      * @return decompressed data
      */

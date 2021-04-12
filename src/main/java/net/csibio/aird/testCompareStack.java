@@ -14,12 +14,12 @@ import java.util.List;
 
 public class testCompareStack {
     public static void main(String[] args) throws IOException {
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_64fix_lgillet_I160310_001.json";
+        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_64var_lgillet_I160305_002.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
         System.out.println("block数：" + swathIndexList.size());
         System.out.println();
-        int testBlockNum = 1;
+        int testBlockNum = 10;
         long sizeOrigin = 0;
         long tAird1 = 0;
         long tAird1Decode = 0;
@@ -71,7 +71,7 @@ public class testCompareStack {
             }
             tAird1Decode += tDecode;
 
-            for (int k = 2; k < 11; k++) {
+            for (int k = 2; k < 9; k++) {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
                 int groupNum = (mzNum - 1) / arrNum + 1;
@@ -97,6 +97,7 @@ public class testCompareStack {
                     stackData2Rep.stackDecode(stack);
                     recordDecodeTime[k - 2][m] += (System.currentTimeMillis() - tempT);
                 }
+                System.out.println(k);
 //                String size3 = RamUsageEstimator.humanSizeOf(stacks);
 //                System.out.println("二代：" + size3);
 //                System.out.println("二代压缩时间：" + (t3 - t2));
@@ -109,7 +110,7 @@ public class testCompareStack {
         out.write(testBlockNum + " blocks recorded" + "\r\n");
         out.write("sizeOrigin" + "," + sizeOrigin + "\r\n");
         out.write("k,size,encodeTime,decodeTime,sizeIndex,sizeMz" + "\r\n");
-        out.write("0" + "," + sizeAird1 + "," + tAird1 + tAird1Decode);
+        out.write("0" + "," + sizeAird1 + "," + tAird1 + "," + tAird1Decode);
         for (int i = 0; i < 9; i++) {
             out.write("\r\n");
             long stackSize = 0;
@@ -124,7 +125,7 @@ public class testCompareStack {
                 stackSizeIndex += recordIndexSize[i][j];
                 stackSizeMz += recordMzSize[i][j];
             }
-            out.write((i + 2) + "," + stackSize + "," + stackTime + "," + stackSizeIndex + "," + stackSizeMz);
+            out.write((i + 2) + "," + stackSize + "," + stackTime + "," + stackTimeDecode + "," + stackSizeIndex + "," + stackSizeMz);
         }
         out.close();
     }
