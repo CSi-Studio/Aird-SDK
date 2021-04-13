@@ -77,7 +77,7 @@ public class CompressUtil {
         Inflater decompresser = new Inflater();
         decompresser.setInput(data);
         int i;
-        byte[] decompressedData = new byte[data.length*100];
+        byte[] decompressedData = new byte[data.length * 100];
         try {
             i = decompresser.inflate(decompressedData);
             decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
@@ -87,18 +87,28 @@ public class CompressUtil {
         return decompressedData;
     }
 
-    public static byte[] zlibDecoderLongArray(byte[] data)throws IOException, DataFormatException {
+    public static byte[] zlibDecoderLongArray(byte[] data) {
+        byte[] output;
         Inflater inflater = new Inflater();
         inflater.setInput(data);
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!inflater.finished()) {
-            int count = inflater.inflate(buffer);
-            outputStream.write(buffer, 0, count);
+        try {
+            byte[] buffer = new byte[10240];
+            while (!inflater.finished()) {
+                int count = inflater.inflate(buffer);
+                outputStream.write(buffer, 0, count);
+            }
+            output = outputStream.toByteArray();
+        } catch (Exception e) {
+            output = data;
+            e.printStackTrace();
+        } finally {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        outputStream.close();
-        byte[] output = outputStream.toByteArray();
         return output;
     }
 
@@ -305,6 +315,20 @@ public class CompressUtil {
     public static int[] transToInteger(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
+
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
+
+        byteBuffer.clear();
+        return intValues;
+    }
+
+    public static int[] transToIntegerLongArray(byte[] value){
+        ByteBuffer byteBuffer = ByteBuffer.wrap(value);
+        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoderLongArray(byteBuffer.array()));
 
         IntBuffer ints = byteBuffer.asIntBuffer();
         int[] intValues = new int[ints.capacity()];

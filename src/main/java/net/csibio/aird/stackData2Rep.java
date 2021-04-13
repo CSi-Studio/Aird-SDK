@@ -160,11 +160,11 @@ public class stackData2Rep {
 
     public static List<int[]> stackDecode(Stack stack) {
 //        long t1 = System.currentTimeMillis();
-        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(stack.getComArr()));
+        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToIntegerLongArray(stack.getComArr()));
 //        System.out.println("pfor+zlib解压数组时间：" + (System.currentTimeMillis() - t1));
         int[] stackIndex = new int[stackArr.length];
 //        long t2 = System.currentTimeMillis();
-        byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
+        byte[] indexShift = CompressUtil.zlibDecoderLongArray(stack.getComIndex());
 //        System.out.println("zlib索引解压时间：" + (System.currentTimeMillis() - t2));
         int digit = stack.getDigit();
 
