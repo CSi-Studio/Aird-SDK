@@ -9,12 +9,12 @@ import java.util.*;
 //对数组的index进行移位缩短操作后，使用zlib压缩
 public class stackData2Rep {
     public static void main(String[] args) {
-        for (int k = 4; k < 11; k++) {
+        for (int k = 8; k < 9; k++) {
             int arrNum = (int) Math.pow(2, k);
             //生成有序数组
             List<int[]> arrGroup = new ArrayList<>();
             for (int i = 0; i < arrNum; i++) {
-                int[] arr = new int[2000 + (int) (Math.random() * 100)];//模拟一张光谱3000多个m/z
+                int[] arr = new int[8000 + (int) (Math.random() * 100)];//模拟一张光谱3000多个m/z
                 arr[0] = 1000000;//每个mz是百万级的整数
                 for (int j = 1; j < arr.length; j++) {
                     arr[j] = arr[j - 1] + (int) (Math.random() * 100000);
@@ -207,86 +207,7 @@ public class stackData2Rep {
         return arrGroup;
     }
 
-//    public static List<int[]> stackDecodeAbort(Stack stack) {
-//        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(CompressUtil.zlibDecoder(stack.getComArr())));
-//        int[] stackIndex = new int[stackArr.length];
-//        byte[] indexShift = CompressUtil.zlibDecoder(stack.getComIndex());
-//        int digit = stack.getDigit();
-//
-//        //拆分byte为8个bit，并分别存储
-////        long t0 = System.currentTimeMillis();
-//        byte[] value = new byte[8 * indexShift.length];
-//        for (int i = 0; i < indexShift.length; i++) {
-//            for (int j = 0; j < 8; j++) {
-//                value[8 * i + j] = (byte) (((indexShift[i] & 0xff) >> j) & 1);
-//            }
-//        }
-////        System.out.println("拆分时间:" + (System.currentTimeMillis() - t0));
-//
-//        //还原为int类型的index
-////        long t1 = System.currentTimeMillis();
-//        for (int i = 0; i < stackIndex.length; i++) {
-//            for (int j = 0; j < digit; j++) {
-//                stackIndex[i] += value[digit * i + j] << j;
-//            }
-//        }
-////        System.out.println("移位时间:" + (System.currentTimeMillis() - t1));
-//
-//        //统计index数组中各个元素出现的次数
-//        long t3 = System.currentTimeMillis();
-//        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
-//        for (int index : stackIndex) {
-//            map.merge(index, 1, Integer::sum);
-//        }
-//        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
-//
-//        //合并数组和索引为一个二维数组
-//        long t2 = System.currentTimeMillis();
-//        int[][] stackSort = new int[stackArr.length][2];
-//        for (int i = 0; i < stackArr.length; i++) {
-//            stackSort[i][0] = stackArr[i];
-//            stackSort[i][1] = stackIndex[i];
-//        }
-//        Arrays.sort(stackSort, (a, b) -> (a[1] == b[1] ? a[0] - b[0] : a[1] - b[1]));
-//        System.out.println("合并排序时间：" + (System.currentTimeMillis() - t2));
-//
-////        int maxIndex = stackSort[stackSort.length-1][1];
-//
-//        //根据index拆分stackArr,还原数组
-////        long t4 = System.currentTimeMillis();
-//        List<int[]> arrGroup = new ArrayList<>();
-//        int fromIndex = 0;
-//        for (int i = 0; i < stackSort[stackSort.length - 1][1] + 1; i++) {
-//            int[] arr = new int[map.get(i)];
-//            for (int j = 0; j < map.get(i); j++) {
-//                arr[j] = stackSort[fromIndex + j][0];
-//            }
-//            fromIndex += map.get(i);
-//            arrGroup.add(arr);
-//        }
-////        System.out.println("拆分数组时间："+(System.currentTimeMillis() - t4));
-//        return arrGroup;
-//    }
 
-    //合并两个有序数组为一个
-//    private static int[] merge(int[] nums1, int n1, int[] nums2, int n2) {
-//        int p1 = n1 - 1, p2 = n2 - 1;
-//        int tail = n1 + n2 - 1;
-//        int cur;
-//        while (p1 >= 0 || p2 >= 0) {
-//            if (p1 == -1) {
-//                cur = nums2[p2--];
-//            } else if (p2 == -1) {
-//                cur = nums1[p1--];
-//            } else if (nums1[p1] > nums2[p2]) {
-//                cur = nums1[p1--];
-//            } else {
-//                cur = nums2[p2--];
-//            }
-//            nums1[tail--] = cur;
-//        }
-//        return nums1;
-//    }
 
     @Data
     public static class Stack {

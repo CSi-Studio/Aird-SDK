@@ -14,25 +14,25 @@ import java.util.List;
 
 public class testCompareStack {
     public static void main(String[] args) throws IOException {
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_64var_lgillet_I160305_002.json";
+        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/C20181208yix_HCC_DIA_T_46A.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
         System.out.println("block数：" + swathIndexList.size());
         System.out.println();
-        int testBlockNum = 10;
+        int testBlockNum = 5;
         long sizeOrigin = 0;
         long tAird1 = 0;
         long tAird1Decode = 0;
         long sizeAird1 = 0;
 
-        long[][] recordSize = new long[9][testBlockNum];//记录2的幂次堆叠每个block的size
-        long[][] recordEncodeTime = new long[9][testBlockNum];//记录2的幂次堆叠每个block的EncodeTime
-        long[][] recordDecodeTime = new long[9][testBlockNum];
-        long[][] recordIndexSize = new long[9][testBlockNum];
-        long[][] recordMzSize = new long[9][testBlockNum];
+        long[][] recordSize = new long[15][testBlockNum];//记录2的幂次堆叠每个block的size
+        long[][] recordEncodeTime = new long[15][testBlockNum];//记录2的幂次堆叠每个block的EncodeTime
+        long[][] recordDecodeTime = new long[15][testBlockNum];
+        long[][] recordIndexSize = new long[15][testBlockNum];
+        long[][] recordMzSize = new long[15][testBlockNum];
 
         for (int m = 0; m < testBlockNum; m++) {
-            BlockIndex index = swathIndexList.get(m);
+            BlockIndex index = swathIndexList.get(m+1);
             List<Float> rts = index.getRts();
             int mzNum = rts.size();
 
@@ -71,7 +71,7 @@ public class testCompareStack {
             }
             tAird1Decode += tDecode;
 
-            for (int k = 9; k < 11; k++) {
+            for (int k = 1; k < 12; k++) {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
                 int groupNum = (mzNum - 1) / arrNum + 1;
@@ -88,14 +88,14 @@ public class testCompareStack {
                 stackData2Rep.Stack stackRemainder = stackData2Rep.stackEncode(arrGroup, false);
                 stacks.add(stackRemainder);
                 long t3 = System.currentTimeMillis();
-                recordSize[k - 2][m] = RamUsageEstimator.sizeOf(stacks);
-                recordEncodeTime[k - 2][m] = (t3 - t2);
+                recordSize[k - 1][m] = RamUsageEstimator.sizeOf(stacks);
+                recordEncodeTime[k - 1][m] = (t3 - t2);
                 for (stackData2Rep.Stack stack : stacks) {
-                    recordIndexSize[k - 2][m] += RamUsageEstimator.sizeOf(stack.getComIndex());
-                    recordMzSize[k - 2][m] += RamUsageEstimator.sizeOf(stack.getComArr());
+                    recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComIndex());
+                    recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComArr());
                     long tempT = System.currentTimeMillis();
                     stackData2Rep.stackDecode(stack);
-                    recordDecodeTime[k - 2][m] += (System.currentTimeMillis() - tempT);
+                    recordDecodeTime[k - 1][m] += (System.currentTimeMillis() - tempT);
                 }
                 System.out.println(k);
 //                String size3 = RamUsageEstimator.humanSizeOf(stacks);
@@ -111,7 +111,7 @@ public class testCompareStack {
         out.write("sizeOrigin" + "," + sizeOrigin + "\r\n");
         out.write("k,size,encodeTime,decodeTime,sizeIndex,sizeMz" + "\r\n");
         out.write("0" + "," + sizeAird1 + "," + tAird1 + "," + tAird1Decode);
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 11; i++) {
             out.write("\r\n");
             long stackSize = 0;
             long stackTime = 0;
@@ -125,7 +125,7 @@ public class testCompareStack {
                 stackSizeIndex += recordIndexSize[i][j];
                 stackSizeMz += recordMzSize[i][j];
             }
-            out.write((i + 2) + "," + stackSize + "," + stackTime + "," + stackTimeDecode + "," + stackSizeIndex + "," + stackSizeMz);
+            out.write((i + 1) + "," + stackSize + "," + stackTime + "," + stackTimeDecode + "," + stackSizeIndex + "," + stackSizeMz);
         }
         out.close();
     }

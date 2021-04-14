@@ -335,7 +335,6 @@ public class CompressUtil {
         for (int i = 0; i < ints.capacity(); i++) {
             intValues[i] = ints.get(i);
         }
-
         byteBuffer.clear();
         return intValues;
     }
