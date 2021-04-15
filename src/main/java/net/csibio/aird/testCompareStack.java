@@ -75,26 +75,26 @@ public class testCompareStack {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
                 int groupNum = (mzNum - 1) / arrNum + 1;
-                List<stackData2Rep.Stack> stacks = new ArrayList<>();
+                List<StackData.Stack> stacks = new ArrayList<>();
                 int fromIndex = 0;
                 for (int i = 0; i < groupNum - 1; i++) {
                     List<int[]> arrGroup = mzGroup.subList(fromIndex, fromIndex + arrNum);
-                    stackData2Rep.Stack stack = stackData2Rep.stackEncode(arrGroup, true);
+                    StackData.Stack stack = StackData.stackEncode(arrGroup, true);
                     stacks.add(stack);
                     fromIndex += arrNum;
                 }
                 //处理余数
                 List<int[]> arrGroup = mzGroup.subList(fromIndex, mzNum);
-                stackData2Rep.Stack stackRemainder = stackData2Rep.stackEncode(arrGroup, false);
+                StackData.Stack stackRemainder = StackData.stackEncode(arrGroup, false);
                 stacks.add(stackRemainder);
                 long t3 = System.currentTimeMillis();
                 recordSize[k - 1][m] = RamUsageEstimator.sizeOf(stacks);
                 recordEncodeTime[k - 1][m] = (t3 - t2);
-                for (stackData2Rep.Stack stack : stacks) {
+                for (StackData.Stack stack : stacks) {
                     recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComIndex());
                     recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComArr());
                     long tempT = System.currentTimeMillis();
-                    stackData2Rep.stackDecode(stack);
+                    StackData.stackDecode(stack);
                     recordDecodeTime[k - 1][m] += (System.currentTimeMillis() - tempT);
                 }
                 System.out.println(k);

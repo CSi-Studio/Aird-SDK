@@ -7,7 +7,7 @@ import org.apache.commons.math3.util.FastMath;
 import java.util.*;
 
 //对数组的index进行移位缩短操作后，使用zlib压缩
-public class stackData2Rep {
+public class StackData {
     public static void main(String[] args) {
         for (int k = 8; k < 9; k++) {
             int arrNum = (int) Math.pow(2, k);
