@@ -30,9 +30,14 @@ public class MsCycle implements Serializable {
      */
     double ri;
 
+    /**
+     * the ms1 spectrum data pairs
+     */
     MzIntensityPairs ms1Spectrum;
 
-    //MS2的RT沿用MS1
+    /**
+     * MS2的RT沿用MS1
+     */
     List<WindowRange> rangeList;
 
     //MS2的RT时间列表

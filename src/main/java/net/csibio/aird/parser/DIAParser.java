@@ -39,16 +39,19 @@ public class DIAParser extends BaseParser {
     }
 
     /**
-     * the result key is rt,value is the spectrum
-     * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息,原始谱图信息包含mz数组和intensity两个相同长度的数组
+     * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
      * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
      *
-     * @param startPtr    起始指针位置
-     * @param endPtr      结束指针位置
-     * @param rtList      rt列表,包含所有的光谱产出时刻
-     * @param mzSizeList  mz块的大小列表
-     * @param intSizeList intensity块的大小列表
-     * @return 每一个时刻对应的光谱信息
+     * the result key is rt,value is the spectrum(mz-intensity pairs)
+     * In particular, this function will not close the RAF object directly after using it.
+     * Users need to close the object manually after using the diaparser object
+     *
+     * @param startPtr    起始指针位置 start point
+     * @param endPtr      结束指针位置 end point
+     * @param rtList      rt列表,包含所有的光谱产出时刻 the retention time list
+     * @param mzSizeList  mz块的大小列表 the mz block size list
+     * @param intSizeList intensity块的大小列表 the intensity block size list
+     * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
     public TreeMap<Float, MzIntensityPairs> getSpectrums(long startPtr, long endPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intSizeList) {
 
@@ -84,27 +87,50 @@ public class DIAParser extends BaseParser {
 
     /**
      * 从aird文件中获取某一条记录
-     * 从一个完整的Swath Block块中取出一条记录
+     * 查询条件: 1.起始坐标 2.全rt列表 3.mz块体积列表 4.intensity块大小列表 5.rt
      *
-     * @param startPtr    起始位置
-     * @param rtList      全部时刻列表
-     * @param mzSizeList  mz数组长度列表
-     * @param intSizeList int数组长度列表
-     * @param rt          获取某一个时刻原始谱图
-     * @return 某个时刻的光谱信息
+     * Read a spectrum from aird with multiple query criteria.
+     * Query Criteria: 1.Start Point 2.rt list 3.mz block size list 4.intensity block size list 5.rt
+     * @param startPtr    起始位置 the start point of the target spectrum
+     * @param rtList      全部时刻列表 all the retention time list
+     * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param intSizeList int数组长度列表 intensity size block list
+     * @param rt          获取某一个时刻原始谱图 the retention time of the target spectrum
+     * @return 某个时刻的光谱信息 the spectrum of the target retention time
      */
-
     public MzIntensityPairs getSpectrumByRt(long startPtr, List<Float> rtList, List<Long> mzSizeList, List<Long> intSizeList, float rt) {
         int position = rtList.indexOf(rt);
         return getSpectrumByIndex(startPtr, mzSizeList, intSizeList, position);
     }
 
+
+    /**
+     * 从一个完整的Swath Block块中取出一条记录
+     * 查询条件: 1. block索引号 2. rt
+     *
+     * Read a spectrum from aird with block index and target rt
+     * @param index block index
+     * @param rt retention time of the target spectrum
+     * @return the target spectrum
+     */
     public MzIntensityPairs getSpectrumByRt(BlockIndex index, float rt) {
         List<Float> rts = index.getRts();
         int position = rts.indexOf(rt);
         return getSpectrumByIndex(index, position);
     }
 
+    /**
+     * 从aird文件中获取某一条记录
+     * 查询条件: 1.起始坐标 2.mz块体积列表 3.intensity块大小列表 4.光谱在块中的索引位置
+     *
+     * Read a spectrum from aird with multiple query criteria.
+     * Query Criteria: 1.Start Point 2.mz block size list 3.intensity block size list  4.spectrum index in the block
+     * @param startPtr    起始位置 the start point of the target spectrum
+     * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param intSizeList int数组长度列表 intensity size block list
+     * @param index 光谱在block块中的索引位置 the spectrum index in the block
+     * @return 某个时刻的光谱信息 the spectrum of the target retention time
+     */
     public MzIntensityPairs getSpectrumByIndex(long startPtr, List<Long> mzSizeList, List<Long> intSizeList, int index) {
         RandomAccessFile raf = null;
         try {
@@ -141,6 +167,12 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
+    /**
+     *
+     * @param blockIndex
+     * @param index
+     * @return
+     */
     public MzIntensityPairs getSpectrumByIndex(BlockIndex blockIndex, int index) {
         return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(), index);
     }
@@ -164,11 +196,14 @@ public class DIAParser extends BaseParser {
     }
 
     /**
+     * Specific API
      * 从Aird文件中读取,但是不要将m/z数组的从Integer改为Float
      *
-     * @param index 索引序列号
-     * @param rt    光谱产出时刻
-     * @return 该时刻产生的光谱信息, 其中mz数据以int类型返回
+     * Read from aird, but not convert the m/z array from integer to float
+     *
+     * @param index 索引序列号 block index
+     * @param rt    光谱产出时刻 retention time for the spectrum
+     * @return 该时刻产生的光谱信息, 其中mz数据以int类型返回 the target rt's spectrum with integer mz array
      */
     public MzIntensityPairs getSpectrumAsInteger(BlockIndex index, float rt) {
         RandomAccessFile raf = null;

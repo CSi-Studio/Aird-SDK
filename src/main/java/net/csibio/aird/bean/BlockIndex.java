@@ -71,7 +71,7 @@ public class BlockIndex {
 
     /**
      * 用于存储KV键值对
-     * features for probable KV values
+     * Pairs with key/value for extension features
      */
     String features;
 

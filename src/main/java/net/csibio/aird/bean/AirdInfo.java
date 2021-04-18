@@ -21,10 +21,8 @@ import java.util.List;
 public class AirdInfo {
 
     /**
-     * [核心字段]
-     * 数组压缩策略
-     * [Core Field]
-     * Data Compression Strategies
+     * [核心字段] 数组压缩策略
+     * [Core Field] Data Compression Strategies
      *
      * @see Compressor
      */
@@ -43,20 +41,16 @@ public class AirdInfo {
     Integer versionCode = 3;
 
     /**
-     * [核心字段]
-     * m/z窗口信息,窗口已经根据overlap进行过调整
-     * [Core Field]
-     * Store the precursor m/z window ranges which have been adjusted with experiment overlap
+     * [核心字段] m/z窗口信息,窗口已经根据overlap进行过调整
+     * [Core Field] Store the precursor m/z window ranges which have been adjusted with experiment overlap
      *
      * @see WindowRange
      */
     List<WindowRange> rangeList = new ArrayList<WindowRange>();
 
     /**
-     * [核心字段]
-     * 用于存储Block的索引
-     * [Core Field]
-     * Store the Block Index
+     * [核心字段] 用于存储Block的索引
+     * [Core Field] Store the Block Index
      */
     List<BlockIndex> indexList;
 
@@ -67,6 +61,7 @@ public class AirdInfo {
     List<Instrument> instruments;
 
     /**
+     * 数据处理过程的记录字段
      * DataProcessing information list
      */
     List<DataProcessing> dataProcessings;
@@ -84,10 +79,8 @@ public class AirdInfo {
     List<ParentFile> parentFiles;
 
     /**
-     * [核心字段]
-     * Aird文件类型
-     * [Core Field]
-     * Aird File Type
+     * [核心字段] Aird文件类型
+     * [Core Field] Aird File Type
      * @see AirdType
      */
     String type;
@@ -136,7 +129,7 @@ public class AirdInfo {
 
     /**
      * 特征键值对,详情见Features
-     * Features
+     * Pairs with key/value for extension features
      * @see Features
      */
     String features;

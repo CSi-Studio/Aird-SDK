@@ -23,8 +23,6 @@
 hs_err_pid*
 /aird.iml
 /.idea
-/.idea/
 /aird-sdk-java.iml
-
-
 /aird-sdk.iml
+/target/

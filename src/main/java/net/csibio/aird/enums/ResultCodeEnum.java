@@ -13,8 +13,7 @@ package net.csibio.aird.enums;
 import java.io.Serializable;
 
 /**
- * Created by James Lu MiaoShan
- * Time: 2018-06-06 09:38
+ * Result Code
  */
 public enum ResultCodeEnum implements Serializable {
 

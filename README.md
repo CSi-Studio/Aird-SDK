@@ -36,6 +36,7 @@ When dealing with Spectra, we advice that you should process with SWATH Window o
  Aird-SDK 1.0.X is currently support three types of MS file.
  - DIA/SWATH
  - DDA
+ - PRM   
  - Common type like mzXML
  
  Demo code: see SampleCode.java in the project
@@ -118,5 +119,44 @@ version|String|False|The software version
 name|String|True|The filename
 location|String|False|The file location
 type|String|False|The file type
+
+#Sample Code
+Detail samle code. See net.csibio.aird.sample.SampleCode
+## Scan Aird files from target directory
+```
+    List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
+    files.forEach(file -> {
+        AirdManager.getInstance().load(file.getPath());
+    });
+```
+
+## Load Aird Info into memory
+```
+    DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
+    DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
+    PRMParser prmParser = new PRMParser("\\FilePath\\file.json");
+```
+
+## Read AirdInfo
+```
+    AirdInfo airdInfo = parser.getAirdInfo();
+```
+
+## Read Spectrum directly
+```
+    MzIntensityPairs pairs = parser.getSpectrum(0);
+```
+
+## Read DIA SWATH block one by one
+```
+    airdInfo.getIndexList().forEach(blockIndex -> {
+       TreeMap<Float, MzIntensityPairs> map = diaParser.getSpectrums(blockIndex);
+    });
+```
+
+## Read DDA MsCycle
+```
+    List<MsCycle> cycleList = ddaParser.parseToMsCycle();
+```
 
 Paper see https://www.biorxiv.org/content/10.1101/2020.10.14.338921v1

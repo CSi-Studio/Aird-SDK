@@ -28,7 +28,7 @@ public class AirdScanUtil {
      * Scan a folder for all the aird index files(json format file) but not parse the json files
      * Recursive scanning under subfolders is not supported
      * The directory name will display as the Project name
-     * <p>
+     *
      * 扫描一个文件夹下所有的Aird索引文件.但是不解析这些json文件
      * 不支持子文件夹的递归扫描
      * 文件夹名称会显示为项目名称

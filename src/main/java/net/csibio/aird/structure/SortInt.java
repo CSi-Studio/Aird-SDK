@@ -12,6 +12,9 @@ package net.csibio.aird.structure;
 
 import lombok.Data;
 
+/**
+ * Try for Aird V2
+ */
 @Data
 public class SortInt implements Comparable{
     int number;

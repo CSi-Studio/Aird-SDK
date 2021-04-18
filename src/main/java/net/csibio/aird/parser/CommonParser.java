@@ -30,8 +30,10 @@ public class CommonParser extends BaseParser {
 
     /**
      * 根据序列号查询光谱
-     * @param index 光谱的索引号
-     * @return 光谱信息
+     * get Spectrum by spectrum index
+     *
+     * @param index 光谱的索引号 the index of the spectrum
+     * @return 光谱信息 spectrum data pairs
      */
     public MzIntensityPairs getSpectrum(int index) {
         List<BlockIndex> indexList = getAirdInfo().getIndexList();
@@ -47,9 +49,11 @@ public class CommonParser extends BaseParser {
 
     /**
      * COMMON类型的文件中,每一个mzs和ints数组中存储的是位置而不是块大小
-     * @param index 索引信息
-     * @param position 指定的光谱位置
-     * @return 该光谱中的信息
+     * In the common type file. every data stored in the mzs and ints is the spectrum location but not the block size
+     *
+     * @param index 索引信息 block index
+     * @param position 指定的光谱位置 the specific spectrum index
+     * @return 该光谱中的信息 spectrum data pairs
      */
     public MzIntensityPairs getSpectrum(BlockIndex index, int position) {
         RandomAccessFile raf = null;

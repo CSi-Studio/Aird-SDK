@@ -20,9 +20,9 @@ import java.util.Set;
 public class ArrayUtil {
 
     /**
-     * @param originalArray 原数组
-     * @param currentLayer  当前层数
-     * @return 排序后的int数组
+     * @param originalArray 原数组 original array
+     * @param currentLayer  当前层数 current layer
+     * @return 排序后的int数组 the sorted integer array
      */
     public static SortInt[] transToSortIntArray(int[] originalArray, int currentLayer) {
         SortInt[] sortInts = new SortInt[originalArray.length];
@@ -33,7 +33,7 @@ public class ArrayUtil {
     }
 
     /**
-     * @param sortInts 已经排序的int数组
+     * @param sortInts 已经排序的int数组 the sorted integer array
      * @param totalLayersCount 堆叠占位数,例如2层堆叠需要1位表示(即0和1),4层堆叠需要2位数表示(即00,01,10,11)
      * @return 恢复堆叠数组为正常数组
      */

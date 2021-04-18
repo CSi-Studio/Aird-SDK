@@ -18,7 +18,7 @@ import java.util.List;
 import static org.jocl.CL.*;
 
 /**
- * A sample showing a simple reduction with JOCL
+ * Using GPU for XIC
  */
 public class XIC {
     /**
