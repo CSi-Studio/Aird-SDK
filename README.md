@@ -46,6 +46,7 @@ https://aird.oss-cn-beijing.aliyuncs.com/AirdMetaData.json <br/>
 or refer in the root package of the project: AirdMetaData.json
 
 # Detail Description
+
 ##AirdInfo
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -66,6 +67,7 @@ creator	        |String|False|The file creator, this field can be set up in the 
 createDate	    |String|False|The create date for the aird file
 ignoreZeroIntensityPoint|Boolean|True|Whether ignore the point which intensity is 0
 features	    |String|False|Some other features stored with “key:value;key:value” format
+
 ##Compressor
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -73,6 +75,7 @@ target|String|True|mz, intensity
 methods|List<String>|True|zlib, pFor, log10
 precision|Integer|False|10^N, the N means N decimal places for the final data
 byteOrder|String|True|LITTLE_ENDIAN, BIG_ENDIAN
+
 ##WindowRange
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -80,6 +83,7 @@ start|Double|True|Precursor m/z start
 end|Double|True|Precursor m/z end
 mz|Double|True|Precursor m/z
 features|String|False|Some other features stored with “key:value;key:value” format
+
 ##BlockIndex
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -93,6 +97,7 @@ rts|List<Float>|True|All the retention times in the block
 mzs|List<Long>|True|COMMON: the start position for every m/z bytes. Others: the size for every m/z bytes size
 ints|List<Long>|True|COMMON: the start position for every m/z bytes. Others: the size for every m/z bytes size
 features|String|False|Some other features stored with “key:value;key:value” format
+
 ##Instrument
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -104,15 +109,18 @@ source|List<String>|False|Source: ”electrospray ionization”, ”electrospray
 analyzer|List<String>|False|Analyzer: “quadrupole”, “orbitrap”
 detector|List<String>|False|Detector: ”inductive detector”
 features|String|False|Some other features stored with “key:value;key:value” format
+
 ##DataProcessing
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 processingOperations|List<String>|False|Any additional manipulation not included elsewhere in the dataProcessing element
+
 ##Software 
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 name|String|True|The software name
 version|String|False|The software version
+
 ##ParentFile
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
@@ -122,6 +130,7 @@ type|String|False|The file type
 
 #Sample Code
 Detail samle code. See net.csibio.aird.sample.SampleCode
+
 ## Scan Aird files from target directory
 ```
     List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
