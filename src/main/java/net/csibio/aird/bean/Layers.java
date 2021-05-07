@@ -11,12 +11,14 @@ public class Layers {
     byte[] mzArray;
 
     /**
-     *
+     * mz对应的层索引
+     * layer index of mz
      */
     byte[] indexArray;
 
     /**
-     *
+     * 存储单个索引所需的位数
+     * storage digits occupied by an index
      */
     int digit;
 
