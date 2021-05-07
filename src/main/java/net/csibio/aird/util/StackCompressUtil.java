@@ -1,16 +1,15 @@
 package net.csibio.aird.util;
 
-import lombok.Data;
 import org.apache.commons.math3.util.FastMath;
 
-import net.csibio.aird.bean.Stack;
+import net.csibio.aird.bean.Layers;
 import java.util.*;
 
 //对数组的index进行移位缩短操作后，使用zlib压缩
-public class StackUtil {
+public class StackCompressUtil {
     //pair：默认采取pair成对排序，True也采取pair排序；false时采用QueueSort
-    public static Stack stackEncode(List<int[]> arrGroup, boolean pair) {
-        int stackLen = 0;//记录堆叠数总长度
+    public static Layers stackEncode(List<int[]> arrGroup, boolean pair) {
+        int stackLen = 0;  //记录堆叠数总长度
         for (int[] arr : arrGroup) {
             stackLen += arr.length;
         }
@@ -54,14 +53,14 @@ public class StackUtil {
             }
         }
         //数组用fastPFor压缩，index用zlib压缩，并记录层数
-        Stack stack = new Stack();
-        stack.comArr = CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
-        stack.comIndex = CompressUtil.zlibEncoder(indexShift);
-        stack.digit = digit;
-        return stack;
+        Layers layers = new Layers();
+        layers.setMzArray(CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr)));
+        layers.setIndexArray(CompressUtil.zlibEncoder(indexShift));
+        layers.setDigit(digit);
+        return layers;
     }
 
-    public static Stack stackEncode(List<int[]> arrGroup) {
+    public static Layers stackEncode(List<int[]> arrGroup) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
             stackLen += arr.length;
@@ -111,27 +110,14 @@ public class StackUtil {
         System.out.println("索引移位时间:" + (System.currentTimeMillis() - t0));
 
         //数组用fastPFor压缩，index用zlib压缩，并记录层数
-        Stack stack = new Stack();
-        long t1 = System.currentTimeMillis();
-        stack.comArr = CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr));
-        System.out.println("zlib+Pfor压缩数组时间：" + (System.currentTimeMillis() - t1));
-        long t2 =System.currentTimeMillis();
-        stack.comIndex = CompressUtil.zlibEncoder(indexShift);
-        System.out.println("zlib压缩索引时间：" + (System.currentTimeMillis() - t2));
-        stack.digit = digit;
-        return stack;
+        return new Layers(CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr)), CompressUtil.zlibEncoder(indexShift), digit);
     }
 
-    public static List<int[]> stackDecode(Stack stack) {
-//        long t1 = System.currentTimeMillis();
-        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToIntegerLongArray(stack.getComArr()));
-//        System.out.println("pfor+zlib解压数组时间：" + (System.currentTimeMillis() - t1));
+    public static List<int[]> stackDecode(Layers layers) {
+        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToIntegerLongArray(layers.getMzArray()));
         int[] stackIndex = new int[stackArr.length];
-//        long t2 = System.currentTimeMillis();
-        byte[] indexShift = CompressUtil.zlibDecoderLongArray(stack.getComIndex());
-//        System.out.println("zlib索引解压时间：" + (System.currentTimeMillis() - t2));
-        int digit = stack.getDigit();
-
+        byte[] indexShift = CompressUtil.zlibDecoderLongArray(layers.getIndexArray());
+        int digit = layers.getDigit();
         //拆分byte为8个bit，并分别存储
 //        long t = System.currentTimeMillis();
         byte[] value = new byte[8 * indexShift.length];
