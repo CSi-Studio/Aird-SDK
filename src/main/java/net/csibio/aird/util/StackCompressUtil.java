@@ -5,9 +5,15 @@ import org.apache.commons.math3.util.FastMath;
 import net.csibio.aird.bean.Layers;
 import java.util.*;
 
-//对数组的index进行移位缩短操作后，使用zlib压缩
 public class StackCompressUtil {
-    //pair：默认采取pair成对排序，True也采取pair排序；false时采用QueueSort
+
+    /**
+     * compress the data with stack-ZDPD algorithm
+     *
+     * @param arrGroup mzArray to be compressed
+     * @param pair sorting method of mzArray
+     * @return compressed mzArray
+     */
     public static Layers stackEncode(List<int[]> arrGroup, boolean pair) {
         int stackLen = 0;  //记录堆叠数总长度
         for (int[] arr : arrGroup) {
@@ -19,7 +25,7 @@ public class StackCompressUtil {
             tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
         }
 
-        //合并排序数组
+        //合并排序数组 pair：默认采取pair成对排序，True也采取pair排序；false时采用QueueSort
         int[][] stackSort;
         if (pair) {
             stackSort = getPairSortArray(tempArrGroup);
@@ -60,66 +66,18 @@ public class StackCompressUtil {
         return layers;
     }
 
-    public static Layers stackEncode(List<int[]> arrGroup) {
-        int stackLen = 0;//记录堆叠数总长度
-        for (int[] arr : arrGroup) {
-            stackLen += arr.length;
-        }
-
-        List<int[]> tempArrGroup = new ArrayList<>();
-        for (int i = 0; i < arrGroup.size(); i++) {
-            tempArrGroup.add(Arrays.copyOf(arrGroup.get(i), arrGroup.get(i).length));
-        }
-
-        //合并排序数组
-        long t = System.currentTimeMillis();
-//        int[][] stackSort = getFullSortArray(tempArrGroup);
-//        int[][] stackSort = getQueueSortArray(tempArrGroup);
-        int[][] stackSort = getPairSortArray(tempArrGroup);
-        System.out.println("合并排序数组时间:" + (System.currentTimeMillis() - t));
-
-        //取出stack数组和index数组
-        int[] stackArr = new int[stackSort.length];
-        int[] stackIndex = new int[stackSort.length];
-        for (int i = 0; i < stackSort.length; i++) {
-            stackArr[i] = stackSort[i][0];
-            stackIndex[i] = stackSort[i][1];
-        }
-
-        //index移位存储
-        long t0 = System.currentTimeMillis();
-        int digit = (int) Math.ceil(Math.log(arrGroup.size()) / Math.log(2));
-        int indexLen = (stackLen * digit - 1) / 8 + 1;
-        byte[] value = new byte[8 * indexLen];
-        for (int i = 0; i < stackLen; i++) {
-            int fromIndex = digit * i;
-            for (int j = 0; j < digit; j++) {
-                value[fromIndex + j] = (byte) ((stackIndex[i] >> j) & 1);
-            }
-        }
-
-        //把8个byte并为1个byte，用byte数组存是因为zlib压缩的是byte
-        byte[] indexShift = new byte[indexLen];
-        for (int i = 0; i < indexLen; i++) {
-            int temp = 0;
-            for (int j = 0; j < 8; j++) {
-                temp += value[8 * i + j] << j;
-                indexShift[i] = (byte) temp;
-            }
-        }
-        System.out.println("索引移位时间:" + (System.currentTimeMillis() - t0));
-
-        //数组用fastPFor压缩，index用zlib压缩，并记录层数
-        return new Layers(CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr)), CompressUtil.zlibEncoder(indexShift), digit);
-    }
-
+    /**
+     * decompress the data with stack-ZDPD algorithm
+     *
+     * @param layers compressed mzArray
+     * @return decompressed mzArray
+     */
     public static List<int[]> stackDecode(Layers layers) {
         int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToIntegerLongArray(layers.getMzArray()));
         int[] stackIndex = new int[stackArr.length];
         byte[] indexShift = CompressUtil.zlibDecoderLongArray(layers.getIndexArray());
         int digit = layers.getDigit();
         //拆分byte为8个bit，并分别存储
-//        long t = System.currentTimeMillis();
         byte[] value = new byte[8 * indexShift.length];
         for (int i = 0; i < indexShift.length; i++) {
             for (int j = 0; j < 8; j++) {
@@ -132,18 +90,14 @@ public class StackCompressUtil {
                 stackIndex[i] += value[digit * i + j] << j;
             }
         }
-//        System.out.println("还原index时间:" + (System.currentTimeMillis() - t));
 
         //统计index数组中各个元素出现的次数
-//        long t3 = System.currentTimeMillis();
         Map<Integer, Integer> map = new HashMap<Integer, Integer>();
         for (int index : stackIndex) {
             map.merge(index, 1, Integer::sum);
         }
-//        System.out.println("统计长度时间：" + (System.currentTimeMillis() - t3));
 
         //根据index拆分stackArr,还原数组
-//        long t4 = System.currentTimeMillis();
         List<int[]> arrGroup = new ArrayList<>();
         int arrNum = map.keySet().size();
         for (int i = 0; i < arrNum; i++) {
@@ -153,10 +107,15 @@ public class StackCompressUtil {
         for (int i = 0; i < stackIndex.length; i++) {
             arrGroup.get(stackIndex[i])[p[stackIndex[i]]++] = stackArr[i];
         }
-//        System.out.println("拆分数组时间：" + (System.currentTimeMillis() - t4));
         return arrGroup;
     }
 
+    /**
+     * sort mzArray with ArraySort method
+     *
+     * @param arrGroup mzArray to be sorted
+     * @return sorted mzArray-Index pair
+     */
     private static int[][] getFullSortArray(List<int[]> arrGroup) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
@@ -178,7 +137,12 @@ public class StackCompressUtil {
         return stackSort;
     }
 
-    //Comparison in pairs
+    /**
+     * sort mzArray with pairSort method
+     *
+     * @param arrGroup mzArray to be sorted
+     * @return sorted mzArray-Index pair
+     */
     private static int[][] getPairSortArray(List<int[]> arrGroup) {
         List<int[]> indexGroup = new ArrayList<>();
         indexGroup.add(new int[arrGroup.get(0).length]);
@@ -192,14 +156,6 @@ public class StackCompressUtil {
             int stepWidth = (int) Math.pow(2, i);
             int tempMergeTime = arrGroup.size() / stepWidth;
 
-            //multi threads
-//            List<Integer> tempMergeTimeList = new ArrayList<>();
-//            for (int j = 0; j < tempMergeTime; j ++) {
-//                tempMergeTimeList.add(j);
-//            }
-//            tempMergeTimeList.parallelStream().forEach(j -> {
-
-            //single thread
             for (int j = 0; j < tempMergeTime; j++) {
                 int leftIndex = j * stepWidth;
                 int rightIndex = leftIndex + stepWidth / 2;
@@ -252,7 +208,13 @@ public class StackCompressUtil {
         return resultArr;
     }
 
-    //Maintain a sorted queue
+    //
+    /**
+     * sort mzArray with queueSort method
+     *
+     * @param arrGroup mzArray to be sorted
+     * @return sorted mzArray-Index pair
+     */
     private static int[][] getQueueSortArray(List<int[]> arrGroup) {
         int stackLen = 0;//记录堆叠数总长度
         for (int[] arr : arrGroup) {
