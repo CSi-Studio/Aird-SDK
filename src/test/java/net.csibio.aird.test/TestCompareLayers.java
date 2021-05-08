@@ -1,12 +1,10 @@
-package net.csibio.aird;
+package net.csibio.aird.test;
 
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Layers;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.StackCompressUtil;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.util.Accountable;
 import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.File;
@@ -15,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class testCompareStack {
+public class TestCompareLayers {
     public static void main(String[] args) throws IOException {
         String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/C20181208yix_HCC_DIA_T_46A.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
@@ -46,7 +44,7 @@ public class testCompareStack {
                 arr = DIAParser.getSpectrumAsInteger(index, rt).getMz();
                 mzGroup.add(arr);
             }
-            sizeOrigin += RamUsageEstimator.sizeOf((Accountable) mzGroup);
+//            sizeOrigin += RamUsageEstimator.sizeOf((Accountable) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
 //            System.out.println("原数组：" + size1);
 
@@ -59,7 +57,7 @@ public class testCompareStack {
                 t1 += (System.currentTimeMillis() - tempT);
                 comMZs.add(comMZ);
             }
-            sizeAird1 += RamUsageEstimator.sizeOf((Accountable) comMZs);
+//            sizeAird1 += RamUsageEstimator.sizeOf((Accountable) comMZs);
             tAird1 += t1;
             //一代解压时间
             long tDecode = 0;
@@ -88,7 +86,7 @@ public class testCompareStack {
                 Layers stackRemainder = StackCompressUtil.stackEncode(arrGroup, false);
                 layersList.add(stackRemainder);
                 long t3 = System.currentTimeMillis();
-                recordSize[k - 1][m] = RamUsageEstimator.sizeOf((Accountable) layersList);
+//                recordSize[k - 1][m] = RamUsageEstimator.sizeOf((Accountable) layersList);
                 recordEncodeTime[k - 1][m] = (t3 - t2);
                 for (Layers layers : layersList) {
                     recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getIndexArray());

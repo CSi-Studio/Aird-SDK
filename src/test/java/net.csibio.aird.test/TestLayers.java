@@ -1,4 +1,4 @@
-package net.csibio.aird;
+package net.csibio.aird.test;
 
 
 import net.csibio.aird.bean.BlockIndex;
@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.*;
 
 //比较压缩率随着block的变化规律
-public class testStack {
+public class TestLayers {
     public static void main(String[] args) throws IOException {
 //        List<File> files = AirdScanUtil.scanIndexFiles("\\\\ProproNas\\ProproNAS\\data\\Aird\\DIA\\ThermoQE");
 //        if (files == null || files.size() == 0) {
