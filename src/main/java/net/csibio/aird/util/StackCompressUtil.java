@@ -208,7 +208,6 @@ public class StackCompressUtil {
         return resultArr;
     }
 
-    //
     /**
      * sort mzArray with queueSort method
      *

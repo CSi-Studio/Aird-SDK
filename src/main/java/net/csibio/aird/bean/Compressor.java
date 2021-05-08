@@ -32,6 +32,7 @@ public class Compressor {
      * The compression algorithms. Now support for zlib, fastPFor and log10 algorithms
      */
     public static String METHOD_ZLIB = "zlib";
+    public static String METHOD_STACK = "stack";
     public static String METHOD_PFOR = "pFor";
     public static String METHOD_LOG10 = "log10";
 
@@ -62,6 +63,13 @@ public class Compressor {
      * The precision for mz and intensity.
      */
     Integer precision;
+
+    /**
+     * Use for Stack-ZDPD algorithm
+     * 2^digit = layers
+     *
+     */
+    Integer digit;
 
     /**
      * ByteOrder,Aird格式的默认ByteOrder为LITTLE_ENDIAN,此项为扩展项,目前仅支持默认值LITTLE_ENDIAN

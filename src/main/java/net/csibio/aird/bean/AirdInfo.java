@@ -128,6 +128,12 @@ public class AirdInfo {
     Boolean ignoreZeroIntensityPoint = true;
 
     /**
+     * 当使用StackZDPD算法时,全局使用的堆叠层数
+     * When using Stack ZDPD
+     */
+    Integer layers;
+
+    /**
      * 特征键值对,详情见Features
      * Pairs with key/value for extension features
      * @see Features

@@ -21,7 +21,7 @@ public class StackCompressUtilTest {
             }
             arrGroup.add(mz);
         }
-        Layers layers = StackCompressUtil.stackEncode(arrGroup, true);
+        Layers layers = StackCompressUtil.stackEncode(arrGroup, false);
         List<int[]> decompressArrGroup = StackCompressUtil.stackDecode(layers);
         boolean pass = true;
         for (int i = 0; i < arrGroup.size(); i++) {
