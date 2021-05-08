@@ -118,13 +118,28 @@ public class DIAParser extends BaseParser {
             assert mzSizeList.size() == intSizeList.size();
 
             int start = 0;
-            int layerNum = (int) Math.pow(2, mzCompressor.getDigit());
+            int maxTag = (int) Math.pow(2, mzCompressor.getDigit());
             for (int i = 0; i < mzSizeList.size(); i++) {
                 float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
                 start = start + mzSizeList.get(i).intValue();
 
                 int[] tagArray = getTags(result, start, tagSizeList.get(i).intValue());
                 start += tagSizeList.get(i).intValue();
+
+                Map<Integer, Integer> tagMap = new HashMap<Integer, Integer>();
+                for (int tag : tagArray) {
+                    tagMap.merge(tag, 1, Integer::sum);
+                }
+
+                List<float[]> mzGroup = new ArrayList<>();
+                int layerNum = tagMap.keySet().size();
+                for (int j = 0; j < layerNum; j++) {
+                    mzGroup.add(new float[tagMap.get(j)]);
+                }
+                int[] p = new int[layerNum];
+                for (int j = 0; j < tagArray.length; j++) {
+                    mzGroup.get(tagArray[j])[p[tagArray[i]]++] = mzArray[i];
+                }
 
                 float[] intensityArray = null;
                 if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
@@ -133,7 +148,17 @@ public class DIAParser extends BaseParser {
                     intensityArray = getIntValues(result, start, intSizeList.get(i).intValue());
                 }
                 start = start + intSizeList.get(i).intValue();
-                map.put(rtList.get(i), new MzIntensityPairs(mzArray, intensityArray));
+                List<float[]> intensityGroup = new ArrayList<>();
+                int initFlag = 0;
+                for (int j = 0; j < layerNum; j++) {
+                    intensityGroup.add(Arrays.copyOfRange(intensityArray, initFlag, initFlag + tagMap.get(j)));
+                    initFlag += tagMap.get(j);
+                }
+
+                for (int j = 0; j < layerNum; j++) {
+                    map.put(rtList.get(i * maxTag + j), new MzIntensityPairs(mzGroup.get(j), intensityGroup.get(j)));
+                }
+
             }
             return map;
         } catch (Exception e) {
