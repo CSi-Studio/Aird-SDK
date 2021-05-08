@@ -2,8 +2,10 @@ package net.csibio.aird;
 
 
 import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.Layers;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.util.StackCompressUtil;
 import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.File;
@@ -69,30 +71,30 @@ public class testStack {
 
             long t3 = System.currentTimeMillis();
             int groupNum = (mzNum - 1) / arrNum + 1;
-            List<StackData.Stack> stacks = new LinkedList<>();
+            List<Layers> layersList = new LinkedList<>();
             int fromIndex = 0;
             for (int i = 0; i < groupNum - 1; i++) {
                 List<int[]> arrGroup = mzGroup.subList(fromIndex, fromIndex + arrNum);
-                StackData.Stack stack = StackData.stackEncode(arrGroup, true);
-                stacks.add(stack);
+                Layers stack = StackCompressUtil.stackEncode(arrGroup, true);
+                layersList.add(stack);
                 fromIndex += arrNum;
             }
             //处理余数
             List<int[]> arrGroup = mzGroup.subList(fromIndex, mzNum);
-            StackData.Stack stackRemainder = StackData.stackEncode(arrGroup, false);
-            stacks.add(stackRemainder);
+            Layers stackRemainder = StackCompressUtil.stackEncode(arrGroup, false);
+            layersList.add(stackRemainder);
             record[5][m] = System.currentTimeMillis() - t3;
-            record[4][m] = RamUsageEstimator.sizeOf(stacks);
+            record[4][m] = RamUsageEstimator.sizeOf(layersList);
 
-            for (StackData.Stack stack : stacks) {
+            for (Layers stack : layersList) {
                 long tempT = System.currentTimeMillis();
-                StackData.stackDecode(stack);
+                StackCompressUtil.stackDecode(stack);
                 record[6][m] += System.currentTimeMillis() - tempT;
-                record[7][m] += RamUsageEstimator.sizeOf(stack.getComIndex());
-                record[8][m] += RamUsageEstimator.sizeOf(stack.getComArr());
+                record[7][m] += RamUsageEstimator.sizeOf(stack.getIndexArray());
+                record[8][m] += RamUsageEstimator.sizeOf(stack.getMzArray());
             }
 
-//                String size3 = RamUsageEstimator.humanSizeOf(stacks);
+//                String size3 = RamUsageEstimator.humanSizeOf(layersList);
 //                System.out.println("二代：" + size3);
 //                System.out.println("二代压缩时间：" + (t3 - t2));
             System.out.println("block" + m + " finished!");

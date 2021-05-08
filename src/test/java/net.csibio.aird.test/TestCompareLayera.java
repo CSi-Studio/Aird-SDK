@@ -1,14 +1,17 @@
 package net.csibio.aird;
 
 import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.Layers;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.util.StackCompressUtil;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.util.Accountable;
 import org.apache.lucene.util.RamUsageEstimator;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +46,7 @@ public class testCompareStack {
                 arr = DIAParser.getSpectrumAsInteger(index, rt).getMz();
                 mzGroup.add(arr);
             }
-            sizeOrigin += RamUsageEstimator.sizeOf(mzGroup);
+            sizeOrigin += RamUsageEstimator.sizeOf((Accountable) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
 //            System.out.println("原数组：" + size1);
 
@@ -56,11 +59,8 @@ public class testCompareStack {
                 t1 += (System.currentTimeMillis() - tempT);
                 comMZs.add(comMZ);
             }
-            sizeAird1 += RamUsageEstimator.sizeOf(comMZs);
+            sizeAird1 += RamUsageEstimator.sizeOf((Accountable) comMZs);
             tAird1 += t1;
-//            String size2 = RamUsageEstimator.humanSizeOf(comMZs);
-//            System.out.println("一代：" + size2);
-//            System.out.println("一代压缩时间：" + t1);
             //一代解压时间
             long tDecode = 0;
             for (byte[] comMz : comMZs
@@ -75,32 +75,29 @@ public class testCompareStack {
                 long t2 = System.currentTimeMillis();
                 int arrNum = (int) Math.pow(2, k);
                 int groupNum = (mzNum - 1) / arrNum + 1;
-                List<StackData.Stack> stacks = new ArrayList<>();
+                List<Layers> layersList = new ArrayList<>();
                 int fromIndex = 0;
                 for (int i = 0; i < groupNum - 1; i++) {
                     List<int[]> arrGroup = mzGroup.subList(fromIndex, fromIndex + arrNum);
-                    StackData.Stack stack = StackData.stackEncode(arrGroup, true);
-                    stacks.add(stack);
+                    Layers layers = StackCompressUtil.stackEncode(arrGroup, true);
+                    layersList.add(layers);
                     fromIndex += arrNum;
                 }
                 //处理余数
                 List<int[]> arrGroup = mzGroup.subList(fromIndex, mzNum);
-                StackData.Stack stackRemainder = StackData.stackEncode(arrGroup, false);
-                stacks.add(stackRemainder);
+                Layers stackRemainder = StackCompressUtil.stackEncode(arrGroup, false);
+                layersList.add(stackRemainder);
                 long t3 = System.currentTimeMillis();
-                recordSize[k - 1][m] = RamUsageEstimator.sizeOf(stacks);
+                recordSize[k - 1][m] = RamUsageEstimator.sizeOf((Accountable) layersList);
                 recordEncodeTime[k - 1][m] = (t3 - t2);
-                for (StackData.Stack stack : stacks) {
-                    recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComIndex());
-                    recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(stack.getComArr());
+                for (Layers layers : layersList) {
+                    recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getIndexArray());
+                    recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getMzArray());
                     long tempT = System.currentTimeMillis();
-                    StackData.stackDecode(stack);
+                    StackCompressUtil.stackDecode(layers);
                     recordDecodeTime[k - 1][m] += (System.currentTimeMillis() - tempT);
                 }
                 System.out.println(k);
-//                String size3 = RamUsageEstimator.humanSizeOf(stacks);
-//                System.out.println("二代：" + size3);
-//                System.out.println("二代压缩时间：" + (t3 - t2));
             }
             System.out.println("block" + m + " finished!");
         }
