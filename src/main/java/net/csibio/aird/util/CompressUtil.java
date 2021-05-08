@@ -73,21 +73,8 @@ public class CompressUtil {
      * @param data data to be decompressed
      * @return decompressed data
      */
-    public static byte[] zlibDecoder(byte[] data) {
-        Inflater decompresser = new Inflater();
-        decompresser.setInput(data);
-        int i;
-        byte[] decompressedData = new byte[data.length * 100];
-        try {
-            i = decompresser.inflate(decompressedData);
-            decompressedData = ArrayUtils.subarray(decompressedData, 0, i);
-        } catch (DataFormatException e) {
-            e.printStackTrace();
-        }
-        return decompressedData;
-    }
 
-    public static byte[] zlibDecoderLongArray(byte[] data) {
+    public static byte[] zlibDecoder(byte[] data) {
         byte[] output;
         Inflater inflater = new Inflater();
         inflater.setInput(data);
@@ -326,16 +313,4 @@ public class CompressUtil {
         return intValues;
     }
 
-    public static int[] transToIntegerLongArray(byte[] value){
-        ByteBuffer byteBuffer = ByteBuffer.wrap(value);
-        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoderLongArray(byteBuffer.array()));
-
-        IntBuffer ints = byteBuffer.asIntBuffer();
-        int[] intValues = new int[ints.capacity()];
-        for (int i = 0; i < ints.capacity(); i++) {
-            intValues[i] = ints.get(i);
-        }
-        byteBuffer.clear();
-        return intValues;
-    }
 }

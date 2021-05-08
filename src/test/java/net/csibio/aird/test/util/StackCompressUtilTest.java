@@ -11,6 +11,7 @@ import java.util.List;
 public class StackCompressUtilTest {
 
     @Test
+    //测试256个数组经过堆叠压缩再解压，前后是否改变
     public void stackZDPD_Test1() {
         List<int[]> arrGroup = new ArrayList<>();
         for (int j = 0; j < 256; j++) {
@@ -34,6 +35,7 @@ public class StackCompressUtilTest {
     }
 
     @Test
+    //测试1-10000个随机数组经过堆叠压缩再解压，前后是否改变
     public void stackZDPD_Test2() {
         List<int[]> arrGroup = new ArrayList<>();
         int arrNum = 1 + (int) Math.random() * 10000;
