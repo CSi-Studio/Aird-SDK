@@ -23,7 +23,7 @@ public class TestLayers {
 //        for (File indexFile : files) {
 //            System.out.println(indexFile.getAbsolutePath());
 //        }whether git is ready.
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
+        String indexFilePath = "D:\\omicsdata\\proteomics\\C20181208yix_HCC_DIA_T_46A.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
         int testBlockNum = 10;
@@ -44,7 +44,7 @@ public class TestLayers {
                 arr = DIAParser.getSpectrumAsInteger(index, rts.get(i)).getMz();
                 mzGroup.add(arr);
             }
-            record[0][m] = RamUsageEstimator.sizeOf(mzGroup);
+//            record[0][m] = RamUsageEstimator.sizeOf(mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
 //            System.out.println("原数组：" + size1);
 
@@ -62,7 +62,7 @@ public class TestLayers {
                 t2 += (System.currentTimeMillis() - tempT2);
 //                System.out.println(System.currentTimeMillis() - tempT2);
             }
-            record[1][m] = RamUsageEstimator.sizeOf(comMZs);
+//            record[1][m] = RamUsageEstimator.sizeOf(comMZs);
             record[2][m] = t1;
             record[3][m] = t2;
 //            String size2 = RamUsageEstimator.humanSizeOf(comMZs);
@@ -84,7 +84,7 @@ public class TestLayers {
             Layers stackRemainder = StackCompressUtil.stackEncode(arrGroup, false);
             layersList.add(stackRemainder);
             record[5][m] = System.currentTimeMillis() - t3;
-            record[4][m] = RamUsageEstimator.sizeOf(layersList);
+//            record[4][m] = RamUsageEstimator.sizeOf(layersList);
 
             for (Layers stack : layersList) {
                 long tempT = System.currentTimeMillis();
@@ -98,7 +98,6 @@ public class TestLayers {
 //                System.out.println("二代：" + size3);
 //                System.out.println("二代压缩时间：" + (t3 - t2));
             System.out.println("block" + m + " finished!");
-
         }
 
         File file = new File(indexFilePath.replace(".json", "blockTest.csv"));

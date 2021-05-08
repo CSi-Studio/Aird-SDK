@@ -15,7 +15,7 @@ import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.FileUtil;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

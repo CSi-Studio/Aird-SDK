@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TestCompareLayers {
     public static void main(String[] args) throws IOException {
-        String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/C20181208yix_HCC_DIA_T_46A.json";
+        String indexFilePath = "D:\\omicsdata\\proteomics\\C20181208yix_HCC_DIA_T_46A.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
         System.out.println("block数：" + swathIndexList.size());
