@@ -114,7 +114,7 @@ public class DIAParser extends BaseParser {
             long delta = endPtr - startPtr;
             byte[] result = new byte[(int) delta];
             raf.read(result);
-            assert rtList.size() == mzSizeList.size();
+            assert tagSizeList.size() == mzSizeList.size();
             assert mzSizeList.size() == intSizeList.size();
 
             int start = 0;
