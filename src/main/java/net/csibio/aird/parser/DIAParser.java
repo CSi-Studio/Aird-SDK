@@ -122,11 +122,6 @@ public class DIAParser extends BaseParser {
             int start = 0;
             int maxTag = (int) Math.pow(2, mzCompressor.getDigit());
             for (int i = 0; i < mzSizeList.size(); i++) {
-                Layers layers = new Layers();
-                layers.setDigit(8);
-                layers.setMzArray(Arrays.copyOfRange(result, start, start+mzSizeList.get(i).intValue()));
-                layers.setTagArray(Arrays.copyOfRange(result, start+mzSizeList.get(i).intValue(), start+mzSizeList.get(i).intValue()+tagSizeList.get(i).intValue()));
-                List<int[]> resu = StackCompressUtil.stackDecode(layers);
                 float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
                 start = start + mzSizeList.get(i).intValue();
 
