@@ -217,6 +217,56 @@ public class BaseParser {
 
     /**
      * get mz values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
+     *
+     * @param value 加密的数组
+     * @return 解压缩后的数组
+     */
+    public int[] getMzValuesAsInteger(byte[] value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(mzCompressor.getByteOrder());
+
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
+        intValues = CompressUtil.fastPforDecoder(intValues);
+        byteBuffer.clear();
+        return intValues;
+    }
+
+
+    /**
+     * get tag values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+     *
+     * @param value  压缩后的数组
+     * @return 解压缩后的数组
+     */
+    public int[] getTags(byte[] value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(mzCompressor.getByteOrder());
+
+        byte[] byteValue = new byte[byteBuffer.capacity() * 8];
+        for (int i = 0; i < byteBuffer.capacity(); i++) {
+            for (int j = 0; j < 8; j++) {
+                byteValue[8 * i + j] = (byte) (((byteBuffer.get(i) & 0xff) >> j) & 1);
+            }
+        }
+        int digit = mzCompressor.getDigit();
+        int[] tags = new int[byteValue.length / digit];
+        for (int i = 0; i < tags.length; i++) {
+            for (int j = 0; j < digit; j++) {
+                tags[i] += value[digit * i + j] << j;
+            }
+        }
+        byteBuffer.clear();
+        return tags;
+    }
+
+    /**
+     * get tag values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
      *
      * @param value  压缩后的数组
@@ -246,28 +296,7 @@ public class BaseParser {
     }
 
     /**
-     * get mz values only for aird file
-     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
-     *
-     * @param value 加密的数组
-     * @return 解压缩后的数组
-     */
-    public int[] getMzValuesAsInteger(byte[] value) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(mzCompressor.getByteOrder());
-
-        IntBuffer ints = byteBuffer.asIntBuffer();
-        int[] intValues = new int[ints.capacity()];
-        for (int i = 0; i < ints.capacity(); i++) {
-            intValues[i] = ints.get(i);
-        }
-        intValues = CompressUtil.fastPforDecoder(intValues);
-        byteBuffer.clear();
-        return intValues;
-    }
-
-    /**
-     * get mz values only for aird file
+     * get intensity values only for aird file
      *
      * @param value 压缩的数组
      * @return 解压缩后的数组
