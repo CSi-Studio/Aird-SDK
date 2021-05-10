@@ -14,7 +14,7 @@ public class Layers {
      * mz对应的层索引
      * layer index of mz
      */
-    byte[] indexArray;
+    byte[] tagArray;
 
     /**
      * 存储单个索引所需的位数
@@ -26,7 +26,7 @@ public class Layers {
 
     public Layers(byte[] mzArray, byte[] indexArray, int digit){
         this.mzArray = mzArray;
-        this.indexArray = indexArray;
+        this.tagArray = indexArray;
         this.digit = digit;
     }
 

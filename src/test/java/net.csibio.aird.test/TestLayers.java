@@ -90,7 +90,7 @@ public class TestLayers {
                 long tempT = System.currentTimeMillis();
                 StackCompressUtil.stackDecode(stack);
                 record[6][m] += System.currentTimeMillis() - tempT;
-                record[7][m] += RamUsageEstimator.sizeOf(stack.getIndexArray());
+                record[7][m] += RamUsageEstimator.sizeOf(stack.getTagArray());
                 record[8][m] += RamUsageEstimator.sizeOf(stack.getMzArray());
             }
 

@@ -89,7 +89,7 @@ public class TestCompareLayers {
 //                recordSize[k - 1][m] = RamUsageEstimator.sizeOf((Accountable) layersList);
                 recordEncodeTime[k - 1][m] = (t3 - t2);
                 for (Layers layers : layersList) {
-                    recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getIndexArray());
+                    recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getTagArray());
                     recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getMzArray());
                     long tempT = System.currentTimeMillis();
                     StackCompressUtil.stackDecode(layers);

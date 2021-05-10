@@ -12,10 +12,12 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.Layers;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
+import net.csibio.aird.util.StackCompressUtil;
 
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -120,6 +122,11 @@ public class DIAParser extends BaseParser {
             int start = 0;
             int maxTag = (int) Math.pow(2, mzCompressor.getDigit());
             for (int i = 0; i < mzSizeList.size(); i++) {
+                Layers layers = new Layers();
+                layers.setDigit(8);
+                layers.setMzArray(Arrays.copyOfRange(result, start, start+mzSizeList.get(i).intValue()));
+                layers.setTagArray(Arrays.copyOfRange(result, start+mzSizeList.get(i).intValue(), start+mzSizeList.get(i).intValue()+tagSizeList.get(i).intValue()));
+                List<int[]> resu = StackCompressUtil.stackDecode(layers);
                 float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
                 start = start + mzSizeList.get(i).intValue();
 
