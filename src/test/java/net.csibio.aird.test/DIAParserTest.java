@@ -29,7 +29,7 @@ public class DIAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DIAParser parser = new DIAParser("E:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
+        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\C20181208yix_HCC_DIA_T_46A_1st.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库
