@@ -21,6 +21,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
@@ -299,10 +300,41 @@ public class CompressUtil {
      * @param value array to be decompressed and transformed
      * @return decompressed data
      */
-    public static int[] transToInteger(byte[] value) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(value);
-        byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(byteBuffer.array()));
+    public static int[] transToInteger(byte[] value, ByteOrder order) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        if(order == null){
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        }else{
+            byteBuffer.order(order);
+        }
+        IntBuffer ints = byteBuffer.asIntBuffer();
+        int[] intValues = new int[ints.capacity()];
+        for (int i = 0; i < ints.capacity(); i++) {
+            intValues[i] = ints.get(i);
+        }
 
+        byteBuffer.clear();
+        return intValues;
+    }
+
+    /**
+     * decompress the binary data with zlib algorithm
+     *
+     * @param value array to be decompressed and transformed
+     * @return decompressed data
+     */
+    public static int[] transToInteger(byte[] value) {
+       return transToInteger(value, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    /**
+     * decompress the binary data with zlib algorithm
+     *
+     * @param value array to be decompressed and transformed
+     * @return decompressed data
+     */
+    public static int[] bytesToInteger(byte[] value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(value);
         IntBuffer ints = byteBuffer.asIntBuffer();
         int[] intValues = new int[ints.capacity()];
         for (int i = 0; i < ints.capacity(); i++) {

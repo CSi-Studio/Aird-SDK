@@ -275,15 +275,16 @@ public class BaseParser {
      * @return 解压缩后的数组
      */
     public int[] getTags(byte[] value, int start, int length) {
-        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
-        byteBuffer.order(mzCompressor.getByteOrder());
+        byte[] tagShift = CompressUtil.zlibDecoder(value, start, length);
+//        byteBuffer.order(mzCompressor.getByteOrder());
 
-        byte[] byteValue = new byte[byteBuffer.capacity() * 8];
-        for (int i = 0; i < byteBuffer.capacity(); i++) {
+        byte[] byteValue = new byte[tagShift.length * 8];
+        for (int i = 0; i < tagShift.length; i++) {
             for (int j = 0; j < 8; j++) {
-                byteValue[8 * i + j] = (byte) (((byteBuffer.get(i) & 0xff) >> j) & 1);
+                byteValue[8 * i + j] = (byte) (((tagShift[i] & 0xff) >> j) & 1);
             }
         }
+
         int digit = mzCompressor.getDigit();
         int[] tags = new int[byteValue.length / digit];
         for (int i = 0; i < tags.length; i++) {
@@ -291,7 +292,6 @@ public class BaseParser {
                 tags[i] += byteValue[digit * i + j] << j;
             }
         }
-        byteBuffer.clear();
         return tags;
     }
 
