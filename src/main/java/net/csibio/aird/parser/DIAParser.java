@@ -406,7 +406,7 @@ public class DIAParser extends BaseParser {
             MzIntensityPairs mzIntensityPairs = getSpectrumByIndex(index, position);
             int[] mzArray = new int[mzIntensityPairs.getMzArray().length];
             for (int i = 0; i < mzArray.length; i++) {
-                mzArray[i] = (int) mzIntensityPairs.getMzArray()[i] * mzPrecision;
+                mzArray[i] = (int) (mzIntensityPairs.getMzArray()[i] * mzPrecision);
             }
             return  new MzIntensityPairs(mzArray,mzIntensityPairs.getIntensityArray());
 

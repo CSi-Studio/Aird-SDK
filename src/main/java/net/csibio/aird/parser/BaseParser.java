@@ -258,7 +258,7 @@ public class BaseParser {
         int[] tags = new int[byteValue.length / digit];
         for (int i = 0; i < tags.length; i++) {
             for (int j = 0; j < digit; j++) {
-                tags[i] += value[digit * i + j] << j;
+                tags[i] += byteValue[digit * i + j] << j;
             }
         }
         byteBuffer.clear();
@@ -288,7 +288,7 @@ public class BaseParser {
         int[] tags = new int[byteValue.length / digit];
         for (int i = 0; i < tags.length; i++) {
             for (int j = 0; j < digit; j++) {
-                tags[i] += value[digit * i + j] << j;
+                tags[i] += byteValue[digit * i + j] << j;
             }
         }
         byteBuffer.clear();
