@@ -74,8 +74,7 @@ public class BaseParser {
      */
     RandomAccessFile raf;
 
-    public BaseParser() {
-    }
+    public BaseParser() {}
 
     public BaseParser(String indexPath) throws ScanException {
         this.indexFile = new File(indexPath);

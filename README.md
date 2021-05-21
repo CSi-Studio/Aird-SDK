@@ -10,10 +10,7 @@ visualization and analysis.
 
 # AirdPro
 You should use the AirdPro client to transfer the vendor files into Aird format.<br/>
-You can download the AirdPro1.0.1.zip from the FTP server: <br/>
-    `server url: ftp://47.254.93.217/AirdPro` <br/>
-    `username: ftp` <br/>
-    `password: 123456` <br/>
+You can download the AirdPro1.0.1.zip from the github: <br/>
 After downloading, unzip the file, click the AirdPro.exe to start the AirdPro Application
 AirdPro is written in C#, it is also an opensource project. Simple UI is provided by AirdPro for people to convert the vendor file to the 
 Aird file quickly.
@@ -47,7 +44,7 @@ or refer in the root package of the project: AirdMetaData.json
 
 # Detail Description
 
-##AirdInfo
+## AirdInfo
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 compressors	    |List<Compressor>|True|The compression strategies for m/z and intensity array
@@ -68,7 +65,7 @@ createDate	    |String|False|The create date for the aird file
 ignoreZeroIntensityPoint|Boolean|True|Whether ignore the point which intensity is 0
 features	    |String|False|Some other features stored with “key:value;key:value” format
 
-##Compressor
+## Compressor
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 target|String|True|mz, intensity
@@ -76,7 +73,7 @@ methods|List<String>|True|zlib, pFor, log10
 precision|Integer|False|10^N, the N means N decimal places for the final data
 byteOrder|String|True|LITTLE_ENDIAN, BIG_ENDIAN
 
-##WindowRange
+## WindowRange
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 start|Double|True|Precursor m/z start
@@ -84,7 +81,7 @@ end|Double|True|Precursor m/z end
 mz|Double|True|Precursor m/z
 features|String|False|Some other features stored with “key:value;key:value” format
 
-##BlockIndex
+## BlockIndex
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 level|Integer|True|1:MS1, 2:MS2
@@ -110,25 +107,25 @@ analyzer|List<String>|False|Analyzer: “quadrupole”, “orbitrap”
 detector|List<String>|False|Detector: ”inductive detector”
 features|String|False|Some other features stored with “key:value;key:value” format
 
-##DataProcessing
+## DataProcessing
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 processingOperations|List<String>|False|Any additional manipulation not included elsewhere in the dataProcessing element
 
-##Software 
+## Software 
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 name|String|True|The software name
 version|String|False|The software version
 
-##ParentFile
+## ParentFile
 |  Name   | Type  | Required | Description |
 |  ----  | ----  | ----  | ----  |
 name|String|True|The filename
 location|String|False|The file location
 type|String|False|The file type
 
-#Sample Code
+# Sample Code
 Detail samle code. See net.csibio.aird.sample.SampleCode
 
 ## Scan Aird files from target directory

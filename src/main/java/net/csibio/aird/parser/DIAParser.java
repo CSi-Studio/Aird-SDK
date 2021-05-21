@@ -10,10 +10,7 @@
 
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.Layers;
-import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.*;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
@@ -274,6 +271,58 @@ public class DIAParser extends BaseParser {
     }
 
     /**
+     * 从aird文件中获取某一条记录,同时返回它的原始二进制数组
+     * 查询条件: 1.起始坐标 2.mz块体积列表 3.intensity块大小列表 4.光谱在块中的索引位置
+     * <p>
+     * Read a spectrum from aird with multiple query criteria.
+     * Query Criteria: 1.Start Point 2.mz block size list 3.intensity block size list  4.spectrum index in the block
+     *
+     * @param startPtr    起始位置 the start point of the target spectrum
+     * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param intSizeList int数组长度列表 intensity size block list
+     * @param index       光谱在block块中的索引位置 the spectrum index in the block
+     * @return 某个时刻的光谱信息 the spectrum of the target retention time, The spectrum contains the original bytes array of mz and intensity
+     */
+    public SpectrumDetail getSpectrumDetailByIndex(long startPtr, List<Long> mzSizeList, List<Long> intSizeList, int index) {
+        RandomAccessFile raf = null;
+        SpectrumDetail detail = new SpectrumDetail();
+        try {
+            raf = new RandomAccessFile(airdFile, "r");
+            long start = startPtr;
+
+            for (int i = 0; i < index; i++) {
+                start += mzSizeList.get(i);
+                start += intSizeList.get(i);
+            }
+
+            raf.seek(start);
+            byte[] reader = new byte[mzSizeList.get(index).intValue()];
+            raf.read(reader);
+            detail.setMzBytes(reader.clone());
+            float[] mzArray = getMzValues(reader);
+            start += mzSizeList.get(index).intValue();
+            raf.seek(start);
+            reader = new byte[intSizeList.get(index).intValue()];
+            raf.read(reader);
+            detail.setIntensityBytes(reader.clone());
+            float[] intensityArray = null;
+            if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
+                intensityArray = getLogedIntValues(reader);
+            } else {
+                intensityArray = getIntValues(reader);
+            }
+
+            detail.setMzs(mzArray);
+            detail.setIntensities(intensityArray);
+            return detail;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /**
      * 从aird文件中获取某一条记录
      * 查询条件: 1.起始坐标 2.mz块体积列表 3.tag块大小列表 4.intensity块大小列表 5.光谱在块中的索引位置
      * <p>
@@ -382,6 +431,18 @@ public class DIAParser extends BaseParser {
             if (blockIndex.getNums().contains(index)) {
                 int targetIndex = blockIndex.getNums().indexOf(index);
                 return getSpectrumByIndex(blockIndex, targetIndex);
+            }
+        }
+        return null;
+    }
+
+    public SpectrumDetail getSpectrumDetail(int index){
+        List<BlockIndex> indexList = getAirdInfo().getIndexList();
+        for (int i = 0; i < indexList.size(); i++) {
+            BlockIndex blockIndex = indexList.get(i);
+            if (blockIndex.getNums().contains(index)) {
+                int targetIndex = blockIndex.getNums().indexOf(index);
+                MzIntensityPairs pairs = getSpectrumByIndex(blockIndex, targetIndex);
             }
         }
         return null;

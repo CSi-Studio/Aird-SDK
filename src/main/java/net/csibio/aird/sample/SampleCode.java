@@ -29,7 +29,6 @@ import java.util.TreeMap;
 public class SampleCode {
 
     public static void main(String[] args) {
-
         getAirdInfo();
     }
 

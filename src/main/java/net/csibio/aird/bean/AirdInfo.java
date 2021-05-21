@@ -139,4 +139,16 @@ public class AirdInfo {
      * @see Features
      */
     String features;
+
+    public Compressor fetchCompressor(String target){
+        if(compressors == null){
+            return null;
+        }
+        for (int i = 0; i < compressors.size(); i++) {
+            if (compressors.get(i).getTarget().equals(target)) {
+                return compressors.get(i);
+            }
+        }
+        return null;
+    }
 }
