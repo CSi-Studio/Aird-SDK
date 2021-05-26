@@ -27,8 +27,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BaseParser {
 
@@ -136,6 +135,14 @@ public class BaseParser {
      * @throws Exception 读取文件异常
      */
     public TreeMap<Double, MzIntensityPairs> parseBlockValue(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
+        if (blockIndex.getLevel() == 1) {
+            return parseBlockValueMS1(raf, blockIndex);
+        } else {
+            return parseBlockValueMS2(raf, blockIndex);
+        }
+    }
+
+    public TreeMap<Double, MzIntensityPairs> parseBlockValueMS2(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
         TreeMap<Double, MzIntensityPairs> map = new TreeMap<>();
         List<Float> rts = blockIndex.getRts();
 
@@ -162,6 +169,66 @@ public class BaseParser {
         }
         return map;
     }
+
+    public TreeMap<Double, MzIntensityPairs> parseBlockValueMS1(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
+        TreeMap<Double, MzIntensityPairs> map = new TreeMap<>();
+        List<Float> rts = blockIndex.getRts();
+
+        raf.seek(blockIndex.getStartPtr());
+        long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
+        byte[] result = new byte[(int) delta];
+
+        raf.read(result);
+        List<Long> mzSizes = blockIndex.getMzs();
+        List<Long> tagSizes = blockIndex.getTags();
+        List<Long> intensitySizes = blockIndex.getInts();
+
+        int maxTag = (int) Math.pow(2, mzCompressor.getDigit());
+
+        int start = 0;
+        for (int i = 0; i < mzSizes.size(); i++) {
+            float[] mzArray = getMzValues(result, start,  mzSizes.get(i).intValue());
+            start = start + mzSizes.get(i).intValue();
+            int[] tagArray = getTags(ArrayUtils.subarray(result, start, start + tagSizes.get(i).intValue()));
+            start = start + tagSizes.get(i).intValue();
+            Map<Integer, Integer> tagMap = new HashMap<Integer, Integer>();
+            for (int tag : tagArray) {
+                tagMap.merge(tag, 1, Integer::sum);
+            }
+            List<float[]> mzGroup = new ArrayList<>();
+            int layerNum = tagMap.keySet().size();
+            for (int j = 0; j < layerNum; j++) {
+                mzGroup.add(new float[tagMap.get(j)]);
+            }
+            int[] p = new int[layerNum];
+            for (int j = 0; j < tagArray.length; j++) {
+                mzGroup.get(tagArray[j])[p[tagArray[j]]++] = mzArray[j];
+            }
+            float[] intensityArray = null;
+            byte[] intensity = ArrayUtils.subarray(result, start, start + intensitySizes.get(i).intValue());
+            if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
+                intensityArray = getLogedIntValues(intensity);
+            } else {
+                intensityArray = getIntValues(intensity);
+            }
+            start = start + intensitySizes.get(i).intValue();
+            List<float[]> intensityGroup = new ArrayList<>();
+            int initFlag = 0;
+            for (int j = 0; j < layerNum; j++) {
+                intensityGroup.add(Arrays.copyOfRange(intensityArray, initFlag, initFlag + tagMap.get(j)));
+                initFlag += tagMap.get(j);
+            }
+            for (int j = 0; j < layerNum; j++) {
+                try {
+                    map.put(rts.get(i * maxTag + j) / 60d, new MzIntensityPairs(mzGroup.get(j), intensityGroup.get(j)));
+                } catch (Exception e) {
+                    throw e;
+                }
+            }
+        }
+        return map;
+    }
+
 
     /**
      * get mz values only for aird file
@@ -241,7 +308,7 @@ public class BaseParser {
      * get tag values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
      *
-     * @param value  压缩后的数组
+     * @param value 压缩后的数组
      * @return 解压缩后的数组
      */
     public int[] getTags(byte[] value) {

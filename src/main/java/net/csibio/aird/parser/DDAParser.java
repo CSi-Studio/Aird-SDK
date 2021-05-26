@@ -77,4 +77,42 @@ public class DDAParser extends BaseParser{
         FileUtil.close(raf);
         return cycleList;
     }
+    public List<MsCycle> parseToMsCycle1st() throws Exception {
+        RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");
+        List<MsCycle> cycleList = new ArrayList<>();
+        List<BlockIndex> indexList = getAirdInfo().getIndexList();
+        TreeMap<Double, MzIntensityPairs> ms1Map = parseBlockValueMS2(raf, indexList.get(0));
+        List<Integer> ms1ScanNumList = indexList.get(0).getNums();
+        List<Double> rtList = new ArrayList<>(ms1Map.keySet());
+
+        //将ms2 rt单位转换为分钟
+        for (BlockIndex blockIndex : indexList) {
+            List<Float> rts = blockIndex.getRts();
+            for (int i = 0; i < rts.size(); i++) {
+                rts.set(i, rts.get(i) / 60f);
+            }
+        }
+
+        for (int i = 0; i < rtList.size(); i++) {
+            MsCycle tempMsc = new MsCycle();
+            //将ms1 rt单位转换为分钟
+            tempMsc.setRt(rtList.get(i));
+            tempMsc.setMs1Spectrum(ms1Map.get(rtList.get(i)));
+            for (int tempBlockNum = 1; tempBlockNum < indexList.size(); tempBlockNum++) {
+                BlockIndex tempBlockIndex = indexList.get(tempBlockNum);
+                if (tempBlockIndex.getNum().equals(ms1ScanNumList.get(i))) {
+                    tempMsc.setRangeList(tempBlockIndex.getRangeList());
+                    tempMsc.setRts(tempBlockIndex.getRts());
+
+                    TreeMap<Double, MzIntensityPairs> ms2Map = parseBlockValueMS2(raf, tempBlockIndex);
+                    List<MzIntensityPairs> ms2Spectrums = new ArrayList<>(ms2Map.values());
+                    tempMsc.setMs2Spectrums(ms2Spectrums);
+                    break;
+                }
+            }
+            cycleList.add(tempMsc);
+        }
+        FileUtil.close(raf);
+        return cycleList;
+    }
 }

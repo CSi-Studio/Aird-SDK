@@ -12,13 +12,10 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.Layers;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
-import net.csibio.aird.util.StackCompressUtil;
-
 import java.io.RandomAccessFile;
 import java.util.*;
 

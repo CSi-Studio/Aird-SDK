@@ -3,6 +3,7 @@ package net.csibio.aird.util;
 import org.apache.commons.math3.util.FastMath;
 
 import net.csibio.aird.bean.Layers;
+
 import java.util.*;
 
 public class StackCompressUtil {
@@ -11,7 +12,7 @@ public class StackCompressUtil {
      * compress the data with stack-ZDPD algorithm
      *
      * @param arrGroup mzArray to be compressed
-     * @param pair sorting method of mzArray
+     * @param pair     sorting method of mzArray
      * @return compressed mzArray
      */
     public static Layers stackEncode(List<int[]> arrGroup, boolean pair) {
@@ -39,6 +40,7 @@ public class StackCompressUtil {
             stackArr[i] = stackSort[i][0];
             stackIndex[i] = stackSort[i][1];
         }
+
         //index移位存储
         int digit = (int) Math.ceil(Math.log(arrGroup.size()) / Math.log(2));
         int indexLen = (stackLen * digit - 1) / 8 + 1;
