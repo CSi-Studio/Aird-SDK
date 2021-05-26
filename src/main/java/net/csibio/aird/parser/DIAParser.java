@@ -195,6 +195,7 @@ public class DIAParser extends BaseParser {
      * @param startPtr    起始位置 the start point of the target spectrum
      * @param rtList      全部时刻列表 all the retention time list
      * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param tagSizeList  tag数组长度列表 tag size block list
      * @param intSizeList int数组长度列表 intensity size block list
      * @param rt          获取某一个时刻原始谱图 the retention time of the target spectrum
      * @return 某个时刻的光谱信息 the spectrum of the target retention time
@@ -406,9 +407,9 @@ public class DIAParser extends BaseParser {
     }
 
     /**
-     * @param blockIndex
-     * @param index
-     * @return
+     * @param blockIndex 块索引
+     * @param index 块内索引值
+     * @return 对应光谱数据
      */
     public MzIntensityPairs getSpectrumByIndex(BlockIndex blockIndex, int index) {
         if (mzCompressor.getMethods().contains(Compressor.METHOD_STACK)) {

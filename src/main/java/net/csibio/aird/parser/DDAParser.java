@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 /**
  * DDA模式的转换器
- * The parser for DDA acquisition mode. The index is group like MS1 -> MS2 Group
+ * The parser for DDA acquisition mode. The index is group like MS1-MS2 Group
  * DDA reader using the strategy of loading all the information into the memory
  */
 public class DDAParser extends BaseParser{

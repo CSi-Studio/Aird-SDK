@@ -44,10 +44,10 @@ public class XIC {
     /**
      * 在单张光谱图中查找多个目标mz
      *
-     * @param pairsList
-     * @param targets
-     * @param mzWindow
-     * @return
+     * @param pairsList 多张光谱图
+     * @param targets 多个目标值
+     * @param mzWindow 目标窗口
+     * @return 目标值结果
      */
     public static float[] lowerBoundWithGPU(List<MzIntensityPairs> pairsList, float[] targets, float mzWindow) {
 
@@ -126,6 +126,7 @@ public class XIC {
 
     /**
      * Initialize a default OpenCL context, command queue, program and kernel
+     * @param countInBatch 分多少个批次进行
      */
     public static void initialize(int countInBatch) {
         // The platform, device type and device number

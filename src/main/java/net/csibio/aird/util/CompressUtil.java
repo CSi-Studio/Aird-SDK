@@ -322,6 +322,7 @@ public class CompressUtil {
      * decompress the binary data with zlib algorithm
      *
      * @param value array to be decompressed and transformed
+     * @param order ByteOrder
      * @return decompressed data
      */
     public static int[] transToInteger(byte[] value, ByteOrder order) {
@@ -345,6 +346,7 @@ public class CompressUtil {
      * decompress the binary data with zlib algorithm
      *
      * @param value array to be decompressed and transformed
+     * @param order ByteOrder
      * @return decompressed data
      */
     public static short[] transToShort(byte[] value, ByteOrder order) {
