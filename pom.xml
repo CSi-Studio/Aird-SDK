@@ -5,7 +5,7 @@
 
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
-    <version>1.0.3-predict</version>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
