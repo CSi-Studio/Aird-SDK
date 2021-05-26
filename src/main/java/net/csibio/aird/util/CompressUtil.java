@@ -20,10 +20,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.nio.*;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.DataFormatException;
@@ -139,6 +136,16 @@ public class CompressUtil {
         return output;
     }
 
+    public static byte[] ZDPDEncoder(int[] sortedInts){
+        int[] compressedInts = fastPforEncoder(sortedInts);
+        return transToByte(compressedInts);
+    }
+
+    public static int[] ZDPDDecoder(byte[] compressedBytes){
+        int[] compressedInts = transToInteger(compressedBytes);
+        return fastPforDecoder(compressedInts);
+    }
+
     /**
      * decompress the data with fastpfor algorithm
      *
@@ -250,9 +257,26 @@ public class CompressUtil {
      * @param target array to be compressed and transformed
      * @return compressed data
      */
+    public static byte[] transToByte(short[] target) {
+        ShortBuffer ibTarget = ShortBuffer.wrap(target);
+        ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 2);
+        bbTarget.order(ByteOrder.LITTLE_ENDIAN);
+        bbTarget.asShortBuffer().put(ibTarget);
+        byte[] targetArray = bbTarget.array();
+        byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
+        return compressedArray;
+    }
+
+    /**
+     * compress the int array with zlib algorithm
+     *
+     * @param target array to be compressed and transformed
+     * @return compressed data
+     */
     public static byte[] transToByte(int[] target) {
         IntBuffer ibTarget = IntBuffer.wrap(target);
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
+        bbTarget.order(ByteOrder.LITTLE_ENDIAN);
         bbTarget.asIntBuffer().put(ibTarget);
         byte[] targetArray = bbTarget.array();
         byte[] compressedArray = CompressUtil.zlibEncoder(targetArray);
@@ -323,8 +347,35 @@ public class CompressUtil {
      * @param value array to be decompressed and transformed
      * @return decompressed data
      */
+    public static short[] transToShort(byte[] value, ByteOrder order) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        if(order == null){
+            byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        }else{
+            byteBuffer.order(order);
+        }
+        ShortBuffer shorts = byteBuffer.asShortBuffer();
+        short[] shortValues = new short[shorts.capacity()];
+        for (int i = 0; i < shorts.capacity(); i++) {
+            shortValues[i] = shorts.get(i);
+        }
+
+        byteBuffer.clear();
+        return shortValues;
+    }
+
+    /**
+     * decompress the binary data with zlib algorithm
+     *
+     * @param value array to be decompressed and transformed
+     * @return decompressed data
+     */
     public static int[] transToInteger(byte[] value) {
        return transToInteger(value, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    public static short[] transToShort(byte[] value) {
+        return transToShort(value, ByteOrder.LITTLE_ENDIAN);
     }
 
     /**

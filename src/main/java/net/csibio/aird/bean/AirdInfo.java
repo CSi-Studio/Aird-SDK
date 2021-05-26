@@ -55,6 +55,13 @@ public class AirdInfo {
     List<BlockIndex> indexList;
 
     /**
+     * [核心字段]
+     * 用于存储Block的索引（适用于DDA）
+     */
+    @Deprecated
+    List<BlockIndex> blockIndexList;
+
+    /**
      * 仪器设备信息
      * General information about the MS instruments
      */
@@ -151,4 +158,13 @@ public class AirdInfo {
         }
         return null;
     }
+
+    public List<BlockIndex> getIndexList(){
+        if (blockIndexList != null && blockIndexList.size() != 0){
+            return blockIndexList;
+        } else {
+            return indexList;
+        }
+    }
+
 }

@@ -8,7 +8,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package net.csibio.aird;
+package net.csibio.aird.test;
 
 import net.csibio.aird.util.CompressUtil;
 
