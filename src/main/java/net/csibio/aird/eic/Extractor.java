@@ -91,9 +91,9 @@ public class Extractor {
      * 当目标值大于等于范围中的最大值时,返回-1
      * 左闭右开区间
      *
-     * @param array
-     * @param target
-     * @return
+     * @param array 目标数组
+     * @param target 目标值
+     * @return 目标索引
      */
     public static int lowerBound(float[] array, Float target) {
         int high = array.length - 1;

@@ -28,7 +28,9 @@ import java.util.TreeMap;
  */
 public class SampleCode {
 
-    public static void main(String[] args) {}
+    public static void main(String[] args) {
+        getAirdInfo();
+    }
 
     /**
      * 读取某一个文件夹下所有的Aird Index文件
@@ -48,13 +50,13 @@ public class SampleCode {
      */
     public static void getAirdInfo(){
         //Init with the Aird Index(.json) file path
-        DIAParser parser = new DIAParser("D:\\pData\\HYE4_64_fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json");
+        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\C20181208yix_HCC_DIA_T_46A_1st.json");
 
         //Read the Aird Index into memory
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //Read the first spectrum
-        MzIntensityPairs pairs = parser.getSpectrum(0);
+        MzIntensityPairs pairs = parser.getSpectrum(1);
 
         //Read SWATH block one by one for DIA type Aird File
         airdInfo.getIndexList().forEach(blockIndex -> {

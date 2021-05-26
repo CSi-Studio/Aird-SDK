@@ -64,6 +64,7 @@ public class BaseParser {
 
     /**
      * Acquisition Method Type Supported by Aird
+     *
      * @see net.csibio.aird.enums.AirdType
      */
     public String type;
@@ -73,8 +74,7 @@ public class BaseParser {
      */
     RandomAccessFile raf;
 
-    public BaseParser() {
-    }
+    public BaseParser() {}
 
     public BaseParser(String indexPath) throws ScanException {
         this.indexFile = new File(indexPath);
@@ -97,11 +97,12 @@ public class BaseParser {
 
     /**
      * 使用直接的关键信息进行初始化
-     * @param airdPath Aird文件路径
-     * @param mzCompressor mz压缩策略
+     *
+     * @param airdPath      Aird文件路径
+     * @param mzCompressor  mz压缩策略
      * @param intCompressor intensity压缩策略
-     * @param mzPrecision mz数字精度
-     * @param airdType aird类型
+     * @param mzPrecision   mz数字精度
+     * @param airdType      aird类型
      * @throws ScanException 扫描异常
      */
     public BaseParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision, String airdType) throws ScanException {
@@ -127,7 +128,8 @@ public class BaseParser {
 
     /**
      * 根据特定BlockIndex取出对应TreeMap
-     * @param raf the random access file reader
+     *
+     * @param raf        the random access file reader
      * @param blockIndex the block index read from the index file
      * @return 解码内容, key为rt, value为光谱中的键值对
      * @throws Exception 读取文件异常
@@ -233,8 +235,67 @@ public class BaseParser {
         return intValues;
     }
 
+
     /**
-     * get mz values only for aird file
+     * get tag values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+     *
+     * @param value  压缩后的数组
+     * @return 解压缩后的数组
+     */
+    public int[] getTags(byte[] value) {
+        ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+        byteBuffer.order(mzCompressor.getByteOrder());
+
+        byte[] byteValue = new byte[byteBuffer.capacity() * 8];
+        for (int i = 0; i < byteBuffer.capacity(); i++) {
+            for (int j = 0; j < 8; j++) {
+                byteValue[8 * i + j] = (byte) (((byteBuffer.get(i) & 0xff) >> j) & 1);
+            }
+        }
+        int digit = mzCompressor.getDigit();
+        int[] tags = new int[byteValue.length / digit];
+        for (int i = 0; i < tags.length; i++) {
+            for (int j = 0; j < digit; j++) {
+                tags[i] += byteValue[digit * i + j] << j;
+            }
+        }
+        byteBuffer.clear();
+        return tags;
+    }
+
+    /**
+     * get tag values only for aird file
+     * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+     *
+     * @param value  压缩后的数组
+     * @param start  起始位置
+     * @param length 读取长度
+     * @return 解压缩后的数组
+     */
+    public int[] getTags(byte[] value, int start, int length) {
+        byte[] tagShift = CompressUtil.zlibDecoder(value, start, length);
+//        byteBuffer.order(mzCompressor.getByteOrder());
+
+        byte[] byteValue = new byte[tagShift.length * 8];
+        for (int i = 0; i < tagShift.length; i++) {
+            for (int j = 0; j < 8; j++) {
+                byteValue[8 * i + j] = (byte) (((tagShift[i] & 0xff) >> j) & 1);
+            }
+        }
+
+        int digit = mzCompressor.getDigit();
+        int[] tags = new int[byteValue.length / digit];
+        for (int i = 0; i < tags.length; i++) {
+            for (int j = 0; j < digit; j++) {
+                tags[i] += byteValue[digit * i + j] << j;
+            }
+        }
+        return tags;
+    }
+
+    /**
+     * get intensity values only for aird file
      *
      * @param value 压缩的数组
      * @return 解压缩后的数组
@@ -256,8 +317,9 @@ public class BaseParser {
 
     /**
      * get intensity values from the start point with a specified length
-     * @param value the original array
-     * @param start the start point
+     *
+     * @param value  the original array
+     * @param start  the start point
      * @param length the specified length
      * @return the decompression intensity array
      */

@@ -61,7 +61,7 @@ public class StackCompressUtil {
         //数组用fastPFor压缩，index用zlib压缩，并记录层数
         Layers layers = new Layers();
         layers.setMzArray(CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr)));
-        layers.setIndexArray(CompressUtil.zlibEncoder(indexShift));
+        layers.setTagArray(CompressUtil.zlibEncoder(indexShift));
         layers.setDigit(digit);
         return layers;
     }
@@ -73,9 +73,9 @@ public class StackCompressUtil {
      * @return decompressed mzArray
      */
     public static List<int[]> stackDecode(Layers layers) {
-        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToIntegerLongArray(layers.getMzArray()));
+        int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(layers.getMzArray()));
         int[] stackIndex = new int[stackArr.length];
-        byte[] indexShift = CompressUtil.zlibDecoderLongArray(layers.getIndexArray());
+        byte[] indexShift = CompressUtil.zlibDecoder(layers.getTagArray());
         int digit = layers.getDigit();
         //拆分byte为8个bit，并分别存储
         byte[] value = new byte[8 * indexShift.length];

@@ -76,6 +76,12 @@ public class BlockIndex {
     List<Long> ints;
 
     /**
+     * PSI Controlled Vocabulary
+     * PSI可控词汇表
+     */
+    List<List<CV>> cvList;
+
+    /**
      * 用于存储KV键值对
      * Pairs with key/value for extension features
      */
