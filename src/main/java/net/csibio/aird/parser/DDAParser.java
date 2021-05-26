@@ -57,6 +57,7 @@ public class DDAParser extends BaseParser{
 
         for (int i = 0; i < rtList.size(); i++) {
             MsCycle tempMsc = new MsCycle();
+
             //将ms1 rt单位转换为分钟
             tempMsc.setRt(rtList.get(i));
             tempMsc.setMs1Spectrum(ms1Map.get(rtList.get(i)));
