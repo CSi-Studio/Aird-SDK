@@ -67,7 +67,7 @@ public class Extractor {
     public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList, float[] targetMzArray, float mzWindow) {
         float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
         //每一个批次处理的光谱数
-        int countInBatch = 1;
+        int countInBatch = 5;
 
         //准备补齐至countInBatch的整倍数
         int delta = countInBatch - pairsList.size() % countInBatch;

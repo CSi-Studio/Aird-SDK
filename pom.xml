@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
-    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading and Storage</description>
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

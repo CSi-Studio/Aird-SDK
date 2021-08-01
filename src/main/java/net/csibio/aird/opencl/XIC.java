@@ -70,7 +70,7 @@ public class XIC {
             }
         }
 
-        cl_mem resultsMem = clCreateBuffer(context, CL_MEM_WRITE_ONLY, Sizeof.cl_float * targets.length * countInBatch, Pointer.to(results), null);
+        cl_mem resultsMem = clCreateBuffer(context, CL_MEM_WRITE_ONLY | CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * targets.length * countInBatch, Pointer.to(results), null);
         lowerBound(paramsList, targetsMem, targets.length, resultsMem, mzWindow);
 
         // Read the output data
@@ -133,7 +133,7 @@ public class XIC {
         // that will be used
         final int platformIndex = 0;
         final long deviceType = CL_DEVICE_TYPE_ALL;
-        final int deviceIndex = 0;
+        final int deviceIndex = 2;
 
         // Enable exceptions and subsequently omit error checks in this sample
         CL.setExceptionsEnabled(true);
@@ -169,8 +169,9 @@ public class XIC {
 
         // Create a command-queue for the selected device
         cl_queue_properties properties = new cl_queue_properties();
-        commandQueue = clCreateCommandQueueWithProperties(
-                context, device, properties, null);
+
+     //   commandQueue = clCreateCommandQueueWithProperties(context, device, properties, null);
+        commandQueue = clCreateCommandQueue(context, device, 0, null);
 
         // Create the program from the source code
         String programSource = readFile("src/main/resources/clkernel/XICKernel"+countInBatch+".cpp");

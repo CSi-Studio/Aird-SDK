@@ -29,7 +29,7 @@ public class DIAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\C20181208yix_HCC_DIA_T_46A_1st.json");
+        DIAParser parser = new DIAParser("/Users/lms/proteomics/HYE_110_32fix/HYE110_TTOF6600_32fix_lgillet_I160308_011.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库
@@ -101,7 +101,7 @@ public class DIAParserTest {
     private float[][] xicWithGPU(List<MzIntensityPairs> pairsList, float[] mzArray) {
         long indexStart = System.currentTimeMillis();
         float[][] results = Extractor.accumulationWithGPU(pairsList, mzArray, 0.05f);
-        System.out.println("GPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) / 1000 + "秒");
+        System.out.println("GPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) + "ms");
         return results;
     }
 }
