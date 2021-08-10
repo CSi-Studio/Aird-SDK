@@ -92,7 +92,7 @@ public class Compressor {
         return null;
     }
 
-    public ByteOrder getByteOrder() {
+    public ByteOrder fetchByteOrder() {
         return ByteOrder.LITTLE_ENDIAN;
     }
 

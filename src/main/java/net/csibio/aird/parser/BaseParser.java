@@ -171,7 +171,7 @@ public class BaseParser {
      */
     public float[] getMzValues(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(mzCompressor.getByteOrder());
+        byteBuffer.order(mzCompressor.fetchByteOrder());
 
         IntBuffer ints = byteBuffer.asIntBuffer();
         int[] intValues = new int[ints.capacity()];
@@ -198,7 +198,7 @@ public class BaseParser {
      */
     public float[] getMzValues(byte[] value, int start, int length) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
-        byteBuffer.order(mzCompressor.getByteOrder());
+        byteBuffer.order(mzCompressor.fetchByteOrder());
 
         IntBuffer ints = byteBuffer.asIntBuffer();
         int[] intValues = new int[ints.capacity()];
@@ -223,7 +223,7 @@ public class BaseParser {
      */
     public int[] getMzValuesAsInteger(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(mzCompressor.getByteOrder());
+        byteBuffer.order(mzCompressor.fetchByteOrder());
 
         IntBuffer ints = byteBuffer.asIntBuffer();
         int[] intValues = new int[ints.capacity()];
@@ -245,7 +245,7 @@ public class BaseParser {
      */
     public int[] getTags(byte[] value) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(mzCompressor.getByteOrder());
+        byteBuffer.order(mzCompressor.fetchByteOrder());
 
         byte[] byteValue = new byte[byteBuffer.capacity() * 8];
         for (int i = 0; i < byteBuffer.capacity(); i++) {
@@ -303,7 +303,7 @@ public class BaseParser {
     public float[] getIntValues(byte[] value) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(intCompressor.getByteOrder());
+        byteBuffer.order(intCompressor.fetchByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
         float[] intensityValues = new float[intensities.capacity()];
@@ -326,7 +326,7 @@ public class BaseParser {
     public float[] getIntValues(byte[] value, int start, int length) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
-        byteBuffer.order(intCompressor.getByteOrder());
+        byteBuffer.order(intCompressor.fetchByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
         float[] intensityValues = new float[intensities.capacity()];
@@ -347,7 +347,7 @@ public class BaseParser {
     public float[] getLogedIntValues(byte[] value) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        byteBuffer.order(intCompressor.getByteOrder());
+        byteBuffer.order(intCompressor.fetchByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
         float[] intValues = new float[intensities.capacity()];
@@ -370,7 +370,7 @@ public class BaseParser {
     public float[] getLogedIntValues(byte[] value, int start, int length) {
 
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
-        byteBuffer.order(intCompressor.getByteOrder());
+        byteBuffer.order(intCompressor.fetchByteOrder());
 
         FloatBuffer intensities = byteBuffer.asFloatBuffer();
         float[] intValues = new float[intensities.capacity()];

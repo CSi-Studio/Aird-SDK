@@ -14,7 +14,6 @@ import net.csibio.aird.bean.*;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
-import net.csibio.aird.util.StackCompressUtil;
 
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -236,7 +235,6 @@ public class DIAParser extends BaseParser {
      * @return 某个时刻的光谱信息 the spectrum of the target retention time
      */
     public MzIntensityPairs getSpectrumByIndex(long startPtr, List<Long> mzSizeList, List<Long> intSizeList, int index) {
-        RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
             long start = startPtr;
@@ -285,7 +283,6 @@ public class DIAParser extends BaseParser {
      * @return 某个时刻的光谱信息 the spectrum of the target retention time, The spectrum contains the original bytes array of mz and intensity
      */
     public SpectrumDetail getSpectrumDetailByIndex(long startPtr, List<Long> mzSizeList, List<Long> intSizeList, int index) {
-        RandomAccessFile raf = null;
         SpectrumDetail detail = new SpectrumDetail();
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -338,7 +335,6 @@ public class DIAParser extends BaseParser {
      * @return 某个时刻的光谱信息 the spectrum of the target retention time
      */
     public MzIntensityPairs getSpectrumByIndex(long startPtr, List<Long> mzSizeList, List<Long> tagSizeList, List<Long> intSizeList, int index) {
-        RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
             long start = startPtr;
@@ -482,7 +478,6 @@ public class DIAParser extends BaseParser {
     }
 
     public MzIntensityPairs getSpectrumAsInteger(BlockIndex index, float rt) {
-        RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
             List<Float> rts = index.getRts();
