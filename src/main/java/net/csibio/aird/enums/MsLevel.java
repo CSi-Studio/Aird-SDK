@@ -21,4 +21,8 @@ public enum MsLevel {
         this.name = name;
         this.code = code;
     }
+
+    public Integer getCode() {
+        return code;
+    }
 }

@@ -63,5 +63,8 @@ public class SampleCode {
             TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
             System.out.println(map.size());
         });
+
+        //Read TIC
+        airdInfo.getTIC();
     }
 }

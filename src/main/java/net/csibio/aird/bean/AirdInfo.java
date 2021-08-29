@@ -13,9 +13,9 @@ package net.csibio.aird.bean;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.constant.Features;
 import lombok.Data;
+import net.csibio.aird.enums.MsLevel;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class AirdInfo {
@@ -161,4 +161,19 @@ public class AirdInfo {
         }
     }
 
+    /**
+     * 键值对
+     * Pairs with key/value for tr/intensity
+     */
+    public HashMap<Float, Long> getTIC(){
+        HashMap<Float, Long> map = new HashMap<Float, Long>() {};
+        indexList.forEach(blockIndex->{
+            if(blockIndex.level == MsLevel.MS1.getCode()) {
+                for (int i =0; i<blockIndex.rts.size(); i++){
+                    map.put(blockIndex.rts.get(i),blockIndex.tics.get(i));
+                }
+            }
+        });
+        return map;
+    }
 }
