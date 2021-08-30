@@ -12,12 +12,12 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.MzIntensityPairs;
-import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
+import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.FileUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -72,9 +72,10 @@ public class BaseParser {
     /**
      * Random Access File reader
      */
-    RandomAccessFile raf;
+    public RandomAccessFile raf;
 
-    public BaseParser() {}
+    public BaseParser() {
+    }
 
     public BaseParser(String indexPath) throws ScanException {
         this.indexFile = new File(indexPath);
@@ -240,7 +241,7 @@ public class BaseParser {
      * get tag values only for aird file
      * 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
      *
-     * @param value  压缩后的数组
+     * @param value 压缩后的数组
      * @return 解压缩后的数组
      */
     public int[] getTags(byte[] value) {

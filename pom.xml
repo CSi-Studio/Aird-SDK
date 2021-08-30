@@ -9,7 +9,9 @@
     <packaging>jar</packaging>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
     <name>Aird-SDK</name>
-    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage</description>
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing
+        and Storage
+    </description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -40,7 +42,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.76</version>
+            <version>1.2.78</version>
         </dependency>
 
         <dependency>
@@ -82,31 +84,31 @@
             <id>alimaven</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-<!--        <repository>-->
-<!--            <id>snapshots-repo</id>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-<!--            <releases>-->
-<!--                <enabled>false</enabled>-->
-<!--            </releases>-->
-<!--            <snapshots>-->
-<!--                <enabled>true</enabled>-->
-<!--            </snapshots>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>pst-release</id>-->
-<!--            <name>EBI Nexus Repository</name>-->
-<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>-->
-<!--        </repository>-->
-<!--        &lt;!&ndash; EBI SNAPSHOT repo &ndash;&gt;-->
-<!--        <repository>-->
-<!--            <id>pst-snapshots</id>-->
-<!--            <name>EBI Nexus Snapshots Repository</name>-->
-<!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>-->
-<!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>snapshots-repo</id>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+        <!--            <releases>-->
+        <!--                <enabled>false</enabled>-->
+        <!--            </releases>-->
+        <!--            <snapshots>-->
+        <!--                <enabled>true</enabled>-->
+        <!--            </snapshots>-->
+        <!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>pst-release</id>-->
+        <!--            <name>EBI Nexus Repository</name>-->
+        <!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>-->
+        <!--        </repository>-->
+        <!--        &lt;!&ndash; EBI SNAPSHOT repo &ndash;&gt;-->
+        <!--        <repository>-->
+        <!--            <id>pst-snapshots</id>-->
+        <!--            <name>EBI Nexus Snapshots Repository</name>-->
+        <!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>-->
+        <!--        </repository>-->
     </repositories>
 
     <build>
-<!--        <finalName>aird-sdk</finalName>-->
+        <!--        <finalName>aird-sdk</finalName>-->
         <sourceDirectory>src/main/java</sourceDirectory>
         <testSourceDirectory>src/main/java</testSourceDirectory>
         <plugins>
@@ -146,25 +148,25 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>8</source>
-                    <target>8</target>
+                    <source>16</source>
+                    <target>16</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
             <!-- GPG 当需要Deploy到Maven中心仓库的时候使用本插件 -->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-gpg-plugin</artifactId>-->
-<!--                <version>1.6</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <phase>deploy</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>sign</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
+            <!--                <version>1.6</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <phase>deploy</phase>-->
+            <!--                        <goals>-->
+            <!--                            <goal>sign</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -187,16 +189,16 @@
             <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>
         </repository>
         <!-- 远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件 -->
-<!--        <snapshotRepository>-->
-<!--            <id>sonatype-nexus-snapshots</id>-->
-<!--            <name>Sonatype Nexus Snapshots</name>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-<!--        </snapshotRepository>-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus-staging</id>-->
-<!--            <name>Nexus Release Repository</name>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
+        <!--        <snapshotRepository>-->
+        <!--            <id>sonatype-nexus-snapshots</id>-->
+        <!--            <name>Sonatype Nexus Snapshots</name>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
+        <!--        </snapshotRepository>-->
+        <!--        <repository>-->
+        <!--            <id>sonatype-nexus-staging</id>-->
+        <!--            <name>Nexus Release Repository</name>-->
+        <!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--        </repository>-->
     </distributionManagement>
 
     <scm>
