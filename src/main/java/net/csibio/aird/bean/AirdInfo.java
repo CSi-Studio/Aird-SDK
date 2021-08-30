@@ -165,8 +165,8 @@ public class AirdInfo {
      * 键值对
      * Pairs with key/value for tr/intensity
      */
-    public HashMap<Float, Long> getTIC(){
-        HashMap<Float, Long> map = new HashMap<Float, Long>() {};
+    public TreeMap<Float, Long> getTIC(){
+        TreeMap<Float, Long> map = new TreeMap<Float, Long>() {};
         indexList.forEach(blockIndex->{
             if(blockIndex.level == MsLevel.MS1.getCode()) {
                 for (int i =0; i<blockIndex.rts.size(); i++){
