@@ -10,7 +10,11 @@
 
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.*;
+import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.SpectrumDetail;
+import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
@@ -194,7 +198,7 @@ public class DIAParser extends BaseParser {
      * @param startPtr    起始位置 the start point of the target spectrum
      * @param rtList      全部时刻列表 all the retention time list
      * @param mzSizeList  mz数组长度列表 mz size block list
-     * @param tagSizeList  tag数组长度列表 tag size block list
+     * @param tagSizeList tag数组长度列表 tag size block list
      * @param intSizeList int数组长度列表 intensity size block list
      * @param rt          获取某一个时刻原始谱图 the retention time of the target spectrum
      * @return 某个时刻的光谱信息 the spectrum of the target retention time
@@ -219,6 +223,57 @@ public class DIAParser extends BaseParser {
         List<Float> rts = index.getRts();
         int position = rts.indexOf(rt);
         return getSpectrumByIndex(index, position);
+    }
+
+    /**
+     * 从一个完整的Swath Block块中取出一条记录
+     * 查询条件: 1. block索引号 2. rt
+     * <p>
+     * Read a spectrum from aird with block index and target rt
+     *
+     * @param startPtr    block start position
+     * @param rts         rt list
+     * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param intSizeList int数组长度列表 intensity size block list
+     * @param rtEnd       ended retention time of the target spectrum
+     * @return the target spectrum
+     */
+    public TreeMap<Float, MzIntensityPairs> getSpectrumsByRtRange(Long startPtr, List<Float> rts, List<Long> mzSizeList, List<Long> intSizeList, float rtStart, float rtEnd) {
+        float[] rtArray = new float[rts.size()];
+        for (int i = 0; i < rts.size(); i++) {
+            rtArray[i] = rts.get(i);
+        }
+        int startIndex = Extractor.lowerBound(rtArray, rtStart);
+        int endIndex = Extractor.lowerBound(rtArray, rtEnd);
+
+        return getSpectrumByIndexRange(startPtr, rts, mzSizeList, intSizeList, startIndex, endIndex);
+    }
+
+    /**
+     * 从Aird文件中获取一个范围内的光谱记录
+     * Read spectrum map from aird with target index range
+     *
+     * @param startPtr    起始位置 the start point of the target spectrum
+     * @param mzSizeList  mz数组长度列表 mz size block list
+     * @param intSizeList int数组长度列表 intensity size block list
+     * @param indexStart  the start index(including itself)
+     * @param indexEnd    the end index(including itself)
+     * @return the target spectrum map
+     */
+    public TreeMap<Float, MzIntensityPairs> getSpectrumByIndexRange(long startPtr, List<Float> rts, List<Long> mzSizeList, List<Long> intSizeList, int indexStart, int indexEnd) {
+        long start = startPtr;
+        for (int i = 0; i < indexStart; i++) {
+            start += mzSizeList.get(i);
+            start += intSizeList.get(i);
+        }
+
+        long end = start;
+        for (int j = indexStart; j < indexEnd; j++) {
+            end += mzSizeList.get(j);
+            end += intSizeList.get(j);
+        }
+
+        return getSpectrums(start, end, rts.subList(indexStart, indexEnd), mzSizeList.subList(indexStart, indexEnd), intSizeList.subList(indexStart, indexEnd));
     }
 
     /**
@@ -404,7 +459,7 @@ public class DIAParser extends BaseParser {
 
     /**
      * @param blockIndex 块索引
-     * @param index 块内索引值
+     * @param index      块内索引值
      * @return 对应光谱数据
      */
     public MzIntensityPairs getSpectrumByIndex(BlockIndex blockIndex, int index) {
@@ -433,7 +488,7 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
-    public SpectrumDetail getSpectrumDetail(int index){
+    public SpectrumDetail getSpectrumDetail(int index) {
         List<BlockIndex> indexList = getAirdInfo().getIndexList();
         for (int i = 0; i < indexList.size(); i++) {
             BlockIndex blockIndex = indexList.get(i);
@@ -468,7 +523,7 @@ public class DIAParser extends BaseParser {
             for (int i = 0; i < mzArray.length; i++) {
                 mzArray[i] = (int) (mzIntensityPairs.getMzArray()[i] * mzPrecision);
             }
-            return  new MzIntensityPairs(mzArray,mzIntensityPairs.getIntensityArray());
+            return new MzIntensityPairs(mzArray, mzIntensityPairs.getIntensityArray());
 
         } else {
             System.out.println("No such compressor.");

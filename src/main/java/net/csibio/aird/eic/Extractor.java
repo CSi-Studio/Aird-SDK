@@ -25,9 +25,10 @@ public class Extractor {
      * 计算 mz在[mzStart, mzEnd]范围对应的intensity的总和
      * Get the Low Bound Index for mzStart and High Bound Index for mzEnd in pairs.mzArray,
      * then accumulate the intensity from the LowBoundIndex to HighBoundIndex
+     *
      * @param pairs   mzArray is an ordered array
      * @param mzStart target mz start
-     * @param mzEnd target mz end
+     * @param mzEnd   target mz end
      * @return the intensity sum as extractor result
      */
     public static float accumulation(MzIntensityPairs pairs, Float mzStart, Float mzEnd) {
@@ -78,7 +79,7 @@ public class Extractor {
         }
 
         XIC.initialize(countInBatch);
-        for ( int i = 0; i < pairsList.size(); i = i + countInBatch) {
+        for (int i = 0; i < pairsList.size(); i = i + countInBatch) {
             float[] results = XIC.lowerBoundWithGPU(pairsList.subList(i, i + countInBatch), targetMzArray, mzWindow);
             resMatrix[i] = results;
         }
@@ -91,7 +92,7 @@ public class Extractor {
      * 当目标值大于等于范围中的最大值时,返回-1
      * 左闭右开区间
      *
-     * @param array 目标数组
+     * @param array  目标数组
      * @param target 目标值
      * @return 目标索引
      */
