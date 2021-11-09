@@ -32,7 +32,7 @@ Memory
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>lastest.version</version>
+        <version>1.1.2</version>
     </dependency>
 
 # Main API Class
