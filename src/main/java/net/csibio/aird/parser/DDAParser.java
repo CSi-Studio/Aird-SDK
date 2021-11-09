@@ -26,8 +26,14 @@ import java.util.TreeMap;
  * The parser for DDA acquisition mode. The index is group like MS1-MS2 Group
  * DDA reader using the strategy of loading all the information into the memory
  */
-public class DDAParser extends BaseParser{
+public class DDAParser extends BaseParser {
 
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @throws ScanException scan exception
+     */
     public DDAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
     }
@@ -36,7 +42,7 @@ public class DDAParser extends BaseParser{
      * DDA文件采用一次性读入内存的策略
      * DDA reader using the strategy of loading all the information into the memory
      *
-     * @return DDA文件中的所有信息,以MsCycle的模型进行存储 the mz-intensity pairs read from the aird. And store as MsCycle in the memory
+     * @return DDA文件中的所有信息, 以MsCycle的模型进行存储 the mz-intensity pairs read from the aird. And store as MsCycle in the memory
      * @throws Exception exception when reading the file
      */
     public List<MsCycle> parseToMsCycle() throws Exception {

@@ -30,6 +30,9 @@ import java.nio.IntBuffer;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Base Parser
+ */
 public class BaseParser {
 
     /**
@@ -74,9 +77,18 @@ public class BaseParser {
      */
     public RandomAccessFile raf;
 
+    /**
+     * 构造函数
+     */
     public BaseParser() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param indexPath 索引文件的位置
+     * @throws ScanException 扫描时的异常
+     */
     public BaseParser(String indexPath) throws ScanException {
         this.indexFile = new File(indexPath);
         this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
@@ -123,6 +135,11 @@ public class BaseParser {
         this.type = airdType;
     }
 
+    /**
+     * get AirdInfo
+     *
+     * @return AirdInfo
+     */
     public AirdInfo getAirdInfo() {
         return airdInfo;
     }
@@ -383,6 +400,9 @@ public class BaseParser {
         return intValues;
     }
 
+    /**
+     * Close the raf object
+     */
     public void close() {
         FileUtil.close(raf);
     }

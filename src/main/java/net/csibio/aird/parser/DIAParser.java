@@ -28,14 +28,33 @@ import java.util.*;
  * spectras will be grouped by Precursor m/z range
  */
 public class DIAParser extends BaseParser {
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @throws ScanException scan exception
+     */
     public DIAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param airdPath      aird file path
+     * @param mzCompressor  mz compressor
+     * @param intCompressor intensity compressor
+     * @param mzPrecision   mz precision
+     * @throws ScanException scan exception
+     */
     public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision) throws ScanException {
         super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
     }
 
+    /**
+     * @param index block index
+     * @return all the spectrums of one block
+     */
     public TreeMap<Float, MzIntensityPairs> getSpectrums(BlockIndex index) {
         if (mzCompressor.getMethods().contains(Compressor.METHOD_STACK)) {
             return getSpectrums(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getTags(), index.getInts());
@@ -235,6 +254,7 @@ public class DIAParser extends BaseParser {
      * @param rts         rt list
      * @param mzSizeList  mz数组长度列表 mz size block list
      * @param intSizeList int数组长度列表 intensity size block list
+     * @param rtStart     start retention time of the target spectrum
      * @param rtEnd       ended retention time of the target spectrum
      * @return the target spectrum
      */
@@ -254,6 +274,7 @@ public class DIAParser extends BaseParser {
      * Read spectrum map from aird with target index range
      *
      * @param startPtr    起始位置 the start point of the target spectrum
+     * @param rts         所有的rt the rt list
      * @param mzSizeList  mz数组长度列表 mz size block list
      * @param intSizeList int数组长度列表 intensity size block list
      * @param indexStart  the start index(including itself)
@@ -488,18 +509,6 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
-    public SpectrumDetail getSpectrumDetail(int index) {
-        List<BlockIndex> indexList = getAirdInfo().getIndexList();
-        for (int i = 0; i < indexList.size(); i++) {
-            BlockIndex blockIndex = indexList.get(i);
-            if (blockIndex.getNums().contains(index)) {
-                int targetIndex = blockIndex.getNums().indexOf(index);
-                MzIntensityPairs pairs = getSpectrumByIndex(blockIndex, targetIndex);
-            }
-        }
-        return null;
-    }
-
     /**
      * Specific API
      * 从Aird文件中读取,但是不要将m/z数组的从Integer改为Float
@@ -532,6 +541,13 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
+    /**
+     * get the spectrum which contains the mz data as integers
+     *
+     * @param index block index
+     * @param rt    retention time
+     * @return the target spectrum
+     */
     public MzIntensityPairs getSpectrumAsInteger(BlockIndex index, float rt) {
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -570,6 +586,9 @@ public class DIAParser extends BaseParser {
         return null;
     }
 
+    /**
+     * close the raf
+     */
     public void close() {
         FileUtil.close(raf);
     }

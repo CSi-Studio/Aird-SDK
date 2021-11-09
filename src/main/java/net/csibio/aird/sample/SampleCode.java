@@ -13,14 +13,11 @@ package net.csibio.aird.sample;
 import net.csibio.aird.AirdManager;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.MzIntensityPairs;
-import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
-import net.csibio.aird.util.FileUtil;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 
 /**
@@ -28,16 +25,16 @@ import java.util.TreeMap;
  */
 public class SampleCode {
 
-    public static void main(String[] args) {
-        getAirdInfo();
-    }
+//    public static void main(String[] args) {
+//        getAirdInfo();
+//    }
 
     /**
      * 读取某一个文件夹下所有的Aird Index文件
-     *
+     * <p>
      * Sample code for reading all the aird files in target directory
      */
-    public static void scanDIAFiles(){
+    public static void scanDIAFiles() {
         List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
         files.forEach(file -> {
             AirdManager.getInstance().load(file.getPath());
@@ -48,7 +45,7 @@ public class SampleCode {
      * 读取一个Aird文件的元数据文件,并且根据文件中的Block块索引信息读取Aird文件中的光谱图信息
      * API Samples
      */
-    public static void getAirdInfo(){
+    public static void getAirdInfo() {
         //Init with the Aird Index(.json) file path
         DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\C20181208yix_HCC_DIA_T_46A_1st.json");
 

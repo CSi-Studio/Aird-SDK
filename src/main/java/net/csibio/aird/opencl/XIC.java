@@ -45,8 +45,8 @@ public class XIC {
      * 在单张光谱图中查找多个目标mz
      *
      * @param pairsList 多张光谱图
-     * @param targets 多个目标值
-     * @param mzWindow 目标窗口
+     * @param targets   多个目标值
+     * @param mzWindow  目标窗口
      * @return 目标值结果
      */
     public static float[] lowerBoundWithGPU(List<MzIntensityPairs> pairsList, float[] targets, float mzWindow) {
@@ -88,6 +88,15 @@ public class XIC {
         return results;
     }
 
+    /**
+     * 在单张光谱图中查找多个目标mz
+     *
+     * @param xicParamsList 需要压缩的光谱图数组
+     * @param targetsMem    目标内存
+     * @param targetsLength 目标长度
+     * @param resultsMem    结果内存
+     * @param mzWindow      结果内存长度
+     */
     private static void lowerBound(List<Spectrum> xicParamsList,
                                    cl_mem targetsMem, int targetsLength,
                                    cl_mem resultsMem, float mzWindow) {
@@ -116,6 +125,13 @@ public class XIC {
                 0, null, null);
     }
 
+    /**
+     * 使用CPU计算
+     *
+     * @param array   需要搜索的数组
+     * @param targets 需要搜索的目标
+     * @return 返回搜索到的坐标索引
+     */
     private static int[] lowerBoundWithCPU(float[] array, float[] targets) {
         int[] results = new int[targets.length];
         for (int i = 0; i < targets.length; i++) {
@@ -126,6 +142,7 @@ public class XIC {
 
     /**
      * Initialize a default OpenCL context, command queue, program and kernel
+     *
      * @param countInBatch 分多少个批次进行
      */
     public static void initialize(int countInBatch) {
@@ -170,11 +187,11 @@ public class XIC {
         // Create a command-queue for the selected device
         cl_queue_properties properties = new cl_queue_properties();
 
-     //   commandQueue = clCreateCommandQueueWithProperties(context, device, properties, null);
+        //   commandQueue = clCreateCommandQueueWithProperties(context, device, properties, null);
         commandQueue = clCreateCommandQueue(context, device, 0, null);
 
         // Create the program from the source code
-        String programSource = readFile("src/main/resources/clkernel/XICKernel"+countInBatch+".cpp");
+        String programSource = readFile("src/main/resources/clkernel/XICKernel" + countInBatch + ".cpp");
         program = clCreateProgramWithSource(context,
                 1, new String[]{programSource}, null, null);
 
@@ -230,6 +247,13 @@ public class XIC {
         }
     }
 
+    /**
+     * lower bound search
+     *
+     * @param array  search array
+     * @param target target value
+     * @return target value's index
+     */
     public static int lowerBound(float[] array, Float target) {
         int rightIndex = array.length - 1;
 
@@ -255,15 +279,28 @@ public class XIC {
         return rightIndex;
     }
 
+    /**
+     * Spectrum Object for GPU computation
+     */
     @Data
     public static class Spectrum {
         cl_mem mzArrayMem;
         cl_mem intArrayMem;
         int length;
 
+        /**
+         * 构造函数
+         */
         public Spectrum() {
         }
 
+        /**
+         * 构造函数
+         *
+         * @param mzArrayMem  mz array mem object
+         * @param intArrayMem intensity array mem object
+         * @param length      the total length
+         */
         public Spectrum(cl_mem mzArrayMem, cl_mem intArrayMem, int length) {
             this.mzArrayMem = mzArrayMem;
             this.intArrayMem = intArrayMem;

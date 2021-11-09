@@ -10,23 +10,24 @@
 
 package net.csibio.aird.util;
 
-import net.csibio.aird.bean.Compressor;
 import me.lemire.integercompression.IntWrapper;
 import me.lemire.integercompression.differential.IntegratedBinaryPacking;
 import me.lemire.integercompression.differential.IntegratedVariableByte;
 import me.lemire.integercompression.differential.SkippableIntegratedComposition;
+import net.csibio.aird.bean.Compressor;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.*;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+/**
+ * Compress Util
+ */
 public class CompressUtil {
 
     /**
@@ -136,12 +137,24 @@ public class CompressUtil {
         return output;
     }
 
-    public static byte[] ZDPDEncoder(int[] sortedInts){
+    /**
+     * ZDPD Encoder
+     *
+     * @param sortedInts the sorted integers
+     * @return the compressed data
+     */
+    public static byte[] ZDPDEncoder(int[] sortedInts) {
         int[] compressedInts = fastPforEncoder(sortedInts);
         return transToByte(compressedInts);
     }
 
-    public static int[] ZDPDDecoder(byte[] compressedBytes){
+    /**
+     * ZDPD Decoder
+     *
+     * @param compressedBytes the compressed data
+     * @return the decompressed sorted integers
+     */
+    public static int[] ZDPDDecoder(byte[] compressedBytes) {
         int[] compressedInts = transToInteger(compressedBytes);
         return fastPforDecoder(compressedInts);
     }
@@ -327,9 +340,9 @@ public class CompressUtil {
      */
     public static int[] transToInteger(byte[] value, ByteOrder order) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        if(order == null){
+        if (order == null) {
             byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        }else{
+        } else {
             byteBuffer.order(order);
         }
         IntBuffer ints = byteBuffer.asIntBuffer();
@@ -351,9 +364,9 @@ public class CompressUtil {
      */
     public static short[] transToShort(byte[] value, ByteOrder order) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
-        if(order == null){
+        if (order == null) {
             byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-        }else{
+        } else {
             byteBuffer.order(order);
         }
         ShortBuffer shorts = byteBuffer.asShortBuffer();
@@ -373,9 +386,15 @@ public class CompressUtil {
      * @return decompressed data
      */
     public static int[] transToInteger(byte[] value) {
-       return transToInteger(value, ByteOrder.LITTLE_ENDIAN);
+        return transToInteger(value, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * decompress the binary data with algorithm
+     *
+     * @param value array to be decompressed and transformed
+     * @return decompressed data
+     */
     public static short[] transToShort(byte[] value) {
         return transToShort(value, ByteOrder.LITTLE_ENDIAN);
     }

@@ -10,16 +10,40 @@ import net.csibio.aird.parser.BaseParser;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * DIA Parser
+ */
 public class DIA extends BaseParser {
 
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @throws ScanException scan exception
+     */
     public DIA(String indexFilePath) throws ScanException {
         super(indexFilePath);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param airdPath      aird file path
+     * @param mzCompressor  mz compressor
+     * @param intCompressor intensity compressor
+     * @param mzPrecision   mz precision
+     * @throws ScanException scan exception
+     */
     public DIA(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision) throws ScanException {
         super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
     }
 
+    /**
+     * the main interface for getting all the spectrums of a block.
+     *
+     * @param index block index
+     * @return all the spectrums
+     */
     public TreeMap<Float, Spectrum> getSpectrums(BlockIndex index) {
         return getSpectrums(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
     }

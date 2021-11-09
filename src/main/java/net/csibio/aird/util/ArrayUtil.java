@@ -17,6 +17,9 @@ import org.apache.commons.math3.util.Pair;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Array Util
+ */
 public class ArrayUtil {
 
     /**
@@ -33,7 +36,7 @@ public class ArrayUtil {
     }
 
     /**
-     * @param sortInts 已经排序的int数组 the sorted integer array
+     * @param sortInts         已经排序的int数组 the sorted integer array
      * @param totalLayersCount 堆叠占位数,例如2层堆叠需要1位表示(即0和1),4层堆叠需要2位数表示(即00,01,10,11)
      * @return 恢复堆叠数组为正常数组
      */
@@ -75,13 +78,14 @@ public class ArrayUtil {
 
     /**
      * Gets the average value of the difference between adjacent numbers in the array
+     *
      * @param array target array
      * @return the average value
      */
-    public static long avgDelta(int[] array){
+    public static long avgDelta(int[] array) {
         long delta = 0;
         for (int i = 0; i < array.length - 1; i++) {
-            if ((array[i+1]-array[i]) == 0){
+            if ((array[i + 1] - array[i]) == 0) {
                 delta++;
             }
         }
@@ -90,17 +94,18 @@ public class ArrayUtil {
 
     /**
      * convert the Float type into float type
+     *
      * @param floatSet target set
      * @return float array
      */
-    public static float[] toPrimitive(Set<Float> floatSet){
-        if (floatSet.size() == 0){
+    public static float[] toPrimitive(Set<Float> floatSet) {
+        if (floatSet.size() == 0) {
             return null;
         }
         float[] fArray = new float[floatSet.size()];
-        int i=0;
+        int i = 0;
         Iterator<Float> iterator = floatSet.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             fArray[i] = iterator.next();
             i++;
         }

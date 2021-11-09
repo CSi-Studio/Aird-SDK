@@ -24,6 +24,12 @@ import java.util.List;
  * The Parser for normal format just like mzXML or mzML, whose spectras are ordered by retention time
  */
 public class CommonParser extends BaseParser {
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @throws ScanException scan exception
+     */
     public CommonParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
     }
@@ -51,7 +57,7 @@ public class CommonParser extends BaseParser {
      * COMMON类型的文件中,每一个mzs和ints数组中存储的是位置而不是块大小
      * In the common type file. every data stored in the mzs and ints is the spectrum location but not the block size
      *
-     * @param index 索引信息 block index
+     * @param index    索引信息 block index
      * @param position 指定的光谱位置 the specific spectrum index
      * @return 该光谱中的信息 spectrum data pairs
      */

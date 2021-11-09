@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
         </dependency>
 
         <dependency>
@@ -84,27 +84,27 @@
             <id>alimaven</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
         </repository>
-        <!--        <repository>-->
-        <!--            <id>snapshots-repo</id>-->
-        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
-        <!--            <releases>-->
-        <!--                <enabled>false</enabled>-->
-        <!--            </releases>-->
-        <!--            <snapshots>-->
-        <!--                <enabled>true</enabled>-->
-        <!--            </snapshots>-->
-        <!--        </repository>-->
-        <!--        <repository>-->
-        <!--            <id>pst-release</id>-->
-        <!--            <name>EBI Nexus Repository</name>-->
-        <!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>-->
-        <!--        </repository>-->
-        <!--        &lt;!&ndash; EBI SNAPSHOT repo &ndash;&gt;-->
-        <!--        <repository>-->
-        <!--            <id>pst-snapshots</id>-->
-        <!--            <name>EBI Nexus Snapshots Repository</name>-->
-        <!--            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>-->
-        <!--        </repository>-->
+        <repository>
+            <id>snapshots-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>pst-release</id>
+            <name>EBI Nexus Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>pst-snapshots</id>
+            <name>EBI Nexus Snapshots Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
+        </repository>
     </repositories>
 
     <build>
@@ -154,19 +154,30 @@
                 </configuration>
             </plugin>
             <!-- GPG 当需要Deploy到Maven中心仓库的时候使用本插件 -->
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-gpg-plugin</artifactId>-->
-            <!--                <version>1.6</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <phase>deploy</phase>-->
-            <!--                        <goals>-->
-            <!--                            <goal>sign</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.3</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -184,21 +195,21 @@
     </build>
 
     <distributionManagement>
-        <repository>
-            <id>space-csi</id>
-            <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>
-        </repository>
-        <!-- 远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件 -->
-        <!--        <snapshotRepository>-->
-        <!--            <id>sonatype-nexus-snapshots</id>-->
-        <!--            <name>Sonatype Nexus Snapshots</name>-->
-        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-        <!--        </snapshotRepository>-->
         <!--        <repository>-->
-        <!--            <id>sonatype-nexus-staging</id>-->
-        <!--            <name>Nexus Release Repository</name>-->
-        <!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--            <id>space-csi</id>-->
+        <!--            <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
         <!--        </repository>-->
+        <!-- 远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件 -->
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
 
     <scm>

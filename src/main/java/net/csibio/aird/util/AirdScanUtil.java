@@ -22,13 +22,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Aird Scan Util for scanning the aird files quickly
+ */
 public class AirdScanUtil {
 
     /**
      * Scan a folder for all the aird index files(json format file) but not parse the json files
      * Recursive scanning under subfolders is not supported
      * The directory name will display as the Project name
-     *
+     * <p>
      * 扫描一个文件夹下所有的Aird索引文件.但是不解析这些json文件
      * 不支持子文件夹的递归扫描
      * 文件夹名称会显示为项目名称
@@ -65,8 +68,9 @@ public class AirdScanUtil {
 
     /**
      * load Aird Index Infomation from index file(JSON Format),and parse into AirdInfo
+     *
      * @param indexFile 索引文件
-     * @return 该索引文件内的JSON信息,即AirdInfo信息
+     * @return 该索引文件内的JSON信息, 即AirdInfo信息
      */
     public static AirdInfo loadAirdInfo(File indexFile) {
         String content = FileUtil.readFile(indexFile);
@@ -86,6 +90,7 @@ public class AirdScanUtil {
     /**
      * 批量加载索引文件
      * Batch Load index files
+     *
      * @param indexFiles 索引文件列表
      * @return 索引文件JSON列表
      */
@@ -106,6 +111,7 @@ public class AirdScanUtil {
 
     /**
      * 批量加载索引文件,以Map的形式返回JSON文件列表
+     *
      * @param indexFiles 索引文件列表
      * @return key为索引文件的path, value为JSON格式的索引文件
      */
@@ -126,11 +132,12 @@ public class AirdScanUtil {
 
     /**
      * 根据aird文件路径获取对应的索引文件路径
+     *
      * @param airdPath aird文件路径
      * @return 索引文件路径
      */
     public static String getIndexPathByAirdPath(String airdPath) {
-        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)){
+        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
             return null;
         }
         return airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
@@ -138,11 +145,12 @@ public class AirdScanUtil {
 
     /**
      * 根据索引文件路径获取aird文件路径
+     *
      * @param indexPath 索引文件路径
      * @return aird文件路径
      */
     public static String getAirdPathByIndexPath(String indexPath) {
-        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)){
+        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
             return null;
         }
         return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
@@ -150,11 +158,12 @@ public class AirdScanUtil {
 
     /**
      * 是否是aird文件路径
+     *
      * @param airdPath aird文件路径
      * @return 是否是aird文件路径
      */
     public static boolean isAirdFile(String airdPath) {
-        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)){
+        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
             return false;
         }
         return airdPath.toLowerCase().endsWith(SuffixConst.AIRD);
@@ -162,11 +171,12 @@ public class AirdScanUtil {
 
     /**
      * 是否是索引文件路径
+     *
      * @param indexPath 索引文件路径
      * @return 是否是索引文件路径
      */
     public static boolean isIndexFile(String indexPath) {
-        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)){
+        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
             return false;
         }
         return indexPath.toLowerCase().endsWith(SuffixConst.JSON);

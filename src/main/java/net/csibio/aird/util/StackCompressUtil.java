@@ -1,17 +1,20 @@
 package net.csibio.aird.util;
 
+import net.csibio.aird.bean.Layers;
 import org.apache.commons.math3.util.FastMath;
 
-import net.csibio.aird.bean.Layers;
 import java.util.*;
 
+/**
+ * Compress Util for Stack-ZDPD
+ */
 public class StackCompressUtil {
 
     /**
      * compress the data with stack-ZDPD algorithm
      *
      * @param arrGroup mzArray to be compressed
-     * @param pair sorting method of mzArray
+     * @param pair     sorting method of mzArray
      * @return compressed mzArray
      */
     public static Layers stackEncode(List<int[]> arrGroup, boolean pair) {

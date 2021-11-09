@@ -40,8 +40,13 @@ public class MsCycle implements Serializable {
      */
     List<WindowRange> rangeList;
 
-    //MS2的RT时间列表
+    /**
+     * MS2的RT时间列表
+     */
     List<Float> rts;
 
+    /**
+     * the related ms2 spectrums
+     */
     List<MzIntensityPairs> ms2Spectrums;
 }
