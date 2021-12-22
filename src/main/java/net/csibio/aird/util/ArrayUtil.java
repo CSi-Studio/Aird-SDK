@@ -35,6 +35,17 @@ public class ArrayUtil {
         return sortInts;
     }
 
+    public static double[] fromFloatToDouble(float[] array){
+        if (array == null){
+            return null;
+        }
+        double[] newArray = new double[array.length];
+        for (int i = 0; i < array.length; i++) {
+            newArray[i] = array[i];
+        }
+        return newArray;
+    }
+
     /**
      * @param sortInts         已经排序的int数组 the sorted integer array
      * @param totalLayersCount 堆叠占位数,例如2层堆叠需要1位表示(即0和1),4层堆叠需要2位数表示(即00,01,10,11)

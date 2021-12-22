@@ -14,6 +14,7 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
@@ -173,6 +174,42 @@ public class BaseParser {
             try {
                 MzIntensityPairs pairs = new MzIntensityPairs(getMzValues(mz), getIntValues(intensity));
                 map.put(rts.get(i) / 60d, pairs);
+            } catch (Exception e) {
+                throw e;
+            }
+        }
+        return map;
+    }
+
+    /**
+     * 根据特定BlockIndex取出对应TreeMap
+     *
+     * @param raf        the random access file reader
+     * @param blockIndex the block index read from the index file
+     * @return 解码内容, key为rt, value为光谱中的键值对
+     * @throws Exception 读取文件异常
+     */
+    public TreeMap<Float, Spectrum> parseBlock(RandomAccessFile raf, BlockIndex blockIndex) throws Exception {
+        TreeMap<Float, Spectrum> map = new TreeMap<>();
+        List<Float> rts = blockIndex.getRts();
+
+        raf.seek(blockIndex.getStartPtr());
+        long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
+        byte[] result = new byte[(int) delta];
+
+        raf.read(result);
+        List<Long> mzSizes = blockIndex.getMzs();
+        List<Long> intensitySizes = blockIndex.getInts();
+
+        int start = 0;
+        for (int i = 0; i < mzSizes.size(); i++) {
+            byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
+            start = start + mzSizes.get(i).intValue();
+            byte[] intensity = ArrayUtils.subarray(result, start, start + intensitySizes.get(i).intValue());
+            start = start + intensitySizes.get(i).intValue();
+            try {
+                Spectrum pairs = new Spectrum(getMzValues(mz), getIntValues(intensity));
+                map.put(rts.get(i) / 60f, pairs);
             } catch (Exception e) {
                 throw e;
             }

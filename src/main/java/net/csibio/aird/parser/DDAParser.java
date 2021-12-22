@@ -11,14 +11,18 @@
 package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.MsCycle;
 import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
+import net.csibio.aird.util.DDAUtil;
 import net.csibio.aird.util.FileUtil;
 
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 /**
@@ -36,6 +40,56 @@ public class DDAParser extends BaseParser {
      */
     public DDAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
+    }
+
+    public BlockIndex getMs1Index(){
+        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0){
+            return airdInfo.getIndexList().get(0);
+        }
+        return null;
+    }
+
+    public List<BlockIndex> getAllMs2Index(){
+        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0){
+            return airdInfo.getIndexList().subList(1,airdInfo.getIndexList().size());
+        }
+        return null;
+    }
+    /**
+     * DDA文件采用一次性读入内存的策略
+     * DDA reader using the strategy of loading all the information into the memory
+     *
+     * @return DDA文件中的所有信息, 以MsCycle的模型进行存储 the mz-intensity pairs read from the aird. And store as MsCycle in the memory
+     * @throws Exception exception when reading the file
+     */
+    public List<DDAMs> readAllToMemory() throws Exception {
+        RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");
+        List<DDAMs> ms1List = new ArrayList<>();
+        BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
+        List<BlockIndex> ms2IndexList = getAllMs2Index();
+        TreeMap<Float, Spectrum> ms1Map = parseBlock(raf, ms1Index);
+        List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
+
+        for (int i = 0; i < ms1RtList.size(); i++) {
+            DDAMs ms1 = new DDAMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
+            DDAUtil.initFromIndex(ms1, ms1Index, i);
+            Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream().filter(index->index.getParentNum().equals(ms1.getNum())).findFirst();
+            if(ms2IndexRes.isPresent()){
+                BlockIndex ms2Index = ms2IndexRes.get();
+                TreeMap<Float, Spectrum> ms2Map = parseBlock(raf, ms2Index);
+                List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
+                List<DDAMs> ms2List = new ArrayList<>();
+                for (int j = 0; j < ms2RtList.size(); j++) {
+                    DDAMs ms2 = new DDAMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
+                    DDAUtil.initFromIndex(ms2, ms2Index, j);
+                    ms2List.add(ms2);
+                }
+                ms1.setMs2List(ms2List);
+            }
+            ms1List.add(ms1);
+        }
+        FileUtil.close(raf);
+        return ms1List;
     }
 
     /**

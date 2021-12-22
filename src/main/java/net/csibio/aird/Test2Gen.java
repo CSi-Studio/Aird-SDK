@@ -9,6 +9,10 @@ import java.util.TreeMap;
 
 public class Test2Gen {
     public static void main(String[] args) {
+
+    }
+
+    public void testForDIA(){
         String indexFilePath ="/Users/jinyinwang/Documents/Test/QE-HFX-20190719_50cm_60min_DC18_4_1.json";
         DIAParser DIAParser = new DIAParser(indexFilePath);
         List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
@@ -25,4 +29,5 @@ public class Test2Gen {
         TreeMap<Float, MzIntensityPairs> spectrums2 = DIAParser2.getSpectrums(index2);
         System.out.println("Gen2 time:" + (System.currentTimeMillis() - t2));
     }
+
 }

@@ -15,20 +15,35 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * every sycle mean ms1 spectrum with related ms2 spectra
+ * @deprecated use DDAMs instead
+ */
+@Deprecated
 @Data
 public class MsCycle implements Serializable {
 
     private static final long serialVersionUID = -123L;
 
     /**
-     * Retention Time
+     * Retention Time, unit: minutes
      */
-    double rt;
+    Double rt;
 
     /**
-     * Retention Time Index
+     * Retention Time Index, used for some specific scene
      */
-    double ri;
+    Double ri;
+
+    /**
+     * the tic data for ms1
+     */
+    Long tic;
+
+    /**
+     * cvList for ms1 scan
+     */
+    List<CV> cvList;
 
     /**
      * the ms1 spectrum data pairs
@@ -36,14 +51,24 @@ public class MsCycle implements Serializable {
     MzIntensityPairs ms1Spectrum;
 
     /**
-     * MS2的RT沿用MS1
+     * the window range for ms2
      */
     List<WindowRange> rangeList;
 
     /**
-     * MS2的RT时间列表
+     * the rt list for ms2
      */
     List<Float> rts;
+
+    /**
+     * the tic list for related ms2
+     */
+    List<Long> tics;
+
+    /**
+     * the cv list for related ms2
+     */
+    List<List<CV>> ms2CvList;
 
     /**
      * the related ms2 spectrums

@@ -107,4 +107,12 @@ public class BlockIndex {
         }
         rangeList.add(windowRange);
     }
+
+    public Integer getParentNum(){
+        if (level.equals(2)){
+            return num;
+        }else{
+            return null;
+        }
+    }
 }
