@@ -32,26 +32,32 @@ public class WindowRange {
     Double mz;
 
     /**
+     * 前体带电量,通常为空,0也表示为空
+     */
+    Integer charge;
+
+    /**
      * extend features
      */
     String features;
 
-    public WindowRange() {}
+    public WindowRange() {
+    }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null){
+        if (obj == null) {
             return false;
         }
 
-        if(obj instanceof WindowRange){
+        if (obj instanceof WindowRange) {
             WindowRange windowRange = (WindowRange) obj;
-            if(start == null || end == null || windowRange.getStart() == null || windowRange.getEnd()==null){
+            if (start == null || end == null || windowRange.getStart() == null || windowRange.getEnd() == null) {
                 return false;
             }
 
             return (this.start.equals(windowRange.getStart()) && this.end.equals(windowRange.getEnd()));
-        }else{
+        } else {
             return false;
         }
     }

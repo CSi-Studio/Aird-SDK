@@ -10,12 +10,15 @@
 
 package net.csibio.aird.bean;
 
-import net.csibio.aird.enums.AirdType;
-import net.csibio.aird.constant.Features;
 import lombok.Data;
+import net.csibio.aird.constant.Features;
+import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.MsLevel;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.TreeMap;
 
 @Data
 public class AirdInfo {
@@ -32,13 +35,13 @@ public class AirdInfo {
      * Format Version
      * 应用版本号
      */
-    String version = "1.0.3";
+    String version = "1.0.4";
 
     /**
      * Version Code. Integer code from 1 to N
      * 应用版本编码,从1开始计数的整型编码
      */
-    Integer versionCode = 3;
+    Integer versionCode = 4;
 
     /**
      * [核心字段] m/z窗口信息,窗口已经根据overlap进行过调整
@@ -88,6 +91,7 @@ public class AirdInfo {
     /**
      * [核心字段] Aird文件类型
      * [Core Field] Aird File Type
+     *
      * @see AirdType
      */
     String type;
@@ -135,14 +139,44 @@ public class AirdInfo {
     Boolean ignoreZeroIntensityPoint = true;
 
     /**
+     * MassSpectrumType
+     *
+     * @see net.csibio.aird.enums.MsType
+     */
+    String msType;
+
+    /**
+     * Polarity
+     *
+     * @see net.csibio.aird.enums.PolarityType
+     */
+    String polarity;
+
+    /**
+     * Activator Method
+     */
+    String activator;
+
+    /**
+     * Collision Energy
+     */
+    Float energy;
+
+    /**
+     * rt unit
+     */
+    String rtUnit;
+    
+    /**
      * 特征键值对,详情见Features
      * Pairs with key/value for extension features
+     *
      * @see Features
      */
     String features;
 
-    public Compressor fetchCompressor(String target){
-        if(compressors == null){
+    public Compressor fetchCompressor(String target) {
+        if (compressors == null) {
             return null;
         }
         for (int i = 0; i < compressors.size(); i++) {
@@ -153,24 +187,21 @@ public class AirdInfo {
         return null;
     }
 
-    public List<BlockIndex> getIndexList(){
-        if (blockIndexList != null && blockIndexList.size() != 0){
+    public List<BlockIndex> getIndexList() {
+        if (blockIndexList != null && blockIndexList.size() != 0) {
             return blockIndexList;
         } else {
             return indexList;
         }
     }
 
-    /**
-     * 键值对
-     * Pairs with key/value for tr/intensity
-     */
-    public TreeMap<Float, Long> getTIC(){
-        TreeMap<Float, Long> map = new TreeMap<Float, Long>() {};
-        indexList.forEach(blockIndex->{
-            if(blockIndex.level == MsLevel.MS1.getCode()) {
-                for (int i =0; i<blockIndex.rts.size(); i++){
-                    map.put(blockIndex.rts.get(i),blockIndex.tics.get(i));
+    public TreeMap<Float, Long> getTicMap() {
+        TreeMap<Float, Long> map = new TreeMap<Float, Long>() {
+        };
+        indexList.forEach(blockIndex -> {
+            if (Objects.equals(blockIndex.level, MsLevel.MS1.getCode())) {
+                for (int i = 0; i < blockIndex.rts.size(); i++) {
+                    map.put(blockIndex.rts.get(i), blockIndex.tics.get(i));
                 }
             }
         });

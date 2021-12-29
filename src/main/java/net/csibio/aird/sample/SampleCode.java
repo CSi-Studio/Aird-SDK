@@ -62,6 +62,6 @@ public class SampleCode {
         });
 
         //Read TIC
-        airdInfo.getTIC();
+        airdInfo.getTicMap();
     }
 }
