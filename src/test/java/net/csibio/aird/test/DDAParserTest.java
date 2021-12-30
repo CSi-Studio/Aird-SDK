@@ -11,6 +11,7 @@ package net.csibio.aird.test;/*
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
+import net.csibio.aird.parser.BaseParser;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
 
@@ -20,11 +21,11 @@ public class DDAParserTest {
 
     @Test
     public void testXICSpeed() {
-        DDAParser parser = new DDAParser("D:\\meta-vendor\\SampleA_1_with_zero.json");
+        BaseParser parser = BaseParser.buildParser("D:\\meta-vendor\\SampleA_1_with_zero.json");
 //        DDAParser parser = new DDAParser("D:\\meta-vendor\\SA1_with_zero.json");
         AirdInfo airdInfo = parser.getAirdInfo();
         try {
-            List<DDAMs> allMsList = parser.readAllToMemory();
+            List<DDAMs> allMsList = ((DDAParser) parser).readAllToMemory();
             System.out.println(allMsList.size() + "");
         } catch (Exception e) {
             e.printStackTrace();

@@ -10,6 +10,7 @@
 
 package net.csibio.aird.parser;
 
+import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
@@ -32,6 +33,10 @@ public class CommonParser extends BaseParser {
      */
     public CommonParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
+    }
+
+    public CommonParser(String indexFilePath, AirdInfo airdInfo) throws ScanException {
+        super(indexFilePath, airdInfo);
     }
 
     /**

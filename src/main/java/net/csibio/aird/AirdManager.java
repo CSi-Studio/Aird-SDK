@@ -37,7 +37,7 @@ public class AirdManager {
     }
 
     public BaseParser load(String indexPath) {
-        BaseParser parser = new BaseParser(indexPath);
+        BaseParser parser = BaseParser.buildParser(indexPath);
         parserMap.put(indexPath, parser);
         return parser;
     }
@@ -50,7 +50,7 @@ public class AirdManager {
      * @return 返回解析器
      */
     public BaseParser load(String indexPath, String indexId) {
-        BaseParser parser = new BaseParser(indexPath);
+        BaseParser parser = BaseParser.buildParser(indexPath);
         parserMap.put(indexId, parser);
         return parser;
     }

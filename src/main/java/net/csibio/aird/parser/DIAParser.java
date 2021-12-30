@@ -10,10 +10,7 @@
 
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.MzIntensityPairs;
-import net.csibio.aird.bean.SpectrumDetail;
+import net.csibio.aird.bean.*;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
@@ -28,6 +25,7 @@ import java.util.*;
  * spectras will be grouped by Precursor m/z range
  */
 public class DIAParser extends BaseParser {
+
     /**
      * 构造函数
      *
@@ -36,6 +34,10 @@ public class DIAParser extends BaseParser {
      */
     public DIAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
+    }
+
+    public DIAParser(String indexFilePath, AirdInfo airdInfo) throws ScanException {
+        super(indexFilePath, airdInfo);
     }
 
     /**

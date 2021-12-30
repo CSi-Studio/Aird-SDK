@@ -15,6 +15,7 @@ import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
@@ -34,7 +35,7 @@ import java.util.TreeMap;
 /**
  * Base Parser
  */
-public class BaseParser {
+public abstract class BaseParser {
 
     /**
      * the aird file
@@ -107,6 +108,49 @@ public class BaseParser {
         intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
         mzPrecision = mzCompressor.getPrecision();
         type = airdInfo.getType();
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param indexPath 索引文件的位置
+     * @throws ScanException 扫描时的异常
+     */
+    public BaseParser(String indexPath, AirdInfo airdInfo) throws ScanException {
+        if (airdInfo == null) {
+            throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+        }
+        this.indexFile = new File(indexPath);
+        this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
+        try {
+            raf = new RandomAccessFile(airdFile, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
+        }
+        this.airdInfo = airdInfo;
+        mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
+        intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
+        mzPrecision = mzCompressor.getPrecision();
+        type = airdInfo.getType();
+    }
+
+    public static BaseParser buildParser(String indexPath) throws ScanException {
+        File indexFile = new File(indexPath);
+        if (indexFile.exists() && indexFile.canRead()) {
+            AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
+            if (airdInfo == null) {
+                throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+            }
+            return switch (AirdType.getType(airdInfo.getType())) {
+                case DDA -> new DDAParser(indexPath, airdInfo);
+                case DIA_SWATH -> new DIAParser(indexPath, airdInfo);
+                case PRM -> new PRMParser(indexPath, airdInfo);
+                case COMMON -> new CommonParser(indexPath, airdInfo);
+                default -> throw new IllegalStateException("Unexpected value: " + AirdType.getType(airdInfo.getType()));
+            };
+        }
+        throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
     }
 
     /**

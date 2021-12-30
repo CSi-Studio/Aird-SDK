@@ -10,10 +10,7 @@
 
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.DDAMs;
-import net.csibio.aird.bean.MsCycle;
-import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.*;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.DDAUtil;
@@ -42,19 +39,24 @@ public class DDAParser extends BaseParser {
         super(indexFilePath);
     }
 
-    public BlockIndex getMs1Index(){
-        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0){
+    public DDAParser(String indexFilePath, AirdInfo airdInfo) throws ScanException {
+        super(indexFilePath, airdInfo);
+    }
+
+    public BlockIndex getMs1Index() {
+        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
             return airdInfo.getIndexList().get(0);
         }
         return null;
     }
 
-    public List<BlockIndex> getAllMs2Index(){
-        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0){
-            return airdInfo.getIndexList().subList(1,airdInfo.getIndexList().size());
+    public List<BlockIndex> getAllMs2Index() {
+        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
+            return airdInfo.getIndexList().subList(1, airdInfo.getIndexList().size());
         }
         return null;
     }
+
     /**
      * DDA文件采用一次性读入内存的策略
      * DDA reader using the strategy of loading all the information into the memory
@@ -73,8 +75,8 @@ public class DDAParser extends BaseParser {
         for (int i = 0; i < ms1RtList.size(); i++) {
             DDAMs ms1 = new DDAMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
             DDAUtil.initFromIndex(ms1, ms1Index, i);
-            Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream().filter(index->index.getParentNum().equals(ms1.getNum())).findFirst();
-            if(ms2IndexRes.isPresent()){
+            Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream().filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
+            if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
                 TreeMap<Float, Spectrum> ms2Map = parseBlock(raf, ms2Index);
                 List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
