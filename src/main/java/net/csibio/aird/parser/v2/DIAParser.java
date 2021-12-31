@@ -1,5 +1,6 @@
 package net.csibio.aird.parser.v2;
 
+import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
@@ -13,7 +14,7 @@ import java.util.TreeMap;
 /**
  * DIA Parser
  */
-public class DIA extends BaseParser {
+public class DIAParser extends BaseParser {
 
     /**
      * 构造函数
@@ -21,8 +22,12 @@ public class DIA extends BaseParser {
      * @param indexFilePath index file path
      * @throws ScanException scan exception
      */
-    public DIA(String indexFilePath) throws ScanException {
+    public DIAParser(String indexFilePath) throws ScanException {
         super(indexFilePath);
+    }
+
+    public DIAParser(String indexFilePath, AirdInfo airdInfo) throws ScanException {
+        super(indexFilePath, airdInfo);
     }
 
     /**
@@ -34,7 +39,7 @@ public class DIA extends BaseParser {
      * @param mzPrecision   mz precision
      * @throws ScanException scan exception
      */
-    public DIA(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision) throws ScanException {
+    public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, int mzPrecision) throws ScanException {
         super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
     }
 

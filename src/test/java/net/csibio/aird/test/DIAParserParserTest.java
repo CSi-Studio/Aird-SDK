@@ -25,7 +25,7 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class DIAParserTest {
+public class DIAParserParserTest {
 
     @Test
     public void testXICSpeed() {

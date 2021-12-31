@@ -18,6 +18,7 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
+import net.csibio.aird.parser.v2.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
 import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.FileUtil;

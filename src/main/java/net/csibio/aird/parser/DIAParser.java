@@ -14,7 +14,6 @@ import net.csibio.aird.bean.*;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
-import net.csibio.aird.util.FileUtil;
 
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -586,12 +585,5 @@ public class DIAParser extends BaseParser {
         }
 
         return null;
-    }
-
-    /**
-     * close the raf
-     */
-    public void close() {
-        FileUtil.close(raf);
     }
 }
