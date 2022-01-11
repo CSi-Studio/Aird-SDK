@@ -28,76 +28,80 @@ import java.nio.channels.WritableByteChannel;
 
 public class StreamCopy {
 
-    protected long copiedLength, totalLength;
-    protected boolean canceled = false, finished = false;
+  protected long copiedLength, totalLength;
+  protected boolean canceled = false, finished = false;
 
-    /**
-     * Copy the data from inputStream to outputStream using nio channels
-     *
-     * @param input  InputStream
-     * @param output OutputStream
-     */
-    public void copy(InputStream input, OutputStream output) throws IOException {
-        this.copy(input, output, 0);
-    }
+  /**
+   * Copy the data from inputStream to outputStream using nio channels
+   *
+   * @param input  InputStream
+   * @param output OutputStream
+   */
+  public void copy(InputStream input, OutputStream output) throws IOException {
+    this.copy(input, output, 0);
+  }
 
-    /**
-     * Copy the data from inputStream to outputStream using nio channels
-     *
-     * @param input  InputStream
-     * @param output OutputStream
-     */
-    public void copy(InputStream input, OutputStream output, long totalLength) throws IOException {
+  /**
+   * Copy the data from inputStream to outputStream using nio channels
+   *
+   * @param input  InputStream
+   * @param output OutputStream
+   */
+  public void copy(InputStream input, OutputStream output, long totalLength) throws IOException {
 
-        this.totalLength = totalLength;
+    this.totalLength = totalLength;
 
-        ReadableByteChannel in = Channels.newChannel(input);
-        WritableByteChannel out = Channels.newChannel(output);
+    ReadableByteChannel in = Channels.newChannel(input);
+    WritableByteChannel out = Channels.newChannel(output);
 
-        // Allocate 1MB buffer
-        ByteBuffer bbuffer = ByteBuffer.allocate(1 << 20);
+    // Allocate 1MB buffer
+    ByteBuffer bbuffer = ByteBuffer.allocate(1 << 20);
 
-        int len = 0;
+    int len = 0;
 
-        while ((len = in.read(bbuffer)) != -1) {
+    while ((len = in.read(bbuffer)) != -1) {
 
-            if (canceled)
-                return;
-
-            bbuffer.flip();
-            out.write(bbuffer);
-            bbuffer.clear();
-            copiedLength += len;
+        if (canceled) {
+            return;
         }
 
-        finished = true;
-
+      bbuffer.flip();
+      out.write(bbuffer);
+      bbuffer.clear();
+      copiedLength += len;
     }
 
-    /**
-     * @return the progress of the "copy()" function copying the data from one stream to another
-     */
-    public double getProgress() {
-        if (finished)
-            return 1.0;
-        if (totalLength == 0)
-            return 0;
-        if (copiedLength >= totalLength)
-            return 1.0;
-        return copiedLength / (double) totalLength;
-    }
+    finished = true;
 
-    /**
-     * Cancel the copying
-     */
-    public void cancel() {
-        canceled = true;
-    }
+  }
 
-    /**
-     * Checks if copying is finished
-     */
-    public boolean finished() {
-        return finished;
-    }
+  /**
+   * @return the progress of the "copy()" function copying the data from one stream to another
+   */
+  public double getProgress() {
+      if (finished) {
+          return 1.0;
+      }
+      if (totalLength == 0) {
+          return 0;
+      }
+      if (copiedLength >= totalLength) {
+          return 1.0;
+      }
+    return copiedLength / (double) totalLength;
+  }
+
+  /**
+   * Cancel the copying
+   */
+  public void cancel() {
+    canceled = true;
+  }
+
+  /**
+   * Checks if copying is finished
+   */
+  public boolean finished() {
+    return finished;
+  }
 }

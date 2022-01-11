@@ -11,18 +11,18 @@
 package net.csibio.aird.enums;
 
 public enum MsLevel {
-    MS1("MS1",1),
-    MS2("MS2",2);
+  MS1("MS1", 1),
+  MS2("MS2", 2);
 
-    String name;
-    Integer code;
+  String name;
+  Integer code;
 
-    MsLevel(String name, Integer code){
-        this.name = name;
-        this.code = code;
-    }
+  MsLevel(String name, Integer code) {
+    this.name = name;
+    this.code = code;
+  }
 
-    public Integer getCode() {
-        return code;
-    }
+  public Integer getCode() {
+    return code;
+  }
 }

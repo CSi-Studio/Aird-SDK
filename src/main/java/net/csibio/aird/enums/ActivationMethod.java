@@ -22,7 +22,7 @@ public enum ActivationMethod {
   private String desc;
   private String unit;
 
-  ActivationMethod(String name, String unit,String desc) {
+  ActivationMethod(String name, String unit, String desc) {
     this.desc = desc;
     this.name = name;
     this.unit = unit;

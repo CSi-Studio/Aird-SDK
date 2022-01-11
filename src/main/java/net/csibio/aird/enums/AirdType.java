@@ -12,30 +12,30 @@ package net.csibio.aird.enums;
 
 public enum AirdType {
 
-    COMMON("COMMON", 0), // RT Indexing
-    DIA_SWATH("DIA_SWATH", 1), // Precursor-mz -> MS2 Group
-    DDA("DDA",2), //MS1 -> MS2 Group
-    PRM("PRM",3), //Precursor-mz -> MS2 Group
-    SCANNING_SWATH("SCANNING_SWATH", 4) //Not Support now
-    ;
+  COMMON("COMMON", 0), // RT Indexing
+  DIA_SWATH("DIA_SWATH", 1), // Precursor-mz -> MS2 Group
+  DDA("DDA", 2), //MS1 -> MS2 Group
+  PRM("PRM", 3), //Precursor-mz -> MS2 Group
+  SCANNING_SWATH("SCANNING_SWATH", 4) //Not Support now
+  ;
 
-    public Integer code;
-    public String name;
+  public Integer code;
+  public String name;
 
-    AirdType(String name, Integer code) {
-        this.name = name;
-        this.code = code;
-    }
+  AirdType(String name, Integer code) {
+    this.name = name;
+    this.code = code;
+  }
 
-    public Integer getCode(){
-        return code;
-    }
+  public Integer getCode() {
+    return code;
+  }
 
-    public String getName(){
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public static AirdType getType(String typeName){
-        return valueOf(typeName);
-    }
+  public static AirdType getType(String typeName) {
+    return valueOf(typeName);
+  }
 }

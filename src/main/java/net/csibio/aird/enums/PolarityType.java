@@ -38,8 +38,9 @@ public enum PolarityType {
 
   public static PolarityType fromCode(int code) {
     for (PolarityType p : values()) {
-      if (p.getCode() == code)
+      if (p.getCode() == code) {
         return p;
+      }
     }
     return null;
   }
