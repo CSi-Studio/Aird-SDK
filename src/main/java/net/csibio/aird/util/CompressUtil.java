@@ -39,16 +39,16 @@ public class CompressUtil {
     public static byte[] zlibEncoder(byte[] data) {
         byte[] output;
 
-        Deflater compresser = new Deflater();
+        Deflater compressor = new Deflater();
 
-        compresser.reset();
-        compresser.setInput(data);
-        compresser.finish();
+        compressor.reset();
+        compressor.setInput(data);
+        compressor.finish();
         ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
         try {
             byte[] buf = new byte[1024];
-            while (!compresser.finished()) {
-                int i = compresser.deflate(buf);
+            while (!compressor.finished()) {
+                int i = compressor.deflate(buf);
                 bos.write(buf, 0, i);
             }
             output = bos.toByteArray();
@@ -62,7 +62,7 @@ public class CompressUtil {
                 e.printStackTrace();
             }
         }
-        compresser.end();
+        compressor.end();
         return output;
     }
 
@@ -107,14 +107,14 @@ public class CompressUtil {
      * @return decompressed data
      */
     public static byte[] zlibDecoder(byte[] data, int start, int length) {
-        Inflater decompresser = new Inflater();
-        decompresser.setInput(data, start, length);
+        Inflater decompressor = new Inflater();
+        decompressor.setInput(data, start, length);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
         try {
             byte[] buff = new byte[1024];
-            while (!decompresser.finished()) {
-                int count = decompresser.inflate(buff);
+            while (!decompressor.finished()) {
+                int count = decompressor.inflate(buff);
                 baos.write(buff, 0, count);
             }
         } catch (Exception e) {
@@ -122,7 +122,7 @@ public class CompressUtil {
         } finally {
             FileUtil.close(baos);
         }
-        decompresser.end();
+        decompressor.end();
         byte[] output = baos.toByteArray();
 
 //        byte[] decompressedData = new byte[length * 10];
@@ -135,6 +135,22 @@ public class CompressUtil {
 //            e.printStackTrace();
 //        }
         return output;
+    }
+
+    /**
+     * ZDPD Encoder
+     *
+     * @param sortedFloats the sorted integers
+     * @return the compressed data
+     */
+    public static byte[] ZDPDEncoder(float[] sortedFloats, Compressor compressor) {
+        int precision = compressor.getPrecision();
+        int[] sortedInts = new int[sortedFloats.length];
+        for (int i = 0; i < sortedFloats.length; i++) {
+            sortedInts[i] = (int) (precision * sortedFloats[i]);
+        }
+        int[] compressedInts = fastPforEncoder(sortedInts);
+        return transToByte(compressedInts);
     }
 
     /**

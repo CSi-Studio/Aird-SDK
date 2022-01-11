@@ -72,7 +72,24 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna</artifactId>
+      <version>5.9.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.msdk</groupId>
+      <artifactId>msdk-io-mzml</artifactId>
+      <version>0.0.27</version>
+      <scope>test</scope>
+    </dependency>
 
     <!--加载内存查看工具-->
     <dependency>
