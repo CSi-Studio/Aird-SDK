@@ -18,7 +18,8 @@
 
 package net.csibio.aird.test.mzml.data;
 
-import io.github.mzmine.datamodel.MobilityType;
+
+import net.csibio.aird.test.datamodel.MobilityType;
 
 public record MzMLMobility(double mobility, MobilityType mt) {
 

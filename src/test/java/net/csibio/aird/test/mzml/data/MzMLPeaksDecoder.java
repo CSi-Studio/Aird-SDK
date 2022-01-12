@@ -15,14 +15,14 @@ package net.csibio.aird.test.mzml.data;
 
 import com.google.common.io.LittleEndianDataInputStream;
 import io.github.msdk.MSDKException;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.util.ByteBufferInputStream;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.util.MSNumpress;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 import java.util.zip.DataFormatException;
 import java.util.zip.InflaterInputStream;
+import net.csibio.aird.test.mzml.util.ByteBufferInputStream;
+import net.csibio.aird.test.mzml.util.MSNumpress;
 import org.apache.commons.io.IOUtils;
 
 /**

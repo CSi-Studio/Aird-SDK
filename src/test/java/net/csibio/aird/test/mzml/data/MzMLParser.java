@@ -15,8 +15,6 @@ package net.csibio.aird.test.mzml.data;
 
 import io.github.msdk.datamodel.Chromatogram;
 import io.github.msdk.datamodel.MsScan;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.MzMLFileImportMethod;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.util.TagTracker;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +24,8 @@ import java.util.regex.Pattern;
 import javolution.text.CharArray;
 import javolution.xml.internal.stream.XMLStreamReaderImpl;
 import javolution.xml.stream.XMLStreamReader;
+import net.csibio.aird.test.mzml.MzMLFileImportMethod;
+import net.csibio.aird.test.mzml.util.TagTracker;
 import org.apache.commons.io.IOUtils;
 
 /**

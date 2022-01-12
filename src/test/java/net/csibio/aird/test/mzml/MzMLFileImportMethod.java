@@ -18,9 +18,6 @@ import io.github.msdk.MSDKMethod;
 import io.github.msdk.datamodel.Chromatogram;
 import io.github.msdk.datamodel.MsScan;
 import io.github.msdk.datamodel.RawDataFile;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.data.MzMLParser;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.data.MzMLRawDataFile;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.util.FileMemoryMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +28,9 @@ import javolution.text.CharArray;
 import javolution.xml.internal.stream.XMLStreamReaderImpl;
 import javolution.xml.stream.XMLStreamConstants;
 import javolution.xml.stream.XMLStreamException;
+import net.csibio.aird.test.mzml.data.MzMLParser;
+import net.csibio.aird.test.mzml.data.MzMLRawDataFile;
+import net.csibio.aird.test.mzml.util.FileMemoryMapper;
 
 /**
  * <p>

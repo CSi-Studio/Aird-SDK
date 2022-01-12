@@ -26,7 +26,6 @@ import io.github.msdk.datamodel.SimpleIsolationInfo;
 import io.github.msdk.spectra.centroidprofiledetection.SpectrumTypeDetectionAlgorithm;
 import io.github.msdk.util.MsSpectrumUtil;
 import io.github.msdk.util.tolerances.MzTolerance;
-import io.github.mzmine.datamodel.MobilityType;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +34,8 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.csibio.aird.test.datamodel.MobilityType;
+import net.csibio.aird.test.mzml.util.ByteBufferInputStream;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -166,8 +167,8 @@ public class MzMLMsScan implements MsScan {
    * <p>
    * getInputStream.
    * </p>
-   *
-   * @return a {@link io.github.msdk.io.mzml2.util.io.ByteBufferInputStream} object.
+   * <p>
+   * //   * @return a {@link ByteBufferInputStream} object.
    */
   public InputStream getInputStream() {
     return inputStream;

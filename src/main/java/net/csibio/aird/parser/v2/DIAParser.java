@@ -70,7 +70,7 @@ public class DIAParser extends BaseParser {
    */
   public TreeMap<Float, Spectrum> getSpectrums(long startPtr, long endPtr, List<Float> rtList,
       List<Long> mzSizeList, List<Long> intSizeList) {
-
+    
     try {
       TreeMap<Float, Spectrum> map = new TreeMap<>();
       raf.seek(startPtr);

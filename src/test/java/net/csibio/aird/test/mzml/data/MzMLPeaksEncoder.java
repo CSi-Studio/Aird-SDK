@@ -14,12 +14,12 @@
 package net.csibio.aird.test.mzml.data;
 
 import io.github.msdk.MSDKException;
-import io.github.mzmine.modules.io.import_rawdata_mzml.msdk.util.MSNumpress;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.zip.Deflater;
+import net.csibio.aird.test.mzml.util.MSNumpress;
 
 /**
  * <p>
