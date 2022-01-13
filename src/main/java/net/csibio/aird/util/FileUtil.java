@@ -18,7 +18,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Created by James Lu MiaoShan Time: 2018-08-28 21:45
@@ -139,7 +143,7 @@ public class FileUtil {
    *
    * @param fis 文件流
    */
-  public static void close(FileInputStream fis) {
+  public static void close(InputStream fis) {
     if (fis != null) {
       try {
         fis.close();
@@ -178,4 +182,50 @@ public class FileUtil {
       }
     }
   }
+
+  /**
+   * close the GZIPOutputStream bos
+   *
+   * @param bos 文件流
+   */
+  public static void close(GZIPOutputStream bos) {
+    if (bos != null) {
+      try {
+        bos.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * close the ZipOutputStream bos
+   *
+   * @param bos 文件流
+   */
+  public static void close(ZipOutputStream bos) {
+    if (bos != null) {
+      try {
+        bos.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  /**
+   * close the OutputStream bos
+   *
+   * @param stream 文件流
+   */
+  public static void close(OutputStream stream) {
+    if (stream != null) {
+      try {
+        stream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
 }

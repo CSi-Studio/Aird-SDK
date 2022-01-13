@@ -30,7 +30,10 @@ import org.apache.commons.codec.binary.Base64;
 
 /**
  * Compress Util
+ *
+ * @deprecated see net/csibio/aird/compressor package
  */
+@Deprecated
 public class CompressUtil {
 
   /**

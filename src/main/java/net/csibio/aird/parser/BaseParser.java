@@ -23,12 +23,14 @@ import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.compressor.ByteCompressor;
+import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.compressor.ints.FastPFor;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.parser.v2.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
-import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.FileUtil;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -104,8 +106,8 @@ public abstract class BaseParser {
     if (airdInfo == null) {
       throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
     }
-    mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
-    intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
+    mzCompressor = getMzCompressor(airdInfo.getCompressors());
+    intCompressor = getIntCompressor(airdInfo.getCompressors());
     mzPrecision = mzCompressor.getPrecision();
     type = airdInfo.getType();
   }
@@ -129,8 +131,8 @@ public abstract class BaseParser {
       throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
     }
     this.airdInfo = airdInfo;
-    mzCompressor = CompressUtil.getMzCompressor(airdInfo.getCompressors());
-    intCompressor = CompressUtil.getIntCompressor(airdInfo.getCompressors());
+    mzCompressor = getMzCompressor(airdInfo.getCompressors());
+    intCompressor = getIntCompressor(airdInfo.getCompressors());
     mzPrecision = mzCompressor.getPrecision();
     type = airdInfo.getType();
   }
@@ -274,7 +276,8 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public float[] getMzValues(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -282,7 +285,7 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = CompressUtil.fastPforDecoder(intValues);
+    intValues = FastPFor.decode(intValues);
     float[] floatValues = new float[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
       floatValues[index] = (float) intValues[index] / mzPrecision;
@@ -300,7 +303,8 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public float[] getMzValues(byte[] value, int start, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -308,7 +312,7 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = CompressUtil.fastPforDecoder(intValues);
+    intValues = FastPFor.decode(intValues);
     float[] floatValues = new float[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
       floatValues[index] = (float) intValues[index] / mzPrecision;
@@ -324,7 +328,8 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public int[] getMzValuesAsInteger(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -332,7 +337,7 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = CompressUtil.fastPforDecoder(intValues);
+    intValues = FastPFor.decode(intValues);
     byteBuffer.clear();
     return intValues;
   }
@@ -345,7 +350,8 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public int[] getTags(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     byte[] byteValue = new byte[byteBuffer.capacity() * 8];
@@ -374,7 +380,7 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public int[] getTags(byte[] value, int start, int length) {
-    byte[] tagShift = CompressUtil.zlibDecoder(value, start, length);
+    byte[] tagShift = new ByteCompressor(CompressorType.Zlib).decode(value, start, length);
 //        byteBuffer.order(mzCompressor.getByteOrder());
 
     byte[] byteValue = new byte[tagShift.length * 8];
@@ -402,7 +408,8 @@ public abstract class BaseParser {
    */
   public float[] getIntValues(byte[] value) {
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(intCompressor.fetchByteOrder());
 
     FloatBuffer intensities = byteBuffer.asFloatBuffer();
@@ -425,7 +432,8 @@ public abstract class BaseParser {
    */
   public float[] getIntValues(byte[] value, int start, int length) {
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
     byteBuffer.order(intCompressor.fetchByteOrder());
 
     FloatBuffer intensities = byteBuffer.asFloatBuffer();
@@ -446,7 +454,8 @@ public abstract class BaseParser {
    */
   public float[] getLogedIntValues(byte[] value) {
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(intCompressor.fetchByteOrder());
 
     FloatBuffer intensities = byteBuffer.asFloatBuffer();
@@ -469,7 +478,8 @@ public abstract class BaseParser {
    */
   public float[] getLogedIntValues(byte[] value, int start, int length) {
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(CompressUtil.zlibDecoder(value, start, length));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
     byteBuffer.order(intCompressor.fetchByteOrder());
 
     FloatBuffer intensities = byteBuffer.asFloatBuffer();
@@ -487,5 +497,41 @@ public abstract class BaseParser {
    */
   public void close() {
     FileUtil.close(raf);
+  }
+
+  /**
+   * get the compressor for m/z
+   *
+   * @param compressors 压缩策略
+   * @return the m/z compressor
+   */
+  public static Compressor getMzCompressor(List<Compressor> compressors) {
+    if (compressors == null) {
+      return null;
+    }
+    for (Compressor compressor : compressors) {
+      if (compressor.getTarget().equals(Compressor.TARGET_MZ)) {
+        return compressor;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * get the intensity compressor for intensity
+   *
+   * @param compressors 压缩策略
+   * @return the intensity compressor
+   */
+  public static Compressor getIntCompressor(List<Compressor> compressors) {
+    if (compressors == null) {
+      return null;
+    }
+    for (Compressor compressor : compressors) {
+      if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)) {
+        return compressor;
+      }
+    }
+    return null;
   }
 }
