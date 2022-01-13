@@ -14,7 +14,6 @@ import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.ints.XDPD;
 import net.csibio.aird.parser.v2.DIAParser;
-import net.csibio.aird.util.ArrayUtil;
 import org.junit.Test;
 
 public class SizeTest {
@@ -37,7 +36,7 @@ public class SizeTest {
     AtomicLong intOri = new AtomicLong(0);
     AtomicLong spectrumSize = new AtomicLong(0);
     List<CompressorType> byteTypes = Arrays.asList(CompressorType.Zlib, CompressorType.Gzip,
-        CompressorType.LZMA2);
+        CompressorType.LZMA2, CompressorType.Sna);
     ConcurrentHashMap<String, AtomicLong> mzMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, AtomicLong> intMap = new ConcurrentHashMap<>();
     for (CompressorType value : byteTypes) {
@@ -46,7 +45,8 @@ public class SizeTest {
     }
     mzMap.put("ZDPD", new AtomicLong(0));
     mzMap.put("LDPD", new AtomicLong(0));
-    
+    mzMap.put("SDPD", new AtomicLong(0));
+
     for (int k = 17; k < 18; k++) {
       BlockIndex index = indexList.get(k);
       TreeMap<Float, Spectrum> spectrumMap = diaParser.getSpectrums(index);
@@ -63,17 +63,17 @@ public class SizeTest {
           ByteCompressor compressor = new ByteCompressor(value);
 
           byte[] mzCompBytes = compressor.encode(mzBytes);
-          float[] mzs = ByteTrans.byteToFloat(compressor.decode(mzCompBytes));
-          if (!ArrayUtil.isSame(spectrum.mzs(), mzs)) {
-            System.out.println("mz结果不一致:" + value.name());
-          }
+//          float[] mzs = ByteTrans.byteToFloat(compressor.decode(mzCompBytes));
+//          if (!ArrayUtil.isSame(spectrum.mzs(), mzs)) {
+//            System.out.println("mz结果不一致:" + value.name());
+//          }
           mzMap.get(value.name()).getAndAdd(mzCompBytes.length);
 
           byte[] intCompBytes = compressor.encode(intBytes);
-          float[] ints = ByteTrans.byteToFloat(compressor.decode(intCompBytes));
-          if (!ArrayUtil.isSame(spectrum.ints(), ints)) {
-            System.out.println("intensity结果不一致" + value.name());
-          }
+//          float[] ints = ByteTrans.byteToFloat(compressor.decode(intCompBytes));
+//          if (!ArrayUtil.isSame(spectrum.ints(), ints)) {
+//            System.out.println("intensity结果不一致" + value.name());
+//          }
           intMap.get(value.name()).getAndAdd(intCompBytes.length);
         }
 
@@ -81,6 +81,8 @@ public class SizeTest {
             .getAndAdd(XDPD.encode(spectrum.mzs(), mzCompressor, CompressorType.Zlib).length);
         mzMap.get("LDPD")
             .getAndAdd(XDPD.encode(spectrum.mzs(), mzCompressor, CompressorType.LZMA2).length);
+        mzMap.get("SDPD")
+            .getAndAdd(XDPD.encode(spectrum.mzs(), mzCompressor, CompressorType.Sna).length);
       });
       System.out.println("当前处理:" + k + "/" + indexList.size());
     }
@@ -89,7 +91,7 @@ public class SizeTest {
     for (CompressorType value : byteTypes) {
       algorithms.append(value.name()).append("/");
     }
-    algorithms.append("ZDPD/").append("LDPD/");
+    algorithms.append("ZDPD/").append("LDPD/").append("SDPD/");
     System.out.println(algorithms);
     StringBuilder mzs = new StringBuilder("mz: " + mzOri.get() / MB + "/");
     StringBuilder ints = new StringBuilder("int:" + intOri.get() / MB + "/");
@@ -99,6 +101,7 @@ public class SizeTest {
     }
     mzs.append(mzMap.get("ZDPD").get() / MB).append(" /");
     mzs.append(mzMap.get("LDPD").get() / MB).append(" /");
+    mzs.append(mzMap.get("SDPD").get() / MB).append(" /");
     System.out.println(mzs);
     System.out.println(ints);
   }

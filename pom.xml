@@ -67,6 +67,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.xerial.snappy</groupId>
+      <artifactId>snappy-java</artifactId>
+      <version>1.1.8.4</version>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>4.13.2</version>
@@ -93,7 +99,7 @@
     <dependency>
       <groupId>org.jetbrains</groupId>
       <artifactId>annotations</artifactId>
-      <version>21.0.1</version>
+      <version>22.0.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -110,7 +116,7 @@
     <dependency>
       <groupId>com.opencsv</groupId>
       <artifactId>opencsv</artifactId>
-      <version>3.8</version>
+      <version>5.5.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

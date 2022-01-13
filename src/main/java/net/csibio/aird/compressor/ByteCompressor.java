@@ -2,6 +2,7 @@ package net.csibio.aird.compressor;
 
 import net.csibio.aird.compressor.bytes.Gzip;
 import net.csibio.aird.compressor.bytes.LZMA2;
+import net.csibio.aird.compressor.bytes.Sna;
 import net.csibio.aird.compressor.bytes.Zlib;
 
 public class ByteCompressor {
@@ -17,6 +18,7 @@ public class ByteCompressor {
       case Zlib -> Zlib.encode(bytes);
       case LZMA2 -> LZMA2.encode(bytes);
       case Gzip -> Gzip.encode(bytes);
+      case Sna -> Sna.encode(bytes);
       default -> null;
     };
   }

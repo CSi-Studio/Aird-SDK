@@ -2,6 +2,7 @@ package net.csibio.aird.test.compare;
 
 import com.csvreader.CsvWriter;
 import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -35,6 +36,8 @@ public class CsvUtil {
         peaks.add(temp);
       }
     } catch (IOException e) {
+      e.printStackTrace();
+    } catch (CsvValidationException e) {
       e.printStackTrace();
     }
     return peaks;

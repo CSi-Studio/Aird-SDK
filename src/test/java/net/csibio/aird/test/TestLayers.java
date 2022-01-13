@@ -11,8 +11,6 @@ import net.csibio.aird.bean.Layers;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.StackCompressUtil;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.util.RamUsageEstimator;
 
 //比较压缩率随着block的变化规律
 public class TestLayers {
@@ -45,7 +43,7 @@ public class TestLayers {
         arr = DIAParser.getSpectrumAsInteger(index, rts.get(i)).getMz();
         mzGroup.add(arr);
       }
-      record[0][m] = RamUsageEstimator.sizeOf((Query) mzGroup);
+//      record[0][m] = RamUsageEstimator.sizeOf((Query) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
 //            System.out.println("原数组：" + size1);
 
@@ -63,7 +61,7 @@ public class TestLayers {
         t2 += (System.currentTimeMillis() - tempT2);
 //                System.out.println(System.currentTimeMillis() - tempT2);
       }
-      record[1][m] = RamUsageEstimator.sizeOf((Query) comMZs);
+//      record[1][m] = RamUsageEstimator.sizeOf((Query) comMZs);
       record[2][m] = t1;
       record[3][m] = t2;
 //            String size2 = RamUsageEstimator.humanSizeOf(comMZs);
@@ -85,14 +83,14 @@ public class TestLayers {
       Layers stackRemainder = StackCompressUtil.stackEncode(arrGroup, false);
       layersList.add(stackRemainder);
       record[5][m] = System.currentTimeMillis() - t3;
-      record[4][m] = RamUsageEstimator.sizeOf((Query) layersList);
+//      record[4][m] = RamUsageEstimator.sizeOf((Query) layersList);
 
       for (Layers stack : layersList) {
         long tempT = System.currentTimeMillis();
         StackCompressUtil.stackDecode(stack);
         record[6][m] += System.currentTimeMillis() - tempT;
-        record[7][m] += RamUsageEstimator.sizeOf(stack.getTagArray());
-        record[8][m] += RamUsageEstimator.sizeOf(stack.getMzArray());
+//        record[7][m] += RamUsageEstimator.sizeOf(stack.getTagArray());
+//        record[8][m] += RamUsageEstimator.sizeOf(stack.getMzArray());
       }
 
 //                String size3 = RamUsageEstimator.humanSizeOf(layersList);

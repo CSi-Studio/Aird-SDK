@@ -10,7 +10,6 @@ import net.csibio.aird.bean.Layers;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.StackCompressUtil;
-import org.apache.lucene.util.RamUsageEstimator;
 
 public class TestCompareLayers {
 
@@ -89,8 +88,8 @@ public class TestCompareLayers {
 //                recordSize[k - 1][m] = RamUsageEstimator.sizeOf((Accountable) layersList);
         recordEncodeTime[k - 1][m] = (t3 - t2);
         for (Layers layers : layersList) {
-          recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getTagArray());
-          recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getMzArray());
+//          recordIndexSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getTagArray());
+//          recordMzSize[k - 1][m] += RamUsageEstimator.sizeOf(layers.getMzArray());
           long tempT = System.currentTimeMillis();
           StackCompressUtil.stackDecode(layers);
           recordDecodeTime[k - 1][m] += (System.currentTimeMillis() - tempT);
