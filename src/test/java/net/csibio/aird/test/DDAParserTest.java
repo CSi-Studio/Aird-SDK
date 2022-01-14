@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class DDAParserTest {
 
-  String filePath = "D:\\meta-vendor\\SA1_with_zero.json";
+  String filePath = "D:\\meta-vendor\\SA1_6_with_zero.json";
 
   @Test
   public void testXICSpeed() {

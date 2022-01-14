@@ -14,6 +14,7 @@ import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.ints.XDPD;
 import net.csibio.aird.parser.v2.DIAParser;
+import net.csibio.aird.util.ArrayUtil;
 import org.junit.Test;
 
 public class SizeTest {
@@ -63,10 +64,10 @@ public class SizeTest {
           ByteCompressor compressor = new ByteCompressor(value);
 
           byte[] mzCompBytes = compressor.encode(mzBytes);
-//          float[] mzs = ByteTrans.byteToFloat(compressor.decode(mzCompBytes));
-//          if (!ArrayUtil.isSame(spectrum.mzs(), mzs)) {
-//            System.out.println("mz结果不一致:" + value.name());
-//          }
+          float[] mzs = ByteTrans.byteToFloat(compressor.decode(mzCompBytes));
+          if (!ArrayUtil.isSame(spectrum.mzs(), mzs)) {
+            System.out.println("mz结果不一致:" + value.name());
+          }
           mzMap.get(value.name()).getAndAdd(mzCompBytes.length);
 
           byte[] intCompBytes = compressor.encode(intBytes);

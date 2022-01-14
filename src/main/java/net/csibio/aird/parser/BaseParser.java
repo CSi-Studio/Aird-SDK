@@ -67,7 +67,7 @@ public abstract class BaseParser {
   /**
    * the m/z precision
    */
-  public int mzPrecision;
+  public double mzPrecision;
 
   /**
    * Acquisition Method Type Supported by Aird
@@ -269,13 +269,14 @@ public abstract class BaseParser {
     return map;
   }
 
+
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
    *
    * @param value 压缩后的数组
    * @return 解压缩后的数组
    */
-  public float[] getMzValues(byte[] value) {
+  public double[] getMzValues(byte[] value) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(
         new ByteCompressor(CompressorType.Zlib).decode(value));
     byteBuffer.order(mzCompressor.fetchByteOrder());
@@ -286,12 +287,12 @@ public abstract class BaseParser {
       intValues[i] = ints.get(i);
     }
     intValues = FastPFor.decode(intValues);
-    float[] floatValues = new float[intValues.length];
+    double[] doubleValues = new double[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
-      floatValues[index] = (float) intValues[index] / mzPrecision;
+      doubleValues[index] = intValues[index] / mzPrecision;
     }
     byteBuffer.clear();
-    return floatValues;
+    return doubleValues;
   }
 
   /**
@@ -302,7 +303,7 @@ public abstract class BaseParser {
    * @param length 读取长度
    * @return 解压缩后的数组
    */
-  public float[] getMzValues(byte[] value, int start, int length) {
+  public double[] getMzValues(byte[] value, int start, int length) {
     ByteBuffer byteBuffer = ByteBuffer.wrap(
         new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
@@ -313,12 +314,12 @@ public abstract class BaseParser {
       intValues[i] = ints.get(i);
     }
     intValues = FastPFor.decode(intValues);
-    float[] floatValues = new float[intValues.length];
+    double[] doubleValues = new double[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
-      floatValues[index] = (float) intValues[index] / mzPrecision;
+      doubleValues[index] = intValues[index] / mzPrecision;
     }
     byteBuffer.clear();
-    return floatValues;
+    return doubleValues;
   }
 
   /**

@@ -75,7 +75,7 @@ public class CommonParser extends BaseParser {
       Long delta = index.getInts().get(position) - start;
       byte[] reader = new byte[delta.intValue()];
       raf.read(reader);
-      float[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzValues(reader);
       start = index.getInts().get(position);
       raf.seek(start);
       if (position == (index.getInts().size() - 1)) {

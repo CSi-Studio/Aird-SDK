@@ -8,36 +8,68 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 public class CsvUtil {
 
   public static void main(String[] args) {
     String rawFile = "C:\\Users\\admin\\Desktop\\ADAP_raw.csv";
-    LinkedList<Peak> rawData = CsvUtil.readPeaks(rawFile);
+    ArrayList<Peak> rawData = CsvUtil.readPeaks(rawFile, "A");
     String filePath = "C:\\Users\\admin\\Desktop\\test.csv";
     String[] headers = {"rt", "mz", "area"};
     writeCSV(rawData, filePath, headers);
   }
 
-  public static LinkedList<Peak> readPeaks(String filePath) {
+  public static ArrayList<Peak> readPeaks(String filePath, String group) {
     CSVReader reader = null;
-    LinkedList<Peak> peaks = new LinkedList<>();
+    ArrayList<Peak> peaks = new ArrayList<>();
     try {
       reader = new CSVReader(new FileReader(filePath));
       String[] line;
+      reader.readNext();
       while ((line = reader.readNext()) != null) {
         Peak temp = new Peak();
         temp.rt = Float.parseFloat(line[8]);
+        temp.rtStart = Float.parseFloat(line[9]);
+        temp.rtEnd = Float.parseFloat(line[10]);
         temp.mz = Float.parseFloat(line[11]);
+        if (!line[12].isEmpty()) {
+          temp.mzStart = Float.parseFloat(line[12]);
+        }
+        if (!line[13].isEmpty()) {
+          temp.mzEnd = Float.parseFloat(line[13]);
+        }
+        temp.height = Float.parseFloat(line[14]);
         temp.area = Float.parseFloat(line[15]);
+        temp.intMin = Float.parseFloat(line[16]);
+        temp.intMax = Float.parseFloat(line[17]);
+        temp.group = group;
         peaks.add(temp);
       }
-    } catch (IOException e) {
+    } catch (IOException | CsvValidationException e) {
       e.printStackTrace();
-    } catch (CsvValidationException e) {
+    }
+    return peaks;
+  }
+
+
+  public static ArrayList<Peak> readPeaksFromMzmine2(String filePath, String group) {
+    CSVReader reader = null;
+    ArrayList<Peak> peaks = new ArrayList<>();
+    try {
+      reader = new CSVReader(new FileReader(filePath));
+      String[] line;
+      reader.readNext();
+      while ((line = reader.readNext()) != null) {
+        Peak temp = new Peak();
+        temp.mz = Float.parseFloat(line[1]);
+        temp.rt = Float.parseFloat(line[2]);
+        temp.group = group;
+        peaks.add(temp);
+      }
+    } catch (IOException | CsvValidationException e) {
       e.printStackTrace();
     }
     return peaks;

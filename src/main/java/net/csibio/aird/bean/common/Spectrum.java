@@ -1,4 +1,5 @@
 package net.csibio.aird.bean.common;
 
-public record Spectrum(float[] mzs, float[] ints) {
+public record Spectrum(double[] mzs, float[] ints) {
+
 }

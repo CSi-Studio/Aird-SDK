@@ -104,7 +104,7 @@ public class DIAParser extends BaseParser {
       int start = 0;
       for (int i = 0; i < rtList.size(); i++) {
         float[] intensityArray = null;
-        float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
+        double[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
         start = start + mzSizeList.get(i).intValue();
         if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
           intensityArray = getLogedIntValues(result, start, intSizeList.get(i).intValue());
@@ -152,7 +152,7 @@ public class DIAParser extends BaseParser {
       int start = 0;
       int maxTag = (int) Math.pow(2, mzCompressor.getDigit());
       for (int i = 0; i < mzSizeList.size(); i++) {
-        float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
+        double[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
         start = start + mzSizeList.get(i).intValue();
 
         int[] tagArray = getTags(result, start, tagSizeList.get(i).intValue());
@@ -163,10 +163,10 @@ public class DIAParser extends BaseParser {
           tagMap.merge(tag, 1, Integer::sum);
         }
 
-        List<float[]> mzGroup = new ArrayList<>();
+        List<double[]> mzGroup = new ArrayList<>();
         int layerNum = tagMap.keySet().size();
         for (int j = 0; j < layerNum; j++) {
-          mzGroup.add(new float[tagMap.get(j)]);
+          mzGroup.add(new double[tagMap.get(j)]);
         }
         int[] p = new int[layerNum];
         for (int j = 0; j < tagArray.length; j++) {
@@ -336,7 +336,7 @@ public class DIAParser extends BaseParser {
       raf.seek(start);
       byte[] reader = new byte[mzSizeList.get(index).intValue()];
       raf.read(reader);
-      float[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzValues(reader);
       start += mzSizeList.get(index).intValue();
       raf.seek(start);
       reader = new byte[intSizeList.get(index).intValue()];
@@ -387,7 +387,7 @@ public class DIAParser extends BaseParser {
       byte[] reader = new byte[mzSizeList.get(index).intValue()];
       raf.read(reader);
       detail.setMzBytes(reader.clone());
-      float[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzValues(reader);
       start += mzSizeList.get(index).intValue();
       raf.seek(start);
       reader = new byte[intSizeList.get(index).intValue()];
@@ -441,7 +441,7 @@ public class DIAParser extends BaseParser {
       raf.seek(start);
       byte[] reader = new byte[mzSizeList.get(mzIndex).intValue()];
       raf.read(reader);
-      float[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzValues(reader);
       start += mzSizeList.get(mzIndex).intValue();
 
       raf.seek(start);
@@ -465,10 +465,10 @@ public class DIAParser extends BaseParser {
         tagMap.merge(tag, 1, Integer::sum);
       }
 
-      List<float[]> mzGroup = new ArrayList<>();
+      List<double[]> mzGroup = new ArrayList<>();
       int layerNum = tagMap.keySet().size();
       for (int j = 0; j < layerNum; j++) {
-        mzGroup.add(new float[tagMap.get(j)]);
+        mzGroup.add(new double[tagMap.get(j)]);
       }
       int[] p = new int[layerNum];
       for (int j = 0; j < tagArray.length; j++) {

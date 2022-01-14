@@ -70,7 +70,7 @@ public class DIAParser extends BaseParser {
    */
   public TreeMap<Float, Spectrum> getSpectrums(long startPtr, long endPtr, List<Float> rtList,
       List<Long> mzSizeList, List<Long> intSizeList) {
-    
+
     try {
       TreeMap<Float, Spectrum> map = new TreeMap<>();
       raf.seek(startPtr);
@@ -83,7 +83,7 @@ public class DIAParser extends BaseParser {
       int start = 0;
       for (int i = 0; i < rtList.size(); i++) {
         float[] intensityArray = null;
-        float[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
+        double[] mzArray = getMzValues(result, start, mzSizeList.get(i).intValue());
         start = start + mzSizeList.get(i).intValue();
         if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
           intensityArray = getLogedIntValues(result, start, intSizeList.get(i).intValue());
@@ -187,7 +187,7 @@ public class DIAParser extends BaseParser {
       raf.seek(start);
       byte[] reader = new byte[mzSizeList.get(index).intValue()];
       raf.read(reader);
-      float[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzValues(reader);
       start += mzSizeList.get(index).intValue();
       raf.seek(start);
       reader = new byte[intSizeList.get(index).intValue()];

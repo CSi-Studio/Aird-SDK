@@ -18,7 +18,7 @@ public class MzIntensityPairs {
   /**
    * m/z array with float type 使用float类型进行存储的mz数组
    */
-  float[] mzArray;
+  double[] mzArray;
 
   /**
    * m/z array with integer type which is directly from Aird file 使用int类型进行存储的mz数组
@@ -33,7 +33,7 @@ public class MzIntensityPairs {
   public MzIntensityPairs() {
   }
 
-  public MzIntensityPairs(float[] mzArray, float[] intensityArray) {
+  public MzIntensityPairs(double[] mzArray, float[] intensityArray) {
     this.mzArray = mzArray;
     this.intensityArray = intensityArray;
   }

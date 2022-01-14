@@ -57,7 +57,7 @@ public class XIC {
    * The OpenCL context
    */
   private static cl_context context;
-  
+
   /**
    * The OpenCL command queue to which the all work will be dispatched
    */
@@ -93,7 +93,7 @@ public class XIC {
 
     List<Spectrum> paramsList = new ArrayList<>();
     for (int i = 0; i < countInBatch; i++) {
-      float[] mzArray = pairsList.get(i).getMzArray();
+      double[] mzArray = pairsList.get(i).getMzArray();
       if (mzArray.length == 0) {
         paramsList.add(null);
       } else {

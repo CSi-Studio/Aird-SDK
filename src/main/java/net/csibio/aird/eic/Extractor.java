@@ -32,7 +32,7 @@ public class Extractor {
    */
   public static float accumulation(MzIntensityPairs pairs, Float mzStart, Float mzEnd) {
 
-    float[] mzArray = pairs.getMzArray();
+    double[] mzArray = pairs.getMzArray();
     float[] intensityArray = pairs.getIntensityArray();
 
     float result = 0f;
@@ -74,7 +74,7 @@ public class Extractor {
     int delta = countInBatch - pairsList.size() % countInBatch;
     if (delta != countInBatch) {
       for (int k = 0; k < delta; k++) {
-        pairsList.add(new MzIntensityPairs(new float[0], new float[0]));
+        pairsList.add(new MzIntensityPairs(new double[0], new float[0]));
       }
     }
 
@@ -96,6 +96,38 @@ public class Extractor {
    * @return 目标索引
    */
   public static int lowerBound(float[] array, Float target) {
+    int high = array.length - 1;
+
+    if (target <= array[0]) {
+      return 0;
+    }
+    if (target >= array[high]) {
+      return -1;
+    }
+
+    int low = 0;
+    while (low + 1 < high) {
+      int mid = (low + high) >>> 1;
+      if (target < array[mid]) {
+        high = mid;
+      } else if (target > array[mid]) {
+        low = mid;
+      } else {
+        return mid;
+      }
+    }
+
+    return high;
+  }
+
+  /**
+   * 找到从小到大排序的第一个大于等于目标值的索引 当目标值大于等于范围中的最大值时,返回-1 左闭右开区间
+   *
+   * @param array  目标数组
+   * @param target 目标值
+   * @return 目标索引
+   */
+  public static int lowerBound(double[] array, Float target) {
     int high = array.length - 1;
 
     if (target <= array[0]) {
