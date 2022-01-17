@@ -1,11 +1,14 @@
 package net.csibio.aird.compressor.bytes;
 
+import net.csibio.aird.util.FileUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
-import net.csibio.aird.util.FileUtil;
 
 public class Zlib {
+
+  static int BUFFER_SIZE = 8192;
 
   public static byte[] encode(byte[] data) {
     Deflater compressor = new Deflater();
@@ -14,7 +17,7 @@ public class Zlib {
     compressor.finish();
     ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
     try {
-      byte[] buf = new byte[1024];
+      byte[] buf = new byte[BUFFER_SIZE];
       while (!compressor.finished()) {
         int i = compressor.deflate(buf);
         bos.write(buf, 0, i);
@@ -40,7 +43,7 @@ public class Zlib {
     inflater.setInput(data, start, length);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
     try {
-      byte[] buffer = new byte[10240];
+      byte[] buffer = new byte[BUFFER_SIZE];
       while (!inflater.finished()) {
         int count = inflater.inflate(buffer);
         outputStream.write(buffer, 0, count);
