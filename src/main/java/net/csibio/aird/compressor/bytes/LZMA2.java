@@ -13,12 +13,12 @@ public class LZMA2 {
 
   static int BUFFER_SIZE = 8192;
 
-  public static byte[] encode(byte[] data) {
+  public static byte[] encode(byte[] input) {
     ByteArrayInputStream in = null;
     ByteArrayOutputStream out = null;
     XZOutputStream outputStream = null;
     try {
-      in = new ByteArrayInputStream(data);
+      in = new ByteArrayInputStream(input);
       out = new ByteArrayOutputStream();
       outputStream = new XZOutputStream(out, new LZMA2Options(7));
 
@@ -39,12 +39,12 @@ public class LZMA2 {
     return null;
   }
 
-  public static byte[] decode(byte[] data) {
-    return decode(data, 0, data.length);
+  public static byte[] decode(byte[] input) {
+    return decode(input, 0, input.length);
   }
 
-  public static byte[] decode(byte[] data, int start, int length) {
-    ByteArrayInputStream in = new ByteArrayInputStream(data, start, length);
+  public static byte[] decode(byte[] input, int offset, int length) {
+    ByteArrayInputStream in = new ByteArrayInputStream(input, offset, length);
     BufferedInputStream inBuffer = new BufferedInputStream(in);
     ByteArrayOutputStream out = null;
     InputStream inputStream = null;

@@ -1,21 +1,20 @@
 package net.csibio.aird.compressor.bytes;
 
-import net.csibio.aird.util.FileUtil;
-
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+import net.csibio.aird.util.FileUtil;
 
 public class Zlib {
 
   static int BUFFER_SIZE = 8192;
 
-  public static byte[] encode(byte[] data) {
+  public static byte[] encode(byte[] input) {
     Deflater compressor = new Deflater();
     compressor.reset();
-    compressor.setInput(data);
+    compressor.setInput(input);
     compressor.finish();
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(data.length);
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(input.length);
     try {
       byte[] buf = new byte[BUFFER_SIZE];
       while (!compressor.finished()) {
@@ -34,14 +33,14 @@ public class Zlib {
     return null;
   }
 
-  public static byte[] decode(byte[] data) {
-    return decode(data, 0, data.length);
+  public static byte[] decode(byte[] input) {
+    return decode(input, 0, input.length);
   }
 
-  public static byte[] decode(byte[] data, int start, int length) {
+  public static byte[] decode(byte[] input, int offset, int length) {
     Inflater inflater = new Inflater();
-    inflater.setInput(data, start, length);
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+    inflater.setInput(input, offset, length);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(input.length);
     try {
       byte[] buffer = new byte[BUFFER_SIZE];
       while (!inflater.finished()) {
