@@ -26,6 +26,7 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.compressor.bytes.Zlib;
 import net.csibio.aird.compressor.ints.FastPFor;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ResultCodeEnum;
@@ -68,7 +69,7 @@ public abstract class BaseParser {
   /**
    * the m/z precision
    */
-  public double mzPrecision;
+  public int mzPrecision;
 
   /**
    * Acquisition Method Type Supported by Aird
@@ -368,8 +369,7 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public double[] getMzValues(byte[] value, int start, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, start, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -380,7 +380,7 @@ public abstract class BaseParser {
     intValues = FastPFor.decode(intValues);
     double[] doubleValues = new double[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
-      doubleValues[index] = intValues[index] / mzPrecision;
+      doubleValues[index] = (float) intValues[index] / mzPrecision;
     }
     byteBuffer.clear();
     return doubleValues;
@@ -524,8 +524,7 @@ public abstract class BaseParser {
    */
   public float[] getIntValues(byte[] value, int start, int length) {
 
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, start, length));
     byteBuffer.order(intCompressor.fetchByteOrder());
 
     FloatBuffer intensities = byteBuffer.asFloatBuffer();

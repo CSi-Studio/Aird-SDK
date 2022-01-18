@@ -40,19 +40,20 @@ public class Zlib {
   public static byte[] decode(byte[] input, int offset, int length) {
     Inflater inflater = new Inflater();
     inflater.setInput(input, offset, length);
-    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(input.length);
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream(length);
     try {
       byte[] buffer = new byte[BUFFER_SIZE];
       while (!inflater.finished()) {
         int count = inflater.inflate(buffer);
         outputStream.write(buffer, 0, count);
       }
-      return outputStream.toByteArray();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
       FileUtil.close(outputStream);
     }
-    return null;
+    inflater.end();
+    return outputStream.toByteArray();
+
   }
 }
