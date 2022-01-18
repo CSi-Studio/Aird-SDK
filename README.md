@@ -197,3 +197,8 @@ Detail samle code. See net.csibio.aird.sample.SampleCode
 ```
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
+
+| Type |Ori| Zlib |Gzip|LZMA2|Snappy|Brotli|ZDPD|BDPD|SDPD| 
+|------|---|-----|----|----|------|------|----|----|----| 
+| mz   |139| 98  |98 |63|139 |74 |45 |44 |55 | 
+| int  |139| 12  |12 |9 |33 |9 | | | |

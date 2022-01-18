@@ -7,7 +7,7 @@ import net.csibio.aird.util.FileUtil;
 
 public class Zlib {
 
-  static int BUFFER_SIZE = 8192;
+  static int BUFFER_SIZE = 10240;
 
   public static byte[] encode(byte[] input) {
     Deflater compressor = new Deflater();

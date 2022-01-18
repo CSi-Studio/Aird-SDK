@@ -12,6 +12,7 @@ package net.csibio.aird.bean;
 
 import lombok.Data;
 
+@Deprecated
 @Data
 public class MzIntensityPairs {
 

@@ -6,6 +6,7 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.parser.BaseParser;
@@ -55,6 +56,18 @@ public class DIAParser extends BaseParser {
   }
 
   /**
+   * the main interface for getting all the spectrums of a block.
+   *
+   * @param index block index
+   * @return all the spectrums
+   */
+  public TreeMap<Float, SpectrumF> getSpectrumsAsFloat(BlockIndex index) {
+    return getSpectrumsAsFloat(index.getStartPtr(), index.getEndPtr(), index.getRts(),
+        index.getMzs(),
+        index.getInts());
+  }
+
+  /**
    * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
    * <p>
    * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
@@ -92,6 +105,53 @@ public class DIAParser extends BaseParser {
         }
         start = start + intSizeList.get(i).intValue();
         map.put(rtList.get(i), new Spectrum(mzArray, intensityArray));
+      }
+      return map;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
+   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+   * <p>
+   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+   * will not close the RAF object directly after using it. Users need to close the object manually
+   * after using the diaparser object
+   *
+   * @param startPtr    起始指针位置 start point
+   * @param endPtr      结束指针位置 end point
+   * @param rtList      rt列表,包含所有的光谱产出时刻 the retention time list
+   * @param mzSizeList  mz块的大小列表 the mz block size list
+   * @param intSizeList intensity块的大小列表 the intensity block size list
+   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
+   */
+  public TreeMap<Float, SpectrumF> getSpectrumsAsFloat(long startPtr, long endPtr,
+      List<Float> rtList,
+      List<Long> mzSizeList, List<Long> intSizeList) {
+
+    try {
+      TreeMap<Float, SpectrumF> map = new TreeMap<>();
+      raf.seek(startPtr);
+      long delta = endPtr - startPtr;
+      byte[] result = new byte[(int) delta];
+      raf.read(result);
+      assert rtList.size() == mzSizeList.size();
+      assert mzSizeList.size() == intSizeList.size();
+
+      int start = 0;
+      for (int i = 0; i < rtList.size(); i++) {
+        float[] intensityArray = null;
+        float[] mzArray = getMzValuesAsFloat(result, start, mzSizeList.get(i).intValue());
+        start = start + mzSizeList.get(i).intValue();
+        if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
+          intensityArray = getLogedIntValues(result, start, intSizeList.get(i).intValue());
+        } else {
+          intensityArray = getIntValues(result, start, intSizeList.get(i).intValue());
+        }
+        start = start + intSizeList.get(i).intValue();
+        map.put(rtList.get(i), new SpectrumF(mzArray, intensityArray));
       }
       return map;
     } catch (Exception e) {

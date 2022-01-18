@@ -3,6 +3,8 @@ package net.csibio.aird.test;
 import static net.csibio.aird.compressor.CompressorType.Zlib;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -22,6 +24,45 @@ public class CompV3Test {
   static String indexPath = "D:\\Aird_Test\\SA1_6_with_zero.json";
   static int MB = 1024 * 1024;
   static int KB = 1024;
+
+  @Test
+  public void testV1() throws Exception {
+    DDAParser parser = new DDAParser(indexPath);
+    AirdInfo airdInfo = parser.getAirdInfo();
+    Compressor mzCompressor = airdInfo.fetchCompressor(Compressor.TARGET_MZ);
+    double mzPrecision = mzCompressor.getPrecision();
+    int maxDelta = (int) (0.001 * mzPrecision);
+    List<DDAMs> ms1List = parser.readAllToMemory();
+    HashMap<Integer, AtomicLong> accumu = new HashMap<Integer, AtomicLong>();
+    HashMap<Integer, AtomicLong> accumu2 = new HashMap<Integer, AtomicLong>();
+    for (DDAMs ms1 : ms1List) {
+      Spectrum spectrum = ms1.getSpectrum();
+      double[] mzs = spectrum.mzs();
+      for (int i = 1; i < mzs.length; i++) {
+        Integer delta = (int) (mzs[i] * mzPrecision) - (int) (mzs[i - 1] * mzPrecision);
+        if (accumu.get(delta) == null) {
+          accumu.put(delta, new AtomicLong(1));
+        } else {
+          accumu.get(delta).getAndAdd(1);
+        }
+
+        if (delta < maxDelta) {
+          if (accumu2.get(delta) == null) {
+            accumu2.put(delta, new AtomicLong(1));
+          } else {
+            accumu2.get(delta).getAndAdd(1);
+          }
+        }
+      }
+      int a = 1;
+    }
+    System.out.println("Accum:" + accumu.size());
+    System.out.println("Accum2:" + accumu2.size());
+    List newList = accumu2.entrySet().stream()
+        .sorted(Comparator.comparing(entry -> entry.getValue().get()))
+        .toList();
+    System.out.println(newList.size());
+  }
 
   @Test
   public void testNewAlgorithm() throws Exception {

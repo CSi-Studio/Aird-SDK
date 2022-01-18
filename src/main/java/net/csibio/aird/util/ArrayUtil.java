@@ -12,6 +12,8 @@ package net.csibio.aird.util;
 
 import java.util.Iterator;
 import java.util.Set;
+import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.structure.SortInt;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
@@ -32,6 +34,14 @@ public class ArrayUtil {
       sortInts[i] = new SortInt(originalArray[i], currentLayer);
     }
     return sortInts;
+  }
+
+  public static SpectrumF trans(Spectrum spectrum) {
+    float[] floats = new float[spectrum.mzs().length];
+    for (int i = 0; i < spectrum.mzs().length; i++) {
+      floats[i] = (float) spectrum.mzs()[i];
+    }
+    return new SpectrumF(floats, spectrum.ints());
   }
 
   public static double[] fromFloatToDouble(float[] array) {

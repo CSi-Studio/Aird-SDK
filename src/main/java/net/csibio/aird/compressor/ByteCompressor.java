@@ -2,6 +2,7 @@ package net.csibio.aird.compressor;
 
 import net.csibio.aird.compressor.bytes.Brotli;
 import net.csibio.aird.compressor.bytes.Gzip;
+import net.csibio.aird.compressor.bytes.LZ4;
 import net.csibio.aird.compressor.bytes.LZMA2;
 import net.csibio.aird.compressor.bytes.Snappier;
 import net.csibio.aird.compressor.bytes.Zlib;
@@ -21,6 +22,7 @@ public class ByteCompressor {
       case Gzip -> Gzip.encode(bytes);
       case Snappy -> Snappier.encode(bytes);
       case Brotli -> Brotli.encode(bytes);
+      case LZ4 -> LZ4.encode(bytes);
       default -> null;
     };
   }

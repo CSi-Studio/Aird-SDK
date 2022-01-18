@@ -18,7 +18,7 @@ import org.junit.Test;
 
 public class SizeTest {
 
-  String DIA_INDEX_FILE_PATH = "\\\\CSiNAS\\data\\proteomics\\Project\\HYE_110_64var\\HYE110_TTOF6600_64var_lgillet_I160305_001.json";
+  String DIA_INDEX_FILE_PATH = "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_008.json";
   //  String DIA_INDEX_FILE_PATH = "D:\\proteomics\\Project\\HYE_110_64Var_Full\\HYE110_TTOF6600_64var_lgillet_I160305_001_with_zero.json";
   //  String DIA_INDEX_FILE_PATH = "D:\\proteomics\\C20181208yix_HCC_DIA_T_46A_with_zero.json";
   int MB = 1024 * 1024;
@@ -37,7 +37,7 @@ public class SizeTest {
     AtomicLong intOri = new AtomicLong(0);
     AtomicLong spectrumSize = new AtomicLong(0);
     List<CompressorType> byteTypes = Arrays.asList(CompressorType.Zlib, CompressorType.Gzip,
-        CompressorType.LZMA2, CompressorType.Snappy, CompressorType.Brotli);
+        CompressorType.LZMA2, CompressorType.Snappy, CompressorType.Brotli, CompressorType.LZ4);
     ConcurrentHashMap<String, AtomicLong> mzMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, AtomicLong> intMap = new ConcurrentHashMap<>();
     for (CompressorType value : byteTypes) {
@@ -50,7 +50,9 @@ public class SizeTest {
 
     for (int k = 17; k < 18; k++) {
       BlockIndex index = indexList.get(k);
+      long start = System.currentTimeMillis();
       TreeMap<Float, Spectrum> spectrumMap = diaParser.getSpectrums(index);
+      System.out.println("Parse耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
       List<Spectrum> spectrumList = spectrumMap.values().stream().toList();
       spectrumSize.getAndAdd(spectrumList.size());
       System.out.println("当前block中spectrum数目:" + spectrumList.size());
@@ -79,14 +81,16 @@ public class SizeTest {
       System.out.println("当前处理:" + k + "/" + indexList.size());
     }
 
-    StringBuilder algorithms = new StringBuilder("    Ori/");
+    StringBuilder algorithms = new StringBuilder("|Type|Ori|");
     for (CompressorType value : byteTypes) {
-      algorithms.append(value.name()).append("/");
+      algorithms.append(value.name()).append("|");
     }
     algorithms.append("ZDPD|").append("BDPD|").append("SDPD|");
     System.out.println(algorithms);
-    StringBuilder mzs = new StringBuilder("mz: " + mzOri.get() / MB + "|");
-    StringBuilder ints = new StringBuilder("int:" + intOri.get() / MB + "|");
+
+    System.out.println("|----------|--------|----------|-------------------|");
+    StringBuilder mzs = new StringBuilder("|mz| " + mzOri.get() / MB + "|");
+    StringBuilder ints = new StringBuilder("|int|" + intOri.get() / MB + "|");
     for (CompressorType value : byteTypes) {
       mzs.append(mzMap.get(value.name()).get() / MB).append(" |");
       ints.append(intMap.get(value.name()).get() / MB).append(" |");

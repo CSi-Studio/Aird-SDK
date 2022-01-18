@@ -20,7 +20,7 @@ public class LZMA2 {
     try {
       in = new ByteArrayInputStream(input);
       out = new ByteArrayOutputStream();
-      outputStream = new XZOutputStream(out, new LZMA2Options(7));
+      outputStream = new XZOutputStream(out, new LZMA2Options(6));
 
       int size;
       final byte[] buf = new byte[BUFFER_SIZE];

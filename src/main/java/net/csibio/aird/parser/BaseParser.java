@@ -23,6 +23,7 @@ import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.ints.FastPFor;
@@ -269,6 +270,44 @@ public abstract class BaseParser {
     return map;
   }
 
+  /**
+   * 根据特定BlockIndex取出对应TreeMap
+   *
+   * @param raf        the random access file reader
+   * @param blockIndex the block index read from the index file
+   * @return 解码内容, key为rt, value为光谱中的键值对
+   * @throws Exception 读取文件异常
+   */
+  public TreeMap<Float, SpectrumF> parseBlockAsFloat(RandomAccessFile raf, BlockIndex blockIndex)
+      throws Exception {
+    TreeMap<Float, SpectrumF> map = new TreeMap<>();
+    List<Float> rts = blockIndex.getRts();
+
+    raf.seek(blockIndex.getStartPtr());
+    long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
+    byte[] result = new byte[(int) delta];
+
+    raf.read(result);
+    List<Long> mzSizes = blockIndex.getMzs();
+    List<Long> intensitySizes = blockIndex.getInts();
+
+    int start = 0;
+    for (int i = 0; i < mzSizes.size(); i++) {
+      byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
+      start = start + mzSizes.get(i).intValue();
+      byte[] intensity = ArrayUtils.subarray(result, start,
+          start + intensitySizes.get(i).intValue());
+      start = start + intensitySizes.get(i).intValue();
+      try {
+        SpectrumF pairs = new SpectrumF(getMzValuesAsFloat(mz), getIntValues(intensity));
+        map.put(rts.get(i) / 60f, pairs);
+      } catch (Exception e) {
+        throw e;
+      }
+    }
+    return map;
+  }
+
 
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
@@ -298,6 +337,31 @@ public abstract class BaseParser {
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
    *
+   * @param value 压缩后的数组
+   * @return 解压缩后的数组
+   */
+  public float[] getMzValuesAsFloat(byte[] value) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value));
+    byteBuffer.order(mzCompressor.fetchByteOrder());
+
+    IntBuffer ints = byteBuffer.asIntBuffer();
+    int[] intValues = new int[ints.capacity()];
+    for (int i = 0; i < ints.capacity(); i++) {
+      intValues[i] = ints.get(i);
+    }
+    intValues = FastPFor.decode(intValues);
+    float[] floats = new float[intValues.length];
+    for (int index = 0; index < intValues.length; index++) {
+      floats[index] = (float) (intValues[index] / mzPrecision);
+    }
+    byteBuffer.clear();
+    return floats;
+  }
+
+  /**
+   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+   *
    * @param value  压缩后的数组
    * @param start  起始位置
    * @param length 读取长度
@@ -320,6 +384,33 @@ public abstract class BaseParser {
     }
     byteBuffer.clear();
     return doubleValues;
+  }
+
+  /**
+   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+   *
+   * @param value  压缩后的数组
+   * @param start  起始位置
+   * @param length 读取长度
+   * @return 解压缩后的数组
+   */
+  public float[] getMzValuesAsFloat(byte[] value, int start, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(
+        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
+    byteBuffer.order(mzCompressor.fetchByteOrder());
+
+    IntBuffer ints = byteBuffer.asIntBuffer();
+    int[] intValues = new int[ints.capacity()];
+    for (int i = 0; i < ints.capacity(); i++) {
+      intValues[i] = ints.get(i);
+    }
+    intValues = FastPFor.decode(intValues);
+    float[] floats = new float[intValues.length];
+    for (int index = 0; index < intValues.length; index++) {
+      floats[index] = (float) (intValues[index] / mzPrecision);
+    }
+    byteBuffer.clear();
+    return floats;
   }
 
   /**

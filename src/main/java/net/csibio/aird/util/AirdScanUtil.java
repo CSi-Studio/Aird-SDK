@@ -72,8 +72,11 @@ public class AirdScanUtil {
   public static AirdInfo loadAirdInfo(File indexFile) {
     String content = FileUtil.readFile(indexFile);
     AirdInfo airdInfo = null;
+
     try {
+      long start = System.currentTimeMillis();
       airdInfo = JSONObject.parseObject(content, AirdInfo.class);
+      System.out.println("JSON loading time:" + (System.currentTimeMillis() - start) + "ms");
     } catch (Exception e) {
       System.out.println(indexFile.getAbsolutePath());
       System.out.println(ResultCodeEnum.NOT_AIRD_INDEX_FILE.getMessage());

@@ -104,6 +104,7 @@ public class DDAParser extends BaseParser {
    * MsCycle in the memory
    * @throws Exception exception when reading the file
    */
+  @Deprecated
   public List<MsCycle> parseToMsCycle() throws Exception {
     RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");
     List<MsCycle> cycleList = new ArrayList<>();
