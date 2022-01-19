@@ -5,6 +5,7 @@ import net.csibio.aird.compressor.bytes.Gzip;
 import net.csibio.aird.compressor.bytes.LZ4;
 import net.csibio.aird.compressor.bytes.LZMA2;
 import net.csibio.aird.compressor.bytes.Snappier;
+import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
 
 public class ByteCompressor {
@@ -23,6 +24,7 @@ public class ByteCompressor {
       case Snappy -> Snappier.encode(bytes);
       case Brotli -> Brotli.encode(bytes);
       case LZ4 -> LZ4.encode(bytes);
+      case ZSTD -> ZSTD.encode(bytes);
       default -> null;
     };
   }
@@ -46,6 +48,8 @@ public class ByteCompressor {
       case Gzip -> Gzip.decode(bytes, start, length);
       case Snappy -> Snappier.decode(bytes, start, length);
       case Brotli -> Brotli.decode(bytes, start, length);
+      case ZSTD -> ZSTD.decode(bytes, start, length);
+      case LZ4 -> LZ4.decode(bytes, start, length);
       default -> null;
     };
   }
