@@ -69,7 +69,7 @@ public abstract class BaseParser {
   /**
    * the m/z precision
    */
-  public int mzPrecision;
+  public double mzPrecision;
 
   /**
    * Acquisition Method Type Supported by Aird
