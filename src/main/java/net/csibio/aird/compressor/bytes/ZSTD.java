@@ -1,15 +1,19 @@
 package net.csibio.aird.compressor.bytes;
 
+import com.github.luben.zstd.Zstd;
 import java.util.Arrays;
 
-public class LZO {
+public class ZSTD {
 
   public static byte[] encode(byte[] input) {
-    return null;
+    return Zstd.compress(input);
   }
 
   public static byte[] decode(byte[] input) {
-    return null;
+    int size = (int) Zstd.decompressedSize(input);
+    byte[] array = new byte[size];
+    Zstd.decompress(array, input);
+    return array;
   }
 
   public static byte[] decode(byte[] input, int offset, int length) {

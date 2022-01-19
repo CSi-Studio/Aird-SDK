@@ -13,8 +13,9 @@ import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytes.Brotli;
 import net.csibio.aird.compressor.bytes.Gzip;
-import net.csibio.aird.compressor.bytes.LZMA2;
+import net.csibio.aird.compressor.bytes.LZ4;
 import net.csibio.aird.compressor.bytes.Snappier;
+import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
 import net.csibio.aird.parser.v2.DIAParser;
 import org.junit.BeforeClass;
@@ -85,9 +86,10 @@ public class CompressorDIATest {
       test_brotli(bytesList);
       test_gzip(bytesList);
       test_snappy(intsList);
+      test_zstd(bytesList);
+      test_lz4(bytesList);
 //      test_LZMA2(bytesList);
     });
-
   }
 
   //Test for Brotli
@@ -99,7 +101,7 @@ public class CompressorDIATest {
       compressedSize.getAndAdd(compressed.length);
     });
     System.out.println(
-        "Brotli:" + (System.currentTimeMillis() - start) / 1000 + "秒|" + compressedSize.get() / MB
+        "Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -111,7 +113,7 @@ public class CompressorDIATest {
       compressedSize.getAndAdd(Zlib.encode(bytes).length);
     });
     System.out.println(
-        "Zlib:" + (System.currentTimeMillis() - start) / 1000 + "秒|" + compressedSize.get() / MB
+        "Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -123,7 +125,7 @@ public class CompressorDIATest {
       compressedSize.getAndAdd(Gzip.encode(bytes).length);
     });
     System.out.println(
-        "Gzip:" + (System.currentTimeMillis() - start) / 1000 + "秒|" + compressedSize.get() / MB
+        "Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -140,19 +142,44 @@ public class CompressorDIATest {
       }
     });
     System.out.println(
-        "Snappy:" + (System.currentTimeMillis() - start) / 1000 + "秒|" + compressedSize.get() / MB
+        "Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
+
+  //Test for zstd
+  private void test_zstd(List<byte[]> bytesList) {
+    long start = System.currentTimeMillis();
+    AtomicLong compressedSize = new AtomicLong(0);
+    bytesList.parallelStream().forEach(bytes -> {
+      compressedSize.getAndAdd(ZSTD.encode(bytes).length);
+    });
+    System.out.println(
+        "ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+            + "M");
+  }
+
+  //Test for LZ4
+  private void test_lz4(List<byte[]> bytesList) {
+    long start = System.currentTimeMillis();
+    AtomicLong compressedSize = new AtomicLong(0);
+    bytesList.parallelStream().forEach(bytes -> {
+      compressedSize.getAndAdd(ZSTD.encode(bytes).length);
+    });
+    System.out.println(
+        "LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+            + "M");
+  }
+
 
   //Test for LZMA2
   private void test_LZMA2(List<byte[]> bytesList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(LZMA2.encode(bytes).length);
+      compressedSize.getAndAdd(LZ4.encode(bytes).length);
     });
     System.out.println(
-        "LZMA2:" + (System.currentTimeMillis() - start) / 1000 + "秒|" + compressedSize.get() / MB
+        "LZMA2:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 }
