@@ -8,8 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.DDAMs;
+import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.ints.XDPD;
 import net.csibio.aird.parser.DDAParser;
-import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
 
 
@@ -26,13 +30,13 @@ public class TryForAirdV3 {
     System.out.println("Precision:" + precision);
     for (int i = 0; i < info.getIndexList().size(); i++) {
       BlockIndex index = info.getIndexList().get(i);
-      TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(index);
+      TreeMap<Float, Spectrum<double[]>> map = parser.getSpectra(index);
       long totalMzSize = 0;
       long totalNewSize = 0;
       for (int k = 0; k < map.entrySet().size(); k++) {
-        MzIntensityPairs pairs = map.pollFirstEntry().getValue();
+        Spectrum<double[]> pairs = map.pollFirstEntry().getValue();
         totalMzSize += index.getMzs().get(k);
-        double[] mzArray = pairs.getMzArray();
+        double[] mzArray = pairs.getMzs();
         int[] leftArray = new int[mzArray.length];
         short[] rightArray = new short[mzArray.length];
         for (int j = 0; j < mzArray.length; j++) {
@@ -41,8 +45,8 @@ public class TryForAirdV3 {
           leftArray[j] = left;
           rightArray[j] = (short) (temp - left * offset);
         }
-        byte[] s1 = CompressUtil.ZDPDEncoder(leftArray);
-        byte[] s2 = CompressUtil.transToByte(rightArray);
+        byte[] s1 = XDPD.encode(leftArray);
+        byte[] s2 = ByteTrans.shortToByte(rightArray);
         totalNewSize += (s1.length + s2.length);
       }
       System.out.println("Index" + i + "-" + totalNewSize * 1.0 / totalMzSize);
@@ -58,13 +62,13 @@ public class TryForAirdV3 {
     DDAParser parser = new DDAParser(
         "/Users/lms/metabolomics/DIAN 14-19VW_Human_Serum/14-19VW_NEGa_SET1/QXA01DNNEG20190723_DIAN1419VWHUMANSERUM_HUMAN_SERUM1_03.json");
     AirdInfo info = parser.getAirdInfo();
-    List<MsCycle> cycleList = parser.parseToMsCycle();
+    List<DDAMs> cycleList = parser.readAllToMemory();
 
     AtomicInteger count = new AtomicInteger();
     for (int j = 0; j < cycleList.size(); j++) {
-      MsCycle cycle = cycleList.get(j);
-      MzIntensityPairs pairs = cycle.getMs1Spectrum();
-      count.getAndAdd(pairs.getMzArray().length);
+      DDAMs cycle = cycleList.get(j);
+      Spectrum<double[]> pairs = cycle.getSpectrum();
+      count.getAndAdd(pairs.getMzs().length);
     }
 
     int[][] mzGroup = new int[count.get()][2];
@@ -72,10 +76,10 @@ public class TryForAirdV3 {
     int precision = info.fetchCompressor(Compressor.TARGET_MZ).getPrecision();
 
     for (int j = 0; j < cycleList.size(); j++) {
-      MsCycle cycle = cycleList.get(j);
-      MzIntensityPairs pairs = cycle.getMs1Spectrum();
-      double[] mzArray = pairs.getMzArray();
-      float[] intArray = pairs.getIntensityArray();
+      DDAMs cycle = cycleList.get(j);
+      Spectrum<double[]> pairs = cycle.getSpectrum();
+      double[] mzArray = pairs.getMzs();
+      float[] intArray = pairs.getInts();
       for (int k = 0; k < mzArray.length; k++) {
         if (intArray[k] < 10000) {
           continue;
@@ -109,15 +113,15 @@ public class TryForAirdV3 {
     int[][] mzGroup = new int[999999][2];
     int realCount = 0;
     int precision = info.fetchCompressor(Compressor.TARGET_MZ).getPrecision();
-    TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(index);
+    TreeMap<Float, Spectrum<double[]>> map = parser.getSpectra(index);
     System.out.println("Real Count:" + realCount);
     for (int k = 0; k < 100; k++) {
       map.pollFirstEntry();
     }
     for (int i = 0; i < map.entrySet().size(); i++) {
-      MzIntensityPairs pairs = map.pollFirstEntry().getValue();
-      double[] mzArray = pairs.getMzArray();
-      float[] intArray = pairs.getIntensityArray();
+      Spectrum<double[]> pairs = map.pollFirstEntry().getValue();
+      double[] mzArray = pairs.getMzs();
+      float[] intArray = pairs.getInts();
       for (int k = 0; k < mzArray.length; k++) {
         if (intArray[k] < 100) {
           continue;

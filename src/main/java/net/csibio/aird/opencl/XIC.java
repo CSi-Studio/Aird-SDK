@@ -80,7 +80,8 @@ public class XIC {
    * @param mzWindow  目标窗口
    * @return 目标值结果
    */
-  public static float[] lowerBoundWithGPU(List<net.csibio.aird.bean.common.Spectrum> pairsList,
+  public static float[] lowerBoundWithGPU(
+      List<net.csibio.aird.bean.common.Spectrum<float[]>> pairsList,
       float[] targets,
       float mzWindow) {
 
@@ -93,18 +94,18 @@ public class XIC {
 
     List<Spectrum> paramsList = new ArrayList<>();
     for (int i = 0; i < countInBatch; i++) {
-      double[] mzArray = pairsList.get(i).mzs();
+      float[] mzArray = pairsList.get(i).getMzs();
       if (mzArray.length == 0) {
         paramsList.add(null);
       } else {
         paramsList.add(new Spectrum(
             clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * pairsList.get(i).mzs().length,
-                Pointer.to(pairsList.get(i).mzs()), null),
+                Sizeof.cl_float * pairsList.get(i).getMzs().length,
+                Pointer.to(pairsList.get(i).getMzs()), null),
             clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * pairsList.get(i).ints().length,
-                Pointer.to(pairsList.get(i).ints()), null),
-            pairsList.get(i).mzs().length));
+                Sizeof.cl_float * pairsList.get(i).getInts().length,
+                Pointer.to(pairsList.get(i).getInts()), null),
+            pairsList.get(i).getMzs().length));
       }
     }
 

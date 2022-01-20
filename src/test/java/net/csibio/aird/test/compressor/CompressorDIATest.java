@@ -11,7 +11,7 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.DDAMs;
-import net.csibio.aird.bean.common.SpectrumF;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.bytes.Brotli;
@@ -33,7 +33,7 @@ import org.xerial.snappy.BitShuffle;
 public class CompressorDIATest {
 
   static HashMap<String, String> fileMap = new HashMap<>();
-  static HashMap<String, List<SpectrumF>> spectrumListMap = new HashMap<>();
+  static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
   static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
   static int MB = 1024 * 1024;
@@ -60,7 +60,7 @@ public class CompressorDIATest {
     long start = System.currentTimeMillis();
     System.out.println("开始初始化数据");
     fileMap.put(name, indexPath);
-    List<SpectrumF> spectrumList = Collections.synchronizedList(new ArrayList<SpectrumF>());
+    List<Spectrum<float[]>> spectrumList = Collections.synchronizedList(new ArrayList<>());
     double precision = 0;
 
     switch (type) {
@@ -73,11 +73,11 @@ public class CompressorDIATest {
 
         if (indexNo != -1) {
           BlockIndex index = indexList.get(indexNo);
-          TreeMap<Float, SpectrumF> spectrumMap = parser.getSpectrumsAsFloat(index);
+          TreeMap<Float, Spectrum<float[]>> spectrumMap = parser.getSpectraAsFloat(index);
           spectrumList.addAll(spectrumMap.values().stream().toList());
         } else {
           indexList.forEach(index -> {
-            TreeMap<Float, SpectrumF> spectrumMap = parser.getSpectrumsAsFloat(index);
+            TreeMap<Float, Spectrum<float[]>> spectrumMap = parser.getSpectraAsFloat(index);
             spectrumList.addAll(spectrumMap.values().stream().toList());
           });
         }
@@ -101,10 +101,10 @@ public class CompressorDIATest {
     List<byte[]> bytesList = new ArrayList<>();
     List<int[]> intsList = new ArrayList<>();
     for (int i = 0; i < spectrumList.size(); i++) {
-      bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).mzs()));
-      int[] ints = new int[spectrumList.get(i).mzs().length];
-      for (int j = 0; j < spectrumList.get(i).mzs().length; j++) {
-        ints[j] = (int) (spectrumList.get(i).mzs()[j] * precision);
+      bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).getMzs()));
+      int[] ints = new int[spectrumList.get(i).getMzs().length];
+      for (int j = 0; j < spectrumList.get(i).getMzs().length; j++) {
+        ints[j] = (int) (spectrumList.get(i).getMzs()[j] * precision);
       }
       intsList.add(ints);
     }
@@ -120,7 +120,7 @@ public class CompressorDIATest {
           "开始测试文件:" + key + "包含光谱共" + spectrumIntsMap.get(key).size()
               + "张,-------------------------");
       List<byte[]> bytesList = spectrumBytesMap.get(key);
-      List<SpectrumF> spectrumList = spectrumListMap.get(key);
+      List<Spectrum<float[]>> spectrumList = spectrumListMap.get(key);
       List<int[]> intsList = spectrumIntsMap.get(key);
 
       //测试原始大小
@@ -136,8 +136,6 @@ public class CompressorDIATest {
       test_snappy(intsList);
       test_zstd(bytesList);
       test_lz4(bytesList);
-
-      System.out.println("");
       test_fastpfor(intsList);
       System.out.println("");
       test_xdpd_zlib(intsList);

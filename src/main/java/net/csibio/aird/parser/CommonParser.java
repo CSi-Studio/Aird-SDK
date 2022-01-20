@@ -14,7 +14,7 @@ import java.io.RandomAccessFile;
 import java.util.List;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
 
@@ -41,15 +41,15 @@ public class CommonParser extends BaseParser {
   /**
    * 根据序列号查询光谱 get Spectrum by spectrum index
    *
-   * @param index 光谱的索引号 the index of the spectrum
+   * @param num 光谱的索引号 the num of the spectrum
    * @return 光谱信息 spectrum data pairs
    */
-  public MzIntensityPairs getSpectrum(int index) {
+  public Spectrum<double[]> getSpectrum(int num) {
     List<BlockIndex> indexList = getAirdInfo().getIndexList();
     for (int i = 0; i < indexList.size(); i++) {
       BlockIndex blockIndex = indexList.get(i);
-      if (blockIndex.getNums().contains(index)) {
-        int targetIndex = blockIndex.getNums().indexOf(index);
+      if (blockIndex.getNums().contains(num)) {
+        int targetIndex = blockIndex.getNums().indexOf(num);
         return getSpectrum(blockIndex, targetIndex);
       }
     }
@@ -64,17 +64,17 @@ public class CommonParser extends BaseParser {
    * @param position 指定的光谱位置 the specific spectrum index
    * @return 该光谱中的信息 spectrum data pairs
    */
-  public MzIntensityPairs getSpectrum(BlockIndex index, int position) {
+  public Spectrum<double[]> getSpectrum(BlockIndex index, int position) {
     RandomAccessFile raf = null;
     try {
       raf = new RandomAccessFile(airdFile, "r");
 
-      Long start = index.getMzs().get(position);
+      int start = index.getMzs().get(position);
       raf.seek(start);
-      Long delta = index.getInts().get(position) - start;
-      byte[] reader = new byte[delta.intValue()];
+      long delta = index.getInts().get(position) - start;
+      byte[] reader = new byte[(int) delta];
       raf.read(reader);
-      double[] mzArray = getMzValues(reader);
+      double[] mzArray = getMzs(reader);
       start = index.getInts().get(position);
       raf.seek(start);
       if (position == (index.getInts().size() - 1)) {
@@ -82,17 +82,11 @@ public class CommonParser extends BaseParser {
       } else {
         delta = index.getMzs().get(position + 1) - start;
       }
-      reader = new byte[delta.intValue()];
+      reader = new byte[(int) delta];
       raf.read(reader);
-
       float[] intensityArray = null;
-      if (intCompressor.getMethods().contains(Compressor.METHOD_LOG10)) {
-        intensityArray = getLogedIntValues(reader);
-      } else {
-        intensityArray = getIntValues(reader);
-      }
-
-      return new MzIntensityPairs(mzArray, intensityArray);
+      intensityArray = getIntValues(reader);
+      return new Spectrum<double[]>(mzArray, intensityArray);
 
     } catch (Exception e) {
       e.printStackTrace();

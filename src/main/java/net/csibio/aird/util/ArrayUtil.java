@@ -13,7 +13,6 @@ package net.csibio.aird.util;
 import java.util.Iterator;
 import java.util.Set;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.structure.SortInt;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
@@ -36,12 +35,12 @@ public class ArrayUtil {
     return sortInts;
   }
 
-  public static SpectrumF trans(Spectrum spectrum) {
-    float[] floats = new float[spectrum.mzs().length];
-    for (int i = 0; i < spectrum.mzs().length; i++) {
-      floats[i] = (float) spectrum.mzs()[i];
+  public static Spectrum<float[]> trans(Spectrum<double[]> spectrum) {
+    float[] floats = new float[spectrum.getMzs().length];
+    for (int i = 0; i < spectrum.getMzs().length; i++) {
+      floats[i] = (float) spectrum.getMzs()[i];
     }
-    return new SpectrumF(floats, spectrum.ints());
+    return new Spectrum<float[]>(floats, spectrum.getInts());
   }
 
   public static double[] fromFloatToDouble(float[] array) {
@@ -51,6 +50,17 @@ public class ArrayUtil {
     double[] newArray = new double[array.length];
     for (int i = 0; i < array.length; i++) {
       newArray[i] = array[i];
+    }
+    return newArray;
+  }
+
+  public static int[] fromDoubleToInt(double[] array, double precision) {
+    if (array == null) {
+      return null;
+    }
+    int[] newArray = new int[array.length];
+    for (int i = 0; i < array.length; i++) {
+      newArray[i] = (int) (array[i] * precision);
     }
     return newArray;
   }

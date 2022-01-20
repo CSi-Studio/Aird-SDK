@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.TreeMap;
 import net.csibio.aird.AirdManager;
 import net.csibio.aird.bean.AirdInfo;
+import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
 
 /**
@@ -50,11 +52,11 @@ public class SampleCode {
     AirdInfo airdInfo = parser.getAirdInfo();
 
     //Read the first spectrum
-    MzIntensityPairs pairs = parser.getSpectrum(1);
+    Spectrum pairs = parser.getSpectrum(1);
 
     //Read SWATH block one by one for DIA type Aird File
     airdInfo.getIndexList().forEach(blockIndex -> {
-      TreeMap<Float, MzIntensityPairs> map = parser.getSpectrums(blockIndex);
+      TreeMap<Float, Spectrum<double[]>> map = parser.getSpectra(blockIndex);
       System.out.println(map.size());
     });
 

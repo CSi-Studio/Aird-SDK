@@ -52,7 +52,7 @@ public class DDAMs implements Serializable {
   /**
    * the ms1 spectrum data pairs required
    */
-  Spectrum spectrum;
+  Spectrum<double[]> spectrum;
 
   /**
    * related ms2 list
@@ -62,7 +62,7 @@ public class DDAMs implements Serializable {
   public DDAMs() {
   }
 
-  public DDAMs(Float rt, Spectrum spectrum) {
+  public DDAMs(Float rt, Spectrum<double[]> spectrum) {
     this.rt = rt;
     this.spectrum = spectrum;
   }

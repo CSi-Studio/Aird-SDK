@@ -7,15 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Layers;
-import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.ints.FastPFor;
+import net.csibio.aird.parser.DIAParser;
+import net.csibio.aird.util.ArrayUtil;
 import net.csibio.aird.util.StackCompressUtil;
 
 public class TestCompareLayers {
 
   public static void main(String[] args) throws IOException {
     String indexFilePath = "D:\\omicsdata\\proteomics\\C20181208yix_HCC_DIA_T_46A.json";
-    DIAParser DIAParser = new DIAParser(indexFilePath);
-    List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
+    DIAParser diaParser = new DIAParser(indexFilePath);
+    List<BlockIndex> swathIndexList = diaParser.getAirdInfo().getIndexList();
     System.out.println("block数：" + swathIndexList.size());
     System.out.println();
     int testBlockNum = 5;
@@ -39,8 +42,8 @@ public class TestCompareLayers {
       List<int[]> mzGroup = new ArrayList<>();
       for (Float rt : rts) {
         int[] arr;
-        arr = DIAParser.getSpectrumAsInteger(index, rt).getMz();
-        mzGroup.add(arr);
+        double[] temp = diaParser.getSpectrumByRt(index, rt).getMzs();
+        mzGroup.add(ArrayUtil.fromDoubleToInt(temp, diaParser.getMzPrecision()));
       }
 //            sizeOrigin += RamUsageEstimator.sizeOf((Accountable) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
@@ -51,7 +54,7 @@ public class TestCompareLayers {
       long t1 = 0;
       for (int i = 0; i < mzNum; i++) {
         long tempT = System.currentTimeMillis();
-        byte[] comMZ = CompressUtil.transToByte(CompressUtil.fastPforEncoder(mzGroup.get(i)));
+        byte[] comMZ = ByteTrans.intToByte(FastPFor.encode(mzGroup.get(i)));
         t1 += (System.currentTimeMillis() - tempT);
         comMZs.add(comMZ);
       }
@@ -62,7 +65,7 @@ public class TestCompareLayers {
       for (byte[] comMz : comMZs
       ) {
         long tempT = System.currentTimeMillis();
-        CompressUtil.fastPforDecoder(CompressUtil.transToInteger(comMz));
+        FastPFor.decode(ByteTrans.byteToInt(comMz));
         tDecode += (System.currentTimeMillis() - tempT);
       }
       tAird1Decode += tDecode;

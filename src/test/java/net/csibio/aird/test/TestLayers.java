@@ -8,7 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Layers;
-import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.ints.FastPFor;
+import net.csibio.aird.parser.DIAParser;
+import net.csibio.aird.util.ArrayUtil;
 import net.csibio.aird.util.StackCompressUtil;
 
 //比较压缩率随着block的变化规律
@@ -23,8 +26,8 @@ public class TestLayers {
 //            System.out.println(indexFile.getAbsolutePath());
 //        }whether git is ready.
     String indexFilePath = "/Users/jinyinwang/Documents/stackTestData/DIA/HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
-    DIAParser DIAParser = new DIAParser(indexFilePath);
-    List<BlockIndex> swathIndexList = DIAParser.getAirdInfo().getIndexList();
+    DIAParser diaParser = new DIAParser(indexFilePath);
+    List<BlockIndex> swathIndexList = diaParser.getAirdInfo().getIndexList();
     int testBlockNum = 10;
     long[][] record = new long[10][testBlockNum];
     int k = 8;//根据测试结果 测试256层堆叠效果
@@ -39,8 +42,9 @@ public class TestLayers {
       List<int[]> mzGroup = new ArrayList<>();
       for (int i = 0; i < mzNum; i++) {
         int[] arr;
-        arr = DIAParser.getSpectrumAsInteger(index, rts.get(i)).getMz();
-        mzGroup.add(arr);
+
+        double[] temp = diaParser.getSpectrumByRt(index, rts.get(i)).getMzs();
+        mzGroup.add(ArrayUtil.fromDoubleToInt(temp, diaParser.getMzPrecision()));
       }
 //      record[0][m] = RamUsageEstimator.sizeOf((Query) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);
@@ -51,12 +55,12 @@ public class TestLayers {
       long t1 = 0, t2 = 0;
       for (int i = 0; i < mzNum; i++) {
         long tempT = System.currentTimeMillis();
-        byte[] comMZ = CompressUtil.transToByte(CompressUtil.fastPforEncoder(mzGroup.get(i)));
+        byte[] comMZ = ByteTrans.intToByte(FastPFor.encode(mzGroup.get(i)));
         t1 += (System.currentTimeMillis() - tempT);
 //                System.out.println(System.currentTimeMillis() - tempT);
         comMZs.add(comMZ);
         long tempT2 = System.currentTimeMillis();
-        CompressUtil.fastPforDecoder(CompressUtil.transToInteger(comMZ));
+        FastPFor.decode(ByteTrans.byteToInt(comMZ));
         t2 += (System.currentTimeMillis() - tempT2);
 //                System.out.println(System.currentTimeMillis() - tempT2);
       }

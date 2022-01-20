@@ -10,7 +10,6 @@
 
 package net.csibio.aird.parser;
 
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.DDAUtil;
-import net.csibio.aird.util.FileUtil;
 
 /**
  * DDA模式的转换器 The parser for DDA acquisition mode. The index is group like MS1-MS2 Group DDA reader
@@ -65,11 +63,12 @@ public class DDAParser extends BaseParser {
    * @throws Exception exception when reading the file
    */
   public List<DDAMs> readAllToMemory() throws Exception {
-    RandomAccessFile raf = new RandomAccessFile(airdFile.getPath(), "r");
     List<DDAMs> ms1List = new ArrayList<>();
     BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
     List<BlockIndex> ms2IndexList = getAllMs2Index();
-    TreeMap<Float, Spectrum> ms1Map = parseBlock(raf, ms1Index);
+    TreeMap<Float, Spectrum<double[]>> ms1Map = getSpectra(ms1Index.getStartPtr(),
+        ms1Index.getEndPtr(),
+        ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts());
     List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
 
     for (int i = 0; i < ms1RtList.size(); i++) {
@@ -79,7 +78,8 @@ public class DDAParser extends BaseParser {
           .filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
       if (ms2IndexRes.isPresent()) {
         BlockIndex ms2Index = ms2IndexRes.get();
-        TreeMap<Float, Spectrum> ms2Map = parseBlock(raf, ms2Index);
+        TreeMap<Float, Spectrum<double[]>> ms2Map = getSpectra(ms2Index.getStartPtr(),
+            ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts());
         List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
         List<DDAMs> ms2List = new ArrayList<>();
         for (int j = 0; j < ms2RtList.size(); j++) {
@@ -91,7 +91,6 @@ public class DDAParser extends BaseParser {
       }
       ms1List.add(ms1);
     }
-    FileUtil.close(raf);
     return ms1List;
   }
 }

@@ -18,11 +18,10 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.List;
 import java.util.TreeMap;
+import lombok.Data;
 import net.csibio.aird.bean.AirdInfo;
-import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.bean.common.SpectrumF;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.bytes.Zlib;
@@ -32,11 +31,11 @@ import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
 import net.csibio.aird.util.FileUtil;
-import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Base Parser
  */
+@Data
 public abstract class BaseParser {
 
   /**
@@ -68,6 +67,11 @@ public abstract class BaseParser {
    * the m/z precision
    */
   public double mzPrecision;
+
+  /**
+   * the intensity precision
+   */
+  public double intPrecision;
 
   /**
    * Acquisition Method Type Supported by Aird
@@ -109,6 +113,7 @@ public abstract class BaseParser {
     mzCompressor = getMzCompressor(airdInfo.getCompressors());
     intCompressor = getIntCompressor(airdInfo.getCompressors());
     mzPrecision = mzCompressor.getPrecision();
+    intPrecision = intCompressor.getPrecision();
     type = airdInfo.getType();
   }
 
@@ -134,6 +139,7 @@ public abstract class BaseParser {
     mzCompressor = getMzCompressor(airdInfo.getCompressors());
     intCompressor = getIntCompressor(airdInfo.getCompressors());
     mzPrecision = mzCompressor.getPrecision();
+    intPrecision = intCompressor.getPrecision();
     type = airdInfo.getType();
   }
 
@@ -194,81 +200,139 @@ public abstract class BaseParser {
   }
 
   /**
-   * 根据特定BlockIndex取出对应TreeMap
+   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+   * <p>
+   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+   * will not close the RAF object directly after using it. Users need to close the object manually
+   * after using the diaparser object
    *
-   * @param raf        the random access file reader
-   * @param blockIndex the block index read from the index file
-   * @return 解码内容, key为rt, value为光谱中的键值对
-   * @throws Exception 读取文件异常
+   * @param start      起始指针位置 start point
+   * @param end        结束指针位置 end point
+   * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
+   * @param mzOffsets  mz块的大小列表 the mz block size list
+   * @param intOffsets intensity块的大小列表 the intensity block size list
+   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
    */
-  public TreeMap<Float, Spectrum> parseBlock(RandomAccessFile raf, BlockIndex blockIndex)
-      throws Exception {
-    TreeMap<Float, Spectrum> map = new TreeMap<>();
-    List<Float> rts = blockIndex.getRts();
+  public TreeMap<Float, Spectrum<double[]>> getSpectra(long start, long end, List<Float> rtList,
+      List<Integer> mzOffsets, List<Integer> intOffsets) {
 
-    raf.seek(blockIndex.getStartPtr());
-    long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
-    byte[] result = new byte[(int) delta];
+    TreeMap<Float, Spectrum<double[]>> map = new TreeMap<>();
+    try {
+      raf.seek(start);
+      long delta = end - start;
+      byte[] result = new byte[(int) delta];
+      raf.read(result);
 
-    raf.read(result);
-    List<Long> mzSizes = blockIndex.getMzs();
-    List<Long> intensitySizes = blockIndex.getInts();
-
-    int start = 0;
-    for (int i = 0; i < mzSizes.size(); i++) {
-      byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
-      start = start + mzSizes.get(i).intValue();
-      byte[] intensity = ArrayUtils.subarray(result, start,
-          start + intensitySizes.get(i).intValue());
-      start = start + intensitySizes.get(i).intValue();
-      try {
-        Spectrum pairs = new Spectrum(getMzValues(mz), getIntValues(intensity));
-        map.put(rts.get(i) / 60f, pairs);
-      } catch (Exception e) {
-        throw e;
+      int iter = 0;
+      for (int i = 0; i < rtList.size(); i++) {
+        map.put(rtList.get(i), getSpectrum(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+        iter = iter + mzOffsets.get(i) + intOffsets.get(i);
       }
+      return map;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
     }
-    return map;
   }
 
   /**
-   * 根据特定BlockIndex取出对应TreeMap
+   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+   * <p>
+   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+   * will not close the RAF object directly after using it. Users need to close the object manually
+   * after using the diaparser object
    *
-   * @param raf        the random access file reader
-   * @param blockIndex the block index read from the index file
-   * @return 解码内容, key为rt, value为光谱中的键值对
-   * @throws Exception 读取文件异常
+   * @param start      起始指针位置 start point
+   * @param end        结束指针位置 end point
+   * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
+   * @param mzOffsets  mz块的大小列表 the mz block size list
+   * @param intOffsets intensity块的大小列表 the intensity block size list
+   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
    */
-  public TreeMap<Float, SpectrumF> parseBlockAsFloat(RandomAccessFile raf, BlockIndex blockIndex)
-      throws Exception {
-    TreeMap<Float, SpectrumF> map = new TreeMap<>();
-    List<Float> rts = blockIndex.getRts();
+  public TreeMap<Float, Spectrum<float[]>> getSpectraAsFloat(long start, long end,
+      List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
 
-    raf.seek(blockIndex.getStartPtr());
-    long delta = blockIndex.getEndPtr() - blockIndex.getStartPtr();
-    byte[] result = new byte[(int) delta];
+    TreeMap<Float, Spectrum<float[]>> map = new TreeMap<>();
+    try {
+      raf.seek(start);
+      long delta = end - start;
+      byte[] result = new byte[(int) delta];
+      raf.read(result);
 
-    raf.read(result);
-    List<Long> mzSizes = blockIndex.getMzs();
-    List<Long> intensitySizes = blockIndex.getInts();
-
-    int start = 0;
-    for (int i = 0; i < mzSizes.size(); i++) {
-      byte[] mz = ArrayUtils.subarray(result, start, start + mzSizes.get(i).intValue());
-      start = start + mzSizes.get(i).intValue();
-      byte[] intensity = ArrayUtils.subarray(result, start,
-          start + intensitySizes.get(i).intValue());
-      start = start + intensitySizes.get(i).intValue();
-      try {
-        SpectrumF pairs = new SpectrumF(getMzValuesAsFloat(mz), getIntValues(intensity));
-        map.put(rts.get(i) / 60f, pairs);
-      } catch (Exception e) {
-        throw e;
+      int iter = 0;
+      for (int i = 0; i < rtList.size(); i++) {
+        map.put(rtList.get(i),
+            getSpectrumAsFloat(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+        iter = iter + mzOffsets.get(i) + intOffsets.get(i);
       }
+      return map;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
     }
-    return map;
   }
 
+  /**
+   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+   * <p>
+   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+   * will not close the RAF object directly after using it. Users need to close the object manually
+   * after using the diaparser object
+   *
+   * @param start      起始指针位置 start point
+   * @param end        结束指针位置 end point
+   * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
+   * @param mzOffsets  mz块的大小列表 the mz block size list
+   * @param intOffsets intensity块的大小列表 the intensity block size list
+   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
+   */
+  public TreeMap<Float, Spectrum<int[]>> getSpectraAsInteger(long start, long end,
+      List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
+
+    TreeMap<Float, Spectrum<int[]>> map = new TreeMap<>();
+    try {
+      raf.seek(start);
+      long delta = end - start;
+      byte[] result = new byte[(int) delta];
+      raf.read(result);
+
+      int iter = 0;
+      for (int i = 0; i < rtList.size(); i++) {
+        map.put(rtList.get(i),
+            getSpectrumAsInteger(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+        iter = iter + mzOffsets.get(i) + intOffsets.get(i);
+      }
+      return map;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
+    }
+  }
+
+  public Spectrum<double[]> getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
+    double[] mzArray = getMzs(bytes, offset, mzOffset);
+    offset = offset + mzOffset;
+    float[] intensityArray = getIntValues(bytes, offset, intOffset);
+    return new Spectrum<double[]>(mzArray, intensityArray);
+  }
+
+  public Spectrum<float[]> getSpectrumAsFloat(byte[] bytes, int offset, int mzOffset,
+      int intOffset) {
+
+    float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
+    offset = offset + mzOffset;
+    float[] intensityArray = getIntValues(bytes, offset, intOffset);
+    return new Spectrum<float[]>(mzArray, intensityArray);
+  }
+
+  public Spectrum<int[]> getSpectrumAsInteger(byte[] bytes, int offset, int mzOffset,
+      int intOffset) {
+
+    int[] mzArray = getMzsAsInteger(bytes, offset, mzOffset);
+    offset = offset + mzOffset;
+    float[] intensityArray = getIntValues(bytes, offset, intOffset);
+    return new Spectrum<int[]>(mzArray, intensityArray);
+  }
 
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
@@ -276,9 +340,20 @@ public abstract class BaseParser {
    * @param value 压缩后的数组
    * @return 解压缩后的数组
    */
-  public double[] getMzValues(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value));
+  public double[] getMzs(byte[] value) {
+    return getMzs(value, 0, value.length);
+  }
+
+  /**
+   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+   *
+   * @param value  压缩后的数组
+   * @param offset 起始位置
+   * @param length 读取长度
+   * @return 解压缩后的数组
+   */
+  public double[] getMzs(byte[] value, int offset, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, offset, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -295,68 +370,27 @@ public abstract class BaseParser {
     return doubleValues;
   }
 
+
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
    *
    * @param value 压缩后的数组
    * @return 解压缩后的数组
    */
-  public float[] getMzValuesAsFloat(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value));
-    byteBuffer.order(mzCompressor.fetchByteOrder());
-
-    IntBuffer ints = byteBuffer.asIntBuffer();
-    int[] intValues = new int[ints.capacity()];
-    for (int i = 0; i < ints.capacity(); i++) {
-      intValues[i] = ints.get(i);
-    }
-    intValues = FastPFor.decode(intValues);
-    float[] floats = new float[intValues.length];
-    for (int index = 0; index < intValues.length; index++) {
-      floats[index] = (float) (intValues[index] / mzPrecision);
-    }
-    byteBuffer.clear();
-    return floats;
+  public float[] getMzsAsFloat(byte[] value) {
+    return getMzsAsFloat(value, 0, value.length);
   }
 
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
    *
    * @param value  压缩后的数组
-   * @param start  起始位置
+   * @param offset 起始位置
    * @param length 读取长度
    * @return 解压缩后的数组
    */
-  public double[] getMzValues(byte[] value, int start, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, start, length));
-    byteBuffer.order(mzCompressor.fetchByteOrder());
-
-    IntBuffer ints = byteBuffer.asIntBuffer();
-    int[] intValues = new int[ints.capacity()];
-    for (int i = 0; i < ints.capacity(); i++) {
-      intValues[i] = ints.get(i);
-    }
-    intValues = FastPFor.decode(intValues);
-    double[] doubleValues = new double[intValues.length];
-    for (int index = 0; index < intValues.length; index++) {
-      doubleValues[index] = (float) intValues[index] / mzPrecision;
-    }
-    byteBuffer.clear();
-    return doubleValues;
-  }
-
-  /**
-   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-   *
-   * @param value  压缩后的数组
-   * @param start  起始位置
-   * @param length 读取长度
-   * @return 解压缩后的数组
-   */
-  public float[] getMzValuesAsFloat(byte[] value, int start, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
+  public float[] getMzsAsFloat(byte[] value, int offset, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, offset, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -379,9 +413,20 @@ public abstract class BaseParser {
    * @param value 加密的数组
    * @return 解压缩后的数组
    */
-  public int[] getMzValuesAsInteger(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value));
+  public int[] getMzsAsInteger(byte[] value) {
+    return getMzsAsInteger(value, 0, value.length);
+  }
+
+  /**
+   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
+   *
+   * @param value  压缩后的数组
+   * @param offset 起始位置
+   * @param length 读取长度
+   * @return 解压缩后的数组
+   */
+  public int[] getMzsAsInteger(byte[] value, int offset, int length) {
+    ByteBuffer byteBuffer = ByteBuffer.wrap(Zlib.decode(value, offset, length));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     IntBuffer ints = byteBuffer.asIntBuffer();
@@ -389,7 +434,6 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = FastPFor.decode(intValues);
     byteBuffer.clear();
     return intValues;
   }
@@ -459,19 +503,7 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public float[] getIntValues(byte[] value) {
-
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value));
-    byteBuffer.order(intCompressor.fetchByteOrder());
-
-    FloatBuffer intensities = byteBuffer.asFloatBuffer();
-    float[] intensityValues = new float[intensities.capacity()];
-    for (int i = 0; i < intensities.capacity(); i++) {
-      intensityValues[i] = intensities.get(i);
-    }
-
-    byteBuffer.clear();
-    return intensityValues;
+    return getIntValues(value, 0, value.length);
   }
 
   /**
@@ -495,52 +527,6 @@ public abstract class BaseParser {
 
     byteBuffer.clear();
     return intensityValues;
-  }
-
-  /**
-   * get mz values only for aird file
-   *
-   * @param value 压缩的数组
-   * @return 解压缩后的数组
-   */
-  public float[] getLogedIntValues(byte[] value) {
-
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value));
-    byteBuffer.order(intCompressor.fetchByteOrder());
-
-    FloatBuffer intensities = byteBuffer.asFloatBuffer();
-    float[] intValues = new float[intensities.capacity()];
-    for (int i = 0; i < intensities.capacity(); i++) {
-      intValues[i] = (float) Math.pow(10, intensities.get(i));
-    }
-
-    byteBuffer.clear();
-    return intValues;
-  }
-
-  /**
-   * get mz values only for aird file
-   *
-   * @param value  压缩的数组
-   * @param start  起始位置
-   * @param length 长度
-   * @return 解压缩后的数组
-   */
-  public float[] getLogedIntValues(byte[] value, int start, int length) {
-
-    ByteBuffer byteBuffer = ByteBuffer.wrap(
-        new ByteCompressor(CompressorType.Zlib).decode(value, start, length));
-    byteBuffer.order(intCompressor.fetchByteOrder());
-
-    FloatBuffer intensities = byteBuffer.asFloatBuffer();
-    float[] intValues = new float[intensities.capacity()];
-    for (int i = 0; i < intensities.capacity(); i++) {
-      intValues[i] = (float) Math.pow(10, intensities.get(i));
-    }
-
-    byteBuffer.clear();
-    return intValues;
   }
 
   /**

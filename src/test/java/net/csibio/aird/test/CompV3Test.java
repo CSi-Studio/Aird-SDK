@@ -36,8 +36,8 @@ public class CompV3Test {
     HashMap<Integer, AtomicLong> accumu = new HashMap<Integer, AtomicLong>();
     HashMap<Integer, AtomicLong> accumu2 = new HashMap<Integer, AtomicLong>();
     for (DDAMs ms1 : ms1List) {
-      Spectrum spectrum = ms1.getSpectrum();
-      double[] mzs = spectrum.mzs();
+      Spectrum<double[]> spectrum = ms1.getSpectrum();
+      double[] mzs = spectrum.getMzs();
       for (int i = 1; i < mzs.length; i++) {
         Integer delta = (int) (mzs[i] * mzPrecision) - (int) (mzs[i - 1] * mzPrecision);
         if (accumu.get(delta) == null) {
@@ -78,8 +78,8 @@ public class CompV3Test {
     AtomicLong totalFirst = new AtomicLong(0);
     AtomicLong totalSecond = new AtomicLong(0);
     ms1List.parallelStream().forEach(ms1 -> {
-      Spectrum spectrum = ms1.getSpectrum();
-      double[] mzs = spectrum.mzs();
+      Spectrum<double[]> spectrum = ms1.getSpectrum();
+      double[] mzs = spectrum.getMzs();
 
       totalMzs.getAndAdd(mzs.length);
 //      System.out.println("原始大小:" + mzs.length * 4 / KB + " bytes");
@@ -103,7 +103,7 @@ public class CompV3Test {
       totalFirst.getAndAdd(firstBytes.length);
       totalSecond.getAndAdd(secondBytes.length);
       totalNew.getAndAdd(firstBytes.length + secondBytes.length);
-      totalZdpd.getAndAdd(XDPD.encode(spectrum.mzs(), mzPrecision, Zlib).length);
+      totalZdpd.getAndAdd(XDPD.encode(spectrum.getMzs(), mzPrecision, Zlib).length);
     });
 
     System.out.println("total:" + totalMzs.get());
@@ -140,9 +140,9 @@ public class CompV3Test {
     List<DDAMs> ms1List = parser.readAllToMemory();
     System.out.println("开始压缩数据,总计光谱:" + airdInfo.getTotalScanCount());
     ms1List.parallelStream().forEach(ms1 -> {
-      Spectrum spectrum = ms1.getSpectrum();
-      byte[] mzBytes = ByteTrans.floatToByte(ByteTrans.doubleToFloat(spectrum.mzs()));
-      byte[] intBytes = ByteTrans.floatToByte(spectrum.ints());
+      Spectrum<double[]> spectrum = ms1.getSpectrum();
+      byte[] mzBytes = ByteTrans.floatToByte(ByteTrans.doubleToFloat(spectrum.getMzs()));
+      byte[] intBytes = ByteTrans.floatToByte(spectrum.getInts());
 
       mzOri.getAndAdd(mzBytes.length);
       intOri.getAndAdd(intBytes.length);
@@ -154,7 +154,7 @@ public class CompV3Test {
         intMap.get(value.name()).getAndAdd(intCompBytes.length);
       });
 
-      mzMap.get("ZDPD").getAndAdd(XDPD.encode(spectrum.mzs(), mzPrecision, Zlib).length);
+      mzMap.get("ZDPD").getAndAdd(XDPD.encode(spectrum.getMzs(), mzPrecision, Zlib).length);
       process.getAndIncrement();
       if (process.get() % 100 == 0) {
         System.out.println("当前进度:" + process.get());

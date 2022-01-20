@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import net.csibio.aird.bean.Layers;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.bytes.Zlib;
+import net.csibio.aird.compressor.ints.FastPFor;
 import org.apache.commons.math3.util.FastMath;
 
 /**
@@ -68,8 +71,8 @@ public class StackCompressUtil {
     }
     //数组用fastPFor压缩，index用zlib压缩，并记录层数
     Layers layers = new Layers();
-    layers.setMzArray(CompressUtil.transToByte(CompressUtil.fastPforEncoder(stackArr)));
-    layers.setTagArray(CompressUtil.zlibEncoder(indexShift));
+    layers.setMzArray(ByteTrans.intToByte(FastPFor.encode(stackArr)));
+    layers.setTagArray(Zlib.encode(indexShift));
     layers.setDigit(digit);
     return layers;
   }
@@ -81,9 +84,9 @@ public class StackCompressUtil {
    * @return decompressed mzArray
    */
   public static List<int[]> stackDecode(Layers layers) {
-    int[] stackArr = CompressUtil.fastPforDecoder(CompressUtil.transToInteger(layers.getMzArray()));
+    int[] stackArr = FastPFor.decode(ByteTrans.byteToInt(layers.getMzArray()));
     int[] stackIndex = new int[stackArr.length];
-    byte[] indexShift = CompressUtil.zlibDecoder(layers.getTagArray());
+    byte[] indexShift = Zlib.decode(layers.getTagArray());
     int digit = layers.getDigit();
     //拆分byte为8个bit，并分别存储
     byte[] value = new byte[8 * indexShift.length];

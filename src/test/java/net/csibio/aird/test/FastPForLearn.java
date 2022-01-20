@@ -11,7 +11,7 @@
 package net.csibio.aird.test;
 
 import java.util.Random;
-import net.csibio.aird.util.CompressUtil;
+import net.csibio.aird.compressor.ints.FastPFor;
 
 /**
  * Test Code for fastpfor
@@ -31,8 +31,8 @@ public class FastPForLearn {
       finalTest[i + 900] = test2[i];
     }
 
-    int[] newTest = CompressUtil.fastPforEncoder(test);
-    int[] oldTest = CompressUtil.fastPforDecoder(newTest);
+    int[] newTest = FastPFor.encode(test);
+    int[] oldTest = FastPFor.decode(newTest);
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 

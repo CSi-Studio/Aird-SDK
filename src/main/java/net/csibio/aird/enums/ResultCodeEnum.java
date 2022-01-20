@@ -29,6 +29,7 @@ public enum ResultCodeEnum implements Serializable {
   NOT_AIRD_INDEX_FILE("THIS_FILE_IS_NOT_AIRD_INDEX_FILE", "该文件不是AIRD索引文件"),
   AIRD_INDEX_FILE_PARSE_ERROR("AIRD_INDEX_FILE_PARSE_ERROR", "索引文件解析失败"),
   AIRD_FILE_PARSE_ERROR("AIRD_FILE_PARSE_ERROR", "Aird文件解析失败"),
+  BLOCK_PARSE_ERROR("BLOCK_PARSE_ERROR", "Block解析失败"),
 
   ;
 

@@ -51,15 +51,15 @@ public class SizeTest {
     for (int k = 17; k < 18; k++) {
       BlockIndex index = indexList.get(k);
       long start = System.currentTimeMillis();
-      TreeMap<Float, Spectrum> spectrumMap = diaParser.getSpectrums(index);
+      TreeMap<Float, Spectrum<double[]>> spectrumMap = diaParser.getSpectra(index);
       System.out.println("Parse耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
-      List<Spectrum> spectrumList = spectrumMap.values().stream().toList();
+      List<Spectrum<double[]>> spectrumList = spectrumMap.values().stream().toList();
       spectrumSize.getAndAdd(spectrumList.size());
       System.out.println("当前block中spectrum数目:" + spectrumList.size());
       spectrumList.parallelStream().forEach(spectrum -> {
 
-        byte[] mzBytes = ByteTrans.floatToByte(ByteTrans.doubleToFloat(spectrum.mzs()));
-        byte[] intBytes = ByteTrans.floatToByte(spectrum.ints());
+        byte[] mzBytes = ByteTrans.floatToByte(ByteTrans.doubleToFloat(spectrum.getMzs()));
+        byte[] intBytes = ByteTrans.floatToByte(spectrum.getInts());
 
         mzOri.getAndAdd(mzBytes.length);
         intOri.getAndAdd(intBytes.length);
@@ -72,11 +72,11 @@ public class SizeTest {
         }
 
         mzMap.get("ZDPD").getAndAdd(
-            XDPD.encode(spectrum.mzs(), precision, CompressorType.Zlib).length);
+            XDPD.encode(spectrum.getMzs(), precision, CompressorType.Zlib).length);
         mzMap.get("BDPD").getAndAdd(
-            XDPD.encode(spectrum.mzs(), precision, CompressorType.Brotli).length);
+            XDPD.encode(spectrum.getMzs(), precision, CompressorType.Brotli).length);
         mzMap.get("SDPD").getAndAdd(
-            XDPD.encode(spectrum.mzs(), precision, CompressorType.Snappy).length);
+            XDPD.encode(spectrum.getMzs(), precision, CompressorType.Snappy).length);
       });
       System.out.println("当前处理:" + k + "/" + indexList.size());
     }

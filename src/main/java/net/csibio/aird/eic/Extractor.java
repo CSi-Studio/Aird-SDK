@@ -30,10 +30,10 @@ public class Extractor {
    * @param mzEnd    target mz end
    * @return the intensity sum as extractor result
    */
-  public static float accumulation(Spectrum spectrum, Float mzStart, Float mzEnd) {
+  public static float accumulation(Spectrum<float[]> spectrum, Float mzStart, Float mzEnd) {
 
-    double[] mzArray = spectrum.mzs();
-    float[] intensityArray = spectrum.ints();
+    float[] mzArray = spectrum.getMzs();
+    float[] intensityArray = spectrum.getInts();
 
     float result = 0f;
     try {
@@ -64,7 +64,7 @@ public class Extractor {
    * @param mzWindow      mz搜索宽度,一般为0.05或者0.03
    * @return 每一个目标m/z在各个原始数据队列中的intensity累加值,阵列大小为n*m
    */
-  public static float[][] accumulationWithGPU(List<Spectrum> pairsList,
+  public static float[][] accumulationWithGPU(List<Spectrum<float[]>> pairsList,
       float[] targetMzArray, float mzWindow) {
     float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
     //每一个批次处理的光谱数
@@ -74,7 +74,7 @@ public class Extractor {
     int delta = countInBatch - pairsList.size() % countInBatch;
     if (delta != countInBatch) {
       for (int k = 0; k < delta; k++) {
-        pairsList.add(new Spectrum(new double[0], new float[0]));
+        pairsList.add(new Spectrum<float[]>(new float[0], new float[0]));
       }
     }
 
