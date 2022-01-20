@@ -10,38 +10,68 @@
 
 package net.csibio.aird.bean;
 
-import lombok.Data;
-
 import java.io.Serializable;
 import java.util.List;
+import lombok.Data;
 
+/**
+ * every sycle mean ms1 spectrum with related ms2 spectra
+ *
+ * @deprecated use DDAMs instead
+ */
+@Deprecated
 @Data
 public class MsCycle implements Serializable {
 
-    private static final long serialVersionUID = -123L;
+  private static final long serialVersionUID = -123L;
+  
+  /**
+   * Retention Time, unit: minutes
+   */
+  Double rt;
 
-    /**
-     * Retention Time
-     */
-    double rt;
+  /**
+   * Retention Time Index, used for some specific scene
+   */
+  Double ri;
 
-    /**
-     * Retention Time Index
-     */
-    double ri;
+  /**
+   * the tic data for ms1
+   */
+  Long tic;
 
-    /**
-     * the ms1 spectrum data pairs
-     */
-    MzIntensityPairs ms1Spectrum;
+  /**
+   * cvList for ms1 scan
+   */
+  List<CV> cvList;
 
-    /**
-     * MS2的RT沿用MS1
-     */
-    List<WindowRange> rangeList;
+  /**
+   * the ms1 spectrum data pairs
+   */
+  MzIntensityPairs ms1Spectrum;
 
-    //MS2的RT时间列表
-    List<Float> rts;
+  /**
+   * the window range for ms2
+   */
+  List<WindowRange> rangeList;
 
-    List<MzIntensityPairs> ms2Spectrums;
+  /**
+   * the rt list for ms2
+   */
+  List<Float> rts;
+
+  /**
+   * the tic list for related ms2
+   */
+  List<Long> tics;
+
+  /**
+   * the cv list for related ms2
+   */
+  List<List<CV>> ms2CvList;
+
+  /**
+   * the related ms2 spectrums
+   */
+  List<MzIntensityPairs> ms2Spectrums;
 }

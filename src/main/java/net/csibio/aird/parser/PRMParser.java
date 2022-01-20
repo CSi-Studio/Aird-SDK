@@ -10,14 +10,26 @@
 
 package net.csibio.aird.parser;
 
+import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.exception.ScanException;
 
 /**
- * @see DIAParser
- * PRM Parser now can be replaced by DIA Parser because the have the same inner logic for spectra storage.
+ * @see DIAParser PRM Parser now can be replaced by DIA Parser because the have the same inner logic
+ * for spectra storage.
  */
 public class PRMParser extends DIAParser {
-    public PRMParser(String indexFilePath) throws ScanException {
-        super(indexFilePath);
-    }
+
+  /**
+   * 构造函数
+   *
+   * @param indexFilePath index file path
+   * @throws ScanException scan exception
+   */
+  public PRMParser(String indexFilePath) throws ScanException {
+    super(indexFilePath);
+  }
+
+  public PRMParser(String indexFilePath, AirdInfo airdInfo) throws ScanException {
+    super(indexFilePath, airdInfo);
+  }
 }
