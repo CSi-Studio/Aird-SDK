@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.TreeMap;
 import net.csibio.aird.AirdManager;
 import net.csibio.aird.bean.AirdInfo;
-import net.csibio.aird.bean.MzIntensityPairs;
-import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.AirdScanUtil;
 
 /**

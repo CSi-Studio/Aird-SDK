@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
-import net.csibio.aird.bean.MzIntensityPairs;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -81,7 +80,8 @@ public class XIC {
    * @param mzWindow  目标窗口
    * @return 目标值结果
    */
-  public static float[] lowerBoundWithGPU(List<MzIntensityPairs> pairsList, float[] targets,
+  public static float[] lowerBoundWithGPU(List<net.csibio.aird.bean.common.Spectrum> pairsList,
+      float[] targets,
       float mzWindow) {
 
     int countInBatch = pairsList.size();
@@ -93,18 +93,18 @@ public class XIC {
 
     List<Spectrum> paramsList = new ArrayList<>();
     for (int i = 0; i < countInBatch; i++) {
-      double[] mzArray = pairsList.get(i).getMzArray();
+      double[] mzArray = pairsList.get(i).mzs();
       if (mzArray.length == 0) {
         paramsList.add(null);
       } else {
         paramsList.add(new Spectrum(
             clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * pairsList.get(i).getMzArray().length,
-                Pointer.to(pairsList.get(i).getMzArray()), null),
+                Sizeof.cl_float * pairsList.get(i).mzs().length,
+                Pointer.to(pairsList.get(i).mzs()), null),
             clCreateBuffer(context, CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR,
-                Sizeof.cl_float * pairsList.get(i).getIntensityArray().length,
-                Pointer.to(pairsList.get(i).getIntensityArray()), null),
-            pairsList.get(i).getMzArray().length));
+                Sizeof.cl_float * pairsList.get(i).ints().length,
+                Pointer.to(pairsList.get(i).ints()), null),
+            pairsList.get(i).mzs().length));
       }
     }
 

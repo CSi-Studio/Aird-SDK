@@ -15,7 +15,6 @@ import java.util.List;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.MzIntensityPairs;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.FileUtil;
 

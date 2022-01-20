@@ -13,7 +13,7 @@ import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.ints.XDPD;
-import net.csibio.aird.parser.v2.DIAParser;
+import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
 
 public class SizeTest {

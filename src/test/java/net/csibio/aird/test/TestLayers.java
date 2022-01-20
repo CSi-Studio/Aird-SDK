@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Layers;
-import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.CompressUtil;
 import net.csibio.aird.util.StackCompressUtil;
 

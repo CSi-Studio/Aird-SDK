@@ -11,7 +11,7 @@
 package net.csibio.aird.eic;
 
 import java.util.List;
-import net.csibio.aird.bean.MzIntensityPairs;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.opencl.XIC;
 
 /**
@@ -25,15 +25,15 @@ public class Extractor {
    * Index for mzEnd in pairs.mzArray, then accumulate the intensity from the LowBoundIndex to
    * HighBoundIndex
    *
-   * @param pairs   mzArray is an ordered array
-   * @param mzStart target mz start
-   * @param mzEnd   target mz end
+   * @param spectrum mzArray is an ordered array
+   * @param mzStart  target mz start
+   * @param mzEnd    target mz end
    * @return the intensity sum as extractor result
    */
-  public static float accumulation(MzIntensityPairs pairs, Float mzStart, Float mzEnd) {
+  public static float accumulation(Spectrum spectrum, Float mzStart, Float mzEnd) {
 
-    double[] mzArray = pairs.getMzArray();
-    float[] intensityArray = pairs.getIntensityArray();
+    double[] mzArray = spectrum.mzs();
+    float[] intensityArray = spectrum.ints();
 
     float result = 0f;
     try {
@@ -64,7 +64,7 @@ public class Extractor {
    * @param mzWindow      mz搜索宽度,一般为0.05或者0.03
    * @return 每一个目标m/z在各个原始数据队列中的intensity累加值,阵列大小为n*m
    */
-  public static float[][] accumulationWithGPU(List<MzIntensityPairs> pairsList,
+  public static float[][] accumulationWithGPU(List<Spectrum> pairsList,
       float[] targetMzArray, float mzWindow) {
     float[][] resMatrix = new float[pairsList.size()][targetMzArray.length];
     //每一个批次处理的光谱数
@@ -74,7 +74,7 @@ public class Extractor {
     int delta = countInBatch - pairsList.size() % countInBatch;
     if (delta != countInBatch) {
       for (int k = 0; k < delta; k++) {
-        pairsList.add(new MzIntensityPairs(new double[0], new float[0]));
+        pairsList.add(new Spectrum(new double[0], new float[0]));
       }
     }
 

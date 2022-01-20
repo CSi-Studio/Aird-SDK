@@ -24,7 +24,7 @@ import net.csibio.aird.compressor.ints.FastPFor;
 import net.csibio.aird.compressor.ints.XDPD;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.parser.DDAParser;
-import net.csibio.aird.parser.v2.DIAParser;
+import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.ArrayUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
