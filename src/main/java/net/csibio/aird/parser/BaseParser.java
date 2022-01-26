@@ -25,7 +25,7 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.bytes.Zlib;
-import net.csibio.aird.compressor.ints.FastPFor;
+import net.csibio.aird.compressor.ints.BinaryPack;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
@@ -361,7 +361,7 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = FastPFor.decode(intValues);
+    intValues = BinaryPack.decode(intValues);
     double[] doubleValues = new double[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
       doubleValues[index] = intValues[index] / mzPrecision;
@@ -398,7 +398,7 @@ public abstract class BaseParser {
     for (int i = 0; i < ints.capacity(); i++) {
       intValues[i] = ints.get(i);
     }
-    intValues = FastPFor.decode(intValues);
+    intValues = BinaryPack.decode(intValues);
     float[] floats = new float[intValues.length];
     for (int index = 0; index < intValues.length; index++) {
       floats[index] = (float) (intValues[index] / mzPrecision);

@@ -5,17 +5,11 @@ import me.lemire.integercompression.IntWrapper;
 import me.lemire.integercompression.differential.IntegratedBinaryPacking;
 import me.lemire.integercompression.differential.IntegratedVariableByte;
 import me.lemire.integercompression.differential.SkippableIntegratedComposition;
-import net.csibio.aird.bean.Compressor;
 
-public class FastPFor {
-
-  public static int[] encode(float[] sortedFloats, Compressor compressor) {
-    int[] sortedIns = new int[sortedFloats.length];
-    for (int i = 0; i < sortedFloats.length; i++) {
-      sortedIns[i] = (int) (compressor.getPrecision() * sortedFloats[i]);
-    }
-    return sortedIns;
-  }
+/**
+ * 入参必须是有序数组,经过SIMD优化的算法
+ */
+public class BinaryPack {
 
   /**
    * compress the data with fastpfor algorithm
@@ -50,10 +44,10 @@ public class FastPFor {
     // output vector should be large enough...
     int[] recovered = new int[size];
     IntWrapper inPoso = new IntWrapper(1);
-    IntWrapper outPoso = new IntWrapper(0);
+    IntWrapper initValue = new IntWrapper(0);
     IntWrapper recoffset = new IntWrapper(0);
     codec.headlessUncompress(compressedInts, inPoso, compressedInts.length, recovered, recoffset,
-        size, outPoso);
+        size, initValue);
 
     return recovered;
   }

@@ -7,7 +7,7 @@ import net.csibio.aird.util.FileUtil;
 
 public class Zlib {
 
-  static int BUFFER_SIZE = 10240;
+  static int BUFFER_SIZE = 2048;
 
   public static byte[] encode(byte[] input) {
     Deflater compressor = new Deflater();
@@ -42,7 +42,7 @@ public class Zlib {
     inflater.setInput(input, offset, length);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(length);
     try {
-      byte[] buffer = new byte[BUFFER_SIZE];
+      byte[] buffer = new byte[10240];
       while (!inflater.finished()) {
         int count = inflater.inflate(buffer);
         outputStream.write(buffer, 0, count);

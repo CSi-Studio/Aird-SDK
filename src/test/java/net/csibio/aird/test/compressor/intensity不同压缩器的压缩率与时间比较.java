@@ -20,8 +20,7 @@ import net.csibio.aird.compressor.bytes.LZ4;
 import net.csibio.aird.compressor.bytes.Snappier;
 import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
-import net.csibio.aird.compressor.ints.FastPFor;
-import net.csibio.aird.compressor.ints.XDPD;
+import net.csibio.aird.compressor.ints.XVByte;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.parser.DIAParser;
@@ -30,21 +29,30 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xerial.snappy.BitShuffle;
 
-public class CompressorDIATest {
+public class intensity不同压缩器的压缩率与时间比较 {
 
   static HashMap<String, String> fileMap = new HashMap<>();
   static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
   static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
-  static int MB = 1024 * 1024;
-  static int KB = 1024;
+  static float MB = 1024 * 1024f;
+  static float KB = 1024f;
 
   @BeforeClass
   public static void init() throws Exception {
-    initFile("File-DIA-HYE-A",
-        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_008.json",
+
+    initFile("File-DIA-Raw-zero",
+        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
         AirdType.DIA_SWATH,
         16);
+    initFile("File-DIA-WIFF-zero",
+        "C:\\napedro_L120224_001_SW_with_zero.json",
+        AirdType.DIA_SWATH,
+        16);
+    initFile("File-DIA-WIFF-no-zero",
+        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
+        AirdType.DIA_SWATH,
+        20);
     initFile("File-DDA-Raw",
         "D:\\Aird_Test\\SA1_6_with_zero.json",
         AirdType.DDA,
@@ -58,15 +66,15 @@ public class CompressorDIATest {
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
       throws Exception {
     long start = System.currentTimeMillis();
-    System.out.println("开始初始化数据");
     fileMap.put(name, indexPath);
     List<Spectrum<float[]>> spectrumList = Collections.synchronizedList(new ArrayList<>());
-    double precision = 0;
+    double precision = 10;
 
     switch (type) {
       case DIA_SWATH -> {
         DIAParser parser = new DIAParser(indexPath);
-        precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_MZ).getPrecision();
+        precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_INTENSITY)
+            .getPrecision();
 
         AirdInfo airdInfo = parser.getAirdInfo();
         List<BlockIndex> indexList = airdInfo.getIndexList();
@@ -84,7 +92,8 @@ public class CompressorDIATest {
       }
       case DDA -> {
         DDAParser parser = new DDAParser(indexPath);
-        precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_MZ).getPrecision();
+        precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_INTENSITY)
+            .getPrecision();
         List<DDAMs> ms1List = parser.readAllToMemory();
         ms1List.forEach(ms1 -> {
           spectrumList.add(ArrayUtil.trans(ms1.getSpectrum()));
@@ -101,16 +110,16 @@ public class CompressorDIATest {
     List<byte[]> bytesList = new ArrayList<>();
     List<int[]> intsList = new ArrayList<>();
     for (int i = 0; i < spectrumList.size(); i++) {
-      bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).getMzs()));
-      int[] ints = new int[spectrumList.get(i).getMzs().length];
-      for (int j = 0; j < spectrumList.get(i).getMzs().length; j++) {
-        ints[j] = (int) (spectrumList.get(i).getMzs()[j] * precision);
+      bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).getInts()));
+      int[] ints = new int[spectrumList.get(i).getInts().length];
+      for (int j = 0; j < spectrumList.get(i).getInts().length; j++) {
+        ints[j] = (int) (spectrumList.get(i).getInts()[j] * 10);
       }
       intsList.add(ints);
     }
     spectrumIntsMap.put(name, intsList);
     spectrumBytesMap.put(name, bytesList);
-    System.out.println("数据初始化完毕,耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
+    System.out.println("初始化" + name + "完毕,耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
   }
 
   @Test
@@ -128,23 +137,31 @@ public class CompressorDIATest {
       bytesList.parallelStream().forEach(bytes -> {
         originSize.getAndAdd(bytes.length);
       });
-      System.out.println("原始大小:" + originSize.get() / MB + "M");
+      int realSize = (int) (originSize.get() / MB);
+      System.out.println("原始大小:" + realSize + "M");
 
       test_zlib(bytesList);
       test_brotli(bytesList);
       test_gzip(bytesList);
       test_snappy(intsList);
       test_zstd(bytesList);
-      test_lz4(bytesList);
-      test_fastpfor(intsList);
-      System.out.println("");
-      test_xdpd_zlib(intsList);
-      test_xdpd_brotli(intsList);
-      test_xdpd_gzip(intsList);
-      test_xdpd_snappy(intsList);
-      test_xdpd_zstd(intsList);
-      test_xdpd_lz4(intsList);
-
+//      test_lz4(bytesList);
+//      test_fastpfor(intsList);
+//      test_fastpfor2(intsList);
+//      System.out.println("");
+//      test_xdpd_zlib(intsList);
+//      test_xdpd_brotli(intsList);
+//      test_xdpd_gzip(intsList);
+//      test_xdpd_snappy(intsList);
+//      test_xdpd_zstd(intsList);
+//      test_xdpd_lz4(intsList);
+//      System.out.println("");
+      test_xdpd2_zlib(intsList);
+      test_xdpd2_brotli(intsList);
+      test_xdpd2_gzip(intsList);
+      test_xdpd2_snappy(intsList);
+      test_xdpd2_zstd(intsList);
+//      test_xdpd2_lz4(intsList);
 //      test_LZMA2(bytesList);
     });
   }
@@ -215,101 +232,107 @@ public class CompressorDIATest {
             + "M");
   }
 
-  //Test for LZ4
-  private void test_lz4(List<byte[]> bytesList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(ZSTD.encode(bytes).length);
-    });
-    System.out.println(
-        "LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
-
-  //Test for FastPFOR
-  private void test_fastpfor(List<int[]> intsList) {
+  //Test for XDPD2-Zlib
+  private void test_xdpd2_zlib(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(FastPFor.encode(ints).length * 4L);
+//      int[] newInts = Xor.xor(ints);
+      byte[] bytes = XVByte.encode(ints);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes);
+//      Xor.inverseXor(sortedInts);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      if (!isSame) {
+        System.out.println("Nani");
+      }
+      assert isSame;
     });
     System.out.println(
-        "FastPFOR:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDPD2-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-Zlib
-  private void test_xdpd_zlib(List<int[]> intsList) {
+  //Test for XDPD2-Gzip
+  private void test_xdpd2_gzip(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Zlib).length);
+      byte[] bytes = XVByte.encode(ints, CompressorType.Gzip);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes, CompressorType.Gzip);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      assert isSame;
     });
     System.out.println(
-        "XDPD-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDPD2-Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-Gzip
-  private void test_xdpd_gzip(List<int[]> intsList) {
+  //Test for XDPD2-Brotli
+  private void test_xdpd2_brotli(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Gzip).length);
+      byte[] bytes = XVByte.encode(ints, CompressorType.Brotli);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes, CompressorType.Brotli);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      assert isSame;
     });
     System.out.println(
-        "XDPD-Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "ZDPD2-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-Brotli
-  private void test_xdpd_brotli(List<int[]> intsList) {
+  //Test for XDPD2-Snappy
+  private void test_xdpd2_snappy(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Brotli).length);
+      byte[] bytes = XVByte.encode(ints, CompressorType.Snappy);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes, CompressorType.Snappy);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      assert isSame;
     });
     System.out.println(
-        "ZDPD-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "ZDPD2-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-Snappy
-  private void test_xdpd_snappy(List<int[]> intsList) {
+  //Test for XDPD2-ZSTD
+  private void test_xdpd2_zstd(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Snappy).length);
+      byte[] bytes = XVByte.encode(ints, CompressorType.ZSTD);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes, CompressorType.ZSTD);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      assert isSame;
     });
     System.out.println(
-        "ZDPD-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "ZDPD2-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-ZSTD
-  private void test_xdpd_zstd(List<int[]> intsList) {
+  //Test for XDPD2-LZ4
+  private void test_xdpd2_lz4(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.ZSTD).length);
+      byte[] bytes = XVByte.encode(ints, CompressorType.LZ4);
+      compressedSize.getAndAdd(bytes.length);
+      int[] sortedInts = XVByte.decode(bytes, CompressorType.LZ4);
+      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      assert isSame;
     });
     System.out.println(
-        "ZDPD-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "ZDPD2-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
-  //Test for XDPD-LZ4
-  private void test_xdpd_lz4(List<int[]> intsList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.LZ4).length);
-    });
-    System.out.println(
-        "ZDPD-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
 
   //Test for LZMA2
   private void test_LZMA2(List<byte[]> bytesList) {
