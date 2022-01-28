@@ -42,17 +42,17 @@ public class CompressorDIATest {
   @BeforeClass
   public static void init() throws Exception {
     initFile("File-DIA-HYE-A",
-        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_008.json",
+        "D:\\proteomics\\Project\\HYE_110_64fix\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
         AirdType.DIA_SWATH,
         16);
-    initFile("File-DDA-Raw",
-        "D:\\Aird_Test\\SA1_6_with_zero.json",
-        AirdType.DDA,
-        -1);
-    initFile("File-DDA-Wiff",
-        "D:\\Aird_Test\\SampleA_1_with_zero.json",
-        AirdType.DDA,
-        -1);
+//    initFile("File-DDA-Raw",
+//        "D:\\Aird_Test\\SA1_6_with_zero.json",
+//        AirdType.DDA,
+//        -1);
+//    initFile("File-DDA-Wiff",
+//        "D:\\Aird_Test\\SampleA_1_with_zero.json",
+//        AirdType.DDA,
+//        -1);
   }
 
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
