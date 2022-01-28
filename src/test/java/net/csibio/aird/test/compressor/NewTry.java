@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.compressor.ints.IntegratedXVByte;
 import net.csibio.aird.compressor.ints.XDPD;
-import net.csibio.aird.compressor.ints.XVByte;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
 
@@ -64,9 +64,9 @@ public class NewTry {
         right[i] = ints[i] - left[i] * 1000;
       }
 
-      byte[] leftBytes = XVByte.encode(left, CompressorType.Zlib);
+      byte[] leftBytes = IntegratedXVByte.encode(left, CompressorType.Zlib);
       compressedSize.getAndAdd(leftBytes.length);
-      byte[] rightBytes = XVByte.encode(right, CompressorType.Zlib);
+      byte[] rightBytes = IntegratedXVByte.encode(right, CompressorType.Zlib);
       compressedSize.getAndAdd(rightBytes.length);
 
 //      double[] leftDouble = XPFor.decode(leftBytes, 1, CompressorType.Zlib, new FastPFOR(),
@@ -100,7 +100,7 @@ public class NewTry {
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
       compressedSize.getAndAdd(
-          XVByte.encode(ints, CompressorType.Zlib).length);
+          IntegratedXVByte.encode(ints, CompressorType.Zlib).length);
     });
     System.out.println(
         "XDPD2-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB

@@ -1,7 +1,9 @@
 package net.csibio.aird.compressor.ints;
 
-import me.lemire.integercompression.differential.IntegratedIntCompressor;
-import me.lemire.integercompression.differential.IntegratedVariableByte;
+import me.lemire.integercompression.BinaryPacking;
+import me.lemire.integercompression.IntCompressor;
+import me.lemire.integercompression.SkippableComposition;
+import me.lemire.integercompression.VariableByte;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
@@ -9,35 +11,37 @@ import net.csibio.aird.compressor.CompressorType;
 public class XVByte {
 
   /**
-   * XDPD Encoder, default byte compressor is Zlib
+   * VByte+ByteCompressor Encoder. Default ByteCompressor is Zlib. The compress target must be
+   * integers.
    *
-   * @param sortedInts the sorted integers
+   * @param ints the integers array
    * @return the compressed data
    */
-  public static byte[] encode(int[] sortedInts) {
-    return encode(sortedInts, CompressorType.Zlib);
+  public static byte[] encode(int[] ints) {
+    return encode(ints, CompressorType.Zlib);
   }
 
   /**
    * ZDPD Encoder
    *
-   * @param sortedInts the sorted integers
+   * @param ints the integers array
    * @return the compressed data
    */
-  public static byte[] encode(int[] sortedInts, CompressorType byteCompType) {
-    int[] compressedInts = new IntegratedIntCompressor(new IntegratedVariableByte()).compress(
-        sortedInts);
+  public static byte[] encode(int[] ints, CompressorType byteCompType) {
+    int[] compressedInts = new IntCompressor(
+        new SkippableComposition(new BinaryPacking(), new VariableByte())).compress(
+        ints);
     byte[] bytes = ByteTrans.intToByte(compressedInts);
     return new ByteCompressor(byteCompType).encode(bytes);
   }
 
-  public static byte[] encode(double[] sortedFloats, double precision,
+  public static byte[] encode(double[] floats, double precision,
       CompressorType compType) {
-    int[] sortedInts = new int[sortedFloats.length];
-    for (int i = 0; i < sortedFloats.length; i++) {
-      sortedInts[i] = (int) (precision * sortedFloats[i]);
+    int[] ints = new int[floats.length];
+    for (int i = 0; i < floats.length; i++) {
+      ints[i] = (int) (precision * floats[i]);
     }
-    return encode(sortedInts, compType);
+    return encode(ints, compType);
   }
 
   public static int[] decode(byte[] bytes) {
@@ -47,8 +51,8 @@ public class XVByte {
   public static int[] decode(byte[] bytes, CompressorType type) {
     byte[] decodeBytes = new ByteCompressor(type).decode(bytes);
     int[] zipInts = ByteTrans.byteToInt(decodeBytes);
-    int[] sortedInts = new IntegratedIntCompressor(new IntegratedVariableByte()).uncompress(
-        zipInts);
-    return sortedInts;
+    int[] ints = new IntCompressor(
+        new SkippableComposition(new BinaryPacking(), new VariableByte())).uncompress(zipInts);
+    return ints;
   }
 }

@@ -2,6 +2,7 @@ package net.csibio.aird.test.compressor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +36,8 @@ public class intensity不同压缩器的压缩率与时间比较 {
   static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
   static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
-  static float MB = 1024 * 1024f;
-  static float KB = 1024f;
+  static int MB = 1024 * 1024;
+  static int KB = 1024;
 
   @BeforeClass
   public static void init() throws Exception {
@@ -240,12 +241,9 @@ public class intensity不同压缩器的压缩率与时间比较 {
 //      int[] newInts = Xor.xor(ints);
       byte[] bytes = XVByte.encode(ints);
       compressedSize.getAndAdd(bytes.length);
-      int[] sortedInts = XVByte.decode(bytes);
-//      Xor.inverseXor(sortedInts);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
-      if (!isSame) {
-        System.out.println("Nani");
-      }
+      int[] unzipInts = XVByte.decode(bytes);
+//      unzipInts = Xor.reverseXor(unzipInts);
+      boolean isSame = Arrays.equals(ints, unzipInts);
       assert isSame;
     });
     System.out.println(
@@ -261,7 +259,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
       byte[] bytes = XVByte.encode(ints, CompressorType.Gzip);
       compressedSize.getAndAdd(bytes.length);
       int[] sortedInts = XVByte.decode(bytes, CompressorType.Gzip);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      boolean isSame = Arrays.equals(ints, sortedInts);
       assert isSame;
     });
     System.out.println(
@@ -277,11 +275,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
       byte[] bytes = XVByte.encode(ints, CompressorType.Brotli);
       compressedSize.getAndAdd(bytes.length);
       int[] sortedInts = XVByte.decode(bytes, CompressorType.Brotli);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      boolean isSame = Arrays.equals(ints, sortedInts);
       assert isSame;
     });
     System.out.println(
-        "ZDPD2-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDPD2-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -293,11 +291,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
       byte[] bytes = XVByte.encode(ints, CompressorType.Snappy);
       compressedSize.getAndAdd(bytes.length);
       int[] sortedInts = XVByte.decode(bytes, CompressorType.Snappy);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      boolean isSame = Arrays.equals(ints, sortedInts);
       assert isSame;
     });
     System.out.println(
-        "ZDPD2-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDPD2-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -309,11 +307,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
       byte[] bytes = XVByte.encode(ints, CompressorType.ZSTD);
       compressedSize.getAndAdd(bytes.length);
       int[] sortedInts = XVByte.decode(bytes, CompressorType.ZSTD);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      boolean isSame = Arrays.equals(ints, sortedInts);
       assert isSame;
     });
     System.out.println(
-        "ZDPD2-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDPD2-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -325,7 +323,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
       byte[] bytes = XVByte.encode(ints, CompressorType.LZ4);
       compressedSize.getAndAdd(bytes.length);
       int[] sortedInts = XVByte.decode(bytes, CompressorType.LZ4);
-      boolean isSame = ArrayUtil.isSame(ints, sortedInts);
+      boolean isSame = Arrays.equals(ints, sortedInts);
       assert isSame;
     });
     System.out.println(
