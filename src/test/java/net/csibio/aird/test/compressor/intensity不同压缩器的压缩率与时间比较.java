@@ -66,7 +66,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
     initFile("File-DIA-WIFF-zero",
         "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
         AirdType.DIA_SWATH,
-        16);
+        0);
   }
 
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
