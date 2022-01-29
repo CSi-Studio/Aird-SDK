@@ -42,26 +42,31 @@ public class intensity不同压缩器的压缩率与时间比较 {
   @BeforeClass
   public static void init() throws Exception {
 
-    initFile("File-DIA-Raw-zero",
-        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
-        AirdType.DIA_SWATH,
-        16);
+//    initFile("File-DIA-Raw-zero",
+//        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
+//        AirdType.DIA_SWATH,
+//        16);
+//    initFile("File-DIA-WIFF-zero",
+//        "C:\\napedro_L120224_001_SW_with_zero.json",
+//        AirdType.DIA_SWATH,
+//        16);
+//    initFile("File-DIA-WIFF-no-zero",
+//        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
+//        AirdType.DIA_SWATH,
+//        20);
+//    initFile("File-DDA-Raw",
+//        "D:\\Aird_Test\\SA1_6_with_zero.json",
+//        AirdType.DDA,
+//        -1);
+//    initFile("File-DDA-Wiff",
+//        "D:\\Aird_Test\\SampleA_1_with_zero.json",
+//        AirdType.DDA,
+//        -1);
+
     initFile("File-DIA-WIFF-zero",
-        "C:\\napedro_L120224_001_SW_with_zero.json",
+        "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
         AirdType.DIA_SWATH,
         16);
-    initFile("File-DIA-WIFF-no-zero",
-        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
-        AirdType.DIA_SWATH,
-        20);
-    initFile("File-DDA-Raw",
-        "D:\\Aird_Test\\SA1_6_with_zero.json",
-        AirdType.DDA,
-        -1);
-    initFile("File-DDA-Wiff",
-        "D:\\Aird_Test\\SampleA_1_with_zero.json",
-        AirdType.DDA,
-        -1);
   }
 
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
@@ -142,10 +147,10 @@ public class intensity不同压缩器的压缩率与时间比较 {
       System.out.println("原始大小:" + realSize + "M");
 
       test_zlib(bytesList);
-      test_brotli(bytesList);
-      test_gzip(bytesList);
-      test_snappy(intsList);
-      test_zstd(bytesList);
+//      test_brotli(bytesList);
+//      test_gzip(bytesList);
+//      test_snappy(intsList);
+//      test_zstd(bytesList);
 //      test_lz4(bytesList);
 //      test_fastpfor(intsList);
 //      test_fastpfor2(intsList);
@@ -238,11 +243,9 @@ public class intensity不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-//      int[] newInts = Xor.xor(ints);
       byte[] bytes = XVByte.encode(ints);
       compressedSize.getAndAdd(bytes.length);
       int[] unzipInts = XVByte.decode(bytes);
-//      unzipInts = Xor.reverseXor(unzipInts);
       boolean isSame = Arrays.equals(ints, unzipInts);
       assert isSame;
     });
@@ -330,7 +333,6 @@ public class intensity不同压缩器的压缩率与时间比较 {
         "ZDPD2-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
-
 
   //Test for LZMA2
   private void test_LZMA2(List<byte[]> bytesList) {

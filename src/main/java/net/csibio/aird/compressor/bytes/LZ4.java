@@ -12,7 +12,7 @@ public class LZ4 {
 
     try {
       final int decompressedLength = input.length;
-      LZ4Compressor compressor = factory.highCompressor(9);
+      LZ4Compressor compressor = factory.highCompressor();
       int maxCompressedLength = compressor.maxCompressedLength(decompressedLength);
       byte[] compressed = new byte[maxCompressedLength];
       compressor.compress(input, 0, decompressedLength, compressed, 0, maxCompressedLength);

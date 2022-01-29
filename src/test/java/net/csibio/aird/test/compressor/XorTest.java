@@ -10,8 +10,7 @@ public class XorTest {
   public void test() {
     int[] test = {1, 1, 2};
     int[] xor = Xor.xor(test);
-    int[] recover = Xor.reverseXor(xor);
+    int[] recover = Xor.recover(xor);
     assert Arrays.equals(test, recover);
   }
-
 }
