@@ -1,7 +1,6 @@
 package net.csibio.aird.compressor.ints;
 
 import me.lemire.integercompression.IntCompressor;
-import me.lemire.integercompression.SkippableComposition;
 import me.lemire.integercompression.VariableByte;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
@@ -27,9 +26,7 @@ public class XVByte {
    * @return the compressed data
    */
   public static byte[] encode(int[] ints, CompressorType byteCompType) {
-    int[] compressedInts = new IntCompressor(
-        new SkippableComposition(new VariableByte(), new VariableByte())).compress(
-        ints);
+    int[] compressedInts = new IntCompressor(new VariableByte()).compress(ints);
     byte[] bytes = ByteTrans.intToByte(compressedInts);
     return new ByteCompressor(byteCompType).encode(bytes);
   }
@@ -50,8 +47,7 @@ public class XVByte {
   public static int[] decode(byte[] bytes, CompressorType type) {
     byte[] decodeBytes = new ByteCompressor(type).decode(bytes);
     int[] zipInts = ByteTrans.byteToInt(decodeBytes);
-    int[] ints = new IntCompressor(
-        new SkippableComposition(new VariableByte(), new VariableByte())).uncompress(zipInts);
+    int[] ints = new IntCompressor(new VariableByte()).uncompress(zipInts);
     return ints;
   }
 }
