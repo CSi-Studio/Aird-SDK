@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class ZSTD {
 
   public static byte[] encode(byte[] input) {
-    return Zstd.compress(input);
+    return Zstd.compress(input, 9);
   }
 
   public static byte[] decode(byte[] input) {

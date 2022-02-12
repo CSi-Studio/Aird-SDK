@@ -35,7 +35,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
   static HashMap<String, String> fileMap = new HashMap<>();
   static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
-  static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
+  static HashMap<String, List<float[]>> spectrumIntsMap = new HashMap<>();
   static int MB = 1024 * 1024;
   static int KB = 1024;
 
@@ -114,14 +114,10 @@ public class intensity不同压缩器的压缩率与时间比较 {
 
     spectrumListMap.put(name, spectrumList);
     List<byte[]> bytesList = new ArrayList<>();
-    List<int[]> intsList = new ArrayList<>();
+    List<float[]> intsList = new ArrayList<>();
     for (int i = 0; i < spectrumList.size(); i++) {
       bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).getInts()));
-      int[] ints = new int[spectrumList.get(i).getInts().length];
-      for (int j = 0; j < spectrumList.get(i).getInts().length; j++) {
-        ints[j] = (int) (spectrumList.get(i).getInts()[j] * 10);
-      }
-      intsList.add(ints);
+      intsList.add(spectrumList.get(i).getInts());
     }
     spectrumIntsMap.put(name, intsList);
     spectrumBytesMap.put(name, bytesList);
@@ -136,7 +132,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
               + "张,-------------------------");
       List<byte[]> bytesList = spectrumBytesMap.get(key);
       List<Spectrum<float[]>> spectrumList = spectrumListMap.get(key);
-      List<int[]> intsList = spectrumIntsMap.get(key);
+      List<float[]> intsList = spectrumIntsMap.get(key);
 
       //测试原始大小
       AtomicLong originSize = new AtomicLong(0);
@@ -147,10 +143,10 @@ public class intensity不同压缩器的压缩率与时间比较 {
       System.out.println("原始大小:" + realSize + "M");
 
       test_zlib(bytesList);
-//      test_brotli(bytesList);
-//      test_gzip(bytesList);
-//      test_snappy(intsList);
-//      test_zstd(bytesList);
+      test_brotli(bytesList);
+      test_gzip(bytesList);
+      test_snappy(intsList);
+      test_zstd(bytesList);
 //      test_lz4(bytesList);
 //      test_fastpfor(intsList);
 //      test_fastpfor2(intsList);
@@ -162,11 +158,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
 //      test_xdpd_zstd(intsList);
 //      test_xdpd_lz4(intsList);
 //      System.out.println("");
-      test_xdpd2_zlib(intsList);
-      test_xdpd2_brotli(intsList);
-      test_xdpd2_gzip(intsList);
-      test_xdpd2_snappy(intsList);
-      test_xdpd2_zstd(intsList);
+//      test_xdpd2_zlib(intsList);
+//      test_xdpd2_brotli(intsList);
+//      test_xdpd2_gzip(intsList);
+//      test_xdpd2_snappy(intsList);
+//      test_xdpd2_zstd(intsList);
 //      test_xdpd2_lz4(intsList);
 //      test_LZMA2(bytesList);
     });
@@ -210,7 +206,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
   }
 
   //Test for Snappy
-  private void test_snappy(List<int[]> intsList) {
+  private void test_snappy(List<float[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
