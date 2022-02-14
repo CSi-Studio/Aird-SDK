@@ -30,7 +30,7 @@ public class Zlib {
       compressor.end();
     }
 
-    return null;
+    return new byte[0];
   }
 
   public static byte[] decode(byte[] input) {

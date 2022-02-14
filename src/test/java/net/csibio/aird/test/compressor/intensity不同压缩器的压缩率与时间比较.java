@@ -1,6 +1,5 @@
 package net.csibio.aird.test.compressor;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,45 +27,44 @@ import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.ArrayUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xerial.snappy.BitShuffle;
 
 public class intensity不同压缩器的压缩率与时间比较 {
 
   static HashMap<String, String> fileMap = new HashMap<>();
   static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
-  static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
+  static HashMap<String, List<float[]>> spectrumIntsMap = new HashMap<>();
   static int MB = 1024 * 1024;
   static int KB = 1024;
 
   @BeforeClass
   public static void init() throws Exception {
 
-//    initFile("File-DIA-Raw-zero",
-//        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
-//        AirdType.DIA_SWATH,
-//        16);
-//    initFile("File-DIA-WIFF-zero",
-//        "C:\\napedro_L120224_001_SW_with_zero.json",
-//        AirdType.DIA_SWATH,
-//        16);
-//    initFile("File-DIA-WIFF-no-zero",
-//        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
-//        AirdType.DIA_SWATH,
-//        20);
-//    initFile("File-DDA-Raw",
-//        "D:\\Aird_Test\\SA1_6_with_zero.json",
-//        AirdType.DDA,
-//        -1);
-//    initFile("File-DDA-Wiff",
-//        "D:\\Aird_Test\\SampleA_1_with_zero.json",
-//        AirdType.DDA,
-//        -1);
-
-    initFile("File-DIA-WIFF-zero",
-        "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
+    initFile("File-DIA-Raw-zero",
+        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
         AirdType.DIA_SWATH,
-        0);
+        16);
+    initFile("File-DIA-WIFF-zero",
+        "C:\\napedro_L120224_001_SW_with_zero.json",
+        AirdType.DIA_SWATH,
+        16);
+    initFile("File-DIA-WIFF-no-zero",
+        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
+        AirdType.DIA_SWATH,
+        20);
+    initFile("File-DDA-Raw",
+        "D:\\Aird_Test\\SA1_6_with_zero.json",
+        AirdType.DDA,
+        -1);
+    initFile("File-DDA-Wiff",
+        "D:\\Aird_Test\\SampleA_1_with_zero.json",
+        AirdType.DDA,
+        -1);
+
+//    initFile("File-DIA-WIFF-zero",
+//        "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
+//        AirdType.DIA_SWATH,
+//        0);
   }
 
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
@@ -114,13 +112,10 @@ public class intensity不同压缩器的压缩率与时间比较 {
 
     spectrumListMap.put(name, spectrumList);
     List<byte[]> bytesList = new ArrayList<>();
-    List<int[]> intsList = new ArrayList<>();
+    List<float[]> intsList = new ArrayList<>();
     for (int i = 0; i < spectrumList.size(); i++) {
       bytesList.add(ByteTrans.floatToByte(spectrumList.get(i).getInts()));
-      int[] ints = new int[spectrumList.get(i).getInts().length];
-      for (int j = 0; j < spectrumList.get(i).getInts().length; j++) {
-        ints[j] = (int) (spectrumList.get(i).getInts()[j] * 10);
-      }
+      float[] ints = new float[spectrumList.get(i).getInts().length];
       intsList.add(ints);
     }
     spectrumIntsMap.put(name, intsList);
@@ -136,7 +131,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
               + "张,-------------------------");
       List<byte[]> bytesList = spectrumBytesMap.get(key);
       List<Spectrum<float[]>> spectrumList = spectrumListMap.get(key);
-      List<int[]> intsList = spectrumIntsMap.get(key);
+      List<float[]> intsList = spectrumIntsMap.get(key);
 
       //测试原始大小
       AtomicLong originSize = new AtomicLong(0);
@@ -147,10 +142,10 @@ public class intensity不同压缩器的压缩率与时间比较 {
       System.out.println("原始大小:" + realSize + "M");
 
       test_zlib(bytesList);
-//      test_brotli(bytesList);
-//      test_gzip(bytesList);
-//      test_snappy(intsList);
-//      test_zstd(bytesList);
+      test_brotli(bytesList);
+      test_gzip(bytesList);
+      test_snappy(bytesList);
+      test_zstd(bytesList);
 //      test_lz4(bytesList);
 //      test_fastpfor(intsList);
 //      test_fastpfor2(intsList);
@@ -162,11 +157,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
 //      test_xdpd_zstd(intsList);
 //      test_xdpd_lz4(intsList);
 //      System.out.println("");
-      test_xdpd2_zlib(intsList);
-      test_xdpd2_brotli(intsList);
-      test_xdpd2_gzip(intsList);
-      test_xdpd2_snappy(intsList);
-      test_xdpd2_zstd(intsList);
+//      test_xdpd2_zlib(intsList);
+//      test_xdpd2_brotli(intsList);
+//      test_xdpd2_gzip(intsList);
+//      test_xdpd2_snappy(intsList);
+//      test_xdpd2_zstd(intsList);
 //      test_xdpd2_lz4(intsList);
 //      test_LZMA2(bytesList);
     });
@@ -210,16 +205,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
   }
 
   //Test for Snappy
-  private void test_snappy(List<int[]> intsList) {
+  private void test_snappy(List<byte[]> bytesList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
-    intsList.parallelStream().forEach(ints -> {
-      try {
-        byte[] bytes = BitShuffle.shuffle(ints);
-        compressedSize.getAndAdd(Snappier.encode(bytes).length);
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+    bytesList.parallelStream().forEach(bytes -> {
+      compressedSize.getAndAdd(Snappier.encode(bytes).length);
     });
     System.out.println(
         "Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB

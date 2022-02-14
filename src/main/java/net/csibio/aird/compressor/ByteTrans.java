@@ -32,6 +32,14 @@ public class ByteTrans {
     return bbTarget.array();
   }
 
+  public static ByteBuffer floatToByteBuffer(float[] floats) {
+    FloatBuffer fbTarget = FloatBuffer.wrap(floats);
+    ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
+    bbTarget.order(ByteOrder.LITTLE_ENDIAN);
+    bbTarget.asFloatBuffer().put(fbTarget);
+    return bbTarget;
+  }
+
   public static byte[] shortToByte(short[] shorts) {
     ShortBuffer fbTarget = ShortBuffer.wrap(shorts);
     ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 2);
