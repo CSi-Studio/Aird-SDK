@@ -34,37 +34,38 @@ public class intensity不同压缩器的压缩率与时间比较 {
   static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
   static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
   static HashMap<String, List<float[]>> spectrumIntsMap = new HashMap<>();
+  static HashMap<String, List<int[]>> spectrumIntsIntMap = new HashMap<>();
   static int MB = 1024 * 1024;
   static int KB = 1024;
 
   @BeforeClass
   public static void init() throws Exception {
 
-    initFile("File-DIA-Raw-zero",
-        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
-        AirdType.DIA_SWATH,
-        16);
-    initFile("File-DIA-WIFF-zero",
-        "C:\\napedro_L120224_001_SW_with_zero.json",
-        AirdType.DIA_SWATH,
-        16);
-    initFile("File-DIA-WIFF-no-zero",
-        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
-        AirdType.DIA_SWATH,
-        20);
-    initFile("File-DDA-Raw",
-        "D:\\Aird_Test\\SA1_6_with_zero.json",
-        AirdType.DDA,
-        -1);
-    initFile("File-DDA-Wiff",
-        "D:\\Aird_Test\\SampleA_1_with_zero.json",
-        AirdType.DDA,
-        -1);
-
-//    initFile("File-DIA-WIFF-zero",
-//        "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
+//    initFile("File-DIA-Raw-zero",
+//        "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
 //        AirdType.DIA_SWATH,
-//        0);
+//        16);
+//    initFile("File-DIA-WIFF-zero",
+//        "C:\\napedro_L120224_001_SW_with_zero.json",
+//        AirdType.DIA_SWATH,
+//        16);
+//    initFile("File-DIA-WIFF-no-zero",
+//        "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
+//        AirdType.DIA_SWATH,
+//        20);
+//    initFile("File-DDA-Raw",
+//        "D:\\Aird_Test\\SA1_6_with_zero.json",
+//        AirdType.DDA,
+//        -1);
+//    initFile("File-DDA-Wiff",
+//        "D:\\Aird_Test\\SampleA_1_with_zero.json",
+//        AirdType.DDA,
+//        -1);
+
+    initFile("File-DIA-WIFF-zero",
+        "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
+        AirdType.DIA_SWATH,
+        0);
   }
 
   private static void initFile(String name, String indexPath, AirdType type, int indexNo)
@@ -157,11 +158,11 @@ public class intensity不同压缩器的压缩率与时间比较 {
 //      test_xdpd_zstd(intsList);
 //      test_xdpd_lz4(intsList);
 //      System.out.println("");
-//      test_xdpd2_zlib(intsList);
-//      test_xdpd2_brotli(intsList);
-//      test_xdpd2_gzip(intsList);
-//      test_xdpd2_snappy(intsList);
-//      test_xdpd2_zstd(intsList);
+//      test_xdpd2_zlib(intsIntList);
+//      test_xdpd2_brotli(intsIntList);
+//      test_xdpd2_gzip(intsIntList);
+//      test_xdpd2_snappy(intsIntList);
+//      test_xdpd2_zstd(intsIntList);
 //      test_xdpd2_lz4(intsList);
 //      test_LZMA2(bytesList);
     });

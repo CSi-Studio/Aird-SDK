@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class Spectrum<T> {
 
-  public T mzs;
-  public float[] ints;
+  private T mzs;
+  private float[] ints;
 
   public Spectrum(T mzs, float[] ints) {
     this.mzs = mzs;
