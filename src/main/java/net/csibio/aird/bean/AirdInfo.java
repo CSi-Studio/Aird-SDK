@@ -21,7 +21,7 @@ import net.csibio.aird.enums.MsLevel;
 
 @Data
 public class AirdInfo {
-    
+
   /**
    * [核心字段] 数组压缩策略 [Core Field] Data Compression Strategies
    *
@@ -32,12 +32,12 @@ public class AirdInfo {
   /**
    * Format Version 应用版本号
    */
-  String version = "1.0.4";
+  String version = "2.0.0";
 
   /**
    * Version Code. Integer code from 1 to N 应用版本编码,从1开始计数的整型编码
    */
-  Integer versionCode = 4;
+  Integer versionCode = 5;
 
   /**
    * [核心字段] m/z窗口信息,窗口已经根据overlap进行过调整 [Core Field] Store the precursor m/z window ranges which have
