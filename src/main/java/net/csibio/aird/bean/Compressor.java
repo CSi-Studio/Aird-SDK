@@ -11,8 +11,6 @@
 package net.csibio.aird.bean;
 
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import lombok.Data;
 
@@ -25,15 +23,15 @@ public class Compressor {
    */
   public static String TARGET_MZ = "mz";
   public static String TARGET_INTENSITY = "intensity";
-  
+
   /**
    * 目前支持的压缩算法,包括无损的zlib,pFor算法以及有损的log10算法 The compression algorithms. Now support for zlib,
    * fastPFor and log10 algorithms
    */
   public static String METHOD_ZLIB = "zlib";
-  public static String METHOD_STACK = "stack";
-  public static String METHOD_PFOR = "pFor";
-  public static String METHOD_LOG10 = "log10";
+  public static String METHOD_STACK_ZDPD = "Stack-ZDPD";
+  public static String METHOD_ZDVB = "ZDVB";
+  public static String METHOD_ZDPD = "ZDPD";
 
   /**
    * 数组中mz和intensity的精度,1000代表精确到小数点后4位,10代表精确到小数点后1位 The default precision for m/z is 4dp. The
@@ -51,9 +49,6 @@ public class Compressor {
    * 压缩方法,使用分号隔开 Compression Method, using comma to split the compression method with order.
    */
   List<String> methods;
-
-  @Deprecated
-  String method;
 
   /**
    * 数组的数值精度,10代表精确到小数点后1位,1000代表精确到小数点后三位,以此类推 The precision for mz and intensity.
@@ -87,15 +82,5 @@ public class Compressor {
 
   public ByteOrder fetchByteOrder() {
     return ByteOrder.LITTLE_ENDIAN;
-  }
-
-  public List<String> getMethods() {
-    if (methods != null) {
-      return methods;
-    } else if (method != null) {
-      String[] methodArray = method.split(",");
-      return Arrays.asList(methodArray);
-    }
-    return new ArrayList<>();
   }
 }

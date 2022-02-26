@@ -39,7 +39,7 @@ public class DIAParser extends BaseParser {
    */
   public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor,
       int mzPrecision) throws ScanException {
-    super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA_SWATH.getName());
+    super(airdPath, mzCompressor, intCompressor, mzPrecision, AirdType.DIA.getName());
   }
 
   /**

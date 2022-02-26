@@ -8,7 +8,7 @@ import java.util.Arrays;
 public class ZSTD {
 
   public static byte[] encode(byte[] input) {
-    return Zstd.compress(input, 9);
+    return Zstd.compress(input);
   }
 
   public static byte[] encode(byte[] input, byte[] dict) {

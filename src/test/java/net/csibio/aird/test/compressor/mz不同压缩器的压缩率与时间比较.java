@@ -46,15 +46,15 @@ public class mz不同压缩器的压缩率与时间比较 {
 
     initFile("File-DIA-Raw-zero",
         "C:\\C20181218yix_HCC_DIA_T_46B_with_zero.json",
-        AirdType.DIA_SWATH,
+        AirdType.DIA,
         16);
     initFile("File-DIA-WIFF-zero",
         "C:\\napedro_L120224_001_SW_with_zero.json",
-        AirdType.DIA_SWATH,
+        AirdType.DIA,
         16);
     initFile("File-DIA-WIFF-no-zero",
         "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_013.json",
-        AirdType.DIA_SWATH,
+        AirdType.DIA,
         20);
     initFile("File-DDA-Raw",
         "D:\\Aird_Test\\SA1_6_with_zero.json",
@@ -74,7 +74,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     double precision = 0;
 
     switch (type) {
-      case DIA_SWATH -> {
+      case DIA -> {
         DIAParser parser = new DIAParser(indexPath);
         precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_MZ).getPrecision();
 
@@ -156,12 +156,12 @@ public class mz不同压缩器的压缩率与时间比较 {
       test_xdpd_zstd(intsList);
       test_xdpd_lz4(intsList);
       System.out.println("");
-      test_xdpd2_zlib(intsList);
-      test_xdpd2_brotli(intsList);
-      test_xdpd2_gzip(intsList);
-      test_xdpd2_snappy(intsList);
-      test_xdpd2_zstd(intsList);
-      test_xdpd2_lz4(intsList);
+      test_xdvb_zlib(intsList);
+      test_xdvb_brotli(intsList);
+      test_xdvb_gzip(intsList);
+      test_xdvb_snappy(intsList);
+      test_xdvb_zstd(intsList);
+      test_xdvb_lz4(intsList);
 //      test_LZMA2(bytesList);
     });
   }
@@ -345,7 +345,7 @@ public class mz不同压缩器的压缩率与时间比较 {
   }
 
   //Test for XDPD2-Zlib
-  private void test_xdpd2_zlib(List<int[]> intsList) {
+  private void test_xdvb_zlib(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -357,12 +357,12 @@ public class mz不同压缩器的压缩率与时间比较 {
       assert isSame;
     });
     System.out.println(
-        "XDPD2-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
   //Test for XDPD2-Gzip
-  private void test_xdpd2_gzip(List<int[]> intsList) {
+  private void test_xdvb_gzip(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -370,12 +370,12 @@ public class mz不同压缩器的压缩率与时间比较 {
           IntegratedXVByte.encode(ints).length);
     });
     System.out.println(
-        "XDPD2-Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
   //Test for XDPD2-Brotli
-  private void test_xdpd2_brotli(List<int[]> intsList) {
+  private void test_xdvb_brotli(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -383,12 +383,12 @@ public class mz不同压缩器的压缩率与时间比较 {
           IntegratedXVByte.encode(ints, CompressorType.Brotli).length);
     });
     System.out.println(
-        "ZDPD2-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
   //Test for XDPD2-Snappy
-  private void test_xdpd2_snappy(List<int[]> intsList) {
+  private void test_xdvb_snappy(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -396,12 +396,12 @@ public class mz不同压缩器的压缩率与时间比较 {
           IntegratedXVByte.encode(ints, CompressorType.Snappy).length);
     });
     System.out.println(
-        "ZDPD2-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
   //Test for XDPD2-ZSTD
-  private void test_xdpd2_zstd(List<int[]> intsList) {
+  private void test_xdvb_zstd(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -409,12 +409,12 @@ public class mz不同压缩器的压缩率与时间比较 {
           IntegratedXVByte.encode(ints, CompressorType.ZSTD).length);
     });
     System.out.println(
-        "ZDPD2-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
   //Test for XDPD2-LZ4
-  private void test_xdpd2_lz4(List<int[]> intsList) {
+  private void test_xdvb_lz4(List<int[]> intsList) {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
@@ -422,7 +422,7 @@ public class mz不同压缩器的压缩率与时间比较 {
           IntegratedXVByte.encode(ints, CompressorType.LZ4).length);
     });
     System.out.println(
-        "ZDPD2-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
+        "XDVB-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 

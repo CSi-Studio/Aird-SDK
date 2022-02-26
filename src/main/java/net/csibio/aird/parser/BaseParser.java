@@ -152,7 +152,7 @@ public abstract class BaseParser {
       }
       return switch (AirdType.getType(airdInfo.getType())) {
         case DDA -> new DDAParser(indexPath, airdInfo);
-        case DIA_SWATH -> new DIAParser(indexPath, airdInfo);
+        case DIA -> new DIAParser(indexPath, airdInfo);
         case PRM -> new PRMParser(indexPath, airdInfo);
         case COMMON -> new CommonParser(indexPath, airdInfo);
         default -> throw new IllegalStateException(

@@ -46,7 +46,7 @@ public class DiffXDPDTest {
     double precision = 0;
 
     switch (type) {
-      case DIA_SWATH -> {
+      case DIA -> {
         DIAParser parser = new DIAParser(indexPath);
         precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_MZ).getPrecision();
 

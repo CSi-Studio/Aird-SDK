@@ -13,10 +13,13 @@ package net.csibio.aird.enums;
 public enum AirdType {
 
   COMMON("COMMON", 0), // RT Indexing
-  DIA_SWATH("DIA_SWATH", 1), // Precursor-mz -> MS2 Group
+  DIA("DIA", 1), // Precursor-mz -> MS2 Group
   DDA("DDA", 2), //MS1 -> MS2 Group
   PRM("PRM", 3), //Precursor-mz -> MS2 Group
-  SCANNING_SWATH("SCANNING_SWATH", 4) //Not Support now
+  SCANNING_SWATH("SCANNING_SWATH", 4), //Not Support now
+  DIA_PASEF("DIA_PASEF", 5), // Precursor-mz -> MS2 Group
+  DDA_PASEF("DDA_PASEF", 6), // Precursor-mz -> MS2 Group
+  PRM_PASEF("PRM_PASEF", 7), // Precursor-mz -> MS2 Group
   ;
 
   public Integer code;

@@ -64,7 +64,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
 
     initFile("File-DIA-WIFF-zero",
         "C:\\HYE110_TTOF6600_64fix_lgillet_I160310_001.json",
-        AirdType.DIA_SWATH,
+        AirdType.DIA,
         0);
   }
 
@@ -76,7 +76,7 @@ public class intensity不同压缩器的压缩率与时间比较 {
     double precision = 10;
 
     switch (type) {
-      case DIA_SWATH -> {
+      case DIA -> {
         DIAParser parser = new DIAParser(indexPath);
         precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_INTENSITY)
             .getPrecision();
