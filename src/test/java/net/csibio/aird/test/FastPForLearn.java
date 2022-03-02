@@ -11,7 +11,7 @@
 package net.csibio.aird.test;
 
 import java.util.Random;
-import net.csibio.aird.compressor.ints.BinaryPack;
+import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
 
 /**
  * Test Code for fastpfor
@@ -31,8 +31,8 @@ public class FastPForLearn {
       finalTest[i + 900] = test2[i];
     }
 
-    int[] newTest = BinaryPack.encode(test);
-    int[] oldTest = BinaryPack.decode(newTest);
+    int[] newTest = IntegratedBinaryPack.encode(test);
+    int[] oldTest = IntegratedBinaryPack.decode(newTest);
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 

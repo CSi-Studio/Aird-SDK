@@ -9,7 +9,7 @@ import me.lemire.integercompression.differential.SkippableIntegratedComposition;
 /**
  * 入参必须是有序数组,经过SIMD优化的算法
  */
-public class BinaryPack {
+public class IntegratedBinaryPack {
 
   /**
    * compress the data with fastpfor algorithm

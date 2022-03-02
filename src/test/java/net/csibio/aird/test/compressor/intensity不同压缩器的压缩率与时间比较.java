@@ -15,8 +15,6 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
 import net.csibio.aird.compressor.bytes.Brotli;
-import net.csibio.aird.compressor.bytes.Gzip;
-import net.csibio.aird.compressor.bytes.LZ4;
 import net.csibio.aird.compressor.bytes.Snappier;
 import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
@@ -144,7 +142,6 @@ public class intensity不同压缩器的压缩率与时间比较 {
 
       test_zlib(bytesList);
       test_brotli(bytesList);
-      test_gzip(bytesList);
       test_snappy(bytesList);
       test_zstd(bytesList);
 //      test_lz4(bytesList);
@@ -193,18 +190,6 @@ public class intensity不同压缩器的压缩率与时间比较 {
             + "M");
   }
 
-  //Test for Gzip
-  private void test_gzip(List<byte[]> bytesList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(Gzip.encode(bytes).length);
-    });
-    System.out.println(
-        "Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
-
   //Test for Snappy
   private void test_snappy(List<byte[]> bytesList) {
     long start = System.currentTimeMillis();
@@ -242,22 +227,6 @@ public class intensity不同压缩器的压缩率与时间比较 {
     });
     System.out.println(
         "XDPD2-Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
-
-  //Test for XDPD2-Gzip
-  private void test_xdpd2_gzip(List<int[]> intsList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    intsList.parallelStream().forEach(ints -> {
-      byte[] bytes = XVByte.encode(ints, CompressorType.Gzip);
-      compressedSize.getAndAdd(bytes.length);
-      int[] sortedInts = XVByte.decode(bytes, CompressorType.Gzip);
-      boolean isSame = Arrays.equals(ints, sortedInts);
-      assert isSame;
-    });
-    System.out.println(
-        "XDPD2-Gzip:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
             + "M");
   }
 
@@ -309,31 +278,4 @@ public class intensity不同压缩器的压缩率与时间比较 {
             + "M");
   }
 
-  //Test for XDPD2-LZ4
-  private void test_xdpd2_lz4(List<int[]> intsList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    intsList.parallelStream().forEach(ints -> {
-      byte[] bytes = XVByte.encode(ints, CompressorType.LZ4);
-      compressedSize.getAndAdd(bytes.length);
-      int[] sortedInts = XVByte.decode(bytes, CompressorType.LZ4);
-      boolean isSame = Arrays.equals(ints, sortedInts);
-      assert isSame;
-    });
-    System.out.println(
-        "ZDPD2-LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
-
-  //Test for LZMA2
-  private void test_LZMA2(List<byte[]> bytesList) {
-    long start = System.currentTimeMillis();
-    AtomicLong compressedSize = new AtomicLong(0);
-    bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(LZ4.encode(bytes).length);
-    });
-    System.out.println(
-        "LZMA2:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
-            + "M");
-  }
 }

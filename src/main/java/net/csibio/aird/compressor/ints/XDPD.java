@@ -23,7 +23,7 @@ public class XDPD {
    * @return the compressed data
    */
   public static byte[] encode(int[] sortedInts, CompressorType byteCompType) {
-    int[] compressedInts = BinaryPack.encode(sortedInts);
+    int[] compressedInts = IntegratedBinaryPack.encode(sortedInts);
     byte[] bytes = ByteTrans.intToByte(compressedInts);
     return new ByteCompressor(byteCompType).encode(bytes);
   }
@@ -48,7 +48,7 @@ public class XDPD {
   public static int[] decode(byte[] bytes, CompressorType type) {
     byte[] decodeBytes = new ByteCompressor(type).decode(bytes);
     int[] zipInts = ByteTrans.byteToInt(decodeBytes);
-    int[] sortedInts = BinaryPack.decode(zipInts);
+    int[] sortedInts = IntegratedBinaryPack.decode(zipInts);
 //    double[] sortedDouble = new double[sortedInts.length];
 //    for (int i = 0; i < sortedInts.length; i++) {
 //      sortedDouble[i] = sortedInts[i] / precision;

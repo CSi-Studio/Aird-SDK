@@ -9,7 +9,7 @@ import java.util.List;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Layers;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.ints.BinaryPack;
+import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
 import net.csibio.aird.parser.DIAParser;
 import net.csibio.aird.util.ArrayUtil;
 import net.csibio.aird.util.StackCompressUtil;
@@ -55,12 +55,12 @@ public class TestLayers {
       long t1 = 0, t2 = 0;
       for (int i = 0; i < mzNum; i++) {
         long tempT = System.currentTimeMillis();
-        byte[] comMZ = ByteTrans.intToByte(BinaryPack.encode(mzGroup.get(i)));
+        byte[] comMZ = ByteTrans.intToByte(IntegratedBinaryPack.encode(mzGroup.get(i)));
         t1 += (System.currentTimeMillis() - tempT);
 //                System.out.println(System.currentTimeMillis() - tempT);
         comMZs.add(comMZ);
         long tempT2 = System.currentTimeMillis();
-        BinaryPack.decode(ByteTrans.byteToInt(comMZ));
+        IntegratedBinaryPack.decode(ByteTrans.byteToInt(comMZ));
         t2 += (System.currentTimeMillis() - tempT2);
 //                System.out.println(System.currentTimeMillis() - tempT2);
       }

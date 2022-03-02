@@ -32,6 +32,12 @@ public class IntegratedXVByte {
     return new ByteCompressor(byteCompType).encode(bytes);
   }
 
+  /**
+   * @param sortedFloats
+   * @param precision
+   * @param compType
+   * @return
+   */
   public static byte[] encode(double[] sortedFloats, double precision,
       CompressorType compType) {
     int[] sortedInts = new int[sortedFloats.length];

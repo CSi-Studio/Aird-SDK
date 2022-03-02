@@ -31,6 +31,7 @@ public class Compressor {
   public static String METHOD_ZLIB = "zlib";
   public static String METHOD_STACK_ZDPD = "Stack-ZDPD";
   public static String METHOD_ZDVB = "ZDVB";
+  public static String METHOD_ZVB = "ZVB";
   public static String METHOD_ZDPD = "ZDPD";
 
   /**

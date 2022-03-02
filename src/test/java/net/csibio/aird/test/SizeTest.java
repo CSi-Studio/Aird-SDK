@@ -36,8 +36,8 @@ public class SizeTest {
     AtomicLong mzOri = new AtomicLong(0);
     AtomicLong intOri = new AtomicLong(0);
     AtomicLong spectrumSize = new AtomicLong(0);
-    List<CompressorType> byteTypes = Arrays.asList(CompressorType.Zlib, CompressorType.Gzip,
-        CompressorType.LZMA2, CompressorType.Snappy, CompressorType.Brotli, CompressorType.LZ4);
+    List<CompressorType> byteTypes = Arrays.asList(CompressorType.Zlib,
+        CompressorType.Snappy, CompressorType.Brotli);
     ConcurrentHashMap<String, AtomicLong> mzMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, AtomicLong> intMap = new ConcurrentHashMap<>();
     for (CompressorType value : byteTypes) {

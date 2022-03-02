@@ -1,9 +1,6 @@
 package net.csibio.aird.compressor;
 
 import net.csibio.aird.compressor.bytes.Brotli;
-import net.csibio.aird.compressor.bytes.Gzip;
-import net.csibio.aird.compressor.bytes.LZ4;
-import net.csibio.aird.compressor.bytes.LZMA2;
 import net.csibio.aird.compressor.bytes.Snappier;
 import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
@@ -19,11 +16,8 @@ public class ByteCompressor {
   public byte[] encode(byte[] bytes) {
     return switch (compressorType) {
       case Zlib -> Zlib.encode(bytes);
-      case LZMA2 -> LZMA2.encode(bytes);
-      case Gzip -> Gzip.encode(bytes);
       case Snappy -> Snappier.encode(bytes);
       case Brotli -> Brotli.encode(bytes);
-      case LZ4 -> LZ4.encode(bytes);
       case ZSTD -> ZSTD.encode(bytes);
       default -> null;
     };
@@ -44,12 +38,9 @@ public class ByteCompressor {
   public byte[] decode(byte[] bytes, int start, int length) {
     return switch (compressorType) {
       case Zlib -> Zlib.decode(bytes, start, length);
-      case LZMA2 -> LZMA2.decode(bytes, start, length);
-      case Gzip -> Gzip.decode(bytes, start, length);
       case Snappy -> Snappier.decode(bytes, start, length);
       case Brotli -> Brotli.decode(bytes, start, length);
       case ZSTD -> ZSTD.decode(bytes, start, length);
-      case LZ4 -> LZ4.decode(bytes, start, length);
       default -> null;
     };
   }
