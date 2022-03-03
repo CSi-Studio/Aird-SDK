@@ -1,10 +1,7 @@
-package net.csibio.aird.compressor.ints;
+package net.csibio.aird.compressor;
 
 import me.lemire.integercompression.IntCompressor;
 import me.lemire.integercompression.VariableByte;
-import net.csibio.aird.compressor.ByteCompressor;
-import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
 
 public class XVByte {
 
@@ -19,7 +16,7 @@ public class XVByte {
     return encode(ints, CompressorType.Zlib);
   }
 
-  
+
   /**
    * XDPD Encoder
    *

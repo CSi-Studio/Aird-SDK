@@ -2,5 +2,18 @@ package net.csibio.aird.compressor;
 
 public enum CompressorType {
 
-  Zlib, Snappy, Brotli, ZSTD
+  Zlib("Zlib"),
+  Snappy("Snappy"),
+  Brotli("Brotli"),
+  Zstd("Zstd"),
+  IVB("IVB"), //Integrated Variable Byte
+  IBP("IBP"), //Integrated Binary Packing
+  VB("VB"), //Variable Byte
+  ;
+
+  public String name;
+
+  CompressorType(String name) {
+    this.name = name;
+  }
 }

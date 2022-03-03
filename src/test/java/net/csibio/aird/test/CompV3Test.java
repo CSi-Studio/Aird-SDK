@@ -15,7 +15,7 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.CompressorType;
-import net.csibio.aird.compressor.ints.XDPD;
+import net.csibio.aird.compressor.XDPD;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
 

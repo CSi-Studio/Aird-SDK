@@ -5,11 +5,11 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import net.csibio.aird.util.FileUtil;
 
-public class Zlib {
+public class Zlib implements ByteComp {
 
   static int BUFFER_SIZE = 2048;
 
-  public static byte[] encode(byte[] input) {
+  public byte[] encode(byte[] input) {
     Deflater compressor = new Deflater();
     compressor.reset();
     compressor.setInput(input);
@@ -33,11 +33,11 @@ public class Zlib {
     return new byte[0];
   }
 
-  public static byte[] decode(byte[] input) {
+  public byte[] decode(byte[] input) {
     return decode(input, 0, input.length);
   }
 
-  public static byte[] decode(byte[] input, int offset, int length) {
+  public byte[] decode(byte[] input, int offset, int length) {
     Inflater inflater = new Inflater();
     inflater.setInput(input, offset, length);
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream(length);

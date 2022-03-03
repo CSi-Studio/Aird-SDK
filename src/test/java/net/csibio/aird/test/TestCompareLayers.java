@@ -54,7 +54,7 @@ public class TestCompareLayers {
       long t1 = 0;
       for (int i = 0; i < mzNum; i++) {
         long tempT = System.currentTimeMillis();
-        byte[] comMZ = ByteTrans.intToByte(IntegratedBinaryPack.encode(mzGroup.get(i)));
+        byte[] comMZ = ByteTrans.intToByte(new IntegratedBinaryPack().encode(mzGroup.get(i)));
         t1 += (System.currentTimeMillis() - tempT);
         comMZs.add(comMZ);
       }
@@ -65,7 +65,7 @@ public class TestCompareLayers {
       for (byte[] comMz : comMZs
       ) {
         long tempT = System.currentTimeMillis();
-        IntegratedBinaryPack.decode(ByteTrans.byteToInt(comMz));
+        new IntegratedBinaryPack().decode(ByteTrans.byteToInt(comMz));
         tDecode += (System.currentTimeMillis() - tempT);
       }
       tAird1Decode += tDecode;

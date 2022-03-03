@@ -47,7 +47,7 @@ public class Compressor {
   String target;
 
   /**
-   * 压缩方法,使用分号隔开 Compression Method, using comma to split the compression method with order.
+   * 压缩内核,使用分号隔开 Compression Method, using comma to split the compression method with order.
    */
   List<String> methods;
 

@@ -13,11 +13,11 @@ public class FastPFORTest {
     for (int i = 0; i < size; i++) {
       test[i] = (int) (Math.random() * 1000);
     }
-    int[] encode = IntegratedBinaryPack.encode(test);
-    byte[] encode2 = IntegratedXVByte.encode(test);
+    int[] encode = new IntegratedBinaryPack().encode(test);
+    byte[] encode2 = new IntegratedXVByte().encode(test);
 
-    int[] decode = IntegratedBinaryPack.decode(encode);
-    int[] decode2 = IntegratedXVByte.decode(encode2);
+    int[] decode = new IntegratedBinaryPack().decode(encode);
+    int[] decode2 = new IntegratedXVByte().decode(encode2);
     System.out.println("Hello");
   }
 }

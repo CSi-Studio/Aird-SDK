@@ -8,9 +8,9 @@ import com.aayushatharva.brotli4j.encoder.Encoder;
 import com.aayushatharva.brotli4j.encoder.Encoder.Parameters;
 import java.util.Arrays;
 
-public class Brotli {
+public class Brotli implements ByteComp {
 
-  public static byte[] encode(byte[] input) {
+  public byte[] encode(byte[] input) {
     Brotli4jLoader.ensureAvailability();
     try {
       Parameters params = new Parameters();
@@ -24,7 +24,7 @@ public class Brotli {
     return null;
   }
 
-  public static byte[] decode(byte[] input) {
+  public byte[] decode(byte[] input) {
     Brotli4jLoader.ensureAvailability();
     try {
       DirectDecompress directDecompress = Decoder.decompress(input);
@@ -37,7 +37,7 @@ public class Brotli {
     return null;
   }
 
-  public static byte[] decode(byte[] input, int offset, int length) {
+  public byte[] decode(byte[] input, int offset, int length) {
     Brotli4jLoader.ensureAvailability();
     try {
       DirectDecompress directDecompress = Decoder.decompress(

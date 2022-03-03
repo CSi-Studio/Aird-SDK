@@ -1,8 +1,6 @@
-package net.csibio.aird.compressor.ints;
+package net.csibio.aird.compressor;
 
-import net.csibio.aird.compressor.ByteCompressor;
-import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
 
 public class XDPD {
 
@@ -23,7 +21,7 @@ public class XDPD {
    * @return the compressed data
    */
   public static byte[] encode(int[] sortedInts, CompressorType byteCompType) {
-    int[] compressedInts = IntegratedBinaryPack.encode(sortedInts);
+    int[] compressedInts = new IntegratedBinaryPack().encode(sortedInts);
     byte[] bytes = ByteTrans.intToByte(compressedInts);
     return new ByteCompressor(byteCompType).encode(bytes);
   }
@@ -48,7 +46,7 @@ public class XDPD {
   public static int[] decode(byte[] bytes, CompressorType type) {
     byte[] decodeBytes = new ByteCompressor(type).decode(bytes);
     int[] zipInts = ByteTrans.byteToInt(decodeBytes);
-    int[] sortedInts = IntegratedBinaryPack.decode(zipInts);
+    int[] sortedInts = new IntegratedBinaryPack().decode(zipInts);
 //    double[] sortedDouble = new double[sortedInts.length];
 //    for (int i = 0; i < sortedInts.length; i++) {
 //      sortedDouble[i] = sortedInts[i] / precision;

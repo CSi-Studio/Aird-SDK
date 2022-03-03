@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytes.ZSTD;
 import net.csibio.aird.compressor.bytes.Zlib;
+import net.csibio.aird.compressor.bytes.Zstd;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
 
@@ -48,7 +48,7 @@ public class 测试Intensity合并后大大小 {
     long time = System.currentTimeMillis();
     List<byte[]> zlibList = new ArrayList<>();
     bytesList.parallelStream().forEach(bytes -> {
-      byte[] zip = Zlib.encode(bytes);
+      byte[] zip = new Zlib().encode(bytes);
       zlibIntsSize.getAndAdd(zip.length);
       zlibList.add(zip);
     });
@@ -57,7 +57,7 @@ public class 测试Intensity合并后大大小 {
 
     time = System.currentTimeMillis();
     zlibList.parallelStream().forEach(bytes -> {
-      Zlib.decode(bytes);
+      new Zlib().decode(bytes);
     });
     System.out.println(
         "Zlib Decode Time:" + (System.currentTimeMillis() - time));
@@ -65,7 +65,7 @@ public class 测试Intensity合并后大大小 {
     time = System.currentTimeMillis();
     List<byte[]> zstdList = new ArrayList<>();
     bytesList.parallelStream().forEach(bytes -> {
-      byte[] zip = ZSTD.encode(bytes);
+      byte[] zip = new Zstd().encode(bytes);
       zstdIntsSize.getAndAdd(zip.length);
       zstdList.add(zip);
 //      byte[] unzip = ZSTD.decode(zip, dict);
@@ -80,7 +80,7 @@ public class 测试Intensity合并后大大小 {
 
     time = System.currentTimeMillis();
     zstdList.parallelStream().forEach(bytes -> {
-      ZSTD.decode(bytes);
+      new Zstd().decode(bytes);
     });
     System.out.println(
         "Zstd Decode Time:" + (System.currentTimeMillis() - time));

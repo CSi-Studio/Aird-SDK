@@ -31,8 +31,8 @@ public class FastPForLearn {
       finalTest[i + 900] = test2[i];
     }
 
-    int[] newTest = IntegratedBinaryPack.encode(test);
-    int[] oldTest = IntegratedBinaryPack.decode(newTest);
+    int[] newTest = new IntegratedBinaryPack().encode(test);
+    int[] oldTest = new IntegratedBinaryPack().decode(newTest);
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 

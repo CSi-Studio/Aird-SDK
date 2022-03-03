@@ -55,12 +55,12 @@ public class TestLayers {
       long t1 = 0, t2 = 0;
       for (int i = 0; i < mzNum; i++) {
         long tempT = System.currentTimeMillis();
-        byte[] comMZ = ByteTrans.intToByte(IntegratedBinaryPack.encode(mzGroup.get(i)));
+        byte[] comMZ = ByteTrans.intToByte(new IntegratedBinaryPack().encode(mzGroup.get(i)));
         t1 += (System.currentTimeMillis() - tempT);
 //                System.out.println(System.currentTimeMillis() - tempT);
         comMZs.add(comMZ);
         long tempT2 = System.currentTimeMillis();
-        IntegratedBinaryPack.decode(ByteTrans.byteToInt(comMZ));
+        new IntegratedBinaryPack().decode(ByteTrans.byteToInt(comMZ));
         t2 += (System.currentTimeMillis() - tempT2);
 //                System.out.println(System.currentTimeMillis() - tempT2);
       }

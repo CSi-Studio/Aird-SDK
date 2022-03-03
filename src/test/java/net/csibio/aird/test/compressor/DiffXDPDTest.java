@@ -121,7 +121,7 @@ public class DiffXDPDTest {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(Zlib.encode(bytes).length);
+      compressedSize.getAndAdd(new Zlib().encode(bytes).length);
     });
     System.out.println(
         "Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
