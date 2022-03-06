@@ -5,7 +5,7 @@ import me.lemire.integercompression.differential.IntegratedIntCompressor;
 /**
  * 入参必须是有序数组,经过SIMD优化的算法
  */
-public class IntegratedBinaryPack {
+public class IntegratedBinaryPack implements IntComp {
 
   /**
    * compress the data with fastpfor algorithm
@@ -14,7 +14,6 @@ public class IntegratedBinaryPack {
    * @return compressed data
    */
   public int[] encode(int[] uncompressed) {
-
     int[] compressed = new IntegratedIntCompressor().compress(uncompressed);
     return compressed;
   }

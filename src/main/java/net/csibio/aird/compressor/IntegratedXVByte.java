@@ -1,4 +1,4 @@
-package net.csibio.aird.compressor.ints;
+package net.csibio.aird.compressor;
 
 import me.lemire.integercompression.differential.IntegratedIntCompressor;
 import me.lemire.integercompression.differential.IntegratedVariableByte;
