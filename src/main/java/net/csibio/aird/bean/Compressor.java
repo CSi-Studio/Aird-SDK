@@ -23,24 +23,14 @@ public class Compressor {
    */
   public static String TARGET_MZ = "mz";
   public static String TARGET_INTENSITY = "intensity";
-
-  /**
-   * 目前支持的压缩算法,包括无损的zlib,pFor算法以及有损的log10算法 The compression algorithms. Now support for zlib,
-   * fastPFor and log10 algorithms
-   */
-  public static String METHOD_ZLIB = "zlib";
-  public static String METHOD_STACK_ZDPD = "Stack-ZDPD";
-  public static String METHOD_ZDVB = "ZDVB";
-  public static String METHOD_ZVB = "ZVB";
-  public static String METHOD_ZDPD = "ZDPD";
+  public static String TARGET_MOBILITY = "mobility";
 
   /**
    * 数组中mz和intensity的精度,1000代表精确到小数点后4位,10代表精确到小数点后1位 The default precision for m/z is 4dp. The
    * default precision for intensity is 1dp
    */
-  public static int PRECISION_MZ = 10000;
-  public static int PRECISION_INT = 10;
-
+  public static int PRECISION_MZ = 100000;
+  
   /**
    * 压缩对象,支持mz和intensity两种 Compression Target. Support for mz array and intensity array
    */

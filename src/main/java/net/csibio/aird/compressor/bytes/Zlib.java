@@ -9,6 +9,7 @@ public class Zlib implements ByteComp {
 
   static int BUFFER_SIZE = 2048;
 
+  @Override
   public byte[] encode(byte[] input) {
     Deflater compressor = new Deflater();
     compressor.reset();
@@ -33,10 +34,12 @@ public class Zlib implements ByteComp {
     return new byte[0];
   }
 
+  @Override
   public byte[] decode(byte[] input) {
     return decode(input, 0, input.length);
   }
 
+  @Override
   public byte[] decode(byte[] input, int offset, int length) {
     Inflater inflater = new Inflater();
     inflater.setInput(input, offset, length);

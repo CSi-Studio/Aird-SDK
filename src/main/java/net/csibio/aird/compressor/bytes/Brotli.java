@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 public class Brotli implements ByteComp {
 
+  @Override
   public byte[] encode(byte[] input) {
     Brotli4jLoader.ensureAvailability();
     try {
@@ -24,6 +25,7 @@ public class Brotli implements ByteComp {
     return null;
   }
 
+  @Override
   public byte[] decode(byte[] input) {
     Brotli4jLoader.ensureAvailability();
     try {
@@ -37,6 +39,7 @@ public class Brotli implements ByteComp {
     return null;
   }
 
+  @Override
   public byte[] decode(byte[] input, int offset, int length) {
     Brotli4jLoader.ensureAvailability();
     try {

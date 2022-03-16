@@ -1,9 +1,9 @@
 package net.csibio.aird.compressor.ints;
 
-import me.lemire.integercompression.differential.IntegratedIntCompressor;
-import me.lemire.integercompression.differential.IntegratedVariableByte;
+import me.lemire.integercompression.BinaryPacking;
+import me.lemire.integercompression.IntCompressor;
 
-public class IntegratedVarByte implements IntComp {
+public class BinPacking implements IntComp {
 
   /**
    * Delta+VByte+ByteCompressor Encoder. Default ByteCompressor is Zlib. The compress target must be
@@ -14,15 +14,13 @@ public class IntegratedVarByte implements IntComp {
    */
   @Override
   public int[] encode(int[] uncompressed) {
-    int[] compressedInts = new IntegratedIntCompressor(new IntegratedVariableByte()).compress(
-        uncompressed);
+    int[] compressedInts = new IntCompressor(new BinaryPacking()).compress(uncompressed);
     return compressedInts;
   }
 
   @Override
   public int[] decode(int[] compressed) {
-    int[] uncompressed = new IntegratedIntCompressor(new IntegratedVariableByte()).uncompress(
-        compressed);
+    int[] uncompressed = new IntCompressor(new BinaryPacking()).uncompress(compressed);
     return uncompressed;
   }
 }

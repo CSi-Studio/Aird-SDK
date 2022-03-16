@@ -22,6 +22,9 @@ import net.csibio.aird.enums.MsLevel;
 @Data
 public class AirdInfo {
 
+  //Mobi保存的精度为小数点后7位
+  public final static int PRECISION_MOBI = 10000000;
+  
   /**
    * [核心字段] 数组压缩策略 [Core Field] Data Compression Strategies
    *
@@ -149,6 +152,11 @@ public class AirdInfo {
    * rt unit
    */
   String rtUnit;
+
+  /**
+   * ion mobility information
+   */
+  MobiInfo mobiInfo;
 
   /**
    * 特征键值对,详情见Features Pairs with key/value for extension features
