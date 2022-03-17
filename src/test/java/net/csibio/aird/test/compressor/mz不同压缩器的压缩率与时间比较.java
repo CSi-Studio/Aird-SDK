@@ -161,6 +161,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
       byte[] compressed = new Brotli().encode(bytes);
+      byte[] decompressed = new Brotli().decode(compressed);
       compressedSize.getAndAdd(compressed.length);
     });
     System.out.println(

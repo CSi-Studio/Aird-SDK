@@ -1,7 +1,6 @@
 package net.csibio.aird.compressor.bytes;
 
 import com.aayushatharva.brotli4j.Brotli4jLoader;
-import com.aayushatharva.brotli4j.decoder.Decoder;
 import com.aayushatharva.brotli4j.decoder.DecoderJNI;
 import com.aayushatharva.brotli4j.decoder.DirectDecompress;
 import com.aayushatharva.brotli4j.encoder.Encoder;
@@ -10,14 +9,17 @@ import java.util.Arrays;
 
 public class Brotli implements ByteComp {
 
+  static {
+    Brotli4jLoader.ensureAvailability();
+  }
+
   @Override
   public byte[] encode(byte[] input) {
-    Brotli4jLoader.ensureAvailability();
     try {
       Parameters params = new Parameters();
 //      params.setMode(-1);
-      params.setQuality(5); //[0,11] or -1
-      params.setWindow(12);
+//      params.setQuality(5); //[0,11] or -1
+//      params.setWindow(12);
       return Encoder.compress(input, params);
     } catch (Exception e) {
       e.printStackTrace();
@@ -27,9 +29,8 @@ public class Brotli implements ByteComp {
 
   @Override
   public byte[] decode(byte[] input) {
-    Brotli4jLoader.ensureAvailability();
     try {
-      DirectDecompress directDecompress = Decoder.decompress(input);
+      DirectDecompress directDecompress = DirectDecompress.decompress(input);
       if (directDecompress.getResultStatus() == DecoderJNI.Status.DONE) {
         return directDecompress.getDecompressedData();
       }
@@ -41,16 +42,6 @@ public class Brotli implements ByteComp {
 
   @Override
   public byte[] decode(byte[] input, int offset, int length) {
-    Brotli4jLoader.ensureAvailability();
-    try {
-      DirectDecompress directDecompress = Decoder.decompress(
-          Arrays.copyOfRange(input, offset, offset + length));
-      if (directDecompress.getResultStatus() == DecoderJNI.Status.DONE) {
-        return directDecompress.getDecompressedData();
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
+    return decode(Arrays.copyOfRange(input, offset, offset + length));
   }
 }

@@ -30,5 +30,4 @@ public class Snappier implements ByteComp {
   public byte[] decode(byte[] input, int offset, int length) {
     return decode(Arrays.copyOfRange(input, offset, offset + length));
   }
-
 }

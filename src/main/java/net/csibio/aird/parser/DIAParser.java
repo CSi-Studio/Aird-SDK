@@ -65,48 +65,6 @@ public class DIAParser extends BaseParser {
   }
 
   /**
-   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
-   * <p>
-   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
-   * will not close the RAF object directly after using it. Users need to close the object manually
-   * after using the diaparser object
-   *
-   * @param startPtr    起始指针位置 start point
-   * @param endPtr      结束指针位置 end point
-   * @param rtList      rt列表,包含所有的光谱产出时刻 the retention time list
-   * @param mzSizeList  mz块的大小列表 the mz block size list
-   * @param intSizeList intensity块的大小列表 the intensity block size list
-   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
-   */
-  @Override
-  public TreeMap<Float, Spectrum<double[]>> getSpectra(long startPtr, long endPtr,
-      List<Float> rtList,
-      List<Integer> mzSizeList, List<Integer> intSizeList) {
-
-    try {
-      TreeMap<Float, Spectrum<double[]>> map = new TreeMap<>();
-      raf.seek(startPtr);
-      long delta = endPtr - startPtr;
-      byte[] result = new byte[(int) delta];
-      raf.read(result);
-
-      int start = 0;
-      for (int i = 0; i < rtList.size(); i++) {
-        float[] intensityArray = null;
-        double[] mzArray = getMzs(result, start, mzSizeList.get(i));
-        start = start + mzSizeList.get(i);
-        intensityArray = getIntValues(result, start, intSizeList.get(i));
-        start = start + intSizeList.get(i);
-        map.put(rtList.get(i), new Spectrum<double[]>(mzArray, intensityArray));
-      }
-      return map;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
-  /**
    * 从aird文件中获取某一条记录 查询条件: 1.起始坐标 2.全rt列表 3.mz块体积列表 4.intensity块大小列表 5.rt
    * <p>
    * Read a spectrum from aird with multiple query criteria. Query Criteria: 1.Start Point 2.rt list

@@ -77,7 +77,7 @@
       <artifactId>brotli4j</artifactId>
       <version>1.6.0</version>
     </dependency>
-
+    
     <dependency>
       <groupId>com.github.luben</groupId>
       <artifactId>zstd-jni</artifactId>

@@ -205,23 +205,27 @@ public abstract class BaseParser {
     this.type = airdType;
   }
 
-  public static BaseParser buildParser(String indexPath) throws Exception {
-    File indexFile = new File(indexPath);
+  public static BaseParser buildParser(File indexFile) throws Exception {
     if (indexFile.exists() && indexFile.canRead()) {
       AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
       if (airdInfo == null) {
         throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
       }
       return switch (AirdType.getType(airdInfo.getType())) {
-        case DDA -> new DDAParser(indexPath, airdInfo);
-        case DIA -> new DIAParser(indexPath, airdInfo);
-        case PRM -> new PRMParser(indexPath, airdInfo);
-        case COMMON -> new CommonParser(indexPath, airdInfo);
+        case DDA -> new DDAParser(indexFile.getAbsolutePath(), airdInfo);
+        case DIA -> new DIAParser(indexFile.getAbsolutePath(), airdInfo);
+        case PRM -> new PRMParser(indexFile.getAbsolutePath(), airdInfo);
+        case COMMON -> new CommonParser(indexFile.getAbsolutePath(), airdInfo);
         default -> throw new IllegalStateException(
             "Unexpected value: " + AirdType.getType(airdInfo.getType()));
       };
     }
     throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+  }
+
+  public static BaseParser buildParser(String indexPath) throws Exception {
+    File indexFile = new File(indexPath);
+    return buildParser(indexFile);
   }
 
   /**
@@ -353,21 +357,28 @@ public abstract class BaseParser {
    * @param intOffsets intensity块的大小列表 the intensity block size list
    * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
    */
+  int a = 0;
+  int b = 0;
+
   public TreeMap<Float, Spectrum<double[]>> getSpectra(long start, long end, List<Float> rtList,
       List<Integer> mzOffsets, List<Integer> intOffsets) {
 
     TreeMap<Float, Spectrum<double[]>> map = new TreeMap<>();
     try {
+      long tempA = System.currentTimeMillis();
       raf.seek(start);
       long delta = end - start;
       byte[] result = new byte[(int) delta];
       raf.read(result);
+      a += (System.currentTimeMillis() - tempA);
 
+      long tempB = System.currentTimeMillis();
       int iter = 0;
       for (int i = 0; i < rtList.size(); i++) {
         map.put(rtList.get(i), getSpectrum(result, iter, mzOffsets.get(i), intOffsets.get(i)));
         iter = iter + mzOffsets.get(i) + intOffsets.get(i);
       }
+      b += System.currentTimeMillis() - tempB;
       return map;
     } catch (Exception e) {
       e.printStackTrace();
@@ -438,8 +449,7 @@ public abstract class BaseParser {
 
       int iter = 0;
       for (int i = 0; i < rtList.size(); i++) {
-        map.put(rtList.get(i),
-            getSpectrumAsInteger(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+        getSpectrumAsInteger(result, iter, mzOffsets.get(i), intOffsets.get(i));
         iter = iter + mzOffsets.get(i) + intOffsets.get(i);
       }
       return map;
@@ -450,6 +460,9 @@ public abstract class BaseParser {
   }
 
   public Spectrum<double[]> getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
+    if (mzOffset == 0) {
+      return new Spectrum<double[]>(new double[0], new float[0]);
+    }
     double[] mzArray = getMzs(bytes, offset, mzOffset);
     offset = offset + mzOffset;
     float[] intensityArray = getIntValues(bytes, offset, intOffset);
@@ -458,7 +471,9 @@ public abstract class BaseParser {
 
   public Spectrum<float[]> getSpectrumAsFloat(byte[] bytes, int offset, int mzOffset,
       int intOffset) {
-
+    if (mzOffset == 0) {
+      return new Spectrum<float[]>(new float[0], new float[0]);
+    }
     float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
     offset = offset + mzOffset;
     float[] intensityArray = getIntValues(bytes, offset, intOffset);
@@ -467,7 +482,9 @@ public abstract class BaseParser {
 
   public Spectrum<int[]> getSpectrumAsInteger(byte[] bytes, int offset, int mzOffset,
       int intOffset) {
-
+    if (mzOffset == 0) {
+      return new Spectrum<int[]>(new int[0], new float[0]);
+    }
     int[] mzArray = getMzsAsInteger(bytes, offset, mzOffset);
     offset = offset + mzOffset;
     float[] intensityArray = getIntValues(bytes, offset, intOffset);
