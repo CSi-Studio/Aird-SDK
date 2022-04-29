@@ -1,6 +1,6 @@
 package net.csibio.aird.test;
 
-import static net.csibio.aird.compressor.CompressorType.Zlib;
+import static net.csibio.aird.enums.ByteCompType.Zlib;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -14,7 +14,7 @@ import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.compressor.XDPD;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
@@ -127,10 +127,10 @@ public class CompV3Test {
     AtomicLong intOri = new AtomicLong(0);
     AtomicLong process = new AtomicLong(0);
 //    List<CompressorType> byteTypes = Arrays.asList(Zlib, CompressorType.Gzip, CompressorType.LZMA2, CompressorType.Sna);
-    List<CompressorType> byteTypes = Arrays.asList(Zlib);
+    List<ByteCompType> byteTypes = Arrays.asList(Zlib);
     ConcurrentHashMap<String, AtomicLong> mzMap = new ConcurrentHashMap<>();
     ConcurrentHashMap<String, AtomicLong> intMap = new ConcurrentHashMap<>();
-    for (CompressorType value : byteTypes) {
+    for (ByteCompType value : byteTypes) {
       mzMap.put(value.name(), new AtomicLong(0));
       intMap.put(value.name(), new AtomicLong(0));
     }
@@ -162,14 +162,14 @@ public class CompV3Test {
     });
 
     StringBuilder algorithms = new StringBuilder("    Ori/");
-    for (CompressorType value : byteTypes) {
+    for (ByteCompType value : byteTypes) {
       algorithms.append(value.name()).append("/");
     }
     algorithms.append("ZDPD/");
     System.out.println(algorithms);
     StringBuilder mzs = new StringBuilder("mz: " + mzOri.get() / MB + "/");
     StringBuilder ints = new StringBuilder("int:" + intOri.get() / MB + "/");
-    for (CompressorType value : byteTypes) {
+    for (ByteCompType value : byteTypes) {
       mzs.append(mzMap.get(value.name()).get() / MB).append(" /");
       ints.append(intMap.get(value.name()).get() / MB).append(" /");
     }

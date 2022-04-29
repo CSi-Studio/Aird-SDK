@@ -21,19 +21,13 @@ import lombok.Data;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.compressor.CompressorType;
-import net.csibio.aird.compressor.bytes.Brotli;
+import net.csibio.aird.compressor.ints.*;
+import net.csibio.aird.enums.*;
+import net.csibio.aird.compressor.bytes.BrotliWrapper;
 import net.csibio.aird.compressor.bytes.ByteComp;
-import net.csibio.aird.compressor.bytes.Snappier;
-import net.csibio.aird.compressor.bytes.ZSTD;
-import net.csibio.aird.compressor.bytes.Zlib;
-import net.csibio.aird.compressor.ints.BinPacking;
-import net.csibio.aird.compressor.ints.IntComp;
-import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
-import net.csibio.aird.compressor.ints.IntegratedVarByte;
-import net.csibio.aird.compressor.ints.VarByte;
-import net.csibio.aird.enums.AirdType;
-import net.csibio.aird.enums.ResultCodeEnum;
+import net.csibio.aird.compressor.bytes.SnappyWrapper;
+import net.csibio.aird.compressor.bytes.ZstdWrapper;
+import net.csibio.aird.compressor.bytes.ZlibWrapper;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
 import net.csibio.aird.util.FileUtil;
@@ -279,35 +273,34 @@ public abstract class BaseParser {
   public void initCompressor() throws Exception {
     List<String> mzMethods = mzCompressor.getMethods();
     if (mzMethods.size() == 2) {
-      switch (CompressorType.getByName(mzMethods.get(0))) {
+      switch (SortedIntCompType.getByName(mzMethods.get(0))) {
         case IBP -> mzIntComp = new IntegratedBinaryPack();
         case IVB -> mzIntComp = new IntegratedVarByte();
-        case Unknown -> throw new Exception("Unknown mz integer compressor");
         default -> throw new Exception("Unknown mz integer compressor");
       }
-      switch (CompressorType.getByName(mzMethods.get(1))) {
-        case Zlib -> mzByteComp = new Zlib();
-        case Brotli -> mzByteComp = new Brotli();
-        case Snappy -> mzByteComp = new Snappier();
-        case Zstd -> mzByteComp = new ZSTD();
+      switch (ByteCompType.getByName(mzMethods.get(1))) {
+        case Zlib -> mzByteComp = new ZlibWrapper();
+        case Brotli -> mzByteComp = new BrotliWrapper();
+        case Snappy -> mzByteComp = new SnappyWrapper();
+        case Zstd -> mzByteComp = new ZstdWrapper();
         case Unknown -> throw new Exception("Unknown mz byte compressor");
         default -> throw new Exception("Unknown mz byte compressor");
       }
     }
     List<String> intMethods = intCompressor.getMethods();
     if (intMethods.size() == 2) {
-      switch (CompressorType.getByName(intMethods.get(0))) {
+      switch (IntCompType.getByName(intMethods.get(0))) {
         case VB -> intIntComp = new VarByte();
         case BP -> intIntComp = new BinPacking();
-        case Unknown -> throw new Exception("Unknown intensity integer compressor");
+        case Empty -> intIntComp = new Empty();
         default -> throw new Exception("Unknown intensity integer compressor");
       }
 
-      switch (CompressorType.getByName(intMethods.get(1))) {
-        case Zlib -> intByteComp = new Zlib();
-        case Brotli -> intByteComp = new Brotli();
-        case Snappy -> intByteComp = new Snappier();
-        case Zstd -> intByteComp = new ZSTD();
+      switch (ByteCompType.getByName(intMethods.get(1))) {
+        case Zlib -> intByteComp = new ZlibWrapper();
+        case Brotli -> intByteComp = new BrotliWrapper();
+        case Snappy -> intByteComp = new SnappyWrapper();
+        case Zstd -> intByteComp = new ZstdWrapper();
         case Unknown -> throw new Exception("Unknown intensity byte compressor");
         default -> throw new Exception("Unknown intensity byte compressor");
       }
@@ -315,18 +308,18 @@ public abstract class BaseParser {
     if (mobiCompressor != null) {
       List<String> mobiMethods = mobiCompressor.getMethods();
       if (mobiMethods.size() == 2) {
-        switch (CompressorType.getByName(mobiMethods.get(0))) {
+        switch (IntCompType.getByName(mobiMethods.get(0))) {
           case VB -> mobiIntComp = new VarByte();
           case BP -> mobiIntComp = new BinPacking();
-          case Unknown -> throw new Exception("Unknown mobi integer compressor");
+          case Empty -> mobiIntComp = new Empty();
           default -> throw new Exception("Unknown mobi integer compressor");
         }
 
-        switch (CompressorType.getByName(mobiMethods.get(1))) {
-          case Zlib -> mobiByteComp = new Zlib();
-          case Brotli -> mobiByteComp = new Brotli();
-          case Snappy -> mobiByteComp = new Snappier();
-          case Zstd -> mobiByteComp = new ZSTD();
+        switch (ByteCompType.getByName(mobiMethods.get(1))) {
+          case Zlib -> mobiByteComp = new ZlibWrapper();
+          case Brotli -> mobiByteComp = new BrotliWrapper();
+          case Snappy -> mobiByteComp = new SnappyWrapper();
+          case Zstd -> mobiByteComp = new ZstdWrapper();
           case Unknown -> throw new Exception("Unknown mobi byte compressor");
           default -> throw new Exception("Unknown mobi byte compressor");
         }
@@ -601,7 +594,7 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public int[] getTags(byte[] value) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(new Zlib().decode(value));
+    ByteBuffer byteBuffer = ByteBuffer.wrap(new ZlibWrapper().decode(value));
     byteBuffer.order(mzCompressor.fetchByteOrder());
 
     byte[] byteValue = new byte[byteBuffer.capacity() * 8];
@@ -630,7 +623,7 @@ public abstract class BaseParser {
    * @return 解压缩后的数组
    */
   public int[] getTags(byte[] value, int start, int length) {
-    byte[] tagShift = new Zlib().decode(value, start, length);
+    byte[] tagShift = new ZlibWrapper().decode(value, start, length);
 //        byteBuffer.order(mzCompressor.getByteOrder());
 
     byte[] byteValue = new byte[tagShift.length * 8];

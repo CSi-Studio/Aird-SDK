@@ -14,13 +14,13 @@ import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.compressor.IntegratedXVByte;
 import net.csibio.aird.compressor.XDPD;
-import net.csibio.aird.compressor.bytes.Brotli;
-import net.csibio.aird.compressor.bytes.Snappier;
-import net.csibio.aird.compressor.bytes.ZSTD;
-import net.csibio.aird.compressor.bytes.Zlib;
+import net.csibio.aird.compressor.bytes.BrotliWrapper;
+import net.csibio.aird.compressor.bytes.SnappyWrapper;
+import net.csibio.aird.compressor.bytes.ZstdWrapper;
+import net.csibio.aird.compressor.bytes.ZlibWrapper;
 import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.parser.DDAParser;
@@ -160,8 +160,8 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      byte[] compressed = new Brotli().encode(bytes);
-      byte[] decompressed = new Brotli().decode(compressed);
+      byte[] compressed = new BrotliWrapper().encode(bytes);
+      byte[] decompressed = new BrotliWrapper().decode(compressed);
       compressedSize.getAndAdd(compressed.length);
     });
     System.out.println(
@@ -174,7 +174,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(new Zlib().encode(bytes).length);
+      compressedSize.getAndAdd(new ZlibWrapper().encode(bytes).length);
     });
     System.out.println(
         "Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -188,7 +188,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     intsList.parallelStream().forEach(ints -> {
       try {
         byte[] bytes = BitShuffle.shuffle(ints);
-        compressedSize.getAndAdd(new Snappier().encode(bytes).length);
+        compressedSize.getAndAdd(new SnappyWrapper().encode(bytes).length);
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -203,7 +203,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(new ZSTD().encode(bytes).length);
+      compressedSize.getAndAdd(new ZstdWrapper().encode(bytes).length);
     });
     System.out.println(
         "ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -215,7 +215,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(new ZSTD().encode(bytes).length);
+      compressedSize.getAndAdd(new ZstdWrapper().encode(bytes).length);
     });
     System.out.println(
         "LZ4:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -251,7 +251,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      byte[] res = XDPD.encode(ints, CompressorType.Zlib);
+      byte[] res = XDPD.encode(ints, ByteCompType.Zlib);
       compressedSize.getAndAdd(res.length);
       int[] sortedInts = XDPD.decode(res);
       boolean isSame = Arrays.equals(sortedInts, ints);
@@ -267,7 +267,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Brotli).length);
+      compressedSize.getAndAdd(XDPD.encode(ints, ByteCompType.Brotli).length);
     });
     System.out.println(
         "ZDPD-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -279,7 +279,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Snappy).length);
+      compressedSize.getAndAdd(XDPD.encode(ints, ByteCompType.Snappy).length);
     });
     System.out.println(
         "ZDPD-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -291,7 +291,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
-      compressedSize.getAndAdd(XDPD.encode(ints, CompressorType.Zstd).length);
+      compressedSize.getAndAdd(XDPD.encode(ints, ByteCompType.Zstd).length);
     });
     System.out.println(
         "ZDPD-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -321,7 +321,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
       compressedSize.getAndAdd(
-          new IntegratedXVByte().encode(ints, CompressorType.Brotli).length);
+          new IntegratedXVByte().encode(ints, ByteCompType.Brotli).length);
     });
     System.out.println(
         "XDVB-Brotli:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -334,7 +334,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
       compressedSize.getAndAdd(
-          new IntegratedXVByte().encode(ints, CompressorType.Snappy).length);
+          new IntegratedXVByte().encode(ints, ByteCompType.Snappy).length);
     });
     System.out.println(
         "XDVB-Snappy:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB
@@ -347,7 +347,7 @@ public class mz不同压缩器的压缩率与时间比较 {
     AtomicLong compressedSize = new AtomicLong(0);
     intsList.parallelStream().forEach(ints -> {
       compressedSize.getAndAdd(
-          new IntegratedXVByte().encode(ints, CompressorType.Zstd).length);
+          new IntegratedXVByte().encode(ints, ByteCompType.Zstd).length);
     });
     System.out.println(
         "XDVB-ZSTD:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB

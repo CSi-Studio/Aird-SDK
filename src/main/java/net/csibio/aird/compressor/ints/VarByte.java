@@ -2,8 +2,14 @@ package net.csibio.aird.compressor.ints;
 
 import me.lemire.integercompression.IntCompressor;
 import me.lemire.integercompression.VariableByte;
+import net.csibio.aird.enums.IntCompType;
 
 public class VarByte implements IntComp {
+
+  @Override
+  public String getName() {
+    return IntCompType.VB.getName();
+  }
 
   /**
    * Delta+VByte+ByteCompressor Encoder. Default ByteCompressor is Zlib. The compress target must be

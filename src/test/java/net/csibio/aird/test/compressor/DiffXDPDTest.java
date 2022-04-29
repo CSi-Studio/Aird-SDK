@@ -12,7 +12,7 @@ import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytes.Zlib;
+import net.csibio.aird.compressor.bytes.ZlibWrapper;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.parser.DIAParser;
@@ -121,7 +121,7 @@ public class DiffXDPDTest {
     long start = System.currentTimeMillis();
     AtomicLong compressedSize = new AtomicLong(0);
     bytesList.parallelStream().forEach(bytes -> {
-      compressedSize.getAndAdd(new Zlib().encode(bytes).length);
+      compressedSize.getAndAdd(new ZlibWrapper().encode(bytes).length);
     });
     System.out.println(
         "Zlib:" + (System.currentTimeMillis() - start) + "|" + compressedSize.get() / MB

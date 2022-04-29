@@ -5,12 +5,22 @@ import com.aayushatharva.brotli4j.decoder.DecoderJNI;
 import com.aayushatharva.brotli4j.decoder.DirectDecompress;
 import com.aayushatharva.brotli4j.encoder.Encoder;
 import com.aayushatharva.brotli4j.encoder.Encoder.Parameters;
+import net.csibio.aird.enums.ByteCompType;
+
 import java.util.Arrays;
 
-public class Brotli implements ByteComp {
+/**
+ * @author lms
+ */
+public class BrotliWrapper implements ByteComp {
 
   static {
     Brotli4jLoader.ensureAvailability();
+  }
+
+  @Override
+  public String getName() {
+    return ByteCompType.Brotli.getName();
   }
 
   @Override

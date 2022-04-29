@@ -3,11 +3,18 @@ package net.csibio.aird.compressor.bytes;
 import java.io.ByteArrayOutputStream;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+
+import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.util.FileUtil;
 
-public class Zlib implements ByteComp {
+public class ZlibWrapper implements ByteComp {
 
   static int BUFFER_SIZE = 2048;
+
+  @Override
+  public String getName() {
+    return ByteCompType.Zlib.getName();
+  }
 
   @Override
   public byte[] encode(byte[] input) {

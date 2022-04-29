@@ -6,7 +6,7 @@ import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.compressor.XDPD;
 import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
@@ -37,11 +37,11 @@ public class SizeTest {
         AtomicLong mzOri = new AtomicLong(0);
         AtomicLong intOri = new AtomicLong(0);
         AtomicLong spectrumSize = new AtomicLong(0);
-        List<CompressorType> byteTypes = Arrays.asList(CompressorType.Zlib,
-                CompressorType.Snappy, CompressorType.Brotli);
+        List<ByteCompType> byteTypes = Arrays.asList(ByteCompType.Zlib,
+                ByteCompType.Snappy, ByteCompType.Brotli);
         ConcurrentHashMap<String, AtomicLong> mzMap = new ConcurrentHashMap<>();
         ConcurrentHashMap<String, AtomicLong> intMap = new ConcurrentHashMap<>();
-        for (CompressorType value : byteTypes) {
+        for (ByteCompType value : byteTypes) {
             mzMap.put(value.name(), new AtomicLong(0));
             intMap.put(value.name(), new AtomicLong(0));
         }
@@ -64,7 +64,7 @@ public class SizeTest {
 
                 mzOri.getAndAdd(mzBytes.length);
                 intOri.getAndAdd(intBytes.length);
-                for (CompressorType value : byteTypes) {
+                for (ByteCompType value : byteTypes) {
                     ByteCompressor compressor = new ByteCompressor(value);
                     byte[] mzCompBytes = compressor.encode(mzBytes);
                     mzMap.get(value.name()).getAndAdd(mzCompBytes.length);
@@ -73,17 +73,17 @@ public class SizeTest {
                 }
 
                 mzMap.get("ZDPD").getAndAdd(
-                        XDPD.encode(spectrum.getMzs(), precision, CompressorType.Zlib).length);
+                        XDPD.encode(spectrum.getMzs(), precision, ByteCompType.Zlib).length);
                 mzMap.get("BDPD").getAndAdd(
-                        XDPD.encode(spectrum.getMzs(), precision, CompressorType.Brotli).length);
+                        XDPD.encode(spectrum.getMzs(), precision, ByteCompType.Brotli).length);
                 mzMap.get("SDPD").getAndAdd(
-                        XDPD.encode(spectrum.getMzs(), precision, CompressorType.Snappy).length);
+                        XDPD.encode(spectrum.getMzs(), precision, ByteCompType.Snappy).length);
             });
             System.out.println("当前处理:" + k + "/" + indexList.size());
         }
 
         StringBuilder algorithms = new StringBuilder("|Type|Ori|");
-        for (CompressorType value : byteTypes) {
+        for (ByteCompType value : byteTypes) {
             algorithms.append(value.name()).append("|");
         }
         algorithms.append("ZDPD|").append("BDPD|").append("SDPD|");
@@ -92,7 +92,7 @@ public class SizeTest {
         System.out.println("|----------|--------|----------|-------------------|");
         StringBuilder mzs = new StringBuilder("|mz| " + mzOri.get() / MB + "|");
         StringBuilder ints = new StringBuilder("|int|" + intOri.get() / MB + "|");
-        for (CompressorType value : byteTypes) {
+        for (ByteCompType value : byteTypes) {
             mzs.append(mzMap.get(value.name()).get() / MB).append(" |");
             ints.append(intMap.get(value.name()).get() / MB).append(" |");
         }

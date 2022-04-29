@@ -3,9 +3,16 @@ package net.csibio.aird.compressor.bytes;
 import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdDictCompress;
 import com.github.luben.zstd.ZstdDictDecompress;
+import net.csibio.aird.enums.ByteCompType;
+
 import java.util.Arrays;
 
-public class ZSTD implements ByteComp {
+public class ZstdWrapper implements ByteComp {
+
+  @Override
+  public String getName() {
+    return ByteCompType.Zstd.getName();
+  }
 
   @Override
   public byte[] encode(byte[] input) {

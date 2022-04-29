@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 import net.csibio.aird.bean.Layers;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytes.Zlib;
+import net.csibio.aird.compressor.bytes.ZlibWrapper;
 import net.csibio.aird.compressor.ints.IntegratedBinaryPack;
 import org.apache.commons.math3.util.FastMath;
 
@@ -72,7 +72,7 @@ public class StackCompressUtil {
     //数组用fastPFor压缩，index用zlib压缩，并记录层数
     Layers layers = new Layers();
     layers.setMzArray(ByteTrans.intToByte(new IntegratedBinaryPack().encode(stackArr)));
-    layers.setTagArray(new Zlib().encode(indexShift));
+    layers.setTagArray(new ZlibWrapper().encode(indexShift));
     layers.setDigit(digit);
     return layers;
   }
@@ -86,7 +86,7 @@ public class StackCompressUtil {
   public static List<int[]> stackDecode(Layers layers) {
     int[] stackArr = new IntegratedBinaryPack().decode(ByteTrans.byteToInt(layers.getMzArray()));
     int[] stackIndex = new int[stackArr.length];
-    byte[] indexShift = new Zlib().decode(layers.getTagArray());
+    byte[] indexShift = new ZlibWrapper().decode(layers.getTagArray());
     int digit = layers.getDigit();
     //拆分byte为8个bit，并分别存储
     byte[] value = new byte[8 * indexShift.length];

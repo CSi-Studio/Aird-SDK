@@ -2,8 +2,14 @@ package net.csibio.aird.compressor.ints;
 
 import me.lemire.integercompression.BinaryPacking;
 import me.lemire.integercompression.IntCompressor;
+import net.csibio.aird.enums.IntCompType;
 
 public class BinPacking implements IntComp {
+
+  @Override
+  public String getName() {
+    return IntCompType.BP.getName();
+  }
 
   /**
    * Delta+VByte+ByteCompressor Encoder. Default ByteCompressor is Zlib. The compress target must be

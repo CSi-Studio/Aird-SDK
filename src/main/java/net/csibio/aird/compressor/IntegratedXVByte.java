@@ -2,9 +2,7 @@ package net.csibio.aird.compressor;
 
 import me.lemire.integercompression.differential.IntegratedIntCompressor;
 import me.lemire.integercompression.differential.IntegratedVariableByte;
-import net.csibio.aird.compressor.ByteCompressor;
-import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.CompressorType;
+import net.csibio.aird.enums.ByteCompType;
 
 public class IntegratedXVByte {
 
@@ -16,7 +14,7 @@ public class IntegratedXVByte {
    * @return the compressed data
    */
   public byte[] encode(int[] sortedInts) {
-    return encode(sortedInts, CompressorType.Zlib);
+    return encode(sortedInts, ByteCompType.Zlib);
   }
 
   /**
@@ -25,7 +23,7 @@ public class IntegratedXVByte {
    * @param sortedInts the sorted integers
    * @return the compressed data
    */
-  public byte[] encode(int[] sortedInts, CompressorType byteCompType) {
+  public byte[] encode(int[] sortedInts, ByteCompType byteCompType) {
     int[] compressedInts = new IntegratedIntCompressor(new IntegratedVariableByte()).compress(
         sortedInts);
     byte[] bytes = ByteTrans.intToByte(compressedInts);
@@ -39,7 +37,7 @@ public class IntegratedXVByte {
    * @return
    */
   public byte[] encode(double[] sortedFloats, double precision,
-      CompressorType compType) {
+      ByteCompType compType) {
     int[] sortedInts = new int[sortedFloats.length];
     for (int i = 0; i < sortedFloats.length; i++) {
       sortedInts[i] = (int) (precision * sortedFloats[i]);
@@ -48,10 +46,10 @@ public class IntegratedXVByte {
   }
 
   public int[] decode(byte[] bytes) {
-    return decode(bytes, CompressorType.Zlib);
+    return decode(bytes, ByteCompType.Zlib);
   }
 
-  public int[] decode(byte[] bytes, CompressorType type) {
+  public int[] decode(byte[] bytes, ByteCompType type) {
     byte[] decodeBytes = new ByteCompressor(type).decode(bytes);
     int[] zipInts = ByteTrans.byteToInt(decodeBytes);
     int[] sortedInts = new IntegratedIntCompressor(new IntegratedVariableByte()).uncompress(
