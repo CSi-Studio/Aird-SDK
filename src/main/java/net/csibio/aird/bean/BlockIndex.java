@@ -75,6 +75,11 @@ public class BlockIndex {
   List<Integer> ints;
 
   /**
+   * 一个块中所有子谱图的intenisty的压缩后的大小列表 every compressed intensity array's binary size in the block index
+   */
+  List<Integer> mobilities;
+
+  /**
    * PSI Controlled Vocabulary PSI可控词汇表
    */
   List<List<CV>> cvList;

@@ -86,7 +86,7 @@ public class CommonParser extends BaseParser {
             reader = new byte[(int) delta];
             raf.read(reader);
             float[] intensityArray = null;
-            intensityArray = getIntValues(reader);
+            intensityArray = getInts(reader);
             return new Spectrum<double[]>(mzArray, intensityArray);
 
         } catch (Exception e) {
