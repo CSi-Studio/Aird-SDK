@@ -36,7 +36,7 @@ public class DDAParserTest {
                 }
             });
 
-            System.out.println("理论光谱图数目:" + airdInfo.getTotalScanCount() + "");
+            System.out.println("理论光谱图数目:" + airdInfo.getTotalCount() + "");
             System.out.println("实际光谱图数目:" + total.get() + "");
         } catch (Exception e) {
             e.printStackTrace();
