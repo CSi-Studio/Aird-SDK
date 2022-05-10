@@ -49,7 +49,7 @@ public class 解压缩时间测试 {
         String path = "D:\\AirdTest";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
-            if (file.getName().equals("File1.json")) {
+            if (file.getName().equals("File10.json")) {
                 long start = System.currentTimeMillis();
                 DDAPasefParser parser = new DDAPasefParser(file.getAbsolutePath());
                 parser.readAllToMemory();
