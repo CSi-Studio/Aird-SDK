@@ -46,7 +46,7 @@ public class 解压缩时间测试 {
 
     @Test
     public void testZDPD1() throws Exception {
-        String path = "D:\\AirdTest";
+        String path = "D:\\AirdTest\\ComboComp";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
             if (file.getName().equals("File10.json")) {
