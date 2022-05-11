@@ -3,8 +3,8 @@ package net.csibio.aird.test.compressor;
 import com.github.luben.zstd.ZstdDictTrainer;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytes.ZstdWrapper;
-import net.csibio.aird.compressor.bytes.ZlibWrapper;
+import net.csibio.aird.compressor.bytecomp.ZlibWrapper;
+import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
 

@@ -13,10 +13,18 @@ package net.csibio.aird.parser;
 import lombok.Data;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.MobiInfo;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.bean.common.Spectrum4D;
-import net.csibio.aird.compressor.bytes.*;
-import net.csibio.aird.compressor.ints.*;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.bytecomp.*;
+import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
+import net.csibio.aird.compressor.intcomp.Empty;
+import net.csibio.aird.compressor.intcomp.IntComp;
+import net.csibio.aird.compressor.intcomp.VarByteWrapper;
+import net.csibio.aird.compressor.sortedintcomp.IntegratedBinPackingWrapper;
+import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
+import net.csibio.aird.compressor.sortedintcomp.SortedIntComp;
 import net.csibio.aird.enums.*;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
@@ -24,9 +32,11 @@ import net.csibio.aird.util.FileUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -69,7 +79,7 @@ public abstract class BaseParser {
     /**
      * 使用的压缩内核
      */
-    public IntComp mzIntComp;
+    public SortedIntComp mzIntComp;
     public ByteComp mzByteComp;
 
     public IntComp intIntComp;
@@ -84,14 +94,14 @@ public abstract class BaseParser {
     public double mzPrecision;
 
     /**
-     * the intensity precision, 1dp
+     * the intensity precision
      */
-    public double intPrecision = 10d;
+    public double intPrecision;
 
     /**
-     * the mobility precision, 7dp
+     * the mobility precision, default is 7dp
      */
-    public double mobiPrecision = 10000000d;
+    public double mobiPrecision;
 
     /**
      * Acquisition Method Type Supported by Aird
@@ -104,6 +114,7 @@ public abstract class BaseParser {
      * Random Access File reader
      */
     public RandomAccessFile raf;
+
 
     /**
      * 构造函数
@@ -130,12 +141,16 @@ public abstract class BaseParser {
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }
+
         mzCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MZ);
         intCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_INTENSITY);
         mobiCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MOBILITY);
         initCompressor();
         mzPrecision = mzCompressor.getPrecision();
+        intPrecision = intCompressor.getPrecision();
+        mobiPrecision = mobiCompressor.getPrecision();
         type = airdInfo.getType();
+        parseMobilityDict();
     }
 
     /**
@@ -163,7 +178,10 @@ public abstract class BaseParser {
         mobiCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MOBILITY);
         initCompressor();
         mzPrecision = mzCompressor.getPrecision();
+        intPrecision = intCompressor.getPrecision();
+        mobiPrecision = mobiCompressor.getPrecision();
         type = airdInfo.getType();
+        parseMobilityDict();
     }
 
     /**
@@ -193,8 +211,11 @@ public abstract class BaseParser {
         this.intCompressor = intCompressor;
         this.mobiCompressor = mobiCompressor;
         this.mzPrecision = mzPrecision;
+        this.intPrecision = intCompressor.getPrecision();
+        this.mobiPrecision = mobiCompressor.getPrecision();
         initCompressor();
         this.type = airdType;
+        parseMobilityDict();
     }
 
     public static BaseParser buildParser(File indexFile) throws Exception {
@@ -220,42 +241,6 @@ public abstract class BaseParser {
         return buildParser(indexFile);
     }
 
-    /**
-     * get the compressor for m/z
-     *
-     * @param compressors 压缩策略
-     * @return the m/z compressor
-     */
-    public static Compressor getMzCompressor(List<Compressor> compressors) {
-        if (compressors == null) {
-            return null;
-        }
-        for (Compressor compressor : compressors) {
-            if (compressor.getTarget().equals(Compressor.TARGET_MZ)) {
-                return compressor;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * get the intensity compressor for intensity
-     *
-     * @param compressors 压缩策略
-     * @return the intensity compressor
-     */
-    public static Compressor getIntCompressor(List<Compressor> compressors) {
-        if (compressors == null) {
-            return null;
-        }
-        for (Compressor compressor : compressors) {
-            if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)) {
-                return compressor;
-            }
-        }
-        return null;
-    }
-
     public static Compressor getTargetCompressor(List<Compressor> compressors, String target) {
         if (compressors == null) {
             return null;
@@ -268,12 +253,29 @@ public abstract class BaseParser {
         return null;
     }
 
+    public HashMap<Integer, Double> parseMobilityDict() throws IOException {
+        MobiInfo mobiInfo = airdInfo.getMobiInfo();
+        if ("TIMS".equals(mobiInfo.getType())) {
+            raf.seek(mobiInfo.getDictStart());
+            long delta = mobiInfo.getDictEnd() - mobiInfo.getDictStart();
+            byte[] result = new byte[(int) delta];
+            raf.read(result);
+            int[] mobiArray = new IntegratedVarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(result)));
+            double[] mobiDArray = new double[mobiArray.length];
+            for (int i = 0; i < mobiArray.length; i++) {
+                mobiDArray[i] = mobiArray[i] / mobiPrecision;
+            }
+            
+        }
+        return null;
+    }
+
     public void initCompressor() throws Exception {
         List<String> mzMethods = mzCompressor.getMethods();
         if (mzMethods.size() == 2) {
             switch (SortedIntCompType.getByName(mzMethods.get(0))) {
-                case IBP -> mzIntComp = new IntegratedBinaryPack();
-                case IVB -> mzIntComp = new IntegratedVarByte();
+                case IBP -> mzIntComp = new IntegratedBinPackingWrapper();
+                case IVB -> mzIntComp = new IntegratedVarByteWrapper();
                 default -> throw new Exception("Unknown mz integer compressor");
             }
             switch (ByteCompType.getByName(mzMethods.get(1))) {
@@ -281,15 +283,14 @@ public abstract class BaseParser {
                 case Brotli -> mzByteComp = new BrotliWrapper();
                 case Snappy -> mzByteComp = new SnappyWrapper();
                 case Zstd -> mzByteComp = new ZstdWrapper();
-                case Unknown -> throw new Exception("Unknown mz byte compressor");
                 default -> throw new Exception("Unknown mz byte compressor");
             }
         }
         List<String> intMethods = intCompressor.getMethods();
         if (intMethods.size() == 2) {
             switch (IntCompType.getByName(intMethods.get(0))) {
-                case VB -> intIntComp = new VarByte();
-                case BP -> intIntComp = new BinPacking();
+                case VB -> intIntComp = new VarByteWrapper();
+                case BP -> intIntComp = new BinPackingWrapper();
                 case Empty -> intIntComp = new Empty();
                 default -> throw new Exception("Unknown intensity integer compressor");
             }
@@ -299,7 +300,6 @@ public abstract class BaseParser {
                 case Brotli -> intByteComp = new BrotliWrapper();
                 case Snappy -> intByteComp = new SnappyWrapper();
                 case Zstd -> intByteComp = new ZstdWrapper();
-                case Unknown -> throw new Exception("Unknown intensity byte compressor");
                 default -> throw new Exception("Unknown intensity byte compressor");
             }
         }
@@ -307,8 +307,8 @@ public abstract class BaseParser {
             List<String> mobiMethods = mobiCompressor.getMethods();
             if (mobiMethods.size() == 2) {
                 switch (IntCompType.getByName(mobiMethods.get(0))) {
-                    case VB -> mobiIntComp = new VarByte();
-                    case BP -> mobiIntComp = new BinPacking();
+                    case VB -> mobiIntComp = new VarByteWrapper();
+                    case BP -> mobiIntComp = new BinPackingWrapper();
                     case Empty -> mobiIntComp = new Empty();
                     default -> throw new Exception("Unknown mobi integer compressor");
                 }
@@ -318,7 +318,6 @@ public abstract class BaseParser {
                     case Brotli -> mobiByteComp = new BrotliWrapper();
                     case Snappy -> mobiByteComp = new SnappyWrapper();
                     case Zstd -> mobiByteComp = new ZstdWrapper();
-                    case Unknown -> throw new Exception("Unknown mobi byte compressor");
                     default -> throw new Exception("Unknown mobi byte compressor");
                 }
             }
@@ -738,11 +737,11 @@ public abstract class BaseParser {
 
         float[] intensityValues = new float[intValues.length];
         for (int i = 0; i < intValues.length; i++) {
-            int intensity = intValues[i];
+            double intensity = intValues[i];
             if (intensity < 0) {
-                intensity = (int) Math.pow(2, intensity / 100000d);
+                intensity = Math.pow(2, -intensity / 100000d);
             }
-            intensityValues[i] = intensity / 10f;
+            intensityValues[i] = (float) (intensity / intPrecision);
         }
 
         byteBuffer.clear();

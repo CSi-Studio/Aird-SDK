@@ -1,6 +1,7 @@
 package net.csibio.aird.test.compressor;
 
 import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.DDAPasefMs;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.parser.DDAPasefParser;
 import net.csibio.aird.parser.DIAParser;
@@ -59,8 +60,22 @@ public class 解压缩时间测试 {
     }
 
     @Test
-    public void testZDPD2() throws Exception {
-        String path = "D:\\AirdTest\\ZDPD";
+    public void testComboComp() throws Exception {
+        String path = "D:\\AirdTest\\ComboComp";
+        List<File> files = AirdScanUtil.scanIndexFiles(path);
+        for (File file : files) {
+            if (file.getName().equals("File3.json")) {
+                long start = System.currentTimeMillis();
+                DDAParser parser = new DDAParser(file.getAbsolutePath());
+                parser.readAllToMemory();
+                System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
+            }
+        }
+    }
+
+    @Test
+    public void testDIAPasef() throws Exception {
+        String path = "D:\\AirdTest\\ComboComp";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
             if (file.getName().equals("File11.json")) {
@@ -69,6 +84,20 @@ public class 解压缩时间测试 {
                 for (BlockIndex blockIndex : parser.airdInfo.getIndexList()) {
                     parser.getSpectra4D(blockIndex);
                 }
+                System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
+            }
+        }
+    }
+
+    @Test
+    public void testDDAPasef() throws Exception {
+        String path = "D:\\AirdTest\\ComboComp";
+        List<File> files = AirdScanUtil.scanIndexFiles(path);
+        for (File file : files) {
+            if (file.getName().equals("File10.json")) {
+                long start = System.currentTimeMillis();
+                DDAPasefParser parser = new DDAPasefParser(file.getAbsolutePath());
+                List<DDAPasefMs> msList = parser.readAllToMemory();
                 System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
             }
         }

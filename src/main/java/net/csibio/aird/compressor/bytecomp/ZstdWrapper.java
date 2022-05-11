@@ -1,4 +1,4 @@
-package net.csibio.aird.compressor.bytes;
+package net.csibio.aird.compressor.bytecomp;
 
 import com.github.luben.zstd.Zstd;
 import com.github.luben.zstd.ZstdDictCompress;
