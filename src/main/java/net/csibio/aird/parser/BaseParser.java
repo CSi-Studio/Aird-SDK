@@ -15,7 +15,6 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MobiInfo;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.bean.common.Spectrum4D;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytecomp.*;
 import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
@@ -229,8 +228,8 @@ public abstract class BaseParser {
                 throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
             }
             return switch (AirdType.getType(airdInfo.getType())) {
-                case DDA_PASEF -> new DDAParser(indexFile.getAbsolutePath(), airdInfo);
-                case DIA_PASEF -> new DIAParser(indexFile.getAbsolutePath(), airdInfo);
+                case DDA_PASEF -> new DDAPasefParser(indexFile.getAbsolutePath(), airdInfo);
+                case DIA_PASEF -> new DIAPasefParser(indexFile.getAbsolutePath(), airdInfo);
                 case DDA -> new DDAParser(indexFile.getAbsolutePath(), airdInfo);
                 case DIA -> new DIAParser(indexFile.getAbsolutePath(), airdInfo);
                 case PRM -> new PRMParser(indexFile.getAbsolutePath(), airdInfo);
@@ -352,10 +351,10 @@ public abstract class BaseParser {
      * @param intOffsets intensity块的大小列表 the intensity block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
-    public TreeMap<Float, Spectrum<double[]>> getSpectra(long start, long end, List<Float> rtList,
-                                                         List<Integer> mzOffsets, List<Integer> intOffsets) {
+    public TreeMap<Float, Spectrum<double[], float[], double[]>> getSpectra(long start, long end, List<Float> rtList,
+                                                                            List<Integer> mzOffsets, List<Integer> intOffsets) {
 
-        TreeMap<Float, Spectrum<double[]>> map = new TreeMap<>();
+        TreeMap<Float, Spectrum<double[], float[], double[]>> map = new TreeMap<>();
         try {
             raf.seek(start);
             long delta = end - start;
@@ -387,10 +386,10 @@ public abstract class BaseParser {
      * @param intOffsets intensity块的大小列表 the intensity block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
-    public TreeMap<Float, Spectrum4D<double[]>> getSpectra4D(long start, long end, List<Float> rtList,
-                                                             List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
+    public TreeMap<Float, Spectrum<double[], float[], double[]>> getSpectra4D(long start, long end, List<Float> rtList,
+                                                                              List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
 
-        TreeMap<Float, Spectrum4D<double[]>> map = new TreeMap<>();
+        TreeMap<Float, Spectrum<double[], float[], double[]>> map = new TreeMap<>();
         try {
             //首先计算压缩块的总大小
             long delta = end - start;
@@ -410,7 +409,7 @@ public abstract class BaseParser {
                         break;
                     }
 
-                    map.put(rtList.get(rtIndex), getSpectrum4D(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                    map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
                     iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
 
                     rtIndex++;
@@ -421,7 +420,7 @@ public abstract class BaseParser {
             raf.read(result);
             int iter = 0;
             while (rtIndex < rtList.size()) {
-                map.put(rtList.get(rtIndex), getSpectrum4D(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
                 iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
             }
             return map;
@@ -445,10 +444,10 @@ public abstract class BaseParser {
      * @param intOffsets intensity块的大小列表 the intensity block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
-    public TreeMap<Float, Spectrum<float[]>> getSpectraAsFloat(long start, long end,
-                                                               List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
+    public TreeMap<Float, Spectrum<float[], float[], float[]>> getSpectraAsFloat(long start, long end,
+                                                                                 List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
 
-        TreeMap<Float, Spectrum<float[]>> map = new TreeMap<>();
+        TreeMap<Float, Spectrum<float[], float[], float[]>> map = new TreeMap<>();
         try {
             raf.seek(start);
             long delta = end - start;
@@ -482,10 +481,10 @@ public abstract class BaseParser {
      * @param intOffsets intensity块的大小列表 the intensity block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
-    public TreeMap<Float, Spectrum4D<float[]>> getSpectra4DAsFloat(long start, long end,
-                                                                   List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
+    public TreeMap<Float, Spectrum<float[], float[], float[]>> getSpectra4DAsFloat(long start, long end,
+                                                                                   List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
 
-        TreeMap<Float, Spectrum4D<float[]>> map = new TreeMap<>();
+        TreeMap<Float, Spectrum<float[], float[], float[]>> map = new TreeMap<>();
         try {
             //首先计算压缩块的总大小
             long delta = end - start;
@@ -527,49 +526,49 @@ public abstract class BaseParser {
         }
     }
 
-    public Spectrum<double[]> getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
+    public Spectrum<double[], float[], double[]> getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
         if (mzOffset == 0) {
-            return new Spectrum<double[]>(new double[0], new float[0]);
+            return new Spectrum(new double[0], new float[0]);
         }
         double[] mzArray = getMzs(bytes, offset, mzOffset);
         offset = offset + mzOffset;
         float[] intensityArray = getInts(bytes, offset, intOffset);
-        return new Spectrum<double[]>(mzArray, intensityArray);
+        return new Spectrum(mzArray, intensityArray);
     }
 
-    public Spectrum4D<double[]> getSpectrum4D(byte[] bytes, int offset, int mzOffset, int intOffset, int mobiOffset) {
+    public Spectrum<double[], float[], double[]> getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset, int mobiOffset) {
         if (mzOffset == 0) {
-            return new Spectrum4D<double[]>(new double[0], new float[0], new double[0]);
+            return new Spectrum(new double[0], new float[0], new double[0]);
         }
         double[] mzArray = getMzs(bytes, offset, mzOffset);
         offset = offset + mzOffset;
         float[] intensityArray = getInts(bytes, offset, intOffset);
         offset = offset + intOffset;
         double[] mobiArray = getMobilities(bytes, offset, mobiOffset);
-        return new Spectrum4D<double[]>(mzArray, intensityArray, mobiArray);
+        return new Spectrum(mzArray, intensityArray, mobiArray);
     }
 
-    public Spectrum<float[]> getSpectrumAsFloat(byte[] bytes, int offset, int mzOffset,
-                                                int intOffset) {
+    public Spectrum<float[], float[], float[]> getSpectrumAsFloat(byte[] bytes, int offset, int mzOffset,
+                                                                  int intOffset) {
         if (mzOffset == 0) {
-            return new Spectrum<float[]>(new float[0], new float[0]);
+            return new Spectrum(new float[0], new float[0]);
         }
         float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
         offset = offset + mzOffset;
         float[] intensityArray = getInts(bytes, offset, intOffset);
-        return new Spectrum<float[]>(mzArray, intensityArray);
+        return new Spectrum(mzArray, intensityArray);
     }
 
-    public Spectrum4D<float[]> getSpectrum4DAsFloat(byte[] bytes, int offset, int mzOffset, int intOffset, int mobiOffset) {
+    public Spectrum<float[], float[], float[]> getSpectrum4DAsFloat(byte[] bytes, int offset, int mzOffset, int intOffset, int mobiOffset) {
         if (mzOffset == 0) {
-            return new Spectrum4D<float[]>(new float[0], new float[0], new float[0]);
+            return new Spectrum(new float[0], new float[0], new float[0]);
         }
         float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
         offset = offset + mzOffset;
         float[] intensityArray = getInts(bytes, offset, intOffset);
         offset = offset + intOffset;
         float[] mobiArray = getMobisAsFloat(bytes, offset, mobiOffset);
-        return new Spectrum4D<float[]>(mzArray, intensityArray, mobiArray);
+        return new Spectrum(mzArray, intensityArray, mobiArray);
     }
 
     /**

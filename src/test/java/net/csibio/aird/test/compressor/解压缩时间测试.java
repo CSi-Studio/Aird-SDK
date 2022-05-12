@@ -16,7 +16,7 @@ import java.util.List;
 public class 解压缩时间测试 {
 
     @Test
-    public void testZDPD() throws Exception {
+    public void testComboComp() throws Exception {
         String path = "D:\\AirdTest\\ComboComp";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
@@ -60,20 +60,6 @@ public class 解压缩时间测试 {
     }
 
     @Test
-    public void testComboComp() throws Exception {
-        String path = "D:\\AirdTest\\ComboComp";
-        List<File> files = AirdScanUtil.scanIndexFiles(path);
-        for (File file : files) {
-            if (file.getName().equals("File3.json")) {
-                long start = System.currentTimeMillis();
-                DDAParser parser = new DDAParser(file.getAbsolutePath());
-                parser.readAllToMemory();
-                System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
-            }
-        }
-    }
-
-    @Test
     public void testDIAPasef() throws Exception {
 //        String path = "D:\\AirdTest\\ComboComp";
         String path = "D:\\AirdTest\\ComboComp";
@@ -83,7 +69,7 @@ public class 解压缩时间测试 {
                 long start = System.currentTimeMillis();
                 DIAPasefParser parser = new DIAPasefParser(file.getAbsolutePath());
                 for (BlockIndex blockIndex : parser.airdInfo.getIndexList()) {
-                    parser.getSpectra4D(blockIndex);
+                    parser.getSpectra4DAsFloat(blockIndex);
                 }
                 System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
             }
@@ -98,7 +84,7 @@ public class 解压缩时间测试 {
             if (file.getName().equals("File10.json")) {
                 long start = System.currentTimeMillis();
                 DDAPasefParser parser = new DDAPasefParser(file.getAbsolutePath());
-                List<DDAPasefMs> msList = parser.readAllToMemory();
+                List<DDAPasefMs<float[], float[], float[]>> msList = parser.readAllToMemory();
                 System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
             }
         }

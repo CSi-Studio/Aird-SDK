@@ -23,7 +23,7 @@ public class 测试Intensity合并后大大小 {
     public void tryIt() throws Exception {
         long start = System.currentTimeMillis();
         DDAParser parser = new DDAParser(indexPath);
-        List<DDAMs> ms1List = parser.readAllToMemory();
+        List<DDAMs<float[], float[], float[]>> ms1List = parser.readAllToMemory();
         AtomicLong zlibIntsSize = new AtomicLong(0);
         AtomicLong zstdIntsSize = new AtomicLong(0);
         List<byte[]> bytesList = new ArrayList<>();

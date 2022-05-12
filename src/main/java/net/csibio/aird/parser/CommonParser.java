@@ -45,7 +45,7 @@ public class CommonParser extends BaseParser {
      * @param num 光谱的索引号 the num of the spectrum
      * @return 光谱信息 spectrum data pairs
      */
-    public Spectrum<double[]> getSpectrum(int num) {
+    public Spectrum<double[], float[], double[]> getSpectrum(int num) {
         List<BlockIndex> indexList = getAirdInfo().getIndexList();
         for (int i = 0; i < indexList.size(); i++) {
             BlockIndex blockIndex = indexList.get(i);
@@ -65,7 +65,7 @@ public class CommonParser extends BaseParser {
      * @param position 指定的光谱位置 the specific spectrum index
      * @return 该光谱中的信息 spectrum data pairs
      */
-    public Spectrum<double[]> getSpectrum(BlockIndex index, int position) {
+    public Spectrum<double[], float[], double[]> getSpectrum(BlockIndex index, int position) {
         RandomAccessFile raf = null;
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -87,7 +87,7 @@ public class CommonParser extends BaseParser {
             raf.read(reader);
             float[] intensityArray = null;
             intensityArray = getInts(reader);
-            return new Spectrum<double[]>(mzArray, intensityArray);
+            return new Spectrum<double[], float[], double[]>(mzArray, intensityArray);
 
         } catch (Exception e) {
             e.printStackTrace();

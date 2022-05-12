@@ -11,7 +11,7 @@
 package net.csibio.aird.bean;
 
 import lombok.Data;
-import net.csibio.aird.bean.common.Spectrum4D;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.constant.PSI;
 
 import java.io.Serializable;
@@ -21,7 +21,7 @@ import java.util.List;
  * New Structure for MsCycle every ms mean ms1 spectrum with related ms2 spectra
  */
 @Data
-public class DDAPasefMs<T> implements Serializable {
+public class DDAPasefMs<T, D, F> implements Serializable {
 
     private static final long serialVersionUID = -123222L;
 
@@ -53,17 +53,17 @@ public class DDAPasefMs<T> implements Serializable {
     /**
      * the ms1 spectrum data pairs required
      */
-    Spectrum4D<T> spectrum;
+    Spectrum<T, D, F> spectrum;
 
     /**
      * related ms2 list
      */
-    List<DDAPasefMs> ms2List;
+    List<DDAPasefMs<T, D, F>> ms2List;
 
     public DDAPasefMs() {
     }
 
-    public DDAPasefMs(Float rt, Spectrum4D<T> spectrum) {
+    public DDAPasefMs(Float rt, Spectrum<T, D, F> spectrum) {
         this.rt = rt;
         this.spectrum = spectrum;
     }

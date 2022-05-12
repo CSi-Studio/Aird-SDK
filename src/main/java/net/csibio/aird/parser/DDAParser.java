@@ -63,28 +63,28 @@ public class DDAParser extends BaseParser {
      * MsCycle in the memory
      * @throws Exception exception when reading the file
      */
-    public List<DDAMs> readAllToMemory() throws Exception {
-        List<DDAMs> ms1List = new ArrayList<>();
+    public List<DDAMs<float[], float[], float[]>> readAllToMemory() throws Exception {
+        List<DDAMs<float[], float[], float[]>> ms1List = new ArrayList<>();
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         List<BlockIndex> ms2IndexList = getAllMs2Index();
-        TreeMap<Float, Spectrum<double[]>> ms1Map = getSpectra(ms1Index.getStartPtr(),
+        TreeMap<Float, Spectrum<float[], float[], float[]>> ms1Map = getSpectraAsFloat(ms1Index.getStartPtr(),
                 ms1Index.getEndPtr(),
                 ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts());
         List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
 
         for (int i = 0; i < ms1RtList.size(); i++) {
-            DDAMs ms1 = new DDAMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
+            DDAMs<float[], float[], float[]> ms1 = new DDAMs<float[], float[], float[]>(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
             DDAUtil.initFromIndex(ms1, ms1Index, i);
             Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream()
                     .filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
             if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
-                TreeMap<Float, Spectrum<double[]>> ms2Map = getSpectra(ms2Index.getStartPtr(),
+                TreeMap<Float, Spectrum<float[], float[], float[]>> ms2Map = getSpectraAsFloat(ms2Index.getStartPtr(),
                         ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts());
                 List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
-                List<DDAMs> ms2List = new ArrayList<>();
+                List<DDAMs<float[], float[], float[]>> ms2List = new ArrayList<>();
                 for (int j = 0; j < ms2RtList.size(); j++) {
-                    DDAMs ms2 = new DDAMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
+                    DDAMs<float[], float[], float[]> ms2 = new DDAMs<float[], float[], float[]>(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
                     DDAUtil.initFromIndex(ms2, ms2Index, j);
                     ms2List.add(ms2);
                 }

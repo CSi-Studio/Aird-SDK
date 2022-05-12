@@ -16,7 +16,7 @@ import java.util.TreeMap;
 public class 解压缩时间 {
 
     static HashMap<String, String> fileMap = new HashMap<>();
-    static HashMap<String, List<DDAMs>> dataListDDAMap = new HashMap<>();
+    static HashMap<String, List<DDAMs<float[], float[], float[]>>> dataListDDAMap = new HashMap<>();
     static HashMap<String, TreeMap> dataListDIAMap = new HashMap<>();
 
     static int MB = 1024 * 1024;
@@ -89,7 +89,7 @@ public class 解压缩时间 {
             }
             case DDA -> {
                 DDAParser parser = new DDAParser(indexPath);
-                List<DDAMs> msList = parser.readAllToMemory();
+                List<DDAMs<float[], float[], float[]>> msList = parser.readAllToMemory();
                 dataListDDAMap.put(name, msList);
             }
         }

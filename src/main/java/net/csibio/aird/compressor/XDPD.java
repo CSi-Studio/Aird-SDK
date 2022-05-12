@@ -36,6 +36,15 @@ public class XDPD {
         return encode(sortedInts, byteCompType);
     }
 
+    public static byte[] encode(float[] sortedFloats, double precision,
+                                ByteCompType byteCompType) {
+        int[] sortedInts = new int[sortedFloats.length];
+        for (int i = 0; i < sortedFloats.length; i++) {
+            sortedInts[i] = (int) (precision * sortedFloats[i]);
+        }
+        return encode(sortedInts, byteCompType);
+    }
+
     public static int[] decode(byte[] bytes) {
         return decode(bytes, ByteCompType.Zlib);
     }

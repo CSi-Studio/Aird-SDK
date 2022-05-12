@@ -33,12 +33,12 @@ public class CompV3Test {
         Compressor mzCompressor = airdInfo.fetchCompressor(Compressor.TARGET_MZ);
         double mzPrecision = mzCompressor.getPrecision();
         int maxDelta = (int) (0.001 * mzPrecision);
-        List<DDAMs> ms1List = parser.readAllToMemory();
+        List<DDAMs<float[], float[], float[]>> ms1List = parser.readAllToMemory();
         HashMap<Integer, AtomicLong> accumu = new HashMap<Integer, AtomicLong>();
         HashMap<Integer, AtomicLong> accumu2 = new HashMap<Integer, AtomicLong>();
-        for (DDAMs ms1 : ms1List) {
-            Spectrum<double[]> spectrum = ms1.getSpectrum();
-            double[] mzs = spectrum.getMzs();
+        for (DDAMs<float[], float[], float[]> ms1 : ms1List) {
+            Spectrum<float[], float[], float[]> spectrum = ms1.getSpectrum();
+            float[] mzs = spectrum.getMzs();
             for (int i = 1; i < mzs.length; i++) {
                 Integer delta = (int) (mzs[i] * mzPrecision) - (int) (mzs[i - 1] * mzPrecision);
                 if (accumu.get(delta) == null) {
@@ -71,7 +71,7 @@ public class CompV3Test {
         AirdInfo airdInfo = parser.getAirdInfo();
         Compressor mzCompressor = airdInfo.fetchCompressor(Compressor.TARGET_MZ);
         double mzPrecision = mzCompressor.getPrecision();
-        List<DDAMs> ms1List = parser.readAllToMemory();
+        List<DDAMs<float[], float[], float[]>> ms1List = parser.readAllToMemory();
         AtomicLong totalMzs = new AtomicLong(0);
         AtomicLong totalOri = new AtomicLong(0);
         AtomicLong totalZdpd = new AtomicLong(0);
@@ -79,8 +79,8 @@ public class CompV3Test {
         AtomicLong totalFirst = new AtomicLong(0);
         AtomicLong totalSecond = new AtomicLong(0);
         ms1List.parallelStream().forEach(ms1 -> {
-            Spectrum<double[]> spectrum = ms1.getSpectrum();
-            double[] mzs = spectrum.getMzs();
+            Spectrum<float[], float[], float[]> spectrum = ms1.getSpectrum();
+            float[] mzs = spectrum.getMzs();
 
             totalMzs.getAndAdd(mzs.length);
 //      System.out.println("原始大小:" + mzs.length * 4 / KB + " bytes");
@@ -138,11 +138,11 @@ public class CompV3Test {
 
         mzMap.put("ZDPD", new AtomicLong(0));
 
-        List<DDAMs> ms1List = parser.readAllToMemory();
+        List<DDAMs<float[], float[], float[]>> ms1List = parser.readAllToMemory();
         System.out.println("开始压缩数据,总计光谱:" + airdInfo.getTotalCount());
         ms1List.parallelStream().forEach(ms1 -> {
-            Spectrum<double[]> spectrum = ms1.getSpectrum();
-            byte[] mzBytes = ByteTrans.floatToByte(ByteTrans.doubleToFloat(spectrum.getMzs()));
+            Spectrum<float[], float[], float[]> spectrum = ms1.getSpectrum();
+            byte[] mzBytes = ByteTrans.floatToByte(spectrum.getMzs());
             byte[] intBytes = ByteTrans.floatToByte(spectrum.getInts());
 
             mzOri.getAndAdd(mzBytes.length);

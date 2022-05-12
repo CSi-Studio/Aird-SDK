@@ -69,8 +69,8 @@ public class DIAParserParserTest {
                                 "Start Analysis For Index:" + blockIndex.getWindowRange().getStart() + ":"
                                         + blockIndex.getWindowRange().getEnd());
 
-                        TreeMap<Float, Spectrum<float[]>> map = parser.getSpectraAsFloat(blockIndex);
-                        List<Spectrum<float[]>> pairsList = new ArrayList<>();
+                        TreeMap<Float, Spectrum<float[], float[], float[]>> map = parser.getSpectraAsFloat(blockIndex);
+                        List<Spectrum<float[], float[], float[]>> pairsList = new ArrayList<>();
                         map.entrySet().forEach(entry -> {
                             pairsList.add(entry.getValue());
                         });
@@ -91,7 +91,7 @@ public class DIAParserParserTest {
         System.out.println("总计耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
     }
 
-    private float[][] xicWithCPU(List<net.csibio.aird.bean.common.Spectrum<float[]>> pairsList,
+    private float[][] xicWithCPU(List<Spectrum<float[], float[], float[]>> pairsList,
                                  List<Float> mzList) {
         long indexStart = System.currentTimeMillis();
         float[][] results = new float[pairsList.size()][mzList.size()];
@@ -107,7 +107,7 @@ public class DIAParserParserTest {
         return results;
     }
 
-    private float[][] xicWithGPU(List<Spectrum<float[]>> pairsList, float[] mzArray) {
+    private float[][] xicWithGPU(List<Spectrum<float[], float[], float[]>> pairsList, float[] mzArray) {
         long indexStart = System.currentTimeMillis();
         float[][] results = Extractor.accumulationWithGPU(pairsList, mzArray, 0.05f);
         System.out.println("GPU Index Analysis 耗时:" + (System.currentTimeMillis() - indexStart) + "ms");

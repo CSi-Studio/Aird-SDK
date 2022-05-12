@@ -6,8 +6,8 @@ import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.compressor.XDPD;
+import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
 
@@ -52,9 +52,9 @@ public class SizeTest {
         for (int k = 17; k < 18; k++) {
             BlockIndex index = indexList.get(k);
             long start = System.currentTimeMillis();
-            TreeMap<Float, Spectrum<double[]>> spectrumMap = diaParser.getSpectra(index);
+            TreeMap<Float, Spectrum<double[], float[], double[]>> spectrumMap = diaParser.getSpectra(index);
             System.out.println("Parse耗时:" + (System.currentTimeMillis() - start) / 1000 + "秒");
-            List<Spectrum<double[]>> spectrumList = spectrumMap.values().stream().toList();
+            List<Spectrum<double[], float[], double[]>> spectrumList = spectrumMap.values().stream().toList();
             spectrumSize.getAndAdd(spectrumList.size());
             System.out.println("当前block中spectrum数目:" + spectrumList.size());
             spectrumList.parallelStream().forEach(spectrum -> {

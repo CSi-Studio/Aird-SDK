@@ -13,7 +13,7 @@ package net.csibio.aird.parser;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.DDAPasefMs;
-import net.csibio.aird.bean.common.Spectrum4D;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.DDAUtil;
 
@@ -63,29 +63,29 @@ public class DDAPasefParser extends BaseParser {
      * MsCycle in the memory
      * @throws Exception exception when reading the file
      */
-    public List<DDAPasefMs> readAllToMemory() throws Exception {
-        List<DDAPasefMs> ms1List = new ArrayList<>();
+    public List<DDAPasefMs<float[], float[], float[]>> readAllToMemory() throws Exception {
+        List<DDAPasefMs<float[], float[], float[]>> ms1List = new ArrayList<>();
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         List<BlockIndex> ms2IndexList = getAllMs2Index();
-        TreeMap<Float, Spectrum4D<float[]>> ms1Map = getSpectra4DAsFloat(ms1Index.getStartPtr(),
+        TreeMap<Float, Spectrum<float[], float[], float[]>> ms1Map = getSpectra4DAsFloat(ms1Index.getStartPtr(),
                 ms1Index.getEndPtr(),
                 ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts(), ms1Index.getMobilities());
         List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
 
         for (int i = 0; i < ms1RtList.size(); i++) {
-            DDAPasefMs ms1 = new DDAPasefMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
+            DDAPasefMs<float[], float[], float[]> ms1 = new DDAPasefMs<float[], float[], float[]>(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
             DDAUtil.initFromIndex(ms1, ms1Index, i);
             Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream()
                     .filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
             if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
                 try {
-                    TreeMap<Float, Spectrum4D<float[]>> ms2Map = getSpectra4DAsFloat(ms2Index.getStartPtr(),
+                    TreeMap<Float, Spectrum<float[], float[], float[]>> ms2Map = getSpectra4DAsFloat(ms2Index.getStartPtr(),
                             ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts(), ms2Index.getMobilities());
                     List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
-                    List<DDAPasefMs> ms2List = new ArrayList<>();
+                    List<DDAPasefMs<float[], float[], float[]>> ms2List = new ArrayList<>();
                     for (int j = 0; j < ms2RtList.size(); j++) {
-                        DDAPasefMs ms2 = new DDAPasefMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
+                        DDAPasefMs<float[], float[], float[]> ms2 = new DDAPasefMs<float[], float[], float[]>(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
                         DDAUtil.initFromIndex(ms2, ms2Index, j);
                         ms2List.add(ms2);
                     }
@@ -93,7 +93,6 @@ public class DDAPasefParser extends BaseParser {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
             ms1List.add(ms1);
         }

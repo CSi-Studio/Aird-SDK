@@ -27,7 +27,7 @@ public class DDAParserTest {
         BaseParser parser = BaseParser.buildParser(filePath);
         AirdInfo airdInfo = parser.getAirdInfo();
         try {
-            List<DDAMs> allMsList = ((DDAParser) parser).readAllToMemory();
+            List<DDAMs<float[], float[], float[]>> allMsList = ((DDAParser) parser).readAllToMemory();
             AtomicInteger total = new AtomicInteger(0);
             total.getAndAdd(allMsList.size());
             allMsList.forEach(ms -> {

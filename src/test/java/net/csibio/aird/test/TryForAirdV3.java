@@ -31,11 +31,11 @@ public class TryForAirdV3 {
         System.out.println("Precision:" + precision);
         for (int i = 0; i < info.getIndexList().size(); i++) {
             BlockIndex index = info.getIndexList().get(i);
-            TreeMap<Float, Spectrum<double[]>> map = parser.getSpectra(index);
+            TreeMap<Float, Spectrum<double[], float[], double[]>> map = parser.getSpectra(index);
             long totalMzSize = 0;
             long totalNewSize = 0;
             for (int k = 0; k < map.entrySet().size(); k++) {
-                Spectrum<double[]> pairs = map.pollFirstEntry().getValue();
+                Spectrum<double[], float[], double[]> pairs = map.pollFirstEntry().getValue();
                 totalMzSize += index.getMzs().get(k);
                 double[] mzArray = pairs.getMzs();
                 int[] leftArray = new int[mzArray.length];
@@ -63,12 +63,12 @@ public class TryForAirdV3 {
         DDAParser parser = new DDAParser(
                 "/Users/lms/metabolomics/DIAN 14-19VW_Human_Serum/14-19VW_NEGa_SET1/QXA01DNNEG20190723_DIAN1419VWHUMANSERUM_HUMAN_SERUM1_03.json");
         AirdInfo info = parser.getAirdInfo();
-        List<DDAMs> cycleList = parser.readAllToMemory();
+        List<DDAMs<float[], float[], float[]>> cycleList = parser.readAllToMemory();
 
         AtomicInteger count = new AtomicInteger();
         for (int j = 0; j < cycleList.size(); j++) {
-            DDAMs cycle = cycleList.get(j);
-            Spectrum<double[]> pairs = cycle.getSpectrum();
+            DDAMs<float[], float[], float[]> cycle = cycleList.get(j);
+            Spectrum<float[], float[], float[]> pairs = cycle.getSpectrum();
             count.getAndAdd(pairs.getMzs().length);
         }
 
@@ -77,9 +77,9 @@ public class TryForAirdV3 {
         int precision = info.fetchCompressor(Compressor.TARGET_MZ).getPrecision();
 
         for (int j = 0; j < cycleList.size(); j++) {
-            DDAMs cycle = cycleList.get(j);
-            Spectrum<double[]> pairs = cycle.getSpectrum();
-            double[] mzArray = pairs.getMzs();
+            DDAMs<float[], float[], float[]> cycle = cycleList.get(j);
+            Spectrum<float[], float[], float[]> pairs = cycle.getSpectrum();
+            float[] mzArray = pairs.getMzs();
             float[] intArray = pairs.getInts();
             for (int k = 0; k < mzArray.length; k++) {
                 if (intArray[k] < 10000) {
@@ -114,13 +114,13 @@ public class TryForAirdV3 {
         int[][] mzGroup = new int[999999][2];
         int realCount = 0;
         int precision = info.fetchCompressor(Compressor.TARGET_MZ).getPrecision();
-        TreeMap<Float, Spectrum<double[]>> map = parser.getSpectra(index);
+        TreeMap<Float, Spectrum<double[], float[], double[]>> map = parser.getSpectra(index);
         System.out.println("Real Count:" + realCount);
         for (int k = 0; k < 100; k++) {
             map.pollFirstEntry();
         }
         for (int i = 0; i < map.entrySet().size(); i++) {
-            Spectrum<double[]> pairs = map.pollFirstEntry().getValue();
+            Spectrum<double[], float[], double[]> pairs = map.pollFirstEntry().getValue();
             double[] mzArray = pairs.getMzs();
             float[] intArray = pairs.getInts();
             for (int k = 0; k < mzArray.length; k++) {

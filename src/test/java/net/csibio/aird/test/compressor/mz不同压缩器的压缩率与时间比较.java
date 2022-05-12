@@ -17,7 +17,6 @@ import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.parser.DIAParser;
-import net.csibio.aird.util.ArrayUtil;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xerial.snappy.BitShuffle;
@@ -29,7 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class mz不同压缩器的压缩率与时间比较 {
 
     static HashMap<String, String> fileMap = new HashMap<>();
-    static HashMap<String, List<Spectrum<float[]>>> spectrumListMap = new HashMap<>();
+    static HashMap<String, List<Spectrum<float[], float[], float[]>>> spectrumListMap = new HashMap<>();
     static HashMap<String, List<byte[]>> spectrumBytesMap = new HashMap<>();
     static HashMap<String, List<int[]>> spectrumIntsMap = new HashMap<>();
     static int MB = 1024 * 1024;
@@ -56,7 +55,7 @@ public class mz不同压缩器的压缩率与时间比较 {
             throws Exception {
         long start = System.currentTimeMillis();
         fileMap.put(name, indexPath);
-        List<Spectrum<float[]>> spectrumList = Collections.synchronizedList(new ArrayList<>());
+        List<Spectrum<float[], float[], float[]>> spectrumList = Collections.synchronizedList(new ArrayList<>());
         double precision = 0;
 
         switch (type) {
@@ -70,11 +69,11 @@ public class mz不同压缩器的压缩率与时间比较 {
 
                 if (indexNo != -1) {
                     BlockIndex index = indexList.get(indexNo);
-                    TreeMap<Float, Spectrum<float[]>> spectrumMap = parser.getSpectraAsFloat(index);
+                    TreeMap<Float, Spectrum<float[], float[], float[]>> spectrumMap = parser.getSpectraAsFloat(index);
                     spectrumList.addAll(spectrumMap.values().stream().toList());
                 } else {
                     indexList.forEach(index -> {
-                        TreeMap<Float, Spectrum<float[]>> spectrumMap = parser.getSpectraAsFloat(
+                        TreeMap<Float, Spectrum<float[], float[], float[]>> spectrumMap = parser.getSpectraAsFloat(
                                 index);
                         spectrumList.addAll(spectrumMap.values().stream().toList());
                     });
@@ -84,12 +83,12 @@ public class mz不同压缩器的压缩率与时间比较 {
                 DDAParser parser = new DDAParser(indexPath);
                 precision = parser.getAirdInfo().fetchCompressor(Compressor.TARGET_MZ)
                         .getPrecision();
-                List<DDAMs> ms1List = parser.readAllToMemory();
+                List<DDAMs<float[], float[], float[]>> ms1List = parser.readAllToMemory();
                 ms1List.forEach(ms1 -> {
-                    spectrumList.add(ArrayUtil.trans(ms1.getSpectrum()));
+                    spectrumList.add(ms1.getSpectrum());
                     if (ms1.getMs2List() != null && ms1.getMs2List().size() != 0) {
-                        for (DDAMs ms2 : ms1.getMs2List()) {
-                            spectrumList.add(ArrayUtil.trans(ms2.getSpectrum()));
+                        for (DDAMs<float[], float[], float[]> ms2 : ms1.getMs2List()) {
+                            spectrumList.add(ms2.getSpectrum());
                         }
                     }
                 });
@@ -120,7 +119,7 @@ public class mz不同压缩器的压缩率与时间比较 {
                     "开始测试文件:" + key + "包含光谱共" + spectrumIntsMap.get(key).size()
                             + "张,-------------------------");
             List<byte[]> bytesList = spectrumBytesMap.get(key);
-            List<Spectrum<float[]>> spectrumList = spectrumListMap.get(key);
+            List<Spectrum<float[], float[], float[]>> spectrumList = spectrumListMap.get(key);
             List<int[]> intsList = spectrumIntsMap.get(key);
 
             //测试原始大小
