@@ -67,7 +67,7 @@ public class DDAPasefParser extends BaseParser {
         List<DDAPasefMs<float[], float[], float[]>> ms1List = new ArrayList<>();
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         List<BlockIndex> ms2IndexList = getAllMs2Index();
-        TreeMap<Float, Spectrum<float[], float[], float[]>> ms1Map = getSpectra4DAsFloat(ms1Index.getStartPtr(),
+        TreeMap<Float, Spectrum<float[], float[], float[]>> ms1Map = getSpectraAsFloat(ms1Index.getStartPtr(),
                 ms1Index.getEndPtr(),
                 ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts(), ms1Index.getMobilities());
         List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
@@ -80,7 +80,7 @@ public class DDAPasefParser extends BaseParser {
             if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
                 try {
-                    TreeMap<Float, Spectrum<float[], float[], float[]>> ms2Map = getSpectra4DAsFloat(ms2Index.getStartPtr(),
+                    TreeMap<Float, Spectrum<float[], float[], float[]>> ms2Map = getSpectraAsFloat(ms2Index.getStartPtr(),
                             ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts(), ms2Index.getMobilities());
                     List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
                     List<DDAPasefMs<float[], float[], float[]>> ms2List = new ArrayList<>();

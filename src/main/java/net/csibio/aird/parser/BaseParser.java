@@ -481,8 +481,8 @@ public abstract class BaseParser {
      * @param intOffsets intensity块的大小列表 the intensity block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
-    public TreeMap<Float, Spectrum<float[], float[], float[]>> getSpectra4DAsFloat(long start, long end,
-                                                                                   List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
+    public TreeMap<Float, Spectrum<float[], float[], float[]>> getSpectraAsFloat(long start, long end,
+                                                                                 List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
 
         TreeMap<Float, Spectrum<float[], float[], float[]>> map = new TreeMap<>();
         try {
