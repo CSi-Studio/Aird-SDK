@@ -51,8 +51,8 @@ public class DIAPasefParser extends BaseParser {
      * @param index block index
      * @return all the spectrums
      */
-    public TreeMap<Float, Spectrum4D<double[]>> getSpectra4D(BlockIndex index) {
-        return getSpectra4D(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
+    public TreeMap<Float, Spectrum4D<float[]>> getSpectra4D(BlockIndex index) {
+        return getSpectra4DAsFloat(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
                 index.getInts(), index.getMobilities());
     }
 

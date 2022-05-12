@@ -75,6 +75,7 @@ public class 解压缩时间测试 {
 
     @Test
     public void testDIAPasef() throws Exception {
+//        String path = "D:\\AirdTest\\ComboComp";
         String path = "D:\\AirdTest\\ComboComp";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
@@ -91,7 +92,7 @@ public class 解压缩时间测试 {
 
     @Test
     public void testDDAPasef() throws Exception {
-        String path = "D:\\AirdTest\\ComboComp";
+        String path = "D:\\AirdTest";
         List<File> files = AirdScanUtil.scanIndexFiles(path);
         for (File file : files) {
             if (file.getName().equals("File10.json")) {

@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -46,6 +45,7 @@ import java.util.TreeMap;
 @Data
 public abstract class BaseParser {
 
+    public static final int MAX_READ_SIZE = Integer.MAX_VALUE / 100;
     /**
      * the aird file
      */
@@ -115,6 +115,10 @@ public abstract class BaseParser {
      */
     public RandomAccessFile raf;
 
+    /**
+     * Mobility 字典
+     */
+    public double[] mobiDict;
 
     /**
      * 构造函数
@@ -253,7 +257,7 @@ public abstract class BaseParser {
         return null;
     }
 
-    public HashMap<Integer, Double> parseMobilityDict() throws IOException {
+    public void parseMobilityDict() throws IOException {
         MobiInfo mobiInfo = airdInfo.getMobiInfo();
         if ("TIMS".equals(mobiInfo.getType())) {
             raf.seek(mobiInfo.getDictStart());
@@ -265,9 +269,8 @@ public abstract class BaseParser {
             for (int i = 0; i < mobiArray.length; i++) {
                 mobiDArray[i] = mobiArray[i] / mobiPrecision;
             }
-            
+            this.mobiDict = mobiDArray;
         }
-        return null;
     }
 
     public void initCompressor() throws Exception {
@@ -387,33 +390,37 @@ public abstract class BaseParser {
 
         TreeMap<Float, Spectrum4D<double[]>> map = new TreeMap<>();
         try {
-
+            //首先计算压缩块的总大小
             long delta = end - start;
-
+            int rtIndex = 0;
             //如果块体积大于整数最大值,则进行分段解析
-            while (delta > Integer.MAX_VALUE / 100) {
-                raf.seek(start);
-                byte[] result = new byte[Integer.MAX_VALUE / 100];
+            while (delta > MAX_READ_SIZE) {
+                raf.seek(start);//确认起始点
+                byte[] result = new byte[MAX_READ_SIZE];//读取一个最大块,其中的有效数据应该是小于该块的大小的
                 raf.read(result);
-                long iter = 0;
-                for (int i = 0; i < rtList.size(); i++) {
-                    //如果本轮数据超出数组范围,则结束循环
-                    if ((iter + mzOffsets.get(i) + intOffsets.get(i) + mobiOffsets.get(i)) > Integer.MAX_VALUE / 100) {
+                int iter = 0;//迭代指针,在处理每一个分段的时候都会归零
+                while (rtIndex < rtList.size()) {
+                    //判断本轮已经处理的数据是否会超出分段大小MAX_READ_SIZE的范围,如果超过则结束for循环,如果未超过则进行解码
+                    if ((iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex)) > MAX_READ_SIZE) {
+                        //分段数据处理完毕, 移动指针至下一个分段的位置
                         delta = delta - iter;
                         start = start + iter;
                         break;
                     }
-                    map.put(rtList.get(i), getSpectrum4D(result, (int) iter, mzOffsets.get(i), intOffsets.get(i), mobiOffsets.get(i)));
-                    iter = iter + mzOffsets.get(i) + intOffsets.get(i) + mobiOffsets.get(i);
+
+                    map.put(rtList.get(rtIndex), getSpectrum4D(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                    iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+
+                    rtIndex++;
                 }
             }
             raf.seek(start);
             byte[] result = new byte[(int) delta];
             raf.read(result);
             int iter = 0;
-            for (int i = 0; i < rtList.size(); i++) {
-                map.put(rtList.get(i), getSpectrum4D(result, iter, mzOffsets.get(i), intOffsets.get(i), mobiOffsets.get(i)));
-                iter = iter + mzOffsets.get(i) + intOffsets.get(i) + mobiOffsets.get(i);
+            while (rtIndex < rtList.size()) {
+                map.put(rtList.get(rtIndex), getSpectrum4D(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
             }
             return map;
         } catch (Exception e) {
@@ -478,16 +485,38 @@ public abstract class BaseParser {
 
         TreeMap<Float, Spectrum4D<float[]>> map = new TreeMap<>();
         try {
-            raf.seek(start);
+            //首先计算压缩块的总大小
             long delta = end - start;
+            int rtIndex = 0;
+            //如果块体积大于整数最大值,则进行分段解析
+            while (delta > MAX_READ_SIZE) {
+                raf.seek(start);//确认起始点
+                byte[] result = new byte[MAX_READ_SIZE];//读取一个最大块,其中的有效数据应该是小于该块的大小的
+                raf.read(result);
+                int iter = 0;//迭代指针,在处理每一个分段的时候都会归零
+                while (rtIndex < rtList.size()) {
+                    //判断本轮已经处理的数据是否会超出分段大小MAX_READ_SIZE的范围,如果超过则结束for循环,如果未超过则进行解码
+                    if ((iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex)) > MAX_READ_SIZE) {
+                        //分段数据处理完毕, 移动指针至下一个分段的位置
+                        delta = delta - iter;
+                        start = start + iter;
+                        break;
+                    }
+
+                    map.put(rtList.get(rtIndex), getSpectrum4DAsFloat(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                    iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+
+                    rtIndex++;
+                }
+            }
+            raf.seek(start);
             byte[] result = new byte[(int) delta];
             raf.read(result);
-
             int iter = 0;
-            for (int i = 0; i < rtList.size(); i++) {
-                map.put(rtList.get(i),
-                        getSpectrum4DAsFloat(result, iter, mzOffsets.get(i), intOffsets.get(i), mobiOffsets.get(i)));
-                iter = iter + mzOffsets.get(i) + intOffsets.get(i) + mobiOffsets.get(i);
+            while (rtIndex < rtList.size()) {
+                map.put(rtList.get(rtIndex), getSpectrum4DAsFloat(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+                rtIndex++;
             }
             return map;
         } catch (Exception e) {
@@ -514,7 +543,7 @@ public abstract class BaseParser {
         offset = offset + mzOffset;
         float[] intensityArray = getInts(bytes, offset, intOffset);
         offset = offset + intOffset;
-        double[] mobiArray = getMobis(bytes, offset, mobiOffset);
+        double[] mobiArray = getMobilities(bytes, offset, mobiOffset);
         return new Spectrum4D<double[]>(mzArray, intensityArray, mobiArray);
     }
 
@@ -756,7 +785,7 @@ public abstract class BaseParser {
      * @param length the specified length
      * @return the decompression intensity array
      */
-    public double[] getMobis(byte[] value, int start, int length) {
+    public double[] getMobilities(byte[] value, int start, int length) {
 
         try {
             ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
@@ -768,12 +797,15 @@ public abstract class BaseParser {
                 intValues[i] = ints.get(i);
             }
             intValues = mobiIntComp.decode(intValues);
+            double[] mobilities = new double[intValues.length];
+            for (int i = 0; i < intValues.length; i++) {
+                mobilities[i] = mobiDict[intValues[i]];
+            }
+            return mobilities;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-        //TODO map映射
         return null;
     }
 
@@ -787,41 +819,25 @@ public abstract class BaseParser {
      */
     public float[] getMobisAsFloat(byte[] value, int start, int length) {
 
-        ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
-        byteBuffer.order(mobiCompressor.fetchByteOrder());
+        try {
+            ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
+            byteBuffer.order(mobiCompressor.fetchByteOrder());
 
-        IntBuffer ints = byteBuffer.asIntBuffer();
-        int[] intValues = new int[ints.capacity()];
-        for (int i = 0; i < ints.capacity(); i++) {
-            intValues[i] = ints.get(i);
+            IntBuffer ints = byteBuffer.asIntBuffer();
+            int[] intValues = new int[ints.capacity()];
+            for (int i = 0; i < ints.capacity(); i++) {
+                intValues[i] = ints.get(i);
+            }
+            intValues = mobiIntComp.decode(intValues);
+            float[] mobilities = new float[intValues.length];
+            for (int i = 0; i < intValues.length; i++) {
+                mobilities[i] = (float) mobiDict[intValues[i]];
+            }
+            return mobilities;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        intValues = mobiIntComp.decode(intValues);
 
-        //TODO map映射
-        return null;
-    }
-
-    /**
-     * get intensity values from the start point with a specified length
-     *
-     * @param value  the original array
-     * @param start  the start point
-     * @param length the specified length
-     * @return the decompression intensity array
-     */
-    public float[] getMobisAsInteger(byte[] value, int start, int length) {
-
-        ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
-        byteBuffer.order(mobiCompressor.fetchByteOrder());
-
-        IntBuffer ints = byteBuffer.asIntBuffer();
-        int[] intValues = new int[ints.capacity()];
-        for (int i = 0; i < ints.capacity(); i++) {
-            intValues[i] = ints.get(i);
-        }
-        intValues = mobiIntComp.decode(intValues);
-
-        //TODO map映射
         return null;
     }
 

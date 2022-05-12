@@ -12,9 +12,7 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.DDAPasefMs;
-import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.bean.common.Spectrum4D;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.DDAUtil;
@@ -69,7 +67,7 @@ public class DDAPasefParser extends BaseParser {
         List<DDAPasefMs> ms1List = new ArrayList<>();
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         List<BlockIndex> ms2IndexList = getAllMs2Index();
-        TreeMap<Float, Spectrum4D<double[]>> ms1Map = getSpectra4D(ms1Index.getStartPtr(),
+        TreeMap<Float, Spectrum4D<float[]>> ms1Map = getSpectra4DAsFloat(ms1Index.getStartPtr(),
                 ms1Index.getEndPtr(),
                 ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts(), ms1Index.getMobilities());
         List<Float> ms1RtList = new ArrayList<>(ms1Map.keySet());
@@ -81,16 +79,21 @@ public class DDAPasefParser extends BaseParser {
                     .filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
             if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
-                TreeMap<Float, Spectrum4D<double[]>> ms2Map = getSpectra4D(ms2Index.getStartPtr(),
-                        ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts(), ms2Index.getMobilities());
-                List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
-                List<DDAPasefMs> ms2List = new ArrayList<>();
-                for (int j = 0; j < ms2RtList.size(); j++) {
-                    DDAPasefMs ms2 = new DDAPasefMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
-                    DDAUtil.initFromIndex(ms2, ms2Index, j);
-                    ms2List.add(ms2);
+                try {
+                    TreeMap<Float, Spectrum4D<float[]>> ms2Map = getSpectra4DAsFloat(ms2Index.getStartPtr(),
+                            ms2Index.getEndPtr(), ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts(), ms2Index.getMobilities());
+                    List<Float> ms2RtList = new ArrayList<>(ms2Map.keySet());
+                    List<DDAPasefMs> ms2List = new ArrayList<>();
+                    for (int j = 0; j < ms2RtList.size(); j++) {
+                        DDAPasefMs ms2 = new DDAPasefMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
+                        DDAUtil.initFromIndex(ms2, ms2Index, j);
+                        ms2List.add(ms2);
+                    }
+                    ms1.setMs2List(ms2List);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                ms1.setMs2List(ms2List);
+
             }
             ms1List.add(ms1);
         }
