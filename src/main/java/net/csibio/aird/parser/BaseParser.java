@@ -229,6 +229,8 @@ public abstract class BaseParser {
                 throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
             }
             return switch (AirdType.getType(airdInfo.getType())) {
+                case DDA_PASEF -> new DDAParser(indexFile.getAbsolutePath(), airdInfo);
+                case DIA_PASEF -> new DIAParser(indexFile.getAbsolutePath(), airdInfo);
                 case DDA -> new DDAParser(indexFile.getAbsolutePath(), airdInfo);
                 case DIA -> new DIAParser(indexFile.getAbsolutePath(), airdInfo);
                 case PRM -> new PRMParser(indexFile.getAbsolutePath(), airdInfo);
