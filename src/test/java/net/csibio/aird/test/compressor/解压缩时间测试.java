@@ -69,7 +69,7 @@ public class 解压缩时间测试 {
                 long start = System.currentTimeMillis();
                 DIAPasefParser parser = new DIAPasefParser(file.getAbsolutePath());
                 for (BlockIndex blockIndex : parser.airdInfo.getIndexList()) {
-                    parser.getSpectra4DAsFloat(blockIndex);
+                    parser.getSpectraAsFloat(blockIndex);
                 }
                 System.out.println(file.getName() + ":" + (System.currentTimeMillis() - start));
             }
