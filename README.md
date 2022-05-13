@@ -41,7 +41,7 @@ can control the Memory
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>1.1.6</version>
+        <version>2.0.0</version>
     </dependency>
 
 # Main API Class
@@ -52,6 +52,8 @@ Aird-SDK 1.1.X is currently support three types of MS file.
 - DIA/SWATH
 - DDA
 - PRM
+- DIA_PASEF
+- DDA_PASEF
 - Common type like mzXML
 
 Demo code: see SampleCode.java in the project
@@ -66,22 +68,28 @@ refer in the root package of the project: AirdMetaData.json
 
 | Name                     | Type                 | Required | Description                                                                                                                                             |
 |--------------------------|----------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| compressors              | List<Compressor>     | True     | The compression strategies for m/z and intensity array                                                                                                  |
-| rangeList                | List<WindowRange>    | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format                    |
-| indexList                | List<BlockIndex>     | True     | The index for mass spectrometry data                                                                                                                    |
+| version                  | String               | True     | Aird format version                                                                                                                                     |
+| versionCode              | Integer              | True     | Aird format version code                                                                                                                                |
+| compressors              | List<Compressor>     | True     | The compression strategies for m/z, intensity and mobility array                                                                                        |
 | instruments              | List<Instrument>     | True     | General information about the MS instrument                                                                                                             |
 | dataProcessings          | List<DataProcessing> | False    | Description of any manipulation (from the first conversion to Aird format until the creation of the current Aird instance document) applied to the data |
 | softwares                | List<Software>       | False    | Software used to convert the data. If data has been processed (e.g. profile > centroid) by any additional progs these should be added too               |
 | parentFiles              | List<ParentFile>     | False    | Path to all the ancestor files (up to the native acquisition file) used to generate the current Aird document                                           |
-| version                  | String               | True     | Aird format version                                                                                                                                     |
-| versionCode              | Integer              | True     | Aird format version code                                                                                                                                |
-| type                     | String               | True     | Aird Type. There are four types now: DIA, DDA, PRM, COMMON                                                                                              |
+| rangeList                | List<WindowRange>    | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format                    |
+| indexList                | List<BlockIndex>     | True     | The index for mass spectrometry data                                                                                                                    |
+| type                     | String               | True     | Aird Type. There are four types now: DIA, DDA, PRM, DIA_PASEF, DDA_PASEF, COMMON                                                                        |
 | fileSize                 | Long                 | True     | The file size for Aird file and JSON file                                                                                                               |
-| totalScanCount           | Long                 | True     | Total spectrums count                                                                                                                                   |
+| totalCount               | Long                 | True     | Total spectrums count                                                                                                                                   |
 | airdPath                 | String               | False    | The .aird file path                                                                                                                                     |
+| activator                | String               | False    | Activator Method                                                                                                                                        |
+| energy                   | Float                | False    | Collision Energy                                                                                                                                        |
+| msType                   | String               | True     | Mass Spectrum Type, PROFILE, CENTROIDED                                                                                                                 |
+| rtUnit                   | String               | True     | rt unit                                                                                                                                                 |
+| polarity                 | String               | True     | Polarity type, POSITIVE, NEGATIVE, NEUTRAL                                                                                                              |
+| ignoreZeroIntensityPoint | Boolean              | True     | Whether ignore the point which intensity is 0                                                                                                           |
+| mobiInfo                 | MobiInfo             | False    | ion mobility information                                                                                                                                |
 | creator                  | String               | False    | The file creator, this field can be set up in the AirdPro                                                                                               |
 | createDate               | String               | False    | The create date for the aird file                                                                                                                       |
-| ignoreZeroIntensityPoint | Boolean              | True     | Whether ignore the point which intensity is 0                                                                                                           |
 | features                 | String               | False    | Some other features stored with “key:value;key:value” format                                                                                            |
 
 ## Compressor
@@ -91,31 +99,36 @@ refer in the root package of the project: AirdMetaData.json
 | target    | String       | True     | mz, intensity                                         |
 | methods   | List<String> | True     | zlib, pFor, log10                                     |
 | precision | Integer      | False    | 10^N, the N means N decimal places for the final data |
+| digit     | Integer      | False    | Use for Stack-ZDPD algorithm 2^digit = layers         |
 | byteOrder | String       | True     | LITTLE_ENDIAN, BIG_ENDIAN                             |
 
 ## WindowRange
 
-| Name     | Type   | Required | Description                                                  |
-|----------|--------|----------|--------------------------------------------------------------|
-| start    | Double | True     | Precursor m/z start                                          |
-| end      | Double | True     | Precursor m/z end                                            |
-| mz       | Double | True     | Precursor m/z                                                |
-| features | String | False    | Some other features stored with “key:value;key:value” format |
+| Name     | Type    | Required | Description                                                  |
+|----------|---------|----------|--------------------------------------------------------------|
+| start    | Double  | True     | Precursor m/z start                                          |
+| end      | Double  | True     | Precursor m/z end                                            |
+| mz       | Double  | True     | Precursor m/z                                                |
+| charge   | Integer | False    | Precursor charge, 0 when empty                               |
+| features | String  | False    | Some other features stored with “key:value;key:value” format |
 
 ## BlockIndex
 
-| Name      | Type              | Required | Description                                                                                                                          |
-|-----------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------|
-| level     | Integer           | True     | 1:MS1, 2:MS2                                                                                                                         |
-| startPtr  | Long              | True     | The start point for the block                                                                                                        |
-| endPtr    | Long              | True     | The endpoint for the block                                                                                                           |
-| num       | Integer           | False    | The scan number in the vendor file. If a block has a list of MS2, this field is the related MS1’s number                             |
-| rangeList | List<WindowRange> | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format |
-| nums      | List<Integer>     | False    | Scan numbers in the block                                                                                                            |
-| rts       | List<Float>       | True     | All the retention times in the block                                                                                                 |
-| mzs       | List<Long>        | True     | COMMON: the start position for every m/z bytes. Others: the size for every m/z bytes size                                            |
-| ints      | List<Long>        | True     | COMMON: the start position for every m/z bytes. Others: the size for every m/z bytes size                                            |
-| features  | String            | False    | Some other features stored with “key:value;key:value” format                                                                         |
+| Name       | Type              | Required | Description                                                                                                                          |
+|------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------|
+| level      | Integer           | True     | 1:MS1, 2:MS2                                                                                                                         |
+| startPtr   | Long              | True     | The start point for the block                                                                                                        |
+| endPtr     | Long              | True     | The endpoint for the block                                                                                                           |
+| num        | Integer           | False    | The scan number in the vendor file. If a block has a list of MS2, this field is the related MS1’s number                             |
+| rangeList  | List<WindowRange> | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format |
+| nums       | List<Integer>     | False    | Scan numbers in the block                                                                                                            |
+| rts        | List<Float>       | True     | All the retention times in the block                                                                                                 |
+| tics       | List<Long>        | False    | Every Spectrum's total intensity in the block                                                                                        |
+| mzs        | List<Integer>     | True     | COMMON: the start position for every m/z bytes. Others: the size for every m/z bytes size                                            |
+| ints       | List<Integer>     | True     | COMMON: the start position for every intensity bytes. Others: the size for every intensity bytes size                                |
+| mobilities | List<Integer>     | False    | COMMON: the start position for every mobility bytes. Others: the size for every mobility bytes size                                  |
+| cvList     | List<List<CV>>    | False    | PSI Controlled Vocabulary                                                                                                            |
+| features   | String            | False    | Some other features stored with “key:value;key:value” format                                                                         |
 
 ## Instrument
 
@@ -151,9 +164,18 @@ refer in the root package of the project: AirdMetaData.json
 | location | String | False    | The file location |
 | type     | String | False    | The file type     |
 
+## MobiInfo
+
+| Name      | Type   | Required | Description                               |
+|-----------|--------|----------|-------------------------------------------|
+| dictStart | long   | True     | start position in the aird for mobi array |
+| dictEnd   | long   | True     | end position in the aird for mobi array   |
+| unit      | String | False    | ion mobility unit                         |
+| type      | String | False    | ion mobility type, see MobilityType       |
+
 # Sample Code
 
-Detail samle code. See net.csibio.aird.sample.SampleCode
+Detail sample code. See net.csibio.aird.sample.SampleCode
 
 ## Scan Aird files from target directory
 
@@ -197,8 +219,3 @@ Detail samle code. See net.csibio.aird.sample.SampleCode
 ```
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
-
-| Type |Ori| Zlib |Gzip|LZMA2|Snappy|Brotli|ZDPD|BDPD|SDPD| 
-|------|---|-----|----|----|------|------|----|----|----| 
-| mz   |139| 98  |98 |63|139 |74 |45 |44 |55 | 
-| int  |139| 12  |12 |9 |33 |9 | | | |

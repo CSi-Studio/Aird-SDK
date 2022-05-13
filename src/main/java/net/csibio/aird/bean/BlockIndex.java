@@ -61,24 +61,29 @@ public class BlockIndex {
   /**
    * 一个块中所有子谱图的mz的压缩后的大小列表 every compressed mz array's binary size in the block index
    */
-  List<Long> mzs;
+  List<Integer> mzs;
 
   /**
    * 每一个mz对应的原有的层数, 使用zlib压缩,每一个存储的是压缩后的块大小 the original layers of every mz point, with zlib
    * compress.
    */
-  List<Long> tags;
+  List<Integer> tags;
 
   /**
    * 一个块中所有子谱图的intenisty的压缩后的大小列表 every compressed intensity array's binary size in the block index
    */
-  List<Long> ints;
+  List<Integer> ints;
+
+  /**
+   * 一个块中所有子谱图的intenisty的压缩后的大小列表 every compressed intensity array's binary size in the block index
+   */
+  List<Integer> mobilities;
 
   /**
    * PSI Controlled Vocabulary PSI可控词汇表
    */
   List<List<CV>> cvList;
-  
+
   /**
    * 用于存储KV键值对 Pairs with key/value for extension features
    */
