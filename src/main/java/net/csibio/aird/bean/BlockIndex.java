@@ -51,7 +51,7 @@ public class BlockIndex {
   /**
    * 所有该块中的rt时间列表 all the retention time in the aird
    */
-  List<Float> rts;
+  List<Double> rts;
 
   /**
    * Every Spectrum's total intensity in the block 所有该块中的tic列表
