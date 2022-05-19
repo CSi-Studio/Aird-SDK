@@ -65,7 +65,7 @@ public class AirdMathUtil {
     }
   }
 
-  public static double maxValue(double[] values) {
+  public static double max(double[] values) {
     double maxValue = Double.MIN_VALUE;
     for (double value : values) {
       if (value >= maxValue) {
@@ -75,7 +75,7 @@ public class AirdMathUtil {
     return maxValue;
   }
 
-  public static double minValue(double[] values) {
+  public static double min(double[] values) {
     double minValue = Double.MAX_VALUE;
     for (double value : values) {
       if (value <= minValue) {
@@ -253,7 +253,7 @@ public class AirdMathUtil {
   }
 
   public static int findMaxIndex(double[] doubles) {
-    double max = 0d;
+    double max = Double.MIN_VALUE;
     int index = -1;
     for (int i = 0; i < doubles.length; i++) {
       if (doubles[i] > max) {
@@ -263,4 +263,5 @@ public class AirdMathUtil {
     }
     return index;
   }
+  
 }

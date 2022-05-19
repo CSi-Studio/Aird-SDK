@@ -10,7 +10,9 @@
 
 package net.csibio.aird.bean.common;
 
+import java.util.List;
 import lombok.Data;
+import org.apache.commons.lang3.ArrayUtils;
 
 @Data
 public class Xic {
@@ -27,6 +29,17 @@ public class Xic {
   public Xic(double[] rts, double[] ints) {
     this.rts = rts;
     this.ints = ints;
+  }
+
+  public Xic(List<Double> rtList, List<Double> intensityList, List<Double> mzList) {
+    this.setRts(ArrayUtils.toPrimitive(rtList.toArray(new Double[0])));
+    this.setInts(ArrayUtils.toPrimitive(intensityList.toArray(new Double[0])));
+
+    if (mzList == null) {
+      this.setMzs(null);
+    } else {
+      this.setMzs(ArrayUtils.toPrimitive(mzList.toArray(new Double[0])));
+    }
   }
 
   public Xic(double[] rts, double[] ints, double[] mzs) {
