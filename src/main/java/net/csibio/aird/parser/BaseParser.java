@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.TreeMap;
 import lombok.Data;
 import net.csibio.aird.bean.AirdInfo;
+import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MobiInfo;
 import net.csibio.aird.bean.common.Spectrum;
@@ -353,6 +354,11 @@ public abstract class BaseParser {
     return new Spectrum(mzArray, intensityArray);
   }
 
+  public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
+    return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
+        index.getInts());
+  }
+
   /**
    * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
    * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
@@ -466,6 +472,102 @@ public abstract class BaseParser {
     return new Spectrum(mzArray, intensityArray, mobiArray);
   }
 
+  /**
+   * 从一个完整的Swath Block块中取出一条记录 查询条件: 1. block索引号 2. rt
+   * <p>
+   * Read a spectrum from aird with block index and target rt
+   *
+   * @param index block index
+   * @param rt    retention time of the target spectrum
+   * @return the target spectrum
+   */
+  public Spectrum getSpectrumByRt(BlockIndex index, double rt) {
+    List<Double> rts = index.getRts();
+    int position = rts.indexOf(rt);
+    return getSpectrumByIndex(index, position);
+  }
+
+  /**
+   * 从aird文件中获取某一条记录 查询条件: 1.起始坐标 2.全rt列表 3.mz块体积列表 4.intensity块大小列表 5.rt
+   * <p>
+   * Read a spectrum from aird with multiple query criteria. Query Criteria: 1.Start Point 2.rt list
+   * 3.mz block size list 4.intensity block size list 5.rt
+   *
+   * @param startPtr   起始位置 the start point of the target spectrum
+   * @param rtList     全部时刻列表 all the retention time list
+   * @param mzOffsets  mz数组长度列表 mz size block list
+   * @param intOffsets int数组长度列表 intensity size block list
+   * @param rt         获取某一个时刻原始谱图 the retention time of the target spectrum
+   * @return 某个时刻的光谱信息 the spectrum of the target retention time
+   */
+  public Spectrum getSpectrumByRt(long startPtr, List<Double> rtList, List<Integer> mzOffsets,
+      List<Integer> intOffsets, double rt) {
+    int position = rtList.indexOf(rt);
+    return getSpectrumByIndex(startPtr, mzOffsets, intOffsets, position);
+  }
+
+  /**
+   * 根据序列号查询光谱
+   *
+   * @param index 索引序列号
+   * @return 该索引号对应的光谱信息
+   */
+  public Spectrum getSpectrum(int index) {
+    List<BlockIndex> indexList = getAirdInfo().getIndexList();
+    for (int i = 0; i < indexList.size(); i++) {
+      BlockIndex blockIndex = indexList.get(i);
+      if (blockIndex.getNums().contains(index)) {
+        int targetIndex = blockIndex.getNums().indexOf(index);
+        return getSpectrumByIndex(blockIndex, targetIndex);
+      }
+    }
+    return null;
+  }
+
+
+  /**
+   * @param blockIndex 块索引
+   * @param index      块内索引值
+   * @return 对应光谱数据
+   */
+  public Spectrum getSpectrumByIndex(BlockIndex blockIndex, int index) {
+    return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(),
+        index);
+  }
+
+  /**
+   * 从aird文件中获取某一条记录 查询条件: 1.起始坐标 2.mz块体积列表 3.intensity块大小列表 4.光谱在块中的索引位置
+   * <p>
+   * Read a spectrum from aird with multiple query criteria. Query Criteria: 1.Start Point 2.mz
+   * block size list 3.intensity block size list  4.spectrum index in the block
+   *
+   * @param startPtr   起始位置 the start point of the target spectrum
+   * @param mzOffsets  mz数组长度列表 mz size block list
+   * @param intOffsets int数组长度列表 intensity size block list
+   * @param index      光谱在block块中的索引位置 the spectrum index in the block
+   * @return 某个时刻的光谱信息 the spectrum of the target retention time
+   */
+  public Spectrum getSpectrumByIndex(long startPtr, List<Integer> mzOffsets,
+      List<Integer> intOffsets, int index) {
+    long start = startPtr;
+
+    for (int i = 0; i < index; i++) {
+      start += mzOffsets.get(i);
+      start += intOffsets.get(i);
+    }
+
+    try {
+      raf.seek(start);
+      byte[] reader = new byte[mzOffsets.get(index) + intOffsets.get(index)];
+      raf.read(reader);
+      return getSpectrum(reader, 0, mzOffsets.get(index), intOffsets.get(index));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+  
   /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
    *

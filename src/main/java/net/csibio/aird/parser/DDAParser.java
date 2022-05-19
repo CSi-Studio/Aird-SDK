@@ -41,6 +41,11 @@ public class DDAParser extends BaseParser {
     super(indexFilePath, airdInfo);
   }
 
+  /**
+   * DDA只有一个MS1 BlockIndex,因此是归属于DDAParser的特殊算法
+   *
+   * @return
+   */
   public BlockIndex getMs1Index() {
     if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
       return airdInfo.getIndexList().get(0);
@@ -91,5 +96,10 @@ public class DDAParser extends BaseParser {
       ms1List.add(ms1);
     }
     return ms1List;
+  }
+
+  public TreeMap<Double, Spectrum> getMs1Map() {
+    BlockIndex ms1Index = getMs1Index();
+    return getSpectra(ms1Index);
   }
 }

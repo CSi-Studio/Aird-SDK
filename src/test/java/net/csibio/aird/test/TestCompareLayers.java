@@ -42,7 +42,7 @@ public class TestCompareLayers {
       for (Double rt : rts) {
         int[] arr;
         double[] temp = diaParser.getSpectrumByRt(index, rt).getMzs();
-        mzGroup.add(ArrayUtil.fromDoubleToInt(temp, diaParser.getMzPrecision()));
+        mzGroup.add(ArrayUtil.d2i(temp, diaParser.getMzPrecision()));
       }
 //            sizeOrigin += RamUsageEstimator.sizeOf((Accountable) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);

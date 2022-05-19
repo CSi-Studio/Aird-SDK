@@ -43,7 +43,7 @@ public class TestLayers {
         int[] arr;
 
         double[] temp = diaParser.getSpectrumByRt(index, rts.get(i)).getMzs();
-        mzGroup.add(ArrayUtil.fromDoubleToInt(temp, diaParser.getMzPrecision()));
+        mzGroup.add(ArrayUtil.d2i(temp, diaParser.getMzPrecision()));
       }
 //      record[0][m] = RamUsageEstimator.sizeOf((Query) mzGroup);
 //            String size1 = RamUsageEstimator.humanSizeOf(mzGroup);

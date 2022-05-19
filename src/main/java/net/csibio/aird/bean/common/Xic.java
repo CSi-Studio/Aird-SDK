@@ -3,12 +3,12 @@ package net.csibio.aird.bean.common;
 import lombok.Data;
 
 @Data
-public class Xic<T, D> {
+public class Xic {
 
-  public T rts;
-  public D ints;
+  public double[] rts;
+  public double[] ints;
 
-  public Xic(T rts, D ints) {
+  public Xic(double[] rts, double[] ints) {
     this.rts = rts;
     this.ints = ints;
   }
