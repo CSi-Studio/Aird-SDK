@@ -10,27 +10,6 @@
 
 package net.csibio.aird.bean.common;
 
-import lombok.Data;
+public record FloatPair(float left, float right) {
 
-@Data
-public class Xic {
-
-  public double[] rts;
-  public double[] ints;
-
-  //用于存储每一张光谱图中计算XIC时最大的mz
-  public double[] mzs;
-
-  public Xic() {
-  }
-
-  public Xic(double[] rts, double[] ints) {
-    this.rts = rts;
-    this.ints = ints;
-  }
-
-  public Xic(double[] rts, double[] ints, double[] mzs) {
-    this.rts = rts;
-    this.ints = ints;
-  }
 }
