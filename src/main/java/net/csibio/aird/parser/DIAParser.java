@@ -34,12 +34,11 @@ public class DIAParser extends BaseParser {
    * @param airdPath      aird file path
    * @param mzCompressor  mz compressor
    * @param intCompressor intensity compressor
-   * @param mzPrecision   mz precision
    * @throws ScanException scan exception
    */
-  public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor,
-      int mzPrecision) throws Exception {
-    super(airdPath, mzCompressor, intCompressor, null, mzPrecision, AirdType.DIA.getName());
+  public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor)
+      throws Exception {
+    super(airdPath, mzCompressor, intCompressor, null, AirdType.DIA.getName());
   }
 
   /**
@@ -48,19 +47,8 @@ public class DIAParser extends BaseParser {
    * @param index block index
    * @return all the spectrums
    */
-  public TreeMap<Double, Spectrum<double[], float[], double[]>> getSpectra(BlockIndex index) {
+  public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
     return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
-        index.getInts());
-  }
-
-  /**
-   * the main interface for getting all the spectrums of a block.
-   *
-   * @param index block index
-   * @return all the spectrums
-   */
-  public TreeMap<Double, Spectrum<float[], float[], float[]>> getSpectraAsFloat(BlockIndex index) {
-    return getSpectraAsFloat(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
         index.getInts());
   }
 
@@ -110,7 +98,7 @@ public class DIAParser extends BaseParser {
    * @param rt    retention time of the target spectrum
    * @return the target spectrum
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByRt(BlockIndex index, double rt) {
+  public Spectrum getSpectrumByRt(BlockIndex index, double rt) {
     List<Double> rts = index.getRts();
     int position = rts.indexOf(rt);
     return getSpectrumByIndex(index, position);
@@ -121,8 +109,7 @@ public class DIAParser extends BaseParser {
    * @param index      块内索引值
    * @return 对应光谱数据
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByIndex(BlockIndex blockIndex,
-      int index) {
+  public Spectrum getSpectrumByIndex(BlockIndex blockIndex, int index) {
     return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(),
         index);
   }
@@ -139,8 +126,8 @@ public class DIAParser extends BaseParser {
    * @param index      光谱在block块中的索引位置 the spectrum index in the block
    * @return 某个时刻的光谱信息 the spectrum of the target retention time
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByIndex(long startPtr,
-      List<Integer> mzOffsets, List<Integer> intOffsets, int index) {
+  public Spectrum getSpectrumByIndex(long startPtr, List<Integer> mzOffsets,
+      List<Integer> intOffsets, int index) {
     long start = startPtr;
 
     for (int i = 0; i < index; i++) {

@@ -20,7 +20,7 @@ import net.csibio.aird.constant.PSI;
  * New Structure for MsCycle every ms mean ms1 spectrum with related ms2 spectra
  */
 @Data
-public class DDAMs<T, D, F> implements Serializable {
+public class DDAMs implements Serializable {
 
   private static final long serialVersionUID = -123222L;
 
@@ -52,17 +52,17 @@ public class DDAMs<T, D, F> implements Serializable {
   /**
    * the ms1 spectrum data pairs required
    */
-  Spectrum<T, D, F> spectrum;
+  Spectrum spectrum;
 
   /**
    * related ms2 list
    */
-  List<DDAMs<T, D, F>> ms2List;
+  List<DDAMs> ms2List;
 
   public DDAMs() {
   }
 
-  public DDAMs(Double rt, Spectrum<T, D, F> spectrum) {
+  public DDAMs(Double rt, Spectrum spectrum) {
     this.rt = rt;
     this.spectrum = spectrum;
   }

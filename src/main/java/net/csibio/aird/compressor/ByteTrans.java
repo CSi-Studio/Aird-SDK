@@ -2,6 +2,7 @@ package net.csibio.aird.compressor;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
@@ -22,6 +23,14 @@ public class ByteTrans {
       floats[i] = (float) doubles[i];
     }
     return floats;
+  }
+
+  public static byte[] doubleToByte(double[] doubles) {
+    DoubleBuffer fbTarget = DoubleBuffer.wrap(doubles);
+    ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 8);
+    bbTarget.order(ByteOrder.LITTLE_ENDIAN);
+    bbTarget.asDoubleBuffer().put(fbTarget);
+    return bbTarget.array();
   }
 
   public static byte[] floatToByte(float[] floats) {

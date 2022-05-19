@@ -162,14 +162,6 @@ public class AirdInfo {
     return null;
   }
 
-//    public List<BlockIndex> getIndexList() {
-//        if (blockIndexList != null && blockIndexList.size() != 0) {
-//            return blockIndexList;
-//        } else {
-//            return indexList;
-//        }
-//    }
-
   public TreeMap<Double, Long> getTicMap() {
     TreeMap<Double, Long> map = new TreeMap<Double, Long>() {
     };

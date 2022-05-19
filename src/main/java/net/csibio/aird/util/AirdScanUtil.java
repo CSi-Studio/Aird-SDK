@@ -64,7 +64,7 @@ public class AirdScanUtil {
   }
 
   /**
-   * load Aird Index Infomation from index file(JSON Format),and parse into AirdInfo
+   * load Aird Index Information from index file(JSON Format),and parse into AirdInfo
    *
    * @param indexFile 索引文件
    * @return 该索引文件内的JSON信息, 即AirdInfo信息
@@ -76,10 +76,8 @@ public class AirdScanUtil {
     try {
       airdInfo = JSONObject.parseObject(content, AirdInfo.class);
     } catch (Exception e) {
-      System.out.println(indexFile.getAbsolutePath());
-      System.out.println(ResultCodeEnum.NOT_AIRD_INDEX_FILE.getMessage());
       e.printStackTrace();
-      return null;
+      throw e;
     }
 
     return airdInfo;

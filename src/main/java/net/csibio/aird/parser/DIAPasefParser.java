@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.TreeMap;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
 
 /**
@@ -29,29 +27,13 @@ public class DIAPasefParser extends BaseParser {
   }
 
   /**
-   * 构造函数
-   *
-   * @param airdPath       aird file path
-   * @param mzCompressor   mz compressor
-   * @param intCompressor  intensity compressor
-   * @param mobiCompressor mobility compressor
-   * @param mzPrecision    mz precision
-   * @throws ScanException scan exception
-   */
-  public DIAPasefParser(String airdPath, Compressor mzCompressor, Compressor intCompressor,
-      Compressor mobiCompressor, int mzPrecision) throws Exception {
-    super(airdPath, mzCompressor, intCompressor, mobiCompressor, mzPrecision,
-        AirdType.DIA_PASEF.getName());
-  }
-
-  /**
    * the main interface for getting all the spectrums of a block.
    *
    * @param index block index
    * @return all the spectrums
    */
-  public TreeMap<Double, Spectrum<float[], float[], float[]>> getSpectraAsFloat(BlockIndex index) {
-    return getSpectraAsFloat(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
+  public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
+    return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(),
         index.getInts(), index.getMobilities());
   }
 
@@ -68,8 +50,8 @@ public class DIAPasefParser extends BaseParser {
    * @param rt         获取某一个时刻原始谱图 the retention time of the target spectrum
    * @return 某个时刻的光谱信息 the spectrum of the target retention time
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByRt(long startPtr, List<Float> rtList,
-      List<Integer> mzOffsets, List<Integer> intOffsets, float rt) {
+  public Spectrum getSpectrumByRt(long startPtr, List<Double> rtList, List<Integer> mzOffsets,
+      List<Integer> intOffsets, double rt) {
     int position = rtList.indexOf(rt);
     return getSpectrumByIndex(startPtr, mzOffsets, intOffsets, position);
   }
@@ -80,7 +62,7 @@ public class DIAPasefParser extends BaseParser {
    * @param index 索引序列号
    * @return 该索引号对应的光谱信息
    */
-  public Spectrum<double[], float[], double[]> getSpectrum(int index) {
+  public Spectrum getSpectrum(int index) {
     List<BlockIndex> indexList = getAirdInfo().getIndexList();
     for (int i = 0; i < indexList.size(); i++) {
       BlockIndex blockIndex = indexList.get(i);
@@ -101,7 +83,7 @@ public class DIAPasefParser extends BaseParser {
    * @param rt    retention time of the target spectrum
    * @return the target spectrum
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByRt(BlockIndex index, double rt) {
+  public Spectrum getSpectrumByRt(BlockIndex index, double rt) {
     List<Double> rts = index.getRts();
     int position = rts.indexOf(rt);
     return getSpectrumByIndex(index, position);
@@ -112,8 +94,7 @@ public class DIAPasefParser extends BaseParser {
    * @param index      块内索引值
    * @return 对应光谱数据
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByIndex(BlockIndex blockIndex,
-      int index) {
+  public Spectrum getSpectrumByIndex(BlockIndex blockIndex, int index) {
     return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(),
         index);
   }
@@ -130,8 +111,8 @@ public class DIAPasefParser extends BaseParser {
    * @param index      光谱在block块中的索引位置 the spectrum index in the block
    * @return 某个时刻的光谱信息 the spectrum of the target retention time
    */
-  public Spectrum<double[], float[], double[]> getSpectrumByIndex(long startPtr,
-      List<Integer> mzOffsets, List<Integer> intOffsets, int index) {
+  public Spectrum getSpectrumByIndex(long startPtr, List<Integer> mzOffsets,
+      List<Integer> intOffsets, int index) {
     long start = startPtr;
 
     for (int i = 0; i < index; i++) {

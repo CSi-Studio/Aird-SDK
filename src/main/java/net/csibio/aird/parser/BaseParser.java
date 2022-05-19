@@ -82,6 +82,9 @@ public abstract class BaseParser {
    */
   public Compressor mobiCompressor;
 
+  public double mzPrecision;
+  public double intPrecision;
+  public double mobiPrecision;
   /**
    * 使用的压缩内核
    */
@@ -93,28 +96,6 @@ public abstract class BaseParser {
 
   public IntComp mobiIntComp;
   public ByteComp mobiByteComp;
-
-  /**
-   * the m/z precision
-   */
-  public double mzPrecision;
-
-  /**
-   * the intensity precision
-   */
-  public double intPrecision;
-
-  /**
-   * the mobility precision, default is 7dp
-   */
-  public double mobiPrecision;
-
-  /**
-   * Acquisition Method Type Supported by Aird
-   *
-   * @see net.csibio.aird.enums.AirdType
-   */
-  public String type;
 
   /**
    * Random Access File reader
@@ -140,6 +121,11 @@ public abstract class BaseParser {
    */
   public BaseParser(String indexPath) throws Exception {
     this.indexFile = new File(indexPath);
+    airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
+    if (airdInfo == null) {
+      throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+    }
+
     this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
     try {
       raf = new RandomAccessFile(airdFile, "r");
@@ -147,19 +133,9 @@ public abstract class BaseParser {
       e.printStackTrace();
       throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
     }
-    airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
-    if (airdInfo == null) {
-      throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
-    }
 
-    mzCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MZ);
-    intCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_INTENSITY);
-    mobiCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MOBILITY);
-    initCompressor();
-    mzPrecision = mzCompressor.getPrecision();
-    intPrecision = intCompressor.getPrecision();
-    mobiPrecision = mobiCompressor.getPrecision();
-    type = airdInfo.getType();
+    parseCompsFromAirdInfo();
+    parserComboComp();
     parseMobilityDict();
   }
 
@@ -173,7 +149,8 @@ public abstract class BaseParser {
     if (airdInfo == null) {
       throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
     }
-    this.indexFile = new File(indexPath);
+    this.airdInfo = airdInfo;
+
     this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
     try {
       raf = new RandomAccessFile(airdFile, "r");
@@ -181,52 +158,56 @@ public abstract class BaseParser {
       e.printStackTrace();
       throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
     }
-    this.airdInfo = airdInfo;
 
-    mzCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MZ);
-    intCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_INTENSITY);
-    mobiCompressor = getTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MOBILITY);
-    initCompressor();
-    mzPrecision = mzCompressor.getPrecision();
-    intPrecision = intCompressor.getPrecision();
-    mobiPrecision = mobiCompressor.getPrecision();
-    type = airdInfo.getType();
+    parseCompsFromAirdInfo();
+    parserComboComp();
     parseMobilityDict();
   }
 
   /**
-   * 使用直接的关键信息进行初始化
+   * 使用不读取Index文件,直接使用关键信息进行初始化的方法
    *
    * @param airdPath       Aird文件路径
    * @param mzCompressor   mz压缩策略
    * @param intCompressor  intensity压缩策略
    * @param mobiCompressor mobility压缩策略
-   * @param mzPrecision    mz数字精度
    * @param airdType       aird类型
    * @throws ScanException 扫描异常
    */
   public BaseParser(String airdPath, Compressor mzCompressor, Compressor intCompressor,
-      Compressor mobiCompressor, int mzPrecision, String airdType) throws Exception {
+      Compressor mobiCompressor, String airdType) throws Exception {
     this.indexFile = new File(AirdScanUtil.getIndexPathByAirdPath(airdPath));
-    this.airdFile = new File(airdPath);
 
+    //不使用Index文件初始化的时候,会直接初始化一个空AirdInfo,用于存放传入的基础信息
+    this.airdInfo = new AirdInfo();
+    airdInfo.setType(airdType);
+    this.airdFile = new File(airdPath);
     try {
       raf = new RandomAccessFile(airdFile, "r");
     } catch (FileNotFoundException e) {
       e.printStackTrace();
       throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
     }
+
     this.mzCompressor = mzCompressor;
     this.intCompressor = intCompressor;
     this.mobiCompressor = mobiCompressor;
-    this.mzPrecision = mzPrecision;
-    this.intPrecision = intCompressor.getPrecision();
-    this.mobiPrecision = mobiCompressor.getPrecision();
-    initCompressor();
-    this.type = airdType;
+    parserComboComp();
     parseMobilityDict();
   }
 
+  public static BaseParser buildParser(String indexPath) throws Exception {
+    File indexFile = new File(indexPath);
+    return buildParser(indexFile);
+  }
+
+  /**
+   * 最基础的启动方法:使用Index文件扫描AirdInfo以后读取Aird文件,然后根据AirdInfo中的文件类型分别初始化不同的Parser
+   *
+   * @param indexFile
+   * @return
+   * @throws Exception
+   */
   public static BaseParser buildParser(File indexFile) throws Exception {
     if (indexFile.exists() && indexFile.canRead()) {
       AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
@@ -247,12 +228,7 @@ public abstract class BaseParser {
     throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
   }
 
-  public static BaseParser buildParser(String indexPath) throws Exception {
-    File indexFile = new File(indexPath);
-    return buildParser(indexFile);
-  }
-
-  public static Compressor getTargetCompressor(List<Compressor> compressors, String target) {
+  public static Compressor fetchTargetCompressor(List<Compressor> compressors, String target) {
     if (compressors == null) {
       return null;
     }
@@ -264,6 +240,11 @@ public abstract class BaseParser {
     return null;
   }
 
+  /**
+   * 必须读取索引文件以及Aird二进制文件才可以获取Dict字典
+   *
+   * @throws IOException
+   */
   public void parseMobilityDict() throws IOException {
     MobiInfo mobiInfo = airdInfo.getMobiInfo();
     if ("TIMS".equals(mobiInfo.getType())) {
@@ -275,13 +256,22 @@ public abstract class BaseParser {
           ByteTrans.byteToInt(new ZstdWrapper().decode(result)));
       double[] mobiDArray = new double[mobiArray.length];
       for (int i = 0; i < mobiArray.length; i++) {
-        mobiDArray[i] = mobiArray[i] / mobiPrecision;
+        mobiDArray[i] = mobiArray[i] / getMobiPrecision();
       }
       this.mobiDict = mobiDArray;
     }
   }
 
-  public void initCompressor() throws Exception {
+  public void parseCompsFromAirdInfo() {
+    mzCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MZ);
+    intCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_INTENSITY);
+    mobiCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MOBILITY);
+    mzPrecision = mzCompressor.getPrecision();
+    intPrecision = intCompressor.getPrecision();
+    mobiPrecision = mobiCompressor.getPrecision();
+  }
+
+  public void parserComboComp() throws Exception {
     List<String> mzMethods = mzCompressor.getMethods();
     if (mzMethods.size() == 2) {
       switch (SortedIntCompType.getByName(mzMethods.get(0))) {
@@ -345,6 +335,25 @@ public abstract class BaseParser {
   }
 
   /**
+   * 根据位移偏差解析单张光谱图
+   *
+   * @param bytes
+   * @param offset
+   * @param mzOffset
+   * @param intOffset
+   * @return
+   */
+  public Spectrum getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
+    if (mzOffset == 0) {
+      return new Spectrum(new double[0], new double[0]);
+    }
+    double[] mzArray = getMzs(bytes, offset, mzOffset);
+    offset = offset + mzOffset;
+    double[] intensityArray = getInts(bytes, offset, intOffset);
+    return new Spectrum(mzArray, intensityArray);
+  }
+
+  /**
    * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
    * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
    * <p>
@@ -359,10 +368,10 @@ public abstract class BaseParser {
    * @param intOffsets intensity块的大小列表 the intensity block size list
    * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
    */
-  public TreeMap<Double, Spectrum<double[], float[], double[]>> getSpectra(long start, long end,
-      List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
+  public TreeMap<Double, Spectrum> getSpectra(long start, long end, List<Double> rtList,
+      List<Integer> mzOffsets, List<Integer> intOffsets) {
 
-    TreeMap<Double, Spectrum<double[], float[], double[]>> map = new TreeMap<>();
+    TreeMap<Double, Spectrum> map = new TreeMap<>();
     try {
       raf.seek(start);
       long delta = end - start;
@@ -395,11 +404,10 @@ public abstract class BaseParser {
    * @param intOffsets intensity块的大小列表 the intensity block size list
    * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
    */
-  public TreeMap<Float, Spectrum<double[], float[], double[]>> getSpectra4D(long start, long end,
-      List<Float> rtList, List<Integer> mzOffsets, List<Integer> intOffsets,
-      List<Integer> mobiOffsets) {
+  public TreeMap<Double, Spectrum> getSpectra(long start, long end, List<Double> rtList,
+      List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {
 
-    TreeMap<Float, Spectrum<double[], float[], double[]>> map = new TreeMap<>();
+    TreeMap<Double, Spectrum> map = new TreeMap<>();
     try {
       //首先计算压缩块的总大小
       long delta = end - start;
@@ -445,155 +453,16 @@ public abstract class BaseParser {
     }
   }
 
-  /**
-   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
-   * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
-   * <p>
-   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
-   * will not close the RAF object directly after using it. Users need to close the object manually
-   * after using the diaparser object
-   *
-   * @param start      起始指针位置 start point
-   * @param end        结束指针位置 end point
-   * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
-   * @param mzOffsets  mz块的大小列表 the mz block size list
-   * @param intOffsets intensity块的大小列表 the intensity block size list
-   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
-   */
-  public TreeMap<Double, Spectrum<float[], float[], float[]>> getSpectraAsFloat(long start,
-      long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets) {
-
-    TreeMap<Double, Spectrum<float[], float[], float[]>> map = new TreeMap<>();
-    try {
-      raf.seek(start);
-      long delta = end - start;
-      byte[] result = new byte[(int) delta];
-      raf.read(result);
-
-      int iter = 0;
-      for (int i = 0; i < rtList.size(); i++) {
-        map.put(rtList.get(i),
-            getSpectrumAsFloat(result, iter, mzOffsets.get(i), intOffsets.get(i)));
-        iter = iter + mzOffsets.get(i) + intOffsets.get(i);
-      }
-      return map;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
-    }
-  }
-
-  /**
-   * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
-   * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
-   * <p>
-   * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
-   * will not close the RAF object directly after using it. Users need to close the object manually
-   * after using the diaparser object
-   *
-   * @param start      起始指针位置 start point
-   * @param end        结束指针位置 end point
-   * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
-   * @param mzOffsets  mz块的大小列表 the mz block size list
-   * @param intOffsets intensity块的大小列表 the intensity block size list
-   * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
-   */
-  public TreeMap<Double, Spectrum<float[], float[], float[]>> getSpectraAsFloat(long start,
-      long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets,
-      List<Integer> mobiOffsets) {
-
-    TreeMap<Double, Spectrum<float[], float[], float[]>> map = new TreeMap<>();
-    try {
-      //首先计算压缩块的总大小
-      long delta = end - start;
-      int rtIndex = 0;
-      //如果块体积大于整数最大值,则进行分段解析
-      while (delta > MAX_READ_SIZE) {
-        raf.seek(start);//确认起始点
-        byte[] result = new byte[MAX_READ_SIZE];//读取一个最大块,其中的有效数据应该是小于该块的大小的
-        raf.read(result);
-        int iter = 0;//迭代指针,在处理每一个分段的时候都会归零
-        while (rtIndex < rtList.size()) {
-          //判断本轮已经处理的数据是否会超出分段大小MAX_READ_SIZE的范围,如果超过则结束for循环,如果未超过则进行解码
-          if ((iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex))
-              > MAX_READ_SIZE) {
-            //分段数据处理完毕, 移动指针至下一个分段的位置
-            delta = delta - iter;
-            start = start + iter;
-            break;
-          }
-
-          map.put(rtList.get(rtIndex),
-              getSpectrum4DAsFloat(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex),
-                  mobiOffsets.get(rtIndex)));
-          iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
-
-          rtIndex++;
-        }
-      }
-      raf.seek(start);
-      byte[] result = new byte[(int) delta];
-      raf.read(result);
-      int iter = 0;
-      while (rtIndex < rtList.size()) {
-        map.put(rtList.get(rtIndex),
-            getSpectrum4DAsFloat(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex),
-                mobiOffsets.get(rtIndex)));
-        iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
-        rtIndex++;
-      }
-      return map;
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
-    }
-  }
-
-  public Spectrum<double[], float[], double[]> getSpectrum(byte[] bytes, int offset, int mzOffset,
-      int intOffset) {
+  public Spectrum getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset,
+      int mobiOffset) {
     if (mzOffset == 0) {
-      return new Spectrum(new double[0], new float[0]);
+      return new Spectrum(new double[0], new double[0], new double[0]);
     }
     double[] mzArray = getMzs(bytes, offset, mzOffset);
     offset = offset + mzOffset;
-    float[] intensityArray = getInts(bytes, offset, intOffset);
-    return new Spectrum(mzArray, intensityArray);
-  }
-
-  public Spectrum<double[], float[], double[]> getSpectrum(byte[] bytes, int offset, int mzOffset,
-      int intOffset, int mobiOffset) {
-    if (mzOffset == 0) {
-      return new Spectrum(new double[0], new float[0], new double[0]);
-    }
-    double[] mzArray = getMzs(bytes, offset, mzOffset);
-    offset = offset + mzOffset;
-    float[] intensityArray = getInts(bytes, offset, intOffset);
+    double[] intensityArray = getInts(bytes, offset, intOffset);
     offset = offset + intOffset;
     double[] mobiArray = getMobilities(bytes, offset, mobiOffset);
-    return new Spectrum(mzArray, intensityArray, mobiArray);
-  }
-
-  public Spectrum<float[], float[], float[]> getSpectrumAsFloat(byte[] bytes, int offset,
-      int mzOffset, int intOffset) {
-    if (mzOffset == 0) {
-      return new Spectrum(new float[0], new float[0]);
-    }
-    float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
-    offset = offset + mzOffset;
-    float[] intensityArray = getInts(bytes, offset, intOffset);
-    return new Spectrum(mzArray, intensityArray);
-  }
-
-  public Spectrum<float[], float[], float[]> getSpectrum4DAsFloat(byte[] bytes, int offset,
-      int mzOffset, int intOffset, int mobiOffset) {
-    if (mzOffset == 0) {
-      return new Spectrum(new float[0], new float[0], new float[0]);
-    }
-    float[] mzArray = getMzsAsFloat(bytes, offset, mzOffset);
-    offset = offset + mzOffset;
-    float[] intensityArray = getInts(bytes, offset, intOffset);
-    offset = offset + intOffset;
-    float[] mobiArray = getMobisAsFloat(bytes, offset, mobiOffset);
     return new Spectrum(mzArray, intensityArray, mobiArray);
   }
 
@@ -639,42 +508,6 @@ public abstract class BaseParser {
   }
 
   /**
-   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-   *
-   * @param value 压缩后的数组
-   * @return 解压缩后的数组
-   */
-  public float[] getMzsAsFloat(byte[] value) {
-    return getMzsAsFloat(value, 0, value.length);
-  }
-
-  /**
-   * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN,精度为小数点后三位
-   *
-   * @param value  压缩后的数组
-   * @param offset 起始位置
-   * @param length 读取长度
-   * @return 解压缩后的数组
-   */
-  public float[] getMzsAsFloat(byte[] value, int offset, int length) {
-    ByteBuffer byteBuffer = ByteBuffer.wrap(mzByteComp.decode(value, offset, length));
-    byteBuffer.order(mzCompressor.fetchByteOrder());
-
-    IntBuffer ints = byteBuffer.asIntBuffer();
-    int[] intValues = new int[ints.capacity()];
-    for (int i = 0; i < ints.capacity(); i++) {
-      intValues[i] = ints.get(i);
-    }
-    intValues = mzIntComp.decode(intValues);
-    float[] floats = new float[intValues.length];
-    for (int index = 0; index < intValues.length; index++) {
-      floats[index] = (float) (intValues[index] / mzPrecision);
-    }
-    byteBuffer.clear();
-    return floats;
-  }
-
-  /**
    * get mz values only for aird file 默认从Aird文件中读取,编码Order为LITTLE_ENDIAN
    *
    * @param value 加密的数组
@@ -703,6 +536,81 @@ public abstract class BaseParser {
     }
     byteBuffer.clear();
     return intValues;
+  }
+
+  /**
+   * get intensity values only for aird file
+   *
+   * @param value 压缩的数组
+   * @return 解压缩后的数组
+   */
+  public double[] getInts(byte[] value) {
+    return getInts(value, 0, value.length);
+  }
+
+  /**
+   * get intensity values from the start point with a specified length
+   *
+   * @param value  the original array
+   * @param start  the start point
+   * @param length the specified length
+   * @return the decompression intensity array
+   */
+  public double[] getInts(byte[] value, int start, int length) {
+
+    ByteBuffer byteBuffer = ByteBuffer.wrap(intByteComp.decode(value, start, length));
+    byteBuffer.order(intCompressor.fetchByteOrder());
+
+    IntBuffer ints = byteBuffer.asIntBuffer();
+    int[] intValues = new int[ints.capacity()];
+    for (int i = 0; i < ints.capacity(); i++) {
+      intValues[i] = ints.get(i);
+    }
+    intValues = intIntComp.decode(intValues);
+
+    double[] intensityValues = new double[intValues.length];
+    for (int i = 0; i < intValues.length; i++) {
+      double intensity = intValues[i];
+      if (intensity < 0) {
+        intensity = Math.pow(2, -intensity / 100000d);
+      }
+      intensityValues[i] = intensity / intPrecision;
+    }
+
+    byteBuffer.clear();
+    return intensityValues;
+  }
+
+  /**
+   * get intensity values from the start point with a specified length
+   *
+   * @param value  the original array
+   * @param start  the start point
+   * @param length the specified length
+   * @return the decompression intensity array
+   */
+  public double[] getMobilities(byte[] value, int start, int length) {
+
+    try {
+      ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
+      byteBuffer.order(mobiCompressor.fetchByteOrder());
+
+      IntBuffer ints = byteBuffer.asIntBuffer();
+      int[] intValues = new int[ints.capacity()];
+      for (int i = 0; i < ints.capacity(); i++) {
+        intValues[i] = ints.get(i);
+      }
+      intValues = mobiIntComp.decode(intValues);
+      double[] mobilities = new double[intValues.length];
+      for (int i = 0; i < intValues.length; i++) {
+        mobilities[i] = mobiDict[intValues[i]];
+      }
+      return mobilities;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 
   /**
@@ -761,111 +669,9 @@ public abstract class BaseParser {
     return tags;
   }
 
-  /**
-   * get intensity values only for aird file
-   *
-   * @param value 压缩的数组
-   * @return 解压缩后的数组
-   */
-  public float[] getInts(byte[] value) {
-    return getInts(value, 0, value.length);
-  }
 
-  /**
-   * get intensity values from the start point with a specified length
-   *
-   * @param value  the original array
-   * @param start  the start point
-   * @param length the specified length
-   * @return the decompression intensity array
-   */
-  public float[] getInts(byte[] value, int start, int length) {
-
-    ByteBuffer byteBuffer = ByteBuffer.wrap(intByteComp.decode(value, start, length));
-    byteBuffer.order(intCompressor.fetchByteOrder());
-
-    IntBuffer ints = byteBuffer.asIntBuffer();
-    int[] intValues = new int[ints.capacity()];
-    for (int i = 0; i < ints.capacity(); i++) {
-      intValues[i] = ints.get(i);
-    }
-    intValues = intIntComp.decode(intValues);
-
-    float[] intensityValues = new float[intValues.length];
-    for (int i = 0; i < intValues.length; i++) {
-      double intensity = intValues[i];
-      if (intensity < 0) {
-        intensity = Math.pow(2, -intensity / 100000d);
-      }
-      intensityValues[i] = (float) (intensity / intPrecision);
-    }
-
-    byteBuffer.clear();
-    return intensityValues;
-  }
-
-  /**
-   * get intensity values from the start point with a specified length
-   *
-   * @param value  the original array
-   * @param start  the start point
-   * @param length the specified length
-   * @return the decompression intensity array
-   */
-  public double[] getMobilities(byte[] value, int start, int length) {
-
-    try {
-      ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
-      byteBuffer.order(mobiCompressor.fetchByteOrder());
-
-      IntBuffer ints = byteBuffer.asIntBuffer();
-      int[] intValues = new int[ints.capacity()];
-      for (int i = 0; i < ints.capacity(); i++) {
-        intValues[i] = ints.get(i);
-      }
-      intValues = mobiIntComp.decode(intValues);
-      double[] mobilities = new double[intValues.length];
-      for (int i = 0; i < intValues.length; i++) {
-        mobilities[i] = mobiDict[intValues[i]];
-      }
-      return mobilities;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return null;
-  }
-
-  /**
-   * get intensity values from the start point with a specified length
-   *
-   * @param value  the original array
-   * @param start  the start point
-   * @param length the specified length
-   * @return the decompression intensity array
-   */
-  public float[] getMobisAsFloat(byte[] value, int start, int length) {
-
-    try {
-      ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
-      byteBuffer.order(mobiCompressor.fetchByteOrder());
-
-      IntBuffer ints = byteBuffer.asIntBuffer();
-      int[] intValues = new int[ints.capacity()];
-      for (int i = 0; i < ints.capacity(); i++) {
-        intValues[i] = ints.get(i);
-      }
-      intValues = mobiIntComp.decode(intValues);
-      float[] mobilities = new float[intValues.length];
-      for (int i = 0; i < intValues.length; i++) {
-        mobilities[i] = (float) mobiDict[intValues[i]];
-      }
-      return mobilities;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return null;
+  public String getType() {
+    return airdInfo == null ? null : airdInfo.getType();
   }
 
   /**

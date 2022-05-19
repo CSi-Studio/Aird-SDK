@@ -60,7 +60,7 @@ public class SampleCode {
 
     //Read SWATH block one by one for DIA type Aird File
     airdInfo.getIndexList().forEach(blockIndex -> {
-      TreeMap<Double, Spectrum<double[], float[], double[]>> map = parser.getSpectra(blockIndex);
+      TreeMap<Double, Spectrum> map = parser.getSpectra(blockIndex);
       System.out.println(map.size());
     });
 
