@@ -69,6 +69,16 @@ public class BlockIndex {
   List<Long> tics;
 
   /**
+   * Every Spectrum's total base peak intensity in the block 所有该块中的base peak intensity列表
+   */
+  List<Double> basePeakIntensities;
+
+  /**
+   * Every Spectrum's total base peak mz in the block 所有该块中的base peak mz列表
+   */
+  List<Double> basePeakMzs;
+
+  /**
    * 一个块中所有子谱图的mz的压缩后的大小列表 every compressed mz array's binary size in the block index
    */
   List<Integer> mzs;
