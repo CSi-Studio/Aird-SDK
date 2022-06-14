@@ -10,7 +10,7 @@
 
 package net.csibio.aird.util;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.constant.SuffixConst;
 import net.csibio.aird.constant.SymbolConst;
@@ -75,7 +75,7 @@ public class AirdScanUtil {
         AirdInfo airdInfo = null;
 
         try {
-            airdInfo = JSONObject.parseObject(content, AirdInfo.class);
+            airdInfo = JSON.parseObject(content, AirdInfo.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

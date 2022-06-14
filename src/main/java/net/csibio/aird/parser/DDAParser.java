@@ -116,7 +116,8 @@ public class DDAParser extends BaseParser {
     public TreeMap<Integer, Spectrum> getSpectraByNums(List<Integer> nums) {
         TreeMap<Integer, Spectrum> spectraMap = new TreeMap<>();
         BlockIndex ms1 = airdInfo.getIndexList().get(0);
-
+        List<Integer> scanNumber = new ArrayList<>();
+        
         return spectraMap;
     }
 }

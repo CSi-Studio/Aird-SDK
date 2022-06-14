@@ -9,7 +9,7 @@ package net.csibio.aird.test;/*
  */
 
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.eic.Extractor;
@@ -34,7 +34,7 @@ public class DIAParserParserTest {
 
         //加载标准库
         String peptidesStr = FileUtil.readFile(getClass().getClassLoader().getResource("library.test.json").getPath());
-        TreeMap<String, List<BigDecimal>> peptideJsonList = JSONObject.parseObject(peptidesStr, TreeMap.class);
+        TreeMap<String, List<BigDecimal>> peptideJsonList = JSON.parseObject(peptidesStr, TreeMap.class);
         TreeMap<Double, float[]> peptideListMap = new TreeMap<>();
         AtomicLong count = new AtomicLong();
         peptideJsonList.forEach((key, mzs) -> {

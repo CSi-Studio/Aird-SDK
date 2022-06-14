@@ -12,7 +12,11 @@ package net.csibio.aird.enums;
 
 public enum ActivationMethod {
 
-    CID("CID", "collision induced dissociation", "eV"), HCD("HCD", "higher-energy C-trap dissociation", "a.u."), ECD("ECD", "electron capture dissociation", ""), ETD("ETD", "electron transfer dissociation", ""), UNKNOWN("N.A.", "Unknown", "");
+    CID("CID", "collision induced dissociation", "eV"),
+    HCD("HCD", "higher-energy C-trap dissociation", "a.u."),
+    ECD("ECD", "electron capture dissociation", ""),
+    ETD("ETD", "electron transfer dissociation", ""),
+    UNKNOWN("N.A.", "Unknown", "");
 
     private final String name;
     private final String desc;

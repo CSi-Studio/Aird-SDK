@@ -52,9 +52,9 @@
         </dependency>
 
         <dependency>
-            <artifactId>fastjson</artifactId>
-            <groupId>com.alibaba</groupId>
-            <version>1.2.79</version>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.7</version>
         </dependency>
 
         <dependency>
