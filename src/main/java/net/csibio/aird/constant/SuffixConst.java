@@ -12,20 +12,20 @@ package net.csibio.aird.constant;
 
 public class SuffixConst {
 
-  public static final String JSON = ".json";
-  public static final String AIRD = ".aird";
+    public static final String JSON = ".json";
+    public static final String AIRD = ".aird";
 
-  public static final String MZXML = ".mzxml";
+    public static final String MZXML = ".mzxml";
 
-  public static final String MZML = ".mzml";
+    public static final String MZML = ".mzml";
 
-  //Thermo
-  public static final String RAW = ".raw";
+    //Thermo
+    public static final String RAW = ".raw";
 
-  //Sciex
-  public static final String WIFF = ".wiff";
-  public static final String SCAN = ".scan";
+    //Sciex
+    public static final String WIFF = ".wiff";
+    public static final String SCAN = ".scan";
 
-  //Bruker,Agilent
-  public static final String D = ".d";
+    //Bruker,Agilent
+    public static final String D = ".d";
 }

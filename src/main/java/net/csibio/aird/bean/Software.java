@@ -15,13 +15,13 @@ import lombok.Data;
 @Data
 public class Software {
 
-  /**
-   * 软件名称 The software name
-   */
-  String name;
+    /**
+     * 软件名称 The software name
+     */
+    String name;
 
-  /**
-   * 软件版本号 The software version
-   */
-  String version;
+    /**
+     * 软件版本号 The software version
+     */
+    String version;
 }

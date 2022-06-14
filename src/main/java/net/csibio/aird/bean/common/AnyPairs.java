@@ -10,35 +10,36 @@
 
 package net.csibio.aird.bean.common;
 
-import java.io.Serializable;
 import lombok.Data;
+
+import java.io.Serializable;
 
 @Data
 public class AnyPairs<T, D> implements Serializable {
 
-  T[] x;
-  D[] y;
+    T[] x;
+    D[] y;
 
-  public AnyPairs() {
-  }
-
-  public AnyPairs(T[] x, D[] y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  public int length() {
-    if (x == null) {
-      return 0;
+    public AnyPairs() {
     }
-    return x.length;
-  }
 
-  public T[] getX() {
-    return x;
-  }
+    public AnyPairs(T[] x, D[] y) {
+        this.x = x;
+        this.y = y;
+    }
 
-  public D[] getY() {
-    return y;
-  }
+    public int length() {
+        if (x == null) {
+            return 0;
+        }
+        return x.length;
+    }
+
+    public T[] getX() {
+        return x;
+    }
+
+    public D[] getY() {
+        return y;
+    }
 }

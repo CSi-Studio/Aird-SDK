@@ -10,40 +10,41 @@
 
 package net.csibio.aird.bean.common;
 
-import java.util.List;
 import lombok.Data;
 import org.apache.commons.lang3.ArrayUtils;
+
+import java.util.List;
 
 @Data
 public class Xic {
 
-  public double[] rts;
-  public double[] ints;
+    public double[] rts;
+    public double[] ints;
 
-  //用于存储每一张光谱图中计算XIC时最大的mz
-  public double[] mzs;
+    //用于存储每一张光谱图中计算XIC时最大的mz
+    public double[] mzs;
 
-  public Xic() {
-  }
-
-  public Xic(double[] rts, double[] ints) {
-    this.rts = rts;
-    this.ints = ints;
-  }
-
-  public Xic(List<Double> rtList, List<Double> intensityList, List<Double> mzList) {
-    this.setRts(ArrayUtils.toPrimitive(rtList.toArray(new Double[0])));
-    this.setInts(ArrayUtils.toPrimitive(intensityList.toArray(new Double[0])));
-
-    if (mzList == null) {
-      this.setMzs(null);
-    } else {
-      this.setMzs(ArrayUtils.toPrimitive(mzList.toArray(new Double[0])));
+    public Xic() {
     }
-  }
 
-  public Xic(double[] rts, double[] ints, double[] mzs) {
-    this.rts = rts;
-    this.ints = ints;
-  }
+    public Xic(double[] rts, double[] ints) {
+        this.rts = rts;
+        this.ints = ints;
+    }
+
+    public Xic(List<Double> rtList, List<Double> intensityList, List<Double> mzList) {
+        this.setRts(ArrayUtils.toPrimitive(rtList.toArray(new Double[0])));
+        this.setInts(ArrayUtils.toPrimitive(intensityList.toArray(new Double[0])));
+
+        if (mzList == null) {
+            this.setMzs(null);
+        } else {
+            this.setMzs(ArrayUtils.toPrimitive(mzList.toArray(new Double[0])));
+        }
+    }
+
+    public Xic(double[] rts, double[] ints, double[] mzs) {
+        this.rts = rts;
+        this.ints = ints;
+    }
 }

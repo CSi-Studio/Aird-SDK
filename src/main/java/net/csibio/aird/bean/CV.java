@@ -18,18 +18,18 @@ import lombok.Data;
 @Data
 public class CV {
 
-  /**
-   * cv id:cv name
-   */
-  String cvid;
+    /**
+     * cv id:cv name
+     */
+    String cvid;
 
-  /**
-   * cv value
-   */
-  String value;
+    /**
+     * cv value
+     */
+    String value;
 
-  /**
-   * unit id:unit name
-   */
-  String units;
+    /**
+     * unit id:unit name
+     */
+    String units;
 }

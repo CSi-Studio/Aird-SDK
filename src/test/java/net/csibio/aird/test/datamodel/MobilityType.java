@@ -27,29 +27,29 @@ package net.csibio.aird.test.datamodel;
  */
 public enum MobilityType {
 
-  NONE("none", "none", "none"), //
-  TIMS("1/k0", "Vs/cm^2", "TIMS"), // trapped ion mobility spectrometry
-  DRIFT_TUBE("Drift time", "ms", "DTIMS"), // drift tube
-  TRAVELING_WAVE("Drift time", "ms", "TWIMS"), // traveling wave ion mobility spectrometry
-  FAIMS("TODO", "TODO", "FAIMS"); // field asymmetric waveform ion mobility spectrometry
+    NONE("none", "none", "none"), //
+    TIMS("1/k0", "Vs/cm^2", "TIMS"), // trapped ion mobility spectrometry
+    DRIFT_TUBE("Drift time", "ms", "DTIMS"), // drift tube
+    TRAVELING_WAVE("Drift time", "ms", "TWIMS"), // traveling wave ion mobility spectrometry
+    FAIMS("TODO", "TODO", "FAIMS"); // field asymmetric waveform ion mobility spectrometry
 
-  private final String axisLabel;
-  private final String unit;
-  private final String name;
+    private final String axisLabel;
+    private final String unit;
+    private final String name;
 
-  MobilityType(String axisLabel, String unit, String name) {
-    this.axisLabel = axisLabel;
-    this.unit = unit;
-    this.name = name;
-  }
+    MobilityType(String axisLabel, String unit, String name) {
+        this.axisLabel = axisLabel;
+        this.unit = unit;
+        this.name = name;
+    }
 
-  public String getUnit() {
-    return unit;
-  }
+    public String getUnit() {
+        return unit;
+    }
 
 
-  @Override
-  public String toString() {
-    return name;
-  }
+    @Override
+    public String toString() {
+        return name;
+    }
 }

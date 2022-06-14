@@ -14,49 +14,48 @@ import lombok.Data;
 
 @Data
 public class WindowRange {
-    
-  /**
-   * 前体质量起始数值 precursor mz start
-   */
-  Double start;
-  /**
-   * 前体质量结束数值 precursor mz end
-   */
-  Double end;
-  /**
-   * 前体质量精准数值 precursor mz
-   */
-  Double mz;
 
-  /**
-   * 前体带电量,通常为空,0也表示为空
-   */
-  Integer charge;
+    /**
+     * 前体质量起始数值 precursor mz start
+     */
+    Double start;
+    /**
+     * 前体质量结束数值 precursor mz end
+     */
+    Double end;
+    /**
+     * 前体质量精准数值 precursor mz
+     */
+    Double mz;
 
-  /**
-   * extend features
-   */
-  String features;
+    /**
+     * 前体带电量,通常为空,0也表示为空
+     */
+    Integer charge;
 
-  public WindowRange() {
-  }
+    /**
+     * extend features
+     */
+    String features;
 
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
+    public WindowRange() {
     }
 
-    if (obj instanceof WindowRange) {
-      WindowRange windowRange = (WindowRange) obj;
-      if (start == null || end == null || windowRange.getStart() == null
-          || windowRange.getEnd() == null) {
-        return false;
-      }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
 
-      return (this.start.equals(windowRange.getStart()) && this.end.equals(windowRange.getEnd()));
-    } else {
-      return false;
+        if (obj instanceof WindowRange) {
+            WindowRange windowRange = (WindowRange) obj;
+            if (start == null || end == null || windowRange.getStart() == null || windowRange.getEnd() == null) {
+                return false;
+            }
+
+            return (this.start.equals(windowRange.getStart()) && this.end.equals(windowRange.getEnd()));
+        } else {
+            return false;
+        }
     }
-  }
 }

@@ -12,64 +12,64 @@ package net.csibio.aird.enums;
 
 public enum AirdType {
 
-  /**
-   * RT Indexing
-   */
-  COMMON("COMMON", 0),
+    /**
+     * RT Indexing
+     */
+    COMMON("COMMON", 0),
 
-  /**
-   * Precursor-mz -> MS2 Group
-   */
-  DIA("DIA", 1),
+    /**
+     * Precursor-mz -> MS2 Group
+     */
+    DIA("DIA", 1),
 
-  /**
-   * MS1 -> MS2 Group
-   */
-  DDA("DDA", 2),
+    /**
+     * MS1 -> MS2 Group
+     */
+    DDA("DDA", 2),
 
-  /**
-   * Precursor-mz -> MS2 Group
-   */
-  PRM("PRM", 3),
+    /**
+     * Precursor-mz -> MS2 Group
+     */
+    PRM("PRM", 3),
 
-  /**
-   * Not Support now
-   */
-  SCANNING_SWATH("SCANNING_SWATH", 4),
+    /**
+     * Not Support now
+     */
+    SCANNING_SWATH("SCANNING_SWATH", 4),
 
-  /**
-   * PASEF for DIA
-   */
-  DIA_PASEF("DIA_PASEF", 5),
+    /**
+     * PASEF for DIA
+     */
+    DIA_PASEF("DIA_PASEF", 5),
 
-  /**
-   * PASEF for DDA
-   */
-  DDA_PASEF("DDA_PASEF", 6),
+    /**
+     * PASEF for DDA
+     */
+    DDA_PASEF("DDA_PASEF", 6),
 
-  /**
-   * PASEF for PRM,Not Support now
-   */
-  PRM_PASEF("PRM_PASEF", 7),
-  ;
+    /**
+     * PASEF for PRM,Not Support now
+     */
+    PRM_PASEF("PRM_PASEF", 7),
+    ;
 
-  public Integer code;
-  public String name;
+    public Integer code;
+    public String name;
 
-  AirdType(String name, Integer code) {
-    this.name = name;
-    this.code = code;
-  }
+    AirdType(String name, Integer code) {
+        this.name = name;
+        this.code = code;
+    }
 
-  public Integer getCode() {
-    return code;
-  }
+    public static AirdType getType(String typeName) {
+        return valueOf(typeName);
+    }
 
-  public String getName() {
-    return name;
-  }
+    public Integer getCode() {
+        return code;
+    }
 
-  public static AirdType getType(String typeName) {
-    return valueOf(typeName);
-  }
+    public String getName() {
+        return name;
+    }
 }

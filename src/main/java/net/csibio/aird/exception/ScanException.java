@@ -17,27 +17,27 @@ import net.csibio.aird.enums.ResultCodeEnum;
  */
 public class ScanException extends RuntimeException {
 
-  private static final long serialVersionUID = 4564124491192825748L;
-  
-  /**
-   * result code
-   */
-  public ResultCodeEnum resultCode;
+    private static final long serialVersionUID = 4564124491192825748L;
 
-  /**
-   * 构造函数
-   */
-  public ScanException() {
-    super();
-  }
+    /**
+     * result code
+     */
+    public ResultCodeEnum resultCode;
 
-  /**
-   * 构造函数
-   *
-   * @param resultCode result code
-   */
-  public ScanException(ResultCodeEnum resultCode) {
-    super(resultCode.getMessage());
-    this.resultCode = resultCode;
-  }
+    /**
+     * 构造函数
+     */
+    public ScanException() {
+        super();
+    }
+
+    /**
+     * 构造函数
+     *
+     * @param resultCode result code
+     */
+    public ScanException(ResultCodeEnum resultCode) {
+        super(resultCode.getMessage());
+        this.resultCode = resultCode;
+    }
 }

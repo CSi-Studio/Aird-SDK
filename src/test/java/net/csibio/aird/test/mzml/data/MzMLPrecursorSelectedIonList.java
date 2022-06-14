@@ -20,30 +20,30 @@ import java.util.ArrayList;
  */
 public class MzMLPrecursorSelectedIonList {
 
-  private ArrayList<MzMLPrecursorSelectedIon> selectedIonList;
+    private final ArrayList<MzMLPrecursorSelectedIon> selectedIonList;
 
-  /**
-   * <p>Constructor for MzMLPrecursorSelectedIonList.</p>
-   */
-  public MzMLPrecursorSelectedIonList() {
-    this.selectedIonList = new ArrayList<>();
-  }
+    /**
+     * <p>Constructor for MzMLPrecursorSelectedIonList.</p>
+     */
+    public MzMLPrecursorSelectedIonList() {
+        this.selectedIonList = new ArrayList<>();
+    }
 
-  /**
-   * <p>Getter for the field <code>selectedIonList</code>.</p>
-   *
-   * @return a {@link ArrayList} object.
-   */
-  public ArrayList<MzMLPrecursorSelectedIon> getSelectedIonList() {
-    return selectedIonList;
-  }
+    /**
+     * <p>Getter for the field <code>selectedIonList</code>.</p>
+     *
+     * @return a {@link ArrayList} object.
+     */
+    public ArrayList<MzMLPrecursorSelectedIon> getSelectedIonList() {
+        return selectedIonList;
+    }
 
-  /**
-   * <p>addSelectedIon.</p>
-   *
-   * @param e a {@link MzMLPrecursorSelectedIon} object.
-   */
-  public void addSelectedIon(MzMLPrecursorSelectedIon e) {
-    selectedIonList.add(e);
-  }
+    /**
+     * <p>addSelectedIon.</p>
+     *
+     * @param e a {@link MzMLPrecursorSelectedIon} object.
+     */
+    public void addSelectedIon(MzMLPrecursorSelectedIon e) {
+        selectedIonList.add(e);
+    }
 }

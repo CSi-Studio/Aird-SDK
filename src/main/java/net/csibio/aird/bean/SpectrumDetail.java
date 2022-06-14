@@ -15,10 +15,18 @@ import lombok.Data;
 @Data
 public class SpectrumDetail {
 
-  float rt;
-  double[] mzs;
-  float[] intensities;
-  byte[] mzBytes;    //压缩前的数mz据流
-  byte[] intensityBytes;   //压缩前的数intensity据流
+    float rt;
+    double[] mzs;
+    float[] intensities;
+
+    /**
+     * 压缩前的数mz据流
+     */
+    byte[] mzBytes;
+    
+    /**
+     * 压缩前的数intensity据流
+     */
+    byte[] intensityBytes;
 
 }

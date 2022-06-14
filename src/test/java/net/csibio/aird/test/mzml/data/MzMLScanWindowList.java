@@ -20,31 +20,31 @@ import java.util.ArrayList;
  */
 public class MzMLScanWindowList {
 
-  private ArrayList<MzMLScanWindow> scanWindows;
+    private final ArrayList<MzMLScanWindow> scanWindows;
 
-  /**
-   * <p>Constructor for MzMLScanWindowList.</p>
-   */
-  public MzMLScanWindowList() {
-    this.scanWindows = new ArrayList<>();
-  }
+    /**
+     * <p>Constructor for MzMLScanWindowList.</p>
+     */
+    public MzMLScanWindowList() {
+        this.scanWindows = new ArrayList<>();
+    }
 
-  /**
-   * <p>Getter for the field <code>scanWindows</code>.</p>
-   *
-   * @return a {@link ArrayList} object.
-   */
-  public ArrayList<MzMLScanWindow> getScanWindows() {
-    return scanWindows;
-  }
+    /**
+     * <p>Getter for the field <code>scanWindows</code>.</p>
+     *
+     * @return a {@link ArrayList} object.
+     */
+    public ArrayList<MzMLScanWindow> getScanWindows() {
+        return scanWindows;
+    }
 
-  /**
-   * <p>addScanWindow.</p>
-   *
-   * @param scanWindow a {@link MzMLScanWindow} object.
-   */
-  public void addScanWindow(MzMLScanWindow scanWindow) {
-    scanWindows.add(scanWindow);
-  }
+    /**
+     * <p>addScanWindow.</p>
+     *
+     * @param scanWindow a {@link MzMLScanWindow} object.
+     */
+    public void addScanWindow(MzMLScanWindow scanWindow) {
+        scanWindows.add(scanWindow);
+    }
 
 }

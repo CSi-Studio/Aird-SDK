@@ -12,21 +12,19 @@ package net.csibio.aird.enums;
 
 public enum MsType {
 
-  PROFILE("PROFILE"),
-  THRESHOLDED("THRESHOLDED"),
-  CENTROIDED("CENTROIDED"),
-  ;
-  public String name;
+    PROFILE("PROFILE"), THRESHOLDED("THRESHOLDED"), CENTROIDED("CENTROIDED"),
+    ;
+    public String name;
 
-  MsType(String name) {
-    this.name = name;
-  }
+    MsType(String name) {
+        this.name = name;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public static MsType getType(String typeName) {
+        return valueOf(typeName);
+    }
 
-  public static MsType getType(String typeName) {
-    return valueOf(typeName);
-  }
+    public String getName() {
+        return name;
+    }
 }

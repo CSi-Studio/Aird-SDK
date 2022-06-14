@@ -22,33 +22,33 @@ import java.util.ArrayList;
  */
 public class MzMLCVGroup {
 
-  private ArrayList<MzMLCVParam> cvParams;
+    private final ArrayList<MzMLCVParam> cvParams;
 
-  /**
-   * <p>Constructor for MzMLCVGroup.</p>
-   */
-  public MzMLCVGroup() {
-    this.cvParams = new ArrayList<>();
-  }
+    /**
+     * <p>Constructor for MzMLCVGroup.</p>
+     */
+    public MzMLCVGroup() {
+        this.cvParams = new ArrayList<>();
+    }
 
-  /**
-   * <p>getCVParamsList.</p>
-   *
-   * @return an {@link ArrayList ArrayList<MzMLCVParam>} of {@link MzMLCVParam CV Parameter}s
-   */
-  public ArrayList<MzMLCVParam> getCVParamsList() {
-    return cvParams;
-  }
+    /**
+     * <p>getCVParamsList.</p>
+     *
+     * @return an {@link ArrayList ArrayList<MzMLCVParam>} of {@link MzMLCVParam CV Parameter}s
+     */
+    public ArrayList<MzMLCVParam> getCVParamsList() {
+        return cvParams;
+    }
 
-  /**
-   * <p>
-   * Adds a {@link MzMLCVParam CV Parameter} to the {@link MzMLCVGroup MzMLCVGroup}
-   * </p>
-   *
-   * @param cvParam the {@link MzMLCVParam CV Parameter} to be added to the {@link MzMLCVGroup
-   *                MzMLCVGroup}
-   */
-  public void addCVParam(MzMLCVParam cvParam) {
-    cvParams.add(cvParam);
-  }
+    /**
+     * <p>
+     * Adds a {@link MzMLCVParam CV Parameter} to the {@link MzMLCVGroup MzMLCVGroup}
+     * </p>
+     *
+     * @param cvParam the {@link MzMLCVParam CV Parameter} to be added to the {@link MzMLCVGroup
+     *                MzMLCVGroup}
+     */
+    public void addCVParam(MzMLCVParam cvParam) {
+        cvParams.add(cvParam);
+    }
 }

@@ -20,31 +20,31 @@ import java.util.Optional;
  */
 public class MzMLScan extends MzMLCVGroup {
 
-  Optional<MzMLScanWindowList> scanWindowList;
+    Optional<MzMLScanWindowList> scanWindowList;
 
-  /**
-   * <p>Constructor for MzMLScan.</p>
-   */
-  public MzMLScan() {
-    this.scanWindowList = Optional.ofNullable(null);
-  }
+    /**
+     * <p>Constructor for MzMLScan.</p>
+     */
+    public MzMLScan() {
+        this.scanWindowList = Optional.ofNullable(null);
+    }
 
-  /**
-   * <p>Getter for the field <code>scanWindowList</code>.</p>
-   *
-   * @return a {@link Optional} object.
-   */
-  public Optional<MzMLScanWindowList> getScanWindowList() {
-    return scanWindowList;
-  }
+    /**
+     * <p>Getter for the field <code>scanWindowList</code>.</p>
+     *
+     * @return a {@link Optional} object.
+     */
+    public Optional<MzMLScanWindowList> getScanWindowList() {
+        return scanWindowList;
+    }
 
-  /**
-   * <p>Setter for the field <code>scanWindowList</code>.</p>
-   *
-   * @param scanWindowList a {@link MzMLScanWindowList} object.
-   */
-  public void setScanWindowList(MzMLScanWindowList scanWindowList) {
-    this.scanWindowList = Optional.ofNullable(scanWindowList);
-  }
+    /**
+     * <p>Setter for the field <code>scanWindowList</code>.</p>
+     *
+     * @param scanWindowList a {@link MzMLScanWindowList} object.
+     */
+    public void setScanWindowList(MzMLScanWindowList scanWindowList) {
+        this.scanWindowList = Optional.ofNullable(scanWindowList);
+    }
 
 }

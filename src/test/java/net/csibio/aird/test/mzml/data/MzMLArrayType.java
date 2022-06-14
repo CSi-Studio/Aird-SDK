@@ -17,22 +17,22 @@ package net.csibio.aird.test.mzml.data;
  * Enumeration of different types of arrays which are parsed by the MzML Parser
  */
 public enum MzMLArrayType {
-  MZ("MS:1000514"), // m/z values array
-  INTENSITY("MS:1000515"), // Intensity values array
-  TIME("MS:1000595"); // Retention time values array
+    MZ("MS:1000514"), // m/z values array
+    INTENSITY("MS:1000515"), // Intensity values array
+    TIME("MS:1000595"); // Retention time values array
 
-  private final String accession;
+    private final String accession;
 
-  MzMLArrayType(String accession) {
-    this.accession = accession;
-  }
+    MzMLArrayType(String accession) {
+        this.accession = accession;
+    }
 
-  /**
-   * <p>Getter for the field <code>accession</code>.</p>
-   *
-   * @return the CV Parameter accession of the binary data array type as {@link String String}
-   */
-  public String getAccession() {
-    return accession;
-  }
+    /**
+     * <p>Getter for the field <code>accession</code>.</p>
+     *
+     * @return the CV Parameter accession of the binary data array type as {@link String String}
+     */
+    public String getAccession() {
+        return accession;
+    }
 }

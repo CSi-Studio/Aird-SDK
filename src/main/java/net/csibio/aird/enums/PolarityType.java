@@ -15,34 +15,32 @@ package net.csibio.aird.enums;
  */
 public enum PolarityType {
 
-  POSITIVE("POSITIVE", 1),
-  NEGATIVE("NEGATIVE", -1),
-  NEUTRAL("NEUTRAL", 0),
-  ;
+    POSITIVE("POSITIVE", 1), NEGATIVE("NEGATIVE", -1), NEUTRAL("NEUTRAL", 0),
+    ;
 
-  private int code;
-  private String name;
+    private final int code;
+    private final String name;
 
-  PolarityType(String name, int code) {
-    this.name = name;
-    this.code = code;
-  }
-
-  public int getCode() {
-    return code;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public static PolarityType fromCode(int code) {
-    for (PolarityType p : values()) {
-      if (p.getCode() == code) {
-        return p;
-      }
+    PolarityType(String name, int code) {
+        this.name = name;
+        this.code = code;
     }
-    return null;
-  }
+
+    public static PolarityType fromCode(int code) {
+        for (PolarityType p : values()) {
+            if (p.getCode() == code) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
 
 }

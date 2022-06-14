@@ -18,32 +18,32 @@ import net.csibio.aird.enums.SortedIntCompType;
  */
 public class IntegratedBinPackingWrapper implements SortedIntComp {
 
-  @Override
-  public String getName() {
-    return SortedIntCompType.IBP.getName();
-  }
+    @Override
+    public String getName() {
+        return SortedIntCompType.IBP.getName();
+    }
 
-  /**
-   * compress the data with fastpfor algorithm
-   *
-   * @param uncompressed sorted integers to be compressed
-   * @return compressed data
-   */
-  @Override
-  public int[] encode(int[] uncompressed) {
-    int[] compressed = new IntegratedIntCompressor().compress(uncompressed);
-    return compressed;
-  }
+    /**
+     * compress the data with fastpfor algorithm
+     *
+     * @param uncompressed sorted integers to be compressed
+     * @return compressed data
+     */
+    @Override
+    public int[] encode(int[] uncompressed) {
+        int[] compressed = new IntegratedIntCompressor().compress(uncompressed);
+        return compressed;
+    }
 
-  /**
-   * decompress the data with fastpfor algorithm
-   *
-   * @param compressed 压缩对象
-   * @return decompressed data
-   */
-  @Override
-  public int[] decode(int[] compressed) {
-    int[] uncompressed = new IntegratedIntCompressor().uncompress(compressed);
-    return uncompressed;
-  }
+    /**
+     * decompress the data with fastpfor algorithm
+     *
+     * @param compressed 压缩对象
+     * @return decompressed data
+     */
+    @Override
+    public int[] decode(int[] compressed) {
+        int[] uncompressed = new IntegratedIntCompressor().uncompress(compressed);
+        return uncompressed;
+    }
 }

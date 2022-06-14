@@ -10,50 +10,51 @@
 
 package net.csibio.aird.bean;
 
-import java.util.List;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 public class Instrument {
 
-  /**
-   * 设备仪器厂商 Instrument manufacturer
-   */
-  String manufacturer;
+    /**
+     * 设备仪器厂商 Instrument manufacturer
+     */
+    String manufacturer;
 
-  /**
-   * 电离方式 Ionisation Method
-   */
-  String ionisation;
+    /**
+     * 电离方式 Ionisation Method
+     */
+    String ionisation;
 
-  /**
-   * 仪器分辨率 The Instrument Resolution
-   */
-  String resolution;
+    /**
+     * 仪器分辨率 The Instrument Resolution
+     */
+    String resolution;
 
-  /**
-   * 设备类型 Instrument Model
-   */
-  String model;
+    /**
+     * 设备类型 Instrument Model
+     */
+    String model;
 
-  /**
-   * 来源 source
-   */
-  List<String> source;
+    /**
+     * 来源 source
+     */
+    List<String> source;
 
-  /**
-   * 分析方式 Analyzer
-   */
-  List<String> analyzer;
+    /**
+     * 分析方式 Analyzer
+     */
+    List<String> analyzer;
 
-  /**
-   * 探测器 Detector
-   */
-  List<String> detector;
+    /**
+     * 探测器 Detector
+     */
+    List<String> detector;
 
-  /**
-   * 其他特征,使用K:V;K:V;K:V;类似的格式进行存储 Other features, using K:V;K:V;K:V; to store the information
-   */
-  String features;
+    /**
+     * 其他特征,使用K:V;K:V;K:V;类似的格式进行存储 Other features, using K:V;K:V;K:V; to store the information
+     */
+    String features;
 
 }

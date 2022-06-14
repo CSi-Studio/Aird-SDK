@@ -20,30 +20,29 @@ import net.csibio.aird.exception.ScanException;
  */
 public class DIAParser extends BaseParser {
 
-  /**
-   * 构造函数
-   *
-   * @param indexFilePath index file path
-   * @throws ScanException scan exception
-   */
-  public DIAParser(String indexFilePath) throws Exception {
-    super(indexFilePath);
-  }
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @throws ScanException scan exception
+     */
+    public DIAParser(String indexFilePath) throws Exception {
+        super(indexFilePath);
+    }
 
-  public DIAParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
-    super(indexFilePath, airdInfo);
-  }
+    public DIAParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
+        super(indexFilePath, airdInfo);
+    }
 
-  /**
-   * 构造函数
-   *
-   * @param airdPath      aird file path
-   * @param mzCompressor  mz compressor
-   * @param intCompressor intensity compressor
-   * @throws ScanException scan exception
-   */
-  public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor)
-      throws Exception {
-    super(airdPath, mzCompressor, intCompressor, null, AirdType.DIA.getName());
-  }
+    /**
+     * 构造函数
+     *
+     * @param airdPath      aird file path
+     * @param mzCompressor  mz compressor
+     * @param intCompressor intensity compressor
+     * @throws ScanException scan exception
+     */
+    public DIAParser(String airdPath, Compressor mzCompressor, Compressor intCompressor) throws Exception {
+        super(airdPath, mzCompressor, intCompressor, null, AirdType.DIA.getName());
+    }
 }

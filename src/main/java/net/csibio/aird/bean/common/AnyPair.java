@@ -15,14 +15,14 @@ import lombok.Data;
 @Data
 public class AnyPair<T, R> {
 
-  T left;
-  R right;
+    T left;
+    R right;
 
-  public AnyPair() {
-  }
+    public AnyPair() {
+    }
 
-  public AnyPair(T l, R r) {
-    this.left = l;
-    this.right = r;
-  }
+    public AnyPair(T l, R r) {
+        this.left = l;
+        this.right = r;
+    }
 }

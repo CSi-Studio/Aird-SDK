@@ -12,9 +12,9 @@ package net.csibio.aird.compressor.sortedintcomp;
 
 public interface SortedIntComp {
 
-  String getName();
+    String getName();
 
-  int[] encode(int[] uncompressed);
+    int[] encode(int[] uncompressed);
 
-  int[] decode(int[] compressed);
+    int[] decode(int[] compressed);
 }

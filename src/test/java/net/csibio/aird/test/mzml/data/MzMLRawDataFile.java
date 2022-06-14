@@ -18,10 +18,11 @@ import io.github.msdk.datamodel.Chromatogram;
 import io.github.msdk.datamodel.FileType;
 import io.github.msdk.datamodel.MsScan;
 import io.github.msdk.datamodel.RawDataFile;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * <p>
@@ -30,136 +31,127 @@ import org.jetbrains.annotations.NotNull;
  */
 public class MzMLRawDataFile implements RawDataFile {
 
-  private static final @NotNull
-  FileType fileType = FileType.MZML;
+    private static final @NotNull FileType fileType = FileType.MZML;
 
-  private final File sourceFile;
+    private final File sourceFile;
 
-  private final @NotNull
-  List<String> msFunctions;
-  private final @NotNull
-  List<MsScan> msScans;
-  private final @NotNull
-  List<Chromatogram> chromatograms;
+    private final @NotNull List<String> msFunctions;
+    private final @NotNull List<MsScan> msScans;
+    private final @NotNull List<Chromatogram> chromatograms;
 
-  private @NotNull
-  String defaultInstrumentConfiguration;
-  private @NotNull
-  String defaultDataProcessingScan;
-  private @NotNull
-  String defaultDataProcessingChromatogram;
+    private @NotNull String defaultInstrumentConfiguration;
+    private @NotNull String defaultDataProcessingScan;
+    private @NotNull String defaultDataProcessingChromatogram;
 
-  private @NotNull
-  String name;
+    private final @NotNull String name;
 
-  /**
-   * <p>
-   * Constructor for MzMLRawDataFile.
-   * </p>
-   *
-   * @param sourceFile    a {@link File} object.
-   * @param msFunctions   a {@link List} object.
-   * @param msScans       a {@link List} object.
-   * @param chromatograms a {@link List} object.
-   */
-  @SuppressWarnings("null")
-  public MzMLRawDataFile(File sourceFile, List<String> msFunctions, List<MsScan> msScans,
-      List<Chromatogram> chromatograms) {
-    this.sourceFile = sourceFile;
-    this.name = sourceFile != null ? sourceFile.getName() : null;
-    this.msFunctions = msFunctions;
-    this.msScans = msScans;
-    this.chromatograms = chromatograms;
-    this.defaultInstrumentConfiguration = "unknown";
-    this.defaultDataProcessingScan = "unknown";
-    this.defaultDataProcessingChromatogram = "unknown";
-  }
+    /**
+     * <p>
+     * Constructor for MzMLRawDataFile.
+     * </p>
+     *
+     * @param sourceFile    a {@link File} object.
+     * @param msFunctions   a {@link List} object.
+     * @param msScans       a {@link List} object.
+     * @param chromatograms a {@link List} object.
+     */
+    @SuppressWarnings("null")
+    public MzMLRawDataFile(File sourceFile, List<String> msFunctions, List<MsScan> msScans, List<Chromatogram> chromatograms) {
+        this.sourceFile = sourceFile;
+        this.name = sourceFile != null ? sourceFile.getName() : null;
+        this.msFunctions = msFunctions;
+        this.msScans = msScans;
+        this.chromatograms = chromatograms;
+        this.defaultInstrumentConfiguration = "unknown";
+        this.defaultDataProcessingScan = "unknown";
+        this.defaultDataProcessingChromatogram = "unknown";
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  @NotNull
-  public String getName() {
-    return name;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @NotNull
+    public String getName() {
+        return name;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Optional<File> getOriginalFile() {
-    return Optional.ofNullable(sourceFile);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<File> getOriginalFile() {
+        return Optional.ofNullable(sourceFile);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  @NotNull
-  public FileType getRawDataFileType() {
-    return fileType;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @NotNull
+    public FileType getRawDataFileType() {
+        return fileType;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings("null")
-  @Override
-  @NotNull
-  public List<String> getMsFunctions() {
-    return ImmutableList.copyOf(msFunctions);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("null")
+    @Override
+    @NotNull
+    public List<String> getMsFunctions() {
+        return ImmutableList.copyOf(msFunctions);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings("null")
-  @Override
-  @NotNull
-  public List<MsScan> getScans() {
-    return ImmutableList.copyOf(msScans);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("null")
+    @Override
+    @NotNull
+    public List<MsScan> getScans() {
+        return ImmutableList.copyOf(msScans);
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings("null")
-  @Override
-  @NotNull
-  public List<Chromatogram> getChromatograms() {
-    return ImmutableList.copyOf(chromatograms);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("null")
+    @Override
+    @NotNull
+    public List<Chromatogram> getChromatograms() {
+        return ImmutableList.copyOf(chromatograms);
+    }
 
-  public String getDefaultInstrumentConfiguration() {
-    return defaultInstrumentConfiguration;
-  }
+    public String getDefaultInstrumentConfiguration() {
+        return defaultInstrumentConfiguration;
+    }
 
-  public void setDefaultInstrumentConfiguration(String defaultInstrumentConfiguration) {
-    this.defaultInstrumentConfiguration = defaultInstrumentConfiguration;
-  }
+    public void setDefaultInstrumentConfiguration(String defaultInstrumentConfiguration) {
+        this.defaultInstrumentConfiguration = defaultInstrumentConfiguration;
+    }
 
-  public String getDefaultDataProcessingScan() {
-    return defaultDataProcessingScan;
-  }
+    public String getDefaultDataProcessingScan() {
+        return defaultDataProcessingScan;
+    }
 
-  public void setDefaultDataProcessingScan(String defaultDataProcessingScan) {
-    this.defaultDataProcessingScan = defaultDataProcessingScan;
-  }
+    public void setDefaultDataProcessingScan(String defaultDataProcessingScan) {
+        this.defaultDataProcessingScan = defaultDataProcessingScan;
+    }
 
-  public String getDefaultDataProcessingChromatogram() {
-    return defaultDataProcessingChromatogram;
-  }
+    public String getDefaultDataProcessingChromatogram() {
+        return defaultDataProcessingChromatogram;
+    }
 
-  public void setDefaultDataProcessingChromatogram(String defaultDataProcessingChromatogram) {
-    this.defaultDataProcessingChromatogram = defaultDataProcessingChromatogram;
-  }
+    public void setDefaultDataProcessingChromatogram(String defaultDataProcessingChromatogram) {
+        this.defaultDataProcessingChromatogram = defaultDataProcessingChromatogram;
+    }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void dispose() {
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+    }
 
 }
