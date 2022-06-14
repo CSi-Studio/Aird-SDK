@@ -132,7 +132,7 @@ public class AirdInfo {
     /**
      * ion mobility information
      */
-    MobiInfo mobiInfo;
+    MobiInfo mobiInfo = new MobiInfo();
 
     /**
      * 实验的创建者 The aird file creator

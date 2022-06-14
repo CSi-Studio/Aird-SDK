@@ -106,7 +106,7 @@ public class DDAParser extends BaseParser {
         List<BlockIndex> indexList = airdInfo.getIndexList();
         for (BlockIndex blockIndex : indexList) {
             int index = blockIndex.getNums().indexOf(num);
-            if (index > 0) {
+            if (index >= 0) {
                 return getSpectrumByIndex(blockIndex, index);
             }
         }
