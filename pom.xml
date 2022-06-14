@@ -6,7 +6,7 @@
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>2.0.1-SNAPSHOT</version>
+    <version>2.0.2-SNAPSHOT</version>
     <name>Aird-SDK</name>
     <packaging>jar</packaging>
     <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data
@@ -14,7 +14,6 @@
         and Storage
     </description>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
-
 
     <properties>
         <java.version>17</java.version>

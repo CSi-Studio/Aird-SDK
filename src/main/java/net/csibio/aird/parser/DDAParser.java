@@ -17,10 +17,9 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.DDAUtil;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * DDA模式的转换器 The parser for DDA acquisition mode. The index is group like MS1-MS2 Group DDA reader
@@ -72,6 +71,10 @@ public class DDAParser extends BaseParser {
         List<DDAMs> ms1List = new ArrayList<>();
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         List<BlockIndex> ms2IndexList = getAllMs2Index();
+        Map<Integer, BlockIndex> ms2IndexMap = new HashMap<>();
+        if (ms2IndexList != null && ms2IndexList.size() > 0) {
+            ms2IndexMap = ms2IndexList.stream().collect(Collectors.toMap(BlockIndex::getParentNum, Function.identity()));
+        }
         TreeMap<Double, Spectrum> ms1Map = getSpectra(ms1Index.getStartPtr(), ms1Index.getEndPtr(),
                 ms1Index.getRts(), ms1Index.getMzs(), ms1Index.getInts());
         List<Double> ms1RtList = new ArrayList<>(ms1Map.keySet());
@@ -79,10 +82,8 @@ public class DDAParser extends BaseParser {
         for (int i = 0; i < ms1RtList.size(); i++) {
             DDAMs ms1 = new DDAMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
             DDAUtil.initFromIndex(ms1, ms1Index, i);
-            Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream()
-                    .filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
-            if (ms2IndexRes.isPresent()) {
-                BlockIndex ms2Index = ms2IndexRes.get();
+            BlockIndex ms2Index = ms2IndexMap.get(ms1.getNum());
+            if (ms2Index != null) {
                 TreeMap<Double, Spectrum> ms2Map = getSpectra(ms2Index.getStartPtr(), ms2Index.getEndPtr(),
                         ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts());
                 List<Double> ms2RtList = new ArrayList<>(ms2Map.keySet());
@@ -110,14 +111,18 @@ public class DDAParser extends BaseParser {
     }
 
     /**
-     * @param nums
+     * @param num 所需要搜索的scan number
      * @return
      */
-    public TreeMap<Integer, Spectrum> getSpectraByNums(List<Integer> nums) {
-        TreeMap<Integer, Spectrum> spectraMap = new TreeMap<>();
-        BlockIndex ms1 = airdInfo.getIndexList().get(0);
-        List<Integer> scanNumber = new ArrayList<>();
-        
-        return spectraMap;
+    public Spectrum getSpectrumByNum(Integer num) {
+        List<BlockIndex> indexList = airdInfo.getIndexList();
+        for (BlockIndex blockIndex : indexList) {
+            int index = blockIndex.getNums().indexOf(num);
+            if (index > 0) {
+                return getSpectrumByIndex(blockIndex, index);
+            }
+        }
+
+        return null;
     }
 }

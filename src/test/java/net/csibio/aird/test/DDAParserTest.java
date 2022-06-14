@@ -11,6 +11,7 @@ package net.csibio.aird.test;/*
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.parser.BaseParser;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
@@ -20,11 +21,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DDAParserTest {
 
-    String filePath = "D:\\meta-vendor\\SA1_6_with_zero.json";
+    String filePath1 = "D:\\metadata\\neiyansuo\\neg\\Set1-Human-Liver-REF-2.json";
+    String filePath2 = "D:\\metadata\\neiyansuo\\neg\\Set1-Human-Liver-MIX-1.json";
 
     @Test
     public void testXICSpeed() throws Exception {
-        BaseParser parser = BaseParser.buildParser(filePath);
+        BaseParser parser = BaseParser.buildParser(filePath1);
         AirdInfo airdInfo = parser.getAirdInfo();
         try {
             List<DDAMs> allMsList = ((DDAParser) parser).readAllToMemory();
@@ -43,7 +45,26 @@ public class DDAParserTest {
         }
     }
 
-    public void testSize() {
+    @Test
+    public void testReadSpeed() throws Exception {
+        DDAParser parser1 = new DDAParser(filePath1);
+        long start1 = System.currentTimeMillis();
+        parser1.readAllToMemory();
+        System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
 
+        DDAParser parser2 = new DDAParser(filePath2);
+        long start2 = System.currentTimeMillis();
+        parser2.readAllToMemory();
+        System.out.println("Cost2:" + (System.currentTimeMillis() - start2));
+    }
+
+    @Test
+    public void testReadSingleSpectrum() throws Exception {
+        DDAParser parser1 = new DDAParser(filePath1);
+        long start1 = System.currentTimeMillis();
+        for (int i = 0; i < parser1.getAirdInfo().getTotalCount(); i++) {
+            Spectrum spectrum = parser1.getSpectrumByNum(i);
+        }
+        System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
     }
 }
