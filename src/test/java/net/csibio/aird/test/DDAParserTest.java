@@ -72,7 +72,7 @@ public class DDAParserTest {
     public void testReadSpectra() throws Exception {
         DDAParser parser1 = new DDAParser(filePath1);
         long start1 = System.currentTimeMillis();
-        List<DDAMs> ms1List = parser1.getSpectraByRtRange(0d, 100d);
+        List<DDAMs> ms1List = parser1.getSpectraByRtRange(0d, 100d, false);
         System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
     }
 }

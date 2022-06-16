@@ -84,7 +84,7 @@ public class DDAParser extends BaseParser {
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         TreeMap<Double, Spectrum> ms1Map = getSpectra(ms1Index);
         List<Double> ms1RtList = new ArrayList<>(ms1Map.keySet());
-        List<DDAMs> ms1List = buildDDAMsList(ms1RtList, ms1Index, ms1Map, getMs2IndexMap());
+        List<DDAMs> ms1List = buildDDAMsList(ms1RtList, ms1Index, ms1Map, true);
         return ms1List;
     }
 
@@ -119,7 +119,7 @@ public class DDAParser extends BaseParser {
      * @param rtEnd
      * @return
      */
-    public List<DDAMs> getSpectraByRtRange(double rtStart, double rtEnd) {
+    public List<DDAMs> getSpectraByRtRange(double rtStart, double rtEnd, boolean includeMS2) {
         BlockIndex ms1Index = getMs1Index();
         Double[] rts = new Double[ms1Index.getRts().size()];
         ms1Index.getRts().toArray(rts);
@@ -141,28 +141,35 @@ public class DDAParser extends BaseParser {
             ms1Map.put(rts[i], getSpectrumByIndex(ms1Index, i));
         }
 
-        List<DDAMs> ms1List = buildDDAMsList(ms1Index.getRts().subList(start, end + 1), ms1Index, ms1Map, getMs2IndexMap());
+        List<DDAMs> ms1List = buildDDAMsList(ms1Index.getRts().subList(start, end + 1), ms1Index, ms1Map, includeMS2);
         return ms1List;
     }
 
-    private List<DDAMs> buildDDAMsList(List<Double> rtList, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, Map<Integer, BlockIndex> ms2IndexMap) {
+    private List<DDAMs> buildDDAMsList(List<Double> rtList, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
         List<DDAMs> ms1List = new ArrayList<>();
+        Map<Integer, BlockIndex> ms2IndexMap = null;
+        if (includeMS2) {
+            ms2IndexMap = getMs2IndexMap();
+        }
         for (int i = 0; i < rtList.size(); i++) {
             DDAMs ms1 = new DDAMs(rtList.get(i), ms1Map.get(rtList.get(i)));
             DDAUtil.initFromIndex(ms1, ms1Index, i);
-            BlockIndex ms2Index = ms2IndexMap.get(ms1.getNum());
-            if (ms2Index != null) {
-                TreeMap<Double, Spectrum> ms2Map = getSpectra(ms2Index.getStartPtr(), ms2Index.getEndPtr(),
-                        ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts());
-                List<Double> ms2RtList = new ArrayList<>(ms2Map.keySet());
-                List<DDAMs> ms2List = new ArrayList<>();
-                for (int j = 0; j < ms2RtList.size(); j++) {
-                    DDAMs ms2 = new DDAMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
-                    DDAUtil.initFromIndex(ms2, ms2Index, j);
-                    ms2List.add(ms2);
+            if (includeMS2) {
+                BlockIndex ms2Index = ms2IndexMap.get(ms1.getNum());
+                if (ms2Index != null) {
+                    TreeMap<Double, Spectrum> ms2Map = getSpectra(ms2Index.getStartPtr(), ms2Index.getEndPtr(),
+                            ms2Index.getRts(), ms2Index.getMzs(), ms2Index.getInts());
+                    List<Double> ms2RtList = new ArrayList<>(ms2Map.keySet());
+                    List<DDAMs> ms2List = new ArrayList<>();
+                    for (int j = 0; j < ms2RtList.size(); j++) {
+                        DDAMs ms2 = new DDAMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
+                        DDAUtil.initFromIndex(ms2, ms2Index, j);
+                        ms2List.add(ms2);
+                    }
+                    ms1.setMs2List(ms2List);
                 }
-                ms1.setMs2List(ms2List);
             }
+
             ms1List.add(ms1);
         }
         return ms1List;
