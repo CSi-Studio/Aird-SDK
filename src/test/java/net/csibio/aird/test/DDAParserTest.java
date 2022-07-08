@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DDAParserTest {
 
-    String filePath1 = "D:\\metadata\\neiyansuo\\neg\\Set1-Human-Liver-REF-2.json";
-    String filePath2 = "D:\\metadata\\neiyansuo\\neg\\Set1-Human-Liver-MIX-1.json";
+    String filePath1 = "D:\\metabolomics\\neiyansuo_real\\LIPPOS\\LIPPOS-1-A-B-BLK-2.json";
+    String filePath2 = "D:\\metabolomics\\neiyansuo_real\\LIPPOS\\LIPPOS-1-A-B-SAM-98.json";
 
     @Test
     public void testXICSpeed() throws Exception {
@@ -65,6 +65,14 @@ public class DDAParserTest {
         for (int i = 0; i < parser1.getAirdInfo().getTotalCount(); i++) {
             Spectrum spectrum = parser1.getSpectrumByNum(i);
         }
+        System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
+    }
+
+    @Test
+    public void testReadMultipleSpectra() throws Exception {
+        DDAParser parser1 = new DDAParser(filePath1);
+        long start1 = System.currentTimeMillis();
+        Spectrum[] list = parser1.getSpectraByNums(1, 2, 3);
         System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
     }
 

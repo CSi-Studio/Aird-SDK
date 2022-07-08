@@ -46,5 +46,6 @@ public class Xic {
     public Xic(double[] rts, double[] ints, double[] mzs) {
         this.rts = rts;
         this.ints = ints;
+        this.mzs = mzs;
     }
 }

@@ -115,6 +115,31 @@ public class DDAParser extends BaseParser {
     }
 
     /**
+     * @param nums 所需要搜索的scan numbers
+     * @return
+     */
+    public Spectrum[] getSpectraByNums(Integer... nums) {
+        List<BlockIndex> indexList = airdInfo.getIndexList();
+        Spectrum[] spectra = new Spectrum[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == null) {
+                spectra[i] = null;
+                continue;
+            }
+            Spectrum spectrum = null;
+            for (BlockIndex blockIndex : indexList) {
+                int index = blockIndex.getNums().indexOf(nums[i]);
+                if (index >= 0) {
+                    spectrum = getSpectrumByIndex(blockIndex, index);
+                    break;
+                }
+            }
+            spectra[i] = spectrum;
+        }
+        return spectra;
+    }
+
+    /**
      * @param rtStart
      * @param rtEnd
      * @return
