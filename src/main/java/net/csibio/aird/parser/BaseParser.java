@@ -28,6 +28,7 @@ import net.csibio.aird.compressor.sortedintcomp.SortedIntComp;
 import net.csibio.aird.enums.*;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
+import net.csibio.aird.util.ArrayUtil;
 import net.csibio.aird.util.FileUtil;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -342,6 +344,24 @@ public abstract class BaseParser {
         offset = offset + mzOffset;
         double[] intensityArray = getInts(bytes, offset, intOffset);
         return new Spectrum(mzArray, intensityArray);
+    }
+
+    public TreeMap<Double, Spectrum> getSpectraByRtRange(BlockIndex index, double rtStart, double rtEnd) {
+        double[] rts = ArrayUtil.toPrimitive(index.getRts());
+        //如果范围不在已有的rt数组范围内,则直接返回empty map
+        if (rtStart > rts[rts.length - 1] || rtEnd < rts[0]) {
+            return null;
+        }
+
+        int start = Arrays.binarySearch(rts, rtStart);
+        if (start < 0) {
+            start = -start - 1;
+        }
+        int end = Arrays.binarySearch(rts, rtEnd);
+        if (end < 0) {
+            end = -end - 2;
+        }
+        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts().subList(start, end + 1), index.getMzs(), index.getInts());
     }
 
     public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
