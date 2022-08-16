@@ -346,8 +346,8 @@ public abstract class BaseParser {
         return new Spectrum(mzArray, intensityArray);
     }
 
-    public TreeMap<Double, Spectrum> getSpectraByRtRange(BlockIndex index, double rtStart, double rtEnd) {
-        double[] rts = ArrayUtil.toPrimitive(index.getRts());
+    public TreeMap<Double, Spectrum> getSpectraByRtRange(long startPtr, long endPtr, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, double rtStart, double rtEnd) {
+        double[] rts = ArrayUtil.toPrimitive(rtList);
         //如果范围不在已有的rt数组范围内,则直接返回empty map
         if (rtStart > rts[rts.length - 1] || rtEnd < rts[0]) {
             return null;
@@ -361,7 +361,11 @@ public abstract class BaseParser {
         if (end < 0) {
             end = -end - 2;
         }
-        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts().subList(start, end + 1), index.getMzs(), index.getInts());
+        return getSpectra(startPtr, endPtr, rtList.subList(start, end + 1), mzOffsets, intOffsets);
+    }
+
+    public TreeMap<Double, Spectrum> getSpectraByRtRange(BlockIndex index, double rtStart, double rtEnd) {
+        return getSpectraByRtRange(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts(), rtStart, rtEnd);
     }
 
     public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
