@@ -184,9 +184,22 @@ public abstract class BaseParser {
             throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
         }
 
-        this.mzCompressor = mzCompressor;
-        this.intCompressor = intCompressor;
-        this.mobiCompressor = mobiCompressor;
+
+        if (mzCompressor != null) {
+            this.mzCompressor = mzCompressor;
+            this.mzPrecision = mzCompressor.getPrecision();
+        }
+
+        if (intCompressor != null) {
+            this.intCompressor = intCompressor;
+            this.intPrecision = intCompressor.getPrecision();
+        }
+
+        if (mobiCompressor != null) {
+            this.mobiCompressor = mobiCompressor;
+            this.mobiPrecision = mobiCompressor.getPrecision();
+        }
+
         parserComboComp();
         parseMobilityDict();
     }

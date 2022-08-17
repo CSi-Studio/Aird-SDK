@@ -6,7 +6,7 @@
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>2.0.2.6-SNAPSHOT</version>
+    <version>2.0.2.7-SNAPSHOT</version>
     <name>Aird-SDK</name>
     <packaging>jar</packaging>
     <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing
