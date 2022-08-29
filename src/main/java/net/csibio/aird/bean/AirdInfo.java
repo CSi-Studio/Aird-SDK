@@ -114,6 +114,7 @@ public class AirdInfo {
 
     /**
      * rt unit
+     * Aird格式下统一为秒
      */
     String rtUnit;
 

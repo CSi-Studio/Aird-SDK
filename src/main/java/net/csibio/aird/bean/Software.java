@@ -24,4 +24,9 @@ public class Software {
      * 软件版本号 The software version
      */
     String version;
+
+    /**
+     * 软件类型 The software function type
+     */
+    String type;
 }

@@ -52,9 +52,4 @@ public class Instrument {
      */
     List<String> detector;
 
-    /**
-     * 其他特征,使用K:V;K:V;K:V;类似的格式进行存储 Other features, using K:V;K:V;K:V; to store the information
-     */
-    String features;
-
 }

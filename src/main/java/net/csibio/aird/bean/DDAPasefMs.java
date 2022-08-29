@@ -12,7 +12,6 @@ package net.csibio.aird.bean;
 
 import lombok.Data;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.constant.PSI;
 
 import java.io.Serializable;
 import java.util.List;
@@ -66,35 +65,5 @@ public class DDAPasefMs implements Serializable {
     public DDAPasefMs(Double rt, Spectrum spectrum) {
         this.rt = rt;
         this.spectrum = spectrum;
-    }
-
-    public Integer isPolarity() {
-        if (cvList != null) {
-            for (CV cv : cvList) {
-                String cvid = cv.getCvid();
-                if (cvid.contains(PSI.cvPolarityPositive)) {
-                    return 1;
-                }
-                if (cvid.contains(PSI.cvPolarityNegative)) {
-                    return -1;
-                }
-            }
-        }
-        return 0;
-    }
-
-    public Integer isProfile() {
-        if (cvList != null) {
-            for (CV cv : cvList) {
-                String cvid = cv.getCvid();
-                if (cvid.contains(PSI.cvProfileSpectrum)) {
-                    return 1;
-                }
-                if (cvid.contains(PSI.cvCentroidSpectrum)) {
-                    return -1;
-                }
-            }
-        }
-        return 0;
     }
 }
