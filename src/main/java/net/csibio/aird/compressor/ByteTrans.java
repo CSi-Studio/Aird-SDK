@@ -14,6 +14,14 @@ import java.nio.*;
 
 public class ByteTrans {
 
+    public static byte[] shortToByte(short[] shorts) {
+        ShortBuffer fbTarget = ShortBuffer.wrap(shorts);
+        ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 2);
+        bbTarget.order(ByteOrder.LITTLE_ENDIAN);
+        bbTarget.asShortBuffer().put(fbTarget);
+        return bbTarget.array();
+    }
+
     public static byte[] intToByte(int[] ints) {
         IntBuffer ibTarget = IntBuffer.wrap(ints);
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
@@ -54,13 +62,6 @@ public class ByteTrans {
         return bbTarget;
     }
 
-    public static byte[] shortToByte(short[] shorts) {
-        ShortBuffer fbTarget = ShortBuffer.wrap(shorts);
-        ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 2);
-        bbTarget.order(ByteOrder.LITTLE_ENDIAN);
-        bbTarget.asShortBuffer().put(fbTarget);
-        return bbTarget.array();
-    }
 
     public static int[] byteToInt(byte[] bytes) {
         return byteToInt(bytes, ByteOrder.LITTLE_ENDIAN);
