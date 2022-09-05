@@ -10,6 +10,12 @@
 
 package net.csibio.aird.bean.common;
 
+/**
+ * double array pairs
+ *
+ * @param x double array x
+ * @param y double array y
+ */
 public record DoublePairs(double[] x, double[] y) {
 
 }

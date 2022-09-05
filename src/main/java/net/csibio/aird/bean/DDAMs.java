@@ -60,14 +60,28 @@ public class DDAMs implements Serializable {
      */
     List<DDAMs> ms2List;
 
+    /**
+     * 构造函数
+     */
     public DDAMs() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param rt       retention time
+     * @param spectrum spectrum
+     */
     public DDAMs(Double rt, Spectrum spectrum) {
         this.rt = rt;
         this.spectrum = spectrum;
     }
 
+    /**
+     * if is polarity
+     *
+     * @return if is polarity
+     */
     public Integer isPolarity() {
         if (cvList != null) {
             for (CV cv : cvList) {
@@ -83,6 +97,11 @@ public class DDAMs implements Serializable {
         return 0;
     }
 
+    /**
+     * if is profile
+     *
+     * @return if is profile
+     */
     public Integer isProfile() {
         if (cvList != null) {
             for (CV cv : cvList) {

@@ -12,8 +12,11 @@ package net.csibio.aird.compressor.intcomp;
 
 import net.csibio.aird.enums.IntCompType;
 
+/**
+ * Empty Compressor as integer compressor
+ */
 public class Empty implements IntComp {
-
+    
     @Override
     public String getName() {
         return IntCompType.Empty.getName();

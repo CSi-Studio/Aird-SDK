@@ -14,6 +14,9 @@ import me.lemire.integercompression.BinaryPacking;
 import me.lemire.integercompression.IntCompressor;
 import net.csibio.aird.enums.IntCompType;
 
+/**
+ * Binary Packing Wrapper implementation
+ */
 public class BinPackingWrapper implements IntComp {
 
     @Override

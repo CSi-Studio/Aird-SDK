@@ -10,6 +10,9 @@
 
 package net.csibio.aird.enums;
 
+/**
+ * Integer compressor types
+ */
 public enum IntCompType {
 
     /**
@@ -28,7 +31,14 @@ public enum IntCompType {
     VB(3, "VB"),
     ;
 
+    /**
+     * integer compressor code
+     */
     public int code;
+
+    /**
+     * integer compressor name
+     */
     public String name;
 
     IntCompType(int code, String name) {
@@ -36,6 +46,12 @@ public enum IntCompType {
         this.name = name;
     }
 
+    /**
+     * get by the name
+     *
+     * @param name compressor name
+     * @return the compressor instance
+     */
     public static IntCompType getByName(String name) {
         for (IntCompType value : values()) {
             if (value.getName().equals(name)) {
@@ -45,10 +61,16 @@ public enum IntCompType {
         return Empty;
     }
 
+    /**
+     * @return the code of the integer compressor
+     */
     public int getCode() {
         return code;
     }
 
+    /**
+     * @return the name of the integer compressor
+     */
     public String getName() {
         return name;
     }

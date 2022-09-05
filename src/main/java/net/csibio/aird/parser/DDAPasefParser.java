@@ -38,10 +38,22 @@ public class DDAPasefParser extends BaseParser {
         super(indexFilePath);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @param airdInfo      airdinfo instance
+     * @throws Exception scan exception
+     */
     public DDAPasefParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
         super(indexFilePath, airdInfo);
     }
 
+    /**
+     * get ms1 index from the index file
+     *
+     * @return the index info of all the ms1 spectrum
+     */
     public BlockIndex getMs1Index() {
         if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
             return airdInfo.getIndexList().get(0);
@@ -49,6 +61,11 @@ public class DDAPasefParser extends BaseParser {
         return null;
     }
 
+    /**
+     * get ms2 index from the index file
+     *
+     * @return the index info of all the ms2 spectrum
+     */
     public List<BlockIndex> getAllMs2Index() {
         if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
             return airdInfo.getIndexList().subList(1, airdInfo.getIndexList().size());

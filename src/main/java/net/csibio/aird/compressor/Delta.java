@@ -10,6 +10,9 @@
 
 package net.csibio.aird.compressor;
 
+/**
+ * Delta Encoder
+ */
 public class Delta {
 
     /**

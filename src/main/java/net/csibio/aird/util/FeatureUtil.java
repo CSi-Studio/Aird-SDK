@@ -16,18 +16,28 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Feature Util for common string to map functions
+ */
 public class FeatureUtil {
 
+    /**
+     * sp-;
+     */
     public static final String SP = ";";
+
+    /**
+     * ssp-:
+     */
     public static final String SSP = ":";
 
     /**
      * 通过Map转换成String
      *
-     * @param attrs
-     * @return
+     * @param attrs features map to convert to string
+     * @return the converted string
      */
-    public static final <T> String toString(Map<String, T> attrs) {
+    public static <T> String toString(Map<String, T> attrs) {
         StringBuilder sb = new StringBuilder();
         if (null != attrs && !attrs.isEmpty()) {
             Set<Map.Entry<String, T>> entrySet = attrs.entrySet();
@@ -40,11 +50,24 @@ public class FeatureUtil {
         return sb.toString();
     }
 
-    public static final String toString(Double left, Double right) {
+    /**
+     * joint string with split string
+     *
+     * @param left  string A
+     * @param right string B
+     * @return the joint string
+     */
+    public static String toString(Double left, Double right) {
         return left.toString() + SP + right.toString();
     }
 
-    public static final Pair<Double, Double> toDoublePair(String range) {
+    /**
+     * string to split to doubles
+     *
+     * @param range the string to be split
+     * @return the split double array as Pair
+     */
+    public static Pair<Double, Double> toDoublePair(String range) {
         String[] arr = range.split(SP);
         Double left = Double.parseDouble(arr[0]);
         Double right = Double.parseDouble(arr[1]);
@@ -55,9 +78,9 @@ public class FeatureUtil {
      * 通过字符串解析成attributes
      *
      * @param str (格式比如为: "k:v;k:v;k:v")
-     * @return
+     * @return the string-double feature map
      */
-    public static final Map<String, Double> toDoubleMap(String str) {
+    public static Map<String, Double> toDoubleMap(String str) {
         Map<String, Double> attrs = new HashMap<>();
         if (str != null) {
             String[] arr = str.split(SP);
@@ -78,7 +101,7 @@ public class FeatureUtil {
      * 通过字符串解析成attributes
      *
      * @param str (格式比如为: "k:v;k:v;k:v")
-     * @return
+     * @return the string-float features map
      */
     public static final HashMap<String, Float> toFloatMap(String str) {
         HashMap<String, Float> attrs = new HashMap<>();

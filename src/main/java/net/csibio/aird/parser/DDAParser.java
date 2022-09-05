@@ -37,6 +37,13 @@ public class DDAParser extends BaseParser {
         super(indexFilePath);
     }
 
+    /**
+     * DDAParser 构造函数
+     *
+     * @param indexFilePath index file path
+     * @param airdInfo      airdInfo
+     * @throws Exception exception
+     */
     public DDAParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
         super(indexFilePath, airdInfo);
     }
@@ -44,7 +51,7 @@ public class DDAParser extends BaseParser {
     /**
      * DDA只有一个MS1 BlockIndex,因此是归属于DDAParser的特殊算法
      *
-     * @return
+     * @return the index of all the ms1
      */
     public BlockIndex getMs1Index() {
         if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
@@ -53,6 +60,11 @@ public class DDAParser extends BaseParser {
         return null;
     }
 
+    /**
+     * get the index of all the ms2 spectrum
+     *
+     * @return the index of all the ms2 indexes
+     */
     public List<BlockIndex> getAllMs2Index() {
         if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
             return airdInfo.getIndexList().subList(1, airdInfo.getIndexList().size());
@@ -63,7 +75,7 @@ public class DDAParser extends BaseParser {
     /**
      * key为parentNum
      *
-     * @return
+     * @return the ms2 index,key is the num, value is the index instance
      */
     public Map<Integer, BlockIndex> getMs2IndexMap() {
         if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
@@ -91,7 +103,7 @@ public class DDAParser extends BaseParser {
     /**
      * key为rt, value为对应谱图
      *
-     * @return
+     * @return the map of the ms1, key is rt, value is spectrum
      */
     public TreeMap<Double, Spectrum> getMs1SpectraMap() {
         BlockIndex ms1Index = getMs1Index();
@@ -100,7 +112,7 @@ public class DDAParser extends BaseParser {
 
     /**
      * @param num 所需要搜索的scan number
-     * @return
+     * @return the target spectrum
      */
     public Spectrum getSpectrumByNum(Integer num) {
         List<BlockIndex> indexList = airdInfo.getIndexList();
@@ -116,7 +128,7 @@ public class DDAParser extends BaseParser {
 
     /**
      * @param nums 所需要搜索的scan numbers
-     * @return
+     * @return the target spectra
      */
     public Spectrum[] getSpectraByNums(Integer... nums) {
         List<BlockIndex> indexList = airdInfo.getIndexList();
@@ -140,9 +152,9 @@ public class DDAParser extends BaseParser {
     }
 
     /**
-     * @param rtStart
-     * @param rtEnd
-     * @return
+     * @param rtStart the start of the retention time
+     * @param rtEnd   the end of the retention time
+     * @return all the spectras in the target retention time range
      */
     public List<DDAMs> getSpectraByRtRange(double rtStart, double rtEnd, boolean includeMS2) {
         BlockIndex ms1Index = getMs1Index();
@@ -170,6 +182,13 @@ public class DDAParser extends BaseParser {
         return ms1List;
     }
 
+    /**
+     * @param rtList     the target rt list
+     * @param ms1Index   the ms1 index
+     * @param ms1Map     the ms1 map
+     * @param includeMS2 if including the ms2 spectra
+     * @return the search DDAMs results
+     */
     private List<DDAMs> buildDDAMsList(List<Double> rtList, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
         List<DDAMs> ms1List = new ArrayList<>();
         Map<Integer, BlockIndex> ms2IndexMap = null;

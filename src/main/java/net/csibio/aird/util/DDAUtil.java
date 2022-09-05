@@ -14,8 +14,18 @@ import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.DDAPasefMs;
 
+/**
+ * DDA Util
+ */
 public class DDAUtil {
 
+    /**
+     * Init a DDAMs instance from index instance
+     *
+     * @param ms    DDAMs instance
+     * @param index index information
+     * @param loc   index location
+     */
     public static void initFromIndex(DDAMs ms, BlockIndex index, Integer loc) {
         if (index.getNums() != null && index.getNums().size() > 0) {
             ms.setNum(index.getNums().get(loc));
@@ -31,6 +41,13 @@ public class DDAUtil {
         }
     }
 
+    /**
+     * Init a DDAPasefMs instance from index instance
+     *
+     * @param ms    DDAPasefMs instance
+     * @param index index information
+     * @param loc   index location
+     */
     public static void initFromIndex(DDAPasefMs ms, BlockIndex index, Integer loc) {
         if (index.getNums() != null && index.getNums().size() > 0) {
             ms.setNum(index.getNums().get(loc));

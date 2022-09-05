@@ -10,6 +10,12 @@
 
 package net.csibio.aird.bean.common;
 
+/**
+ * double pair
+ *
+ * @param left  double left
+ * @param right double right
+ */
 public record DoublePair(double left, double right) {
 
 }

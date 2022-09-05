@@ -14,20 +14,47 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * Pairs for any array typ
+ *
+ * @param <T> Type of the array A
+ * @param <D> Type of the array B
+ */
 @Data
 public class AnyPairs<T, D> implements Serializable {
 
+    /**
+     * instance x
+     */
     T[] x;
+
+    /**
+     * instance y
+     */
     D[] y;
 
+    /**
+     * 构造函数
+     */
     public AnyPairs() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param x array X
+     * @param y array Y
+     */
     public AnyPairs(T[] x, D[] y) {
         this.x = x;
         this.y = y;
     }
 
+    /**
+     * the pairs length
+     *
+     * @return the pairs length
+     */
     public int length() {
         if (x == null) {
             return 0;
@@ -35,10 +62,20 @@ public class AnyPairs<T, D> implements Serializable {
         return x.length;
     }
 
+    /**
+     * x instance
+     *
+     * @return the x instance
+     */
     public T[] getX() {
         return x;
     }
 
+    /**
+     * y instance
+     *
+     * @return the y instance
+     */
     public D[] getY() {
         return y;
     }

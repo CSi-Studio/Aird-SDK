@@ -14,7 +14,6 @@ import net.csibio.aird.structure.SortInt;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +35,12 @@ public class ArrayUtil {
         return sortInts;
     }
 
+    /**
+     * convert float array to double array
+     *
+     * @param array array to convert
+     * @return converted array
+     */
     public static double[] f2d(float[] array) {
         if (array == null) {
             return null;
@@ -47,6 +52,12 @@ public class ArrayUtil {
         return newArray;
     }
 
+    /**
+     * convert double array to float array
+     *
+     * @param array double array
+     * @return the converted data
+     */
     public static float[] d2f(double[] array) {
         if (array == null) {
             return null;
@@ -58,6 +69,13 @@ public class ArrayUtil {
         return newArray;
     }
 
+    /**
+     * convert double array to int array with target precision
+     *
+     * @param array     double array
+     * @param precision the target precision
+     * @return the converted data
+     */
     public static int[] d2i(double[] array, double precision) {
         if (array == null) {
             return null;
@@ -126,6 +144,12 @@ public class ArrayUtil {
         return delta;
     }
 
+    /**
+     * Convert Double list to double list
+     *
+     * @param list the list to convert
+     * @return the converted data
+     */
     public static double[] toPrimitive(List<Double> list) {
         double[] array = new double[list.size()];
         for (int i = 0; i < list.size(); i++) {
@@ -146,15 +170,21 @@ public class ArrayUtil {
         }
         float[] fArray = new float[floatSet.size()];
         int i = 0;
-        Iterator<Float> iterator = floatSet.iterator();
-        while (iterator.hasNext()) {
-            fArray[i] = iterator.next();
+        for (Float aFloat : floatSet) {
+            fArray[i] = aFloat;
             i++;
         }
 
         return fArray;
     }
 
+    /**
+     * judge whether the given double array is equal
+     *
+     * @param a double array A
+     * @param b double array B
+     * @return is the two arrays same
+     */
     public static boolean isSame(double[] a, double[] b) {
         if (a.length != b.length) {
             return false;
@@ -167,6 +197,13 @@ public class ArrayUtil {
         return true;
     }
 
+    /**
+     * judge whether the given float array is equal
+     *
+     * @param a float array A
+     * @param b float array B
+     * @return is the two arrays same
+     */
     public static boolean isSame(float[] a, float[] b) {
         if (a.length != b.length) {
             return false;
@@ -179,6 +216,13 @@ public class ArrayUtil {
         return true;
     }
 
+    /**
+     * judge whether the given byte array is equal
+     *
+     * @param a byte array A
+     * @param b byte array B
+     * @return is the two arrays same
+     */
     public static boolean isSame(byte[] a, byte[] b) {
         if (a.length != b.length) {
             return false;

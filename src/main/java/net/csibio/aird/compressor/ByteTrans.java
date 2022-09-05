@@ -12,8 +12,17 @@ package net.csibio.aird.compressor;
 
 import java.nio.*;
 
+/**
+ * type trans for different types
+ */
 public class ByteTrans {
 
+    /**
+     * short to byte conversion
+     *
+     * @param shorts the short data to convert
+     * @return the converted data
+     */
     public static byte[] shortToByte(short[] shorts) {
         ShortBuffer fbTarget = ShortBuffer.wrap(shorts);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 2);
@@ -22,6 +31,12 @@ public class ByteTrans {
         return bbTarget.array();
     }
 
+    /**
+     * int to byte conversion
+     *
+     * @param ints the integers array
+     * @return the converted data
+     */
     public static byte[] intToByte(int[] ints) {
         IntBuffer ibTarget = IntBuffer.wrap(ints);
         ByteBuffer bbTarget = ByteBuffer.allocate(ibTarget.capacity() * 4);
@@ -30,6 +45,12 @@ public class ByteTrans {
         return bbTarget.array();
     }
 
+    /**
+     * double to Float conversion
+     *
+     * @param doubles the doubles array
+     * @return the converted data
+     */
     public static float[] doubleToFloat(double[] doubles) {
         float[] floats = new float[doubles.length];
         for (int i = 0; i < doubles.length; i++) {
@@ -38,6 +59,12 @@ public class ByteTrans {
         return floats;
     }
 
+    /**
+     * double to byte conversion
+     *
+     * @param doubles the doubles array to convert
+     * @return the converted data
+     */
     public static byte[] doubleToByte(double[] doubles) {
         DoubleBuffer fbTarget = DoubleBuffer.wrap(doubles);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 8);
@@ -46,6 +73,12 @@ public class ByteTrans {
         return bbTarget.array();
     }
 
+    /**
+     * float to Byte conversion
+     *
+     * @param floats the floats array
+     * @return the converted data
+     */
     public static byte[] floatToByte(float[] floats) {
         FloatBuffer fbTarget = FloatBuffer.wrap(floats);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
@@ -54,6 +87,12 @@ public class ByteTrans {
         return bbTarget.array();
     }
 
+    /**
+     * float to ByteBuffer conversion
+     *
+     * @param floats the floats array
+     * @return the converted data
+     */
     public static ByteBuffer floatToByteBuffer(float[] floats) {
         FloatBuffer fbTarget = FloatBuffer.wrap(floats);
         ByteBuffer bbTarget = ByteBuffer.allocate(fbTarget.capacity() * 4);
@@ -62,11 +101,23 @@ public class ByteTrans {
         return bbTarget;
     }
 
-
+    /**
+     * byte to int conversion
+     *
+     * @param bytes the bytes array
+     * @return the converted data
+     */
     public static int[] byteToInt(byte[] bytes) {
         return byteToInt(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte to int conversion
+     *
+     * @param bytes the bytes array
+     * @param order the target byte order
+     * @return the converted data
+     */
     public static int[] byteToInt(byte[] bytes, ByteOrder order) {
         order = (order == null ? ByteOrder.LITTLE_ENDIAN : order);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
@@ -81,10 +132,23 @@ public class ByteTrans {
         return intValues;
     }
 
+    /**
+     * byte to Float conversion
+     *
+     * @param bytes the bytes array
+     * @return the converted data
+     */
     public static float[] byteToFloat(byte[] bytes) {
         return byteToFloat(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte to Float conversion
+     *
+     * @param bytes the bytes array
+     * @param order the target byte order
+     * @return the converted data
+     */
     public static float[] byteToFloat(byte[] bytes, ByteOrder order) {
         order = (order == null ? ByteOrder.LITTLE_ENDIAN : order);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);
@@ -100,10 +164,23 @@ public class ByteTrans {
         return floatValues;
     }
 
+    /**
+     * byte to Short conversion
+     *
+     * @param bytes the bytes array
+     * @return the converted data
+     */
     public static short[] byteToShort(byte[] bytes) {
         return byteToShort(bytes, ByteOrder.LITTLE_ENDIAN);
     }
 
+    /**
+     * byte to Short conversion
+     *
+     * @param bytes the bytes array
+     * @param order the target byte order
+     * @return the converted data
+     */
     public static short[] byteToShort(byte[] bytes, ByteOrder order) {
         order = (order == null ? ByteOrder.LITTLE_ENDIAN : order);
         ByteBuffer byteBuffer = ByteBuffer.wrap(bytes);

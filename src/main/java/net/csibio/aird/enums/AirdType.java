@@ -10,6 +10,9 @@
 
 package net.csibio.aird.enums;
 
+/**
+ * Aird Type
+ */
 public enum AirdType {
 
     /**
@@ -53,22 +56,47 @@ public enum AirdType {
     PRM_PASEF("PRM_PASEF", 7),
     ;
 
+    /**
+     * Aird Type code
+     */
     public Integer code;
+
+    /**
+     * Aird Type name
+     */
     public String name;
 
+    /**
+     * 构造函数
+     *
+     * @param name type name
+     * @param code type code
+     */
     AirdType(String name, Integer code) {
         this.name = name;
         this.code = code;
     }
 
+    /**
+     * get type by type name
+     *
+     * @param typeName the type name
+     * @return the type instance
+     */
     public static AirdType getType(String typeName) {
         return valueOf(typeName);
     }
 
+    /**
+     * @return the type code
+     */
     public Integer getCode() {
         return code;
     }
 
+    /**
+     * @return the type name
+     */
     public String getName() {
         return name;
     }

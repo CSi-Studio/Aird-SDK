@@ -15,15 +15,25 @@ import lombok.Data;
 import java.nio.ByteOrder;
 import java.util.List;
 
+/**
+ * 对象压缩器
+ */
 @Data
 public class Compressor {
 
     /**
-     * 压缩策略的指向对象,目前仅支持mz对象和intensity对象两种 The compressed targets. Now only support for m/z and
-     * intensity
+     * 压缩策略的指向对象, mz对象
      */
     public static String TARGET_MZ = "mz";
+
+    /**
+     * 压缩策略的指向对象, intensity对象
+     */
     public static String TARGET_INTENSITY = "intensity";
+
+    /**
+     * 压缩策略的指向对象, mobility对象
+     */
     public static String TARGET_MOBILITY = "mobility";
 
     /**
@@ -54,7 +64,7 @@ public class Compressor {
     /**
      * 如果precision不存在,则直接返回空
      *
-     * @return
+     * @return the precision for the current data dimension
      */
     public Integer getPrecision() {
         if (precision != null) {
@@ -63,6 +73,11 @@ public class Compressor {
         return null;
     }
 
+    /**
+     * get the default byte order
+     *
+     * @return the default byte order
+     */
     public ByteOrder fetchByteOrder() {
         return ByteOrder.LITTLE_ENDIAN;
     }

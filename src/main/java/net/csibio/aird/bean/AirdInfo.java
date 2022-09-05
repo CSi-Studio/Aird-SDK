@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeMap;
 
+/**
+ * AirdInfo
+ */
 @Data
 public class AirdInfo {
 
@@ -152,6 +155,10 @@ public class AirdInfo {
      */
     String createDate;
 
+    /**
+     * @param target target compressor dimension
+     * @return the target compressor
+     */
     public Compressor fetchCompressor(String target) {
         if (compressors == null) {
             return null;
@@ -164,6 +171,9 @@ public class AirdInfo {
         return null;
     }
 
+    /**
+     * @return the TIC map
+     */
     public TreeMap<Double, Long> getTicMap() {
         TreeMap<Double, Long> map = new TreeMap<Double, Long>() {
         };

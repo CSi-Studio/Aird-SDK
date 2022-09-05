@@ -10,11 +10,31 @@
 
 package net.csibio.aird.compressor.intcomp;
 
+/**
+ * Integer compressor interface
+ */
 public interface IntComp {
 
+    /**
+     * Compresses the given byte array.
+     *
+     * @return the Integer compressor name
+     */
     String getName();
 
+    /**
+     * Decompresses the given byte array.
+     *
+     * @param uncompressed the sorted integers
+     * @return the compressed data
+     */
     int[] encode(int[] uncompressed);
 
+    /**
+     * Decompresses the given byte array.
+     *
+     * @param compressed the compressed sorted integers
+     * @return the decompressed data
+     */
     int[] decode(int[] compressed);
 }

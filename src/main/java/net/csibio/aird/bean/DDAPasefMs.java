@@ -59,9 +59,18 @@ public class DDAPasefMs implements Serializable {
      */
     List<DDAPasefMs> ms2List;
 
+    /**
+     * 构造函数
+     */
     public DDAPasefMs() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param rt       retention time
+     * @param spectrum spectrum
+     */
     public DDAPasefMs(Double rt, Spectrum spectrum) {
         this.rt = rt;
         this.spectrum = spectrum;

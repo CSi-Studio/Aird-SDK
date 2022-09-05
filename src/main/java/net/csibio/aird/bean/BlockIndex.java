@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author : An Shaowei 2019/11/19 15:33
+ * The index of the block
  */
 @Data
 public class BlockIndex {
@@ -110,6 +110,9 @@ public class BlockIndex {
      */
     String features;
 
+    /**
+     * @return window range
+     */
     public WindowRange getWindowRange() {
         if (rangeList == null || rangeList.size() == 0) {
             return null;
@@ -118,6 +121,9 @@ public class BlockIndex {
         }
     }
 
+    /**
+     * @param windowRange set the windowRange
+     */
     public void setWindowRange(WindowRange windowRange) {
         if (rangeList == null) {
             rangeList = new ArrayList<>();
@@ -125,6 +131,9 @@ public class BlockIndex {
         rangeList.add(windowRange);
     }
 
+    /**
+     * @return get the parent num
+     */
     public Integer getParentNum() {
         if (level.equals(2)) {
             return num;

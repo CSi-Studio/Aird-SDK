@@ -29,9 +29,17 @@ public class AirdManager {
      */
     public ConcurrentHashMap<String, BaseParser> parserMap = new ConcurrentHashMap<>();
 
+    /**
+     * 构造函数
+     */
     private AirdManager() {
     }
 
+    /**
+     * get the single instance of AirdManager
+     *
+     * @return the airdManager instance
+     */
     public static AirdManager getInstance() {
         return instance;
     }
@@ -58,8 +66,8 @@ public class AirdManager {
     /**
      * get the parser object 获取解码器
      *
-     * @param indexPath
-     * @return
+     * @param indexPath index file path
+     * @return the base parser instance
      */
     public BaseParser getParser(String indexPath) {
         return parserMap.get(indexPath);

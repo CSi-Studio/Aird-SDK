@@ -12,15 +12,37 @@ package net.csibio.aird.bean.common;
 
 import lombok.Data;
 
+/**
+ * Pair for any type
+ *
+ * @param <T> type T
+ * @param <R> type R
+ */
 @Data
 public class AnyPair<T, R> {
 
+    /**
+     * Type T
+     */
     T left;
+
+    /**
+     * Type R
+     */
     R right;
 
+    /**
+     * 构造函数
+     */
     public AnyPair() {
     }
 
+    /**
+     * 构造函数
+     *
+     * @param l value A
+     * @param r value B
+     */
     public AnyPair(T l, R r) {
         this.left = l;
         this.right = r;

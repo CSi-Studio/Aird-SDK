@@ -30,6 +30,13 @@ public class DIAParser extends BaseParser {
         super(indexFilePath);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param indexFilePath index file path
+     * @param airdInfo      airdInfo
+     * @throws Exception exception
+     */
     public DIAParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
         super(indexFilePath, airdInfo);
     }

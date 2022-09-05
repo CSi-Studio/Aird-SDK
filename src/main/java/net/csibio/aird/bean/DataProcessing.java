@@ -15,6 +15,9 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * data processing information
+ */
 @Data
 public class DataProcessing {
 
@@ -23,6 +26,11 @@ public class DataProcessing {
      */
     List<String> processingOperations;
 
+    /**
+     * Any additional manipulation not included elsewhere in the dataProcessing element.
+     *
+     * @param processingOperation processing operations name
+     */
     public void addProcessingOperation(String processingOperation) {
         if (processingOperations == null) {
             processingOperations = new ArrayList<String>();

@@ -16,14 +16,26 @@ import net.csibio.aird.compressor.bytecomp.ZlibWrapper;
 import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
 import net.csibio.aird.enums.ByteCompType;
 
+/**
+ * Byte Compressor implementation
+ */
 public class ByteCompressor {
 
     ByteCompType byteCompType;
 
+    /**
+     * @param type the type of the compressor
+     */
     public ByteCompressor(ByteCompType type) {
         this.byteCompType = type;
     }
 
+    /**
+     * Compresses a byte array.
+     *
+     * @param bytes the bytes to compress
+     * @return the compressed data
+     */
     public byte[] encode(byte[] bytes) {
         return switch (byteCompType) {
             case Zlib -> new ZlibWrapper().encode(bytes);
@@ -34,6 +46,12 @@ public class ByteCompressor {
         };
     }
 
+    /**
+     * Decompresses a byte array.
+     *
+     * @param bytes the bytes
+     * @return the compressed data
+     */
     public byte[] decode(byte[] bytes) {
         return decode(bytes, 0, bytes.length);
     }

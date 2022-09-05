@@ -47,6 +47,9 @@ import java.util.TreeMap;
 @Data
 public abstract class BaseParser {
 
+    /**
+     * Max Read Pool Size
+     */
     public static final int MAX_READ_SIZE = Integer.MAX_VALUE / 100;
     /**
      * the aird file
@@ -78,19 +81,49 @@ public abstract class BaseParser {
      */
     public Compressor mobiCompressor;
 
-    public double mzPrecision;
-    public double intPrecision;
-    public double mobiPrecision;
     /**
-     * 使用的压缩内核
+     * mz precision
+     */
+    public double mzPrecision;
+
+    /**
+     * intensity precision
+     */
+    public double intPrecision;
+
+    /**
+     * mobility precision
+     */
+    public double mobiPrecision;
+
+    /**
+     * integer compressor for mz
      */
     public SortedIntComp mzIntComp;
+
+    /**
+     * byte compressor for mz
+     */
     public ByteComp mzByteComp;
 
+    /**
+     * integer compressor for intensity
+     */
     public IntComp intIntComp;
+
+    /**
+     * byte compressor for intensity
+     */
     public ByteComp intByteComp;
 
+    /**
+     * integer compressor for mobility
+     */
     public IntComp mobiIntComp;
+
+    /**
+     * byte compressor for mobility
+     */
     public ByteComp mobiByteComp;
 
     /**
@@ -113,7 +146,7 @@ public abstract class BaseParser {
      * 构造函数
      *
      * @param indexPath 索引文件的位置
-     * @throws ScanException 扫描时的异常
+     * @throws Exception 扫描时的异常
      */
     public BaseParser(String indexPath) throws Exception {
         this.indexFile = new File(indexPath);
@@ -139,7 +172,7 @@ public abstract class BaseParser {
      * 构造函数
      *
      * @param indexPath 索引文件的位置
-     * @throws ScanException 扫描时的异常
+     * @throws Exception 扫描时的异常
      */
     public BaseParser(String indexPath, AirdInfo airdInfo) throws Exception {
         if (airdInfo == null) {
@@ -168,7 +201,7 @@ public abstract class BaseParser {
      * @param intCompressor  intensity压缩策略
      * @param mobiCompressor mobility压缩策略
      * @param airdType       aird类型
-     * @throws ScanException 扫描异常
+     * @throws Exception 扫描异常
      */
     public BaseParser(String airdPath, Compressor mzCompressor, Compressor intCompressor, Compressor mobiCompressor, String airdType) throws Exception {
         this.indexFile = new File(AirdScanUtil.getIndexPathByAirdPath(airdPath));
@@ -204,6 +237,13 @@ public abstract class BaseParser {
         parseMobilityDict();
     }
 
+    /**
+     * build parser function
+     *
+     * @param indexPath index file path
+     * @return the base parser
+     * @throws Exception exception
+     */
     public static BaseParser buildParser(String indexPath) throws Exception {
         File indexFile = new File(indexPath);
         return buildParser(indexFile);
@@ -212,9 +252,9 @@ public abstract class BaseParser {
     /**
      * 最基础的启动方法:使用Index文件扫描AirdInfo以后读取Aird文件,然后根据AirdInfo中的文件类型分别初始化不同的Parser
      *
-     * @param indexFile
-     * @return
-     * @throws Exception
+     * @param indexFile index file
+     * @return Base parser instance
+     * @throws Exception exception
      */
     public static BaseParser buildParser(File indexFile) throws Exception {
         if (indexFile.exists() && indexFile.canRead()) {
@@ -235,6 +275,13 @@ public abstract class BaseParser {
         throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
     }
 
+    /**
+     * get the target compressor
+     *
+     * @param compressors all the compressors
+     * @param target      the target dimension
+     * @return the target compressor by target dimension name
+     */
     public static Compressor fetchTargetCompressor(List<Compressor> compressors, String target) {
         if (compressors == null) {
             return null;
@@ -250,7 +297,7 @@ public abstract class BaseParser {
     /**
      * 必须读取索引文件以及Aird二进制文件才可以获取Dict字典
      *
-     * @throws IOException
+     * @throws IOException parse exception
      */
     public void parseMobilityDict() throws IOException {
         MobiInfo mobiInfo = airdInfo.getMobiInfo();
@@ -268,6 +315,9 @@ public abstract class BaseParser {
         }
     }
 
+    /**
+     * parse Compressor information from the airdInfo
+     */
     public void parseCompsFromAirdInfo() {
         mzCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_MZ);
         intCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_INTENSITY);
@@ -277,6 +327,11 @@ public abstract class BaseParser {
         mobiPrecision = mobiCompressor.getPrecision();
     }
 
+    /**
+     * parse Compressor information from the airdInfo
+     *
+     * @throws Exception exceptions
+     */
     public void parserComboComp() throws Exception {
         List<String> mzMethods = mzCompressor.getMethods();
         if (mzMethods.size() == 2) {
@@ -343,11 +398,11 @@ public abstract class BaseParser {
     /**
      * 根据位移偏差解析单张光谱图
      *
-     * @param bytes
-     * @param offset
-     * @param mzOffset
-     * @param intOffset
-     * @return
+     * @param bytes     the bytes to be searched
+     * @param offset    the offset to be searched
+     * @param mzOffset  the offset to be searched for mz
+     * @param intOffset the offset to be searched for int
+     * @return the searched spectrum
      */
     public Spectrum getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset) {
         if (mzOffset == 0) {
@@ -359,6 +414,18 @@ public abstract class BaseParser {
         return new Spectrum(mzArray, intensityArray);
     }
 
+    /**
+     * 根据RT范围解码光谱图
+     *
+     * @param startPtr   起始位置 the start point of the target spectrum
+     * @param endPtr     结束位置 The end point of the target spectrum
+     * @param rtList     the list of search retention time
+     * @param mzOffsets  mz数组长度列表 mz size block list
+     * @param intOffsets int数组长度列表 intensity size block list
+     * @param rtStart    the start of retention time
+     * @param rtEnd      the end of retention time
+     * @return spectrum map for the search result
+     */
     public TreeMap<Double, Spectrum> getSpectraByRtRange(long startPtr, long endPtr, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, double rtStart, double rtEnd) {
         double[] rts = ArrayUtil.toPrimitive(rtList);
         //如果范围不在已有的rt数组范围内,则直接返回empty map
@@ -377,10 +444,24 @@ public abstract class BaseParser {
         return getSpectra(startPtr, endPtr, rtList.subList(start, end + 1), mzOffsets, intOffsets);
     }
 
+    /**
+     * 根据RT范围解码光谱图
+     *
+     * @param index   the index of the target block
+     * @param rtStart the start of the retention time
+     * @param rtEnd   tje end of the retention time
+     * @return spectrum map for the search result
+     */
     public TreeMap<Double, Spectrum> getSpectraByRtRange(BlockIndex index, double rtStart, double rtEnd) {
         return getSpectraByRtRange(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts(), rtStart, rtEnd);
     }
 
+    /**
+     * 根据索引解码整个索引块内所有的光谱图
+     *
+     * @param index the index of the target block
+     * @return spectrum map for the search result
+     */
     public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
         return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
     }
@@ -478,6 +559,16 @@ public abstract class BaseParser {
         }
     }
 
+    /**
+     * 根据目标字节块与偏移参数获取单张光谱
+     *
+     * @param bytes      the bytes of the target block bytes
+     * @param offset     the offset for the reading block
+     * @param mzOffset   the offset for mz bytes
+     * @param intOffset  the offset for int bytes
+     * @param mobiOffset the offset for mobility
+     * @return the search spectrum
+     */
     public Spectrum getSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset, int mobiOffset) {
         if (mzOffset == 0) {
             return new Spectrum(new double[0], new double[0], new double[0]);
@@ -786,7 +877,9 @@ public abstract class BaseParser {
         return tags;
     }
 
-
+    /**
+     * @return the airdinfo
+     */
     public String getType() {
         return airdInfo == null ? null : airdInfo.getType();
     }
