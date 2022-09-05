@@ -10,7 +10,7 @@
 
 package net.csibio.aird.compressor;
 
-public final class Delta {
+public class Delta {
 
     /**
      * Apply differential coding (in-place).
