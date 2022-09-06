@@ -13,9 +13,11 @@ and analysis.
 
 # Citation
 
-Lu, M., An, S., Wang, R. et al. Aird: a computation-oriented mass spectrometry data format enables a
-higher compression ratio and less decoding time. BMC Bioinformatics 23, 35 (2022)
-. https://doi.org/10.1186/s12859-021-04490-0
+1. Lu, M., An, S., Wang, R. et al. Aird: a computation-oriented mass spectrometry data format enables a
+   higher compression ratio and less decoding time. BMC Bioinformatics 23, 35 (2022)
+
+2. Wang,J. et al. StackZDPD: a novel encoding scheme for mass spectrometry data optimized for speed and compression
+   ratio. Scientific Reports, 12, 5384.(2022)
 
 # AirdPro
 
@@ -31,9 +33,9 @@ convert the vendor file to the Aird file quickly.
 Aird Index File Suffix: .json <br/>
 Aird Data File Suffix: .aird <br/>
 Aird Index File and Aird Data File show be stored in the same directory with the same file name but
-with different suffix, so that AirdScanUtil.class can scan both of the two files with the same file
+with different suffix, so that AirdScanUtil class can scan both of the two files with the same file
 name;<br/>
-When dealing with Spectra, we advice that you should process with SWATH Window one by one so that we
+When dealing with Spectra, we advise that you should process with SWATH Window one by one so that we
 can control the Memory
 
 # Maven
@@ -191,6 +193,8 @@ Detail sample code. See net.csibio.aird.sample.SampleCode
 ```
     DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
     DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
+    DDAPasefParser ddaPasefParser = new DDAPasefParser("\\FilePath\\file.json");
+    DIAPasefParser diaPasefParser = new DIAPasefParser("\\FilePath\\file.json");
     PRMParser prmParser = new PRMParser("\\FilePath\\file.json");
 ```
 
@@ -216,6 +220,9 @@ Detail sample code. See net.csibio.aird.sample.SampleCode
 
 ## Read DDA MsCycle
 
+Read all spectra into the memory
+
 ```
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
+
