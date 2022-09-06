@@ -25,11 +25,11 @@ import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-public class DIAParserParserTest {
+public class DIAParserTest {
 
     @Test
     public void testXICSpeed() throws Exception {
-        DIAParser parser = new DIAParser("/Users/lms/proteomics/HYE_110_32fix/HYE110_TTOF6600_32fix_lgillet_I160308_011.json");
+        DIAParser parser = new DIAParser("D:\\proteomics\\Project\\HYE110_6600_32Fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库

@@ -21,8 +21,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DDAParserTest {
 
-    String filePath1 = "D:\\metabolomics\\neiyansuo_real\\LIPPOS\\LIPPOS-1-A-B-BLK-2.json";
-    String filePath2 = "D:\\metabolomics\\neiyansuo_real\\LIPPOS\\LIPPOS-1-A-B-SAM-98.json";
+    String filePath1 = "D:\\metabolomics\\neiyansuo\\LIPPOS\\Set2\\LIPPOS-1-A-B-BLK-2.json";
+    String filePath2 = "D:\\metabolomics\\neiyansuo\\LIPPOS\\Set2\\LIPPOS-1-A-B-SAM-98.json";
 
     @Test
     public void testXICSpeed() throws Exception {

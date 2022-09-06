@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class SizeTest {
 
-    String DIA_INDEX_FILE_PATH = "D:\\proteomics\\Project\\HYE_124_64var-6600\\HYE124_TTOF6600_64var_lgillet_I150211_008.json";
+    String DIA_INDEX_FILE_PATH = "D:\\proteomics\\Project\\HYE110_6600_32Fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json";
     //  String DIA_INDEX_FILE_PATH = "D:\\proteomics\\Project\\HYE_110_64Var_Full\\HYE110_TTOF6600_64var_lgillet_I160305_001_with_zero.json";
     //  String DIA_INDEX_FILE_PATH = "D:\\proteomics\\C20181208yix_HCC_DIA_T_46A_with_zero.json";
     int MB = 1024 * 1024;
