@@ -38,13 +38,17 @@ name;<br/>
 When dealing with Spectra, we advise that you should process with SWATH Window one by one so that we
 can control the Memory
 
-# Maven
+# Maven for Java SDK
 
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
         <version>2.0.3.1</version>
     </dependency>
+
+# Nuget for C# SDK
+
+Search "AirdSDK" in Nuget Package Manager
 
 # Main API Class
 
