@@ -43,7 +43,7 @@ can control the Memory
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>2.0.3.1</version>
+        <version>2.0.4</version>
     </dependency>
 
 # Nuget for C# SDK
