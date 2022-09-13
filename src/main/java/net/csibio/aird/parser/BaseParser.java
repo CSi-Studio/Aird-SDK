@@ -22,6 +22,7 @@ import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
 import net.csibio.aird.compressor.intcomp.Empty;
 import net.csibio.aird.compressor.intcomp.IntComp;
 import net.csibio.aird.compressor.intcomp.VarByteWrapper;
+import net.csibio.aird.compressor.sortedintcomp.DeltaWrapper;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedBinPackingWrapper;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
 import net.csibio.aird.compressor.sortedintcomp.SortedIntComp;
@@ -338,6 +339,7 @@ public abstract class BaseParser {
             switch (SortedIntCompType.getByName(mzMethods.get(0))) {
                 case IBP -> mzIntComp = new IntegratedBinPackingWrapper();
                 case IVB -> mzIntComp = new IntegratedVarByteWrapper();
+                case Delta -> mzIntComp = new DeltaWrapper();
                 default -> throw new Exception("Unknown mz integer compressor");
             }
             switch (ByteCompType.getByName(mzMethods.get(1))) {

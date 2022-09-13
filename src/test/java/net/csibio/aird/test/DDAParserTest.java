@@ -1,4 +1,4 @@
-package net.csibio.aird.test;/*
+/*
  * Copyright (c) 2020 CSi Biotech
  * AirdSDK and AirdPro are licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
@@ -8,6 +8,7 @@ package net.csibio.aird.test;/*
  * See the Mulan PSL v2 for more details.
  */
 
+package net.csibio.aird.test;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
@@ -21,7 +22,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class DDAParserTest {
 
-    String filePath1 = "D:\\metabolomics\\neiyansuo\\LIPPOS\\Set2\\LIPPOS-1-A-B-BLK-2.json";
+    String filePath1 = "D:\\AirdTest\\ComboComp2\\File2.json";
     String filePath2 = "D:\\metabolomics\\neiyansuo\\LIPPOS\\Set2\\LIPPOS-1-A-B-SAM-98.json";
 
     @Test

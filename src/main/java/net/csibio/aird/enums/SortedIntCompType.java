@@ -21,6 +21,10 @@ public enum SortedIntCompType {
      * Integrated Variable Byte
      */
     IVB(1, "IVB"),
+    /**
+     * Delta trans with no integer compression algorithm
+     */
+    Delta(2, "Delta"),
 
     Unknown(-999, "Unknown"),
     ;
