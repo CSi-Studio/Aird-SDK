@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>AirdSDK</Title>
+    <Version>2.0.3.1-beta2</Version>
+    <Company>CSi_Studio</Company>
+    <Authors>LuMiaoShan</Authors>
+    <Description>Aird SDK for C#</Description>
+	<PackageId>AirdSDK</PackageId>
+    <PackageIcon>AirdProLogo.png</PackageIcon>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BrotliSharpLib" Version="0.3.3" />
+    <PackageReference Include="IronSnappy" Version="1.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="ZstdNet" Version="1.4.5" />
+  </ItemGroup>
+
+	<ItemGroup>
+    <Folder Include="Constants\" />
+    <Folder Include="Parser\" />
+    <Folder Include="Exception\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="AirdProLogo.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="LICENSE">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>
