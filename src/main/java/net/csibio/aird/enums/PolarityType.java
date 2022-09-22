@@ -42,5 +42,4 @@ public enum PolarityType {
     public String getName() {
         return name;
     }
-
 }
