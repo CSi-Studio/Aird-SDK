@@ -516,13 +516,13 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "2.0.3.1-beta2",
     "restore": {
-      "projectUniqueName": "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK - Backup.csproj",
-      "projectName": "AirdSDK - Backup",
-      "projectPath": "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK - Backup.csproj",
+      "projectUniqueName": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
+      "projectName": "AirdSDK",
+      "projectPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
       "packagesPath": "C:\\Users\\lms19\\.nuget\\packages\\",
-      "outputPath": "d:\\workspace\\Aird-SDK\\CSharpSDK\\obj\\",
+      "outputPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

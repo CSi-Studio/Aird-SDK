@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj": {}
+    "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj": {}
   },
   "projects": {
-    "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj": {
+    "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj": {
       "version": "2.0.3.1-beta2",
       "restore": {
-        "projectUniqueName": "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
+        "projectUniqueName": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
         "projectName": "AirdSDK",
-        "projectPath": "d:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
+        "projectPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
         "packagesPath": "C:\\Users\\lms19\\.nuget\\packages\\",
-        "outputPath": "d:\\workspace\\Aird-SDK\\CSharpSDK\\obj\\",
+        "outputPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
