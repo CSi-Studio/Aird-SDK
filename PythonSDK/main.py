@@ -14,10 +14,13 @@ def print_hi(name):
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
     path = '/mnt/d/AirdTest/ComboComp4dp'
     print(os.path.exists(path))
-    AirdScanUtil.scanIndexFiles(path)
-    with open('/mnt/d/AirdTest/ComboComp4dp/File1.json', "r") as indexFile:
-        airdInfo = json.load(indexFile)
-        print('JSON Format:', airdInfo)
+    fileList = AirdScanUtil.scanIndexFiles(path)
+    for filePath in fileList:
+        airdPath = AirdScanUtil.getAirdPathByIndexPath(filePath)
+        print(airdPath)
+    # with open('/mnt/d/AirdTest/ComboComp4dp/File1.json', "r") as indexFile:
+    #     airdInfo = json.load(indexFile)
+    #     print('JSON Format:', airdInfo)
 
 
 # Press the green button in the gutter to run the script.
