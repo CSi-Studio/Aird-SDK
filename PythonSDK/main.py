@@ -12,7 +12,8 @@ from Utils.AirdScanUtil import AirdScanUtil
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-    path = '/mnt/d/AirdTest/ComboComp4dp'
+    # path = '/mnt/d/AirdTest/ComboComp4dp'
+    path = '/mnt/d/AirdTest/ComboComp'
     print(os.path.exists(path))
     fileList = AirdScanUtil.scanIndexFiles(path)
     for filePath in fileList:
