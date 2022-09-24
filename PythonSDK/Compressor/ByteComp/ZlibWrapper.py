@@ -1,9 +1,8 @@
-from Compressor.ByteComp import ByteComp
 from Enums.ByteCompType import ByteCompType
 import zlib
 
 
-class ZlibWrapper(ByteComp):
+class ZlibWrapper:
 
     def getName(self):
         return ByteCompType.Zlib

@@ -1,10 +1,9 @@
 import zstandard as zstd
 
-from Compressor.ByteComp import ByteComp
 from Enums.ByteCompType import ByteCompType
 
 
-class ZstdWrapper(ByteComp):
+class ZstdWrapper:
 
     def getName(self):
         return ByteCompType.Zstd

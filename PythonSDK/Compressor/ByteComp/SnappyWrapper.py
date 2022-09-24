@@ -1,9 +1,8 @@
-from Compressor.ByteComp import ByteComp
 from Enums.ByteCompType import ByteCompType
 import snappy
 
 
-class SnappyWrapper(ByteComp):
+class SnappyWrapper:
 
     def getName(self):
         return ByteCompType.Snappy

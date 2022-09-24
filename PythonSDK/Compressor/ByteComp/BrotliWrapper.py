@@ -1,9 +1,8 @@
-from Compressor.ByteComp import ByteComp
 from Enums.ByteCompType import ByteCompType
 import brotli
 
 
-class BrotliWrapper(ByteComp):
+class BrotliWrapper:
 
     def getName(self):
         return ByteCompType.Brotli
