@@ -1,5 +1,6 @@
 from Compressor.ByteComp import ByteComp
 from Enums.ByteCompType import ByteCompType
+import brotli
 
 
 class BrotliWrapper(ByteComp):
@@ -8,8 +9,10 @@ class BrotliWrapper(ByteComp):
         return ByteCompType.Brotli
 
     def encode(self, input):
+        return brotli.compress(input)
 
-        return
+    def decode(self, input):
+        return brotli.decompress(input)
 
     def decode(self, input, offset, length):
-        return
+        return brotli.decompress(input[offset, offset + length])
