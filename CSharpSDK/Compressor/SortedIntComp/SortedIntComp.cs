@@ -12,45 +12,45 @@ namespace AirdSDK.Compressor
 {
     public abstract class SortedIntComp : BaseComp<int>
     {
-        /**
-        * Apply differential coding (in-place).
-        */
-        public static int[] delta(int[] data)
-        {
-            if (data.Length == 0)
-            {
-                return new int[0];
-            }
-
-            int[] output = new int[data.Length];
-            output[0] = data[0];
-            for (int i = data.Length - 1; i > 0; --i)
-            {
-                output[i] = data[i] - data[i - 1];
-            }
-
-            return output;
-        }
-
-        /**
-         * Undo differential coding (in-place). 
-         */
-        public static int[] inverseDelta(int[] data)
-        {
-            if (data.Length == 0)
-            {
-                return new int[0];
-            }
-
-            int[] output = new int[data.Length];
-            output[0] = data[0];
-            for (int i = 1; i < data.Length; ++i)
-            {
-                output[i] = data[i] + data[i - 1];
-            }
-
-            return output;
-        }
+        // /**
+        // * Apply differential coding (in-place).
+        // */
+        // public static int[] delta(int[] data)
+        // {
+        //     if (data.Length == 0)
+        //     {
+        //         return new int[0];
+        //     }
+        //
+        //     int[] output = new int[data.Length];
+        //     output[0] = data[0];
+        //     for (int i = data.Length - 1; i > 0; --i)
+        //     {
+        //         output[i] = data[i] - data[i - 1];
+        //     }
+        //
+        //     return output;
+        // }
+        //
+        // /**
+        //  * Undo differential coding (in-place). 
+        //  */
+        // public static int[] inverseDelta(int[] data)
+        // {
+        //     if (data.Length == 0)
+        //     {
+        //         return new int[0];
+        //     }
+        //
+        //     int[] output = new int[data.Length];
+        //     output[0] = data[0];
+        //     for (int i = 1; i < data.Length; ++i)
+        //     {
+        //         output[i] = data[i] + data[i - 1];
+        //     }
+        //
+        //     return output;
+        // }
 
         public static SortedIntComp build(SortedIntCompType type)
         {

@@ -1,3 +1,4 @@
+from pyfastpfor import *
 from Enums.IntCompType import IntCompType
 
 
