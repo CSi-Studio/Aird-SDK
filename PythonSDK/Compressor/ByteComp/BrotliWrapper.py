@@ -10,8 +10,5 @@ class BrotliWrapper:
     def encode(self, input):
         return brotli.compress(input)
 
-    def decode(self, input):
-        return brotli.decompress(input)
-
     def decode(self, input, offset, length):
         return brotli.decompress(input[offset, offset + length])

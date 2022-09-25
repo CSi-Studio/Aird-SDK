@@ -10,8 +10,5 @@ class SnappyWrapper:
     def encode(self, input):
         return snappy.compress(input)
 
-    def decode(self, input):
-        return snappy.decompress(input)
-
     def decode(self, input, offset, length):
         return snappy.decompress(input[offset, offset + length])

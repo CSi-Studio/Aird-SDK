@@ -11,8 +11,5 @@ class ZstdWrapper:
     def encode(self, input):
         return zstd.compress(input)
 
-    def decode(self, input):
-        return zstd.decompress(input)
-
     def decode(self, input, offset, length):
         return zstd.decompress(input[offset, offset + length])
