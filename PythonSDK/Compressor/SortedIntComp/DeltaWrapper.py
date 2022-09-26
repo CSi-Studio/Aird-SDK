@@ -14,4 +14,4 @@ class DeltaWrapper:
         return Delta.delta(input)
 
     def decode(self, input, offset, length):
-        return Delta.recover(input[offset, offset + length])
+        return Delta.recover(input[offset: offset + length])

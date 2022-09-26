@@ -12,4 +12,4 @@ class ZstdWrapper:
         return zstd.compress(input)
 
     def decode(self, input, offset, length):
-        return zstd.decompress(input[offset, offset + length])
+        return zstd.decompress(input[offset: offset + length])

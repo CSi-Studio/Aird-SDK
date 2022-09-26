@@ -1,4 +1,3 @@
-from Compressor.IntCompressor import IntCompressor
 from Compressor.IntegratedIntCompressor import IntegratedIntCompressor
 from Enums.IntCompType import IntCompType
 

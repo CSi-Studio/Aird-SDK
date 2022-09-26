@@ -40,7 +40,6 @@ public abstract class BaseParser
      */
     public FileInfo indexFile;
 
-    public ByteComp intByteComp;
 
     /**
      * the intensity compressor
@@ -48,8 +47,8 @@ public abstract class BaseParser
     public Beans.Compressor intCompressor;
 
     public IntComp intIntComp;
+    public ByteComp intByteComp;
     public double intPrecision;
-    public ByteComp mobiByteComp;
 
     /**
      * 用于PASEF的压缩内核
@@ -62,9 +61,8 @@ public abstract class BaseParser
     public double[] mobiDict;
 
     public IntComp mobiIntComp;
+    public ByteComp mobiByteComp;
     public double mobiPrecision;
-
-    public ByteComp mzByteComp;
 
     /**
      * the m/z compressor
@@ -76,6 +74,7 @@ public abstract class BaseParser
      */
     public SortedIntComp mzIntComp;
 
+    public ByteComp mzByteComp;
     public double mzPrecision;
 
     public BaseParser()
@@ -92,7 +91,7 @@ public abstract class BaseParser
         fs = File.OpenRead(airdFile.FullName);
 
         parseCompsFromAirdInfo();
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -112,7 +111,7 @@ public abstract class BaseParser
         fs = File.OpenRead(airdFile.FullName);
 
         parseCompsFromAirdInfo();
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -145,7 +144,7 @@ public abstract class BaseParser
             mobiPrecision = mobiCompressor.precision;
         }
 
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -231,7 +230,7 @@ public abstract class BaseParser
         }
     }
 
-    public void parserComboComp()
+    public void parseComboComp()
     {
         var mzMethods = mzCompressor.methods;
         if (mzMethods.Count == 2)
@@ -242,7 +241,10 @@ public abstract class BaseParser
                     mzIntComp = new IntegratedBinPackingWrapper(); //IBP
                     break;
                 case "IVB":
-                    mzIntComp = new DeltaWrapper(); //IVB
+                    mzIntComp = new IntegratedVarByteWrapper(); //IVB
+                    break;
+                case "Delta":
+                    mzIntComp = new DeltaWrapper(); //Delta
                     break;
             }
 

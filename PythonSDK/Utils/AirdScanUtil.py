@@ -1,4 +1,6 @@
 import os
+
+from Beans.AirdInfo import AirdInfo
 from Constants.SuffixConst import SuffixConst
 from Constants.SymbolConst import SymbolConst
 import json
@@ -18,8 +20,8 @@ class AirdScanUtil:
     @staticmethod
     def loadAirdInfo(indexFilePath):
         content = open(indexFilePath, 'r')
-        airdInfo = json.load(content)
-        return airdInfo
+        dict = json.load(content)
+        return AirdInfo(dict)
 
     @staticmethod
     def getAirdPathByIndexPath(indexPath):

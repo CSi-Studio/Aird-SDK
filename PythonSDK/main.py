@@ -2,8 +2,11 @@
 import json
 import os.path
 
+from Compressor.ByteTrans import ByteTrans
 from Compressor.IntComp.BinPackingWrapper import BinPackingWrapper
 from Compressor.SortedIntComp.IntegratedBinPackingWrapper import IntegratedBinPackingWrapper
+from Parser.BaseParser import BaseParser
+from Parser.DDAParser import DDAParser
 from Utils.AirdScanUtil import AirdScanUtil
 
 
@@ -23,6 +26,8 @@ def print_hi(name):
         print(airdPath)
 
     input = [1, 2, 3]
+    bytes = ByteTrans.intToByte(input)
+    print(ByteTrans.byteToInt(bytes))
     compressed = BinPackingWrapper().encode(input)
     decompressed = BinPackingWrapper().decode(compressed, 0, len(compressed))
     print(decompressed)
@@ -30,6 +35,10 @@ def print_hi(name):
     compressed1 = IntegratedBinPackingWrapper().encode(input)
     decompressed1 = IntegratedBinPackingWrapper().decode(compressed1, 0, len(compressed1))
     print(decompressed1)
+
+    parser = DDAParser('/mnt/d/AirdTest/ComboComp4dp/File1.json')
+    map = parser.readAllToMemeory()
+    print(len(map))
     # with open('/mnt/d/AirdTest/ComboComp4dp/File1.json', "r") as indexFile:
     #     airdInfo = json.load(indexFile)
     #     print('JSON Format:', airdInfo)

@@ -11,4 +11,4 @@ class ZlibWrapper:
         return zlib.compress(input)
 
     def decode(self, input, offset, length):
-        return zlib.decompress(input[offset, offset+length])
+        return zlib.decompress(input[offset: offset+length])

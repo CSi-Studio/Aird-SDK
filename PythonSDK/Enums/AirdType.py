@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Features(Enum):
+class AirdType(Enum):
     DIA_PASEF = "DIA_PASEF"
     DDA_PASEF = "DDA_PASEF"
     PRM_PASEF = "PRM_PASEF"

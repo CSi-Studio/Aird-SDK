@@ -10,4 +10,4 @@ class EmptyWrapper:
         return input
 
     def decode(self, input, offset, length):
-        return input[offset, offset + length]
+        return input[offset: offset + length]
