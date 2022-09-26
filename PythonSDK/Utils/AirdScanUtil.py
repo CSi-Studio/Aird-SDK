@@ -27,10 +27,10 @@ class AirdScanUtil:
     def getAirdPathByIndexPath(indexPath):
         if indexPath is None or SymbolConst.DOT not in indexPath or SuffixConst.JSON not in indexPath.lower():
             return None
-        return indexPath[0: indexPath.rindex(SymbolConst.DOT)] + SuffixConst.JSON
+        return indexPath[0: indexPath.rindex(SymbolConst.DOT)] + SuffixConst.AIRD
 
     @staticmethod
     def getIndexPathByAirdPath(airdPath):
         if airdPath is None or SymbolConst.DOT not in airdPath or SuffixConst.AIRD not in airdPath.lower():
             return None
-        return airdPath[0: airdPath.rindex(SymbolConst.DOT)] + SuffixConst.AIRD
+        return airdPath[0: airdPath.rindex(SymbolConst.DOT)] + SuffixConst.JSON

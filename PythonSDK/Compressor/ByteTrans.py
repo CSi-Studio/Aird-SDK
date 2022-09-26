@@ -5,10 +5,10 @@ class ByteTrans:
 
     @staticmethod
     def intToByte(ints):
-        res = []
+        res = bytes()
         length = len(ints)
         for i in range(0, length):
-            res.append(ints[i].to_bytes(4, 'little'))
+            res += ints[i].to_bytes(4, 'little')
 
         return res
 
@@ -16,7 +16,7 @@ class ByteTrans:
     def byteToInt(bytes):
         res = []
         length = len(bytes)
-        for i in range(0, length):
-            res.append(int.from_bytes(bytes[i], 'little', signed=True))
+        for i in range(0, length, 4):
+            res.append(int.from_bytes(bytes[i: i + 4], 'little', signed=True))
 
         return res

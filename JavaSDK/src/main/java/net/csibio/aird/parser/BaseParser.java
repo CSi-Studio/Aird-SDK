@@ -165,7 +165,7 @@ public abstract class BaseParser {
         }
 
         parseCompsFromAirdInfo();
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -190,7 +190,7 @@ public abstract class BaseParser {
         }
 
         parseCompsFromAirdInfo();
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -234,7 +234,7 @@ public abstract class BaseParser {
             this.mobiPrecision = mobiCompressor.getPrecision();
         }
 
-        parserComboComp();
+        parseComboComp();
         parseMobilityDict();
     }
 
@@ -333,7 +333,7 @@ public abstract class BaseParser {
      *
      * @throws Exception exceptions
      */
-    public void parserComboComp() throws Exception {
+    public void parseComboComp() throws Exception {
         List<String> mzMethods = mzCompressor.getMethods();
         if (mzMethods.size() == 2) {
             switch (SortedIntCompType.getByName(mzMethods.get(0))) {

@@ -26,8 +26,8 @@ class IntegratedIntCompressor:
         input = input[offset:offset + length]
         originalSize = input[0]
         input = input[1: len(input)]
-        array = np.array(input, dtype=np.uint32)
-        decompress = np.zeros(originalSize, dtype=np.uint32)
+        array = np.array(input, dtype=np.uint32).ravel()
+        decompress = np.zeros(originalSize, dtype=np.uint32).ravel()
         codec = getCodec(self.codec)
         codec.decodeArray(array, len(array), decompress, originalSize)
         prefixSum4(decompress, originalSize)
