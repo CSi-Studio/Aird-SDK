@@ -3,6 +3,9 @@ import numpy as np
 
 class Delta:
 
+    def __init__(self):
+        pass
+
     @staticmethod
     def delta(data):
         res = []
