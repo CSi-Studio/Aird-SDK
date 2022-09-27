@@ -14,9 +14,11 @@ class ByteTrans:
 
     @staticmethod
     def byteToInt(bytes):
-        res = []
         length = len(bytes)
+        res = [None] * int(length / 4)
+        k = 0
         for i in range(0, length, 4):
-            res.append(int.from_bytes(bytes[i: i + 4], 'little', signed=True))
+            res[k] = (int.from_bytes(bytes[i: i + 4], 'little', signed=True))
+            k = k + 1
 
-        return res
+        return np.array(res, dtype=np.uint32).ravel()

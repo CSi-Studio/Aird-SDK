@@ -111,24 +111,19 @@ class BaseParser:
     def getMzs(self, value, offset, length):
         decodedData = self.mzByteComp.decode(value, offset, length)
         intValues = ByteTrans.byteToInt(decodedData)
-        intValues = self.mzIntComp.decode(intValues, 0, len(intValues))
-        doubleValues = [None] * len(intValues)
-        for i in range(len(intValues)):
-            doubleValues[i] = intValues[i] / self.mzPrecision
-
+        intValues = self.mzIntComp.decode(intValues, 0, intValues.size)
+        doubleValues = intValues / self.mzPrecision
         return doubleValues
 
     def getInts(self, value, start, length):
         decodedData = self.intByteComp.decode(value, start, length)
         intValues = ByteTrans.byteToInt(decodedData)
         intValues = self.intIntComp.decode(intValues, 0, len(intValues))
-        intensityValues = [None] * len(intValues)
         for i in range(len(intValues)):
-            intensity = intValues[i]
-            if intensity < 0:
-                intensity = math.pow(2, -intensity / 100000.0)
-            intensityValues[i] = intensity / self.intPrecision
+            if intValues[i] < 0:
+                intValues[i] = math.pow(2, -intValues[i] / 100000.0)
 
+        intensityValues = intValues / self.intPrecision
         return intensityValues
 
     def getMobilities(self, value, start, length):

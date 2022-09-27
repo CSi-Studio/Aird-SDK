@@ -6,10 +6,10 @@ from pyfastpfor import *
 class BinPackingWrapper:
 
     def __init__(self):
-        self.codec = getCodec('simdbinarypacking')
+        self.codec = getCodec('fastpfor256')
 
     def getName(self):
-        return IntCompType.BP
+        return IntCompType.FPF256
 
     def encode(self, input):
         compressed = IntCompressor.encode(self.codec, input)

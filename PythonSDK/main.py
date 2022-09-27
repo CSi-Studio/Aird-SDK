@@ -19,11 +19,11 @@ def print_hi(name):
     print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
     # path = '/mnt/d/AirdTest/ComboComp4dp'
     path = '/mnt/d/AirdTest/ComboComp'
-    print(os.path.exists(path))
-    fileList = AirdScanUtil.scanIndexFiles(path)
-    for filePath in fileList:
-        airdPath = AirdScanUtil.getAirdPathByIndexPath(filePath)
-        print(airdPath)
+    # print(os.path.exists(path))
+    # fileList = AirdScanUtil.scanIndexFiles(path)
+    # for filePath in fileList:
+    #     airdPath = AirdScanUtil.getAirdPathByIndexPath(filePath)
+    #     print(airdPath)
 
     # input = [1, 2, 3]
     # bytes = ByteTrans.intToByte(input)
@@ -35,10 +35,11 @@ def print_hi(name):
     # compressed1 = IntegratedBinPackingWrapper().encode(input)
     # decompressed1 = IntegratedBinPackingWrapper().decode(compressed1, 0, len(compressed1))
     # print(decompressed1)
-
-    parser = DDAParser('/mnt/d/AirdTest/ComboComp4dp/File1.json')
+    # parser = DDAParser('/mnt/d/AirdTest/ComboComp4dp/File2.json')
+    parser = DDAParser('/mnt/d/AirdTest/File2.json')
     map = parser.readAllToMemeory()
-    print(len(map))
+    count = len(map)
+    print(count)
     # with open('/mnt/d/AirdTest/ComboComp4dp/File1.json', "r") as indexFile:
     #     airdInfo = json.load(indexFile)
     #     print('JSON Format:', airdInfo)
