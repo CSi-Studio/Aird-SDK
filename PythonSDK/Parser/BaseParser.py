@@ -11,6 +11,7 @@ from Compressor.ByteComp.ZstdWrapper import ZstdWrapper
 from Compressor.ByteTrans import ByteTrans
 from Compressor.IntComp.BinPackingWrapper import BinPackingWrapper
 from Compressor.IntComp.EmptyWrapper import EmptyWrapper
+from Compressor.IntComp.FastPFor256Wrapper import FastPFor256Wrapper
 from Compressor.IntComp.VarByteWrapper import VarByteWrapper
 from Compressor.SortedIntComp.DeltaWrapper import DeltaWrapper
 from Compressor.SortedIntComp.IntegratedBinPackingWrapper import IntegratedBinPackingWrapper
@@ -139,6 +140,20 @@ class BaseParser:
     def getSpectraByIndex(self, index):
         return self.getSpectra(index.startPtr, index.endPtr, index.rts, index.mzs, index.ints)
 
+    def getSpectrumByIndex(self, startPtr, mzOffsets, intOffsets, index):
+        start = startPtr
+        for i in range(index):
+            start += mzOffsets[i]
+            start += intOffsets[i]
+
+        self.airdFile.seek(start)
+        reader = self.airdFile.read(mzOffsets[index] + intOffsets[index])
+        return self.getSpectrum(reader, 0, mzOffsets[index], intOffsets[index])
+
+    def getSpectrumByRt(self, startPtr, rtList, mzOffsets, intOffsets, rt):
+        position = rtList.index(rt)
+        return self.getSpectrumByIndex(startPtr, mzOffsets, intOffsets, position)
+
     def getSpectra(self, start, end, rtList, mzOffsets, intOffsets):
         map = {}
         self.airdFile.seek(start)
@@ -157,6 +172,8 @@ class BaseParser:
             return VarByteWrapper()
         elif name == 'BP':
             return BinPackingWrapper()
+        elif name == 'FPF256':
+            return FastPFor256Wrapper()
         elif name == 'Empty':
             return EmptyWrapper()
         elif name == 'Zlib':

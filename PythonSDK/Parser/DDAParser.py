@@ -66,3 +66,15 @@ class DDAParser(BaseParser):
             ms1List[i] = ms1
 
         return ms1List
+
+    def getSpectrumByNum(self, num):
+        indexList = self.airdInfo.indexList
+        for blockIndex in indexList:
+            index = blockIndex.nums.index(num)
+            if index >= 0:
+                return self.getSpectrumByIndex(blockIndex.startPtr, blockIndex.mzs, blockIndex.ints, index)
+
+        return None
+
+    def getSpectraByRtRange(self, rtStart, rtEnd, includeMS2):
+        ms1Index = self.getMs1Index()

@@ -3,7 +3,7 @@ from Enums.IntCompType import IntCompType
 from pyfastpfor import *
 
 
-class BinPackingWrapper:
+class FastPFor256Wrapper:
 
     def __init__(self):
         self.codec = getCodec('fastpfor256')
