@@ -3,7 +3,7 @@ from Enums.IntCompType import IntCompType
 
 
 class IntegratedVarByteWrapper:
-    codec = 'vbyte'
+    codec = 'varint'
 
     def getName(self):
         return IntCompType.BP

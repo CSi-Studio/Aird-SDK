@@ -25,16 +25,16 @@ def print_hi(name):
         airdPath = AirdScanUtil.getAirdPathByIndexPath(filePath)
         print(airdPath)
 
-    input = [1, 2, 3]
-    bytes = ByteTrans.intToByte(input)
-    print(ByteTrans.byteToInt(bytes))
-    compressed = BinPackingWrapper().encode(input)
-    decompressed = BinPackingWrapper().decode(compressed, 0, len(compressed))
-    print(decompressed)
-
-    compressed1 = IntegratedBinPackingWrapper().encode(input)
-    decompressed1 = IntegratedBinPackingWrapper().decode(compressed1, 0, len(compressed1))
-    print(decompressed1)
+    # input = [1, 2, 3]
+    # bytes = ByteTrans.intToByte(input)
+    # print(ByteTrans.byteToInt(bytes))
+    # compressed = BinPackingWrapper().encode(input)
+    # decompressed = BinPackingWrapper().decode(compressed, 0, len(compressed))
+    # print(decompressed)
+    #
+    # compressed1 = IntegratedBinPackingWrapper().encode(input)
+    # decompressed1 = IntegratedBinPackingWrapper().decode(compressed1, 0, len(compressed1))
+    # print(decompressed1)
 
     parser = DDAParser('/mnt/d/AirdTest/ComboComp4dp/File1.json')
     map = parser.readAllToMemeory()

@@ -28,5 +28,5 @@ class IntCompressor:
         array = np.array(input, dtype=np.uint32).ravel()
         decompress = np.zeros(originalSize, dtype=np.uint32).ravel()
         codec = getCodec(self.codec)
-        decompressSize = codec.decodeArray(array, len(array), decompress, originalSize)
-        return decompress[0:decompressSize].tolist()
+        codec.decodeArray(array, len(array), decompress, originalSize)
+        return decompress.tolist()

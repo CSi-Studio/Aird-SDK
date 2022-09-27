@@ -133,7 +133,7 @@ public class AirdScanUtil {
      * @return 索引文件路径
      */
     public static String getIndexPathByAirdPath(String airdPath) {
-        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
+        if (airdPath == null || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
             return null;
         }
         return airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
@@ -146,7 +146,7 @@ public class AirdScanUtil {
      * @return aird文件路径
      */
     public static String getAirdPathByIndexPath(String indexPath) {
-        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
+        if (indexPath == null || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
             return null;
         }
         return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
@@ -159,7 +159,7 @@ public class AirdScanUtil {
      * @return 是否是aird文件路径
      */
     public static boolean isAirdFile(String airdPath) {
-        if (airdPath == null || airdPath.isEmpty() || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
+        if (airdPath == null || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
             return false;
         }
         return airdPath.toLowerCase().endsWith(SuffixConst.AIRD);
@@ -172,7 +172,7 @@ public class AirdScanUtil {
      * @return 是否是索引文件路径
      */
     public static boolean isIndexFile(String indexPath) {
-        if (indexPath == null || indexPath.isEmpty() || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
+        if (indexPath == null || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
             return false;
         }
         return indexPath.toLowerCase().endsWith(SuffixConst.JSON);

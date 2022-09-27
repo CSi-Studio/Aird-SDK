@@ -78,7 +78,7 @@ class BaseParser:
             delta = mobiInfo.dictEnd - mobiInfo.dictStart
             result = self.airdFile.read(delta)
             mobiArray = DeltaWrapper().decode(ByteTrans.byteToInt(ZstdWrapper().decode(result)))
-            mobiDArray = []
+            mobiDArray = [None] * len(mobiArray)
             for i in range(0, len(mobiArray)):
                 mobiDArray[i] = mobiArray[i] / self.mobiPrecision
             self.mobiDict = mobiDArray
@@ -112,7 +112,7 @@ class BaseParser:
         decodedData = self.mzByteComp.decode(value, offset, length)
         intValues = ByteTrans.byteToInt(decodedData)
         intValues = self.mzIntComp.decode(intValues, 0, len(intValues))
-        doubleValues = []
+        doubleValues = [None] * len(intValues)
         for i in range(len(intValues)):
             doubleValues[i] = intValues[i] / self.mzPrecision
 
@@ -122,7 +122,7 @@ class BaseParser:
         decodedData = self.intByteComp.decode(value, start, length)
         intValues = ByteTrans.byteToInt(decodedData)
         intValues = self.intIntComp.decode(intValues, 0, len(intValues))
-        intensityValues = []
+        intensityValues = [None] * len(intValues)
         for i in range(len(intValues)):
             intensity = intValues[i]
             if intensity < 0:
@@ -135,7 +135,7 @@ class BaseParser:
         decodedData = self.mobiByteComp.decode(value, start, length)
         intValues = ByteTrans.byteToInt(decodedData)
         intValues = self.mobiIntComp.decode(intValues, 0, len(intValues))
-        mobilities = []
+        mobilities = [None] * len(intValues)
         for i in range(len(intValues)):
             mobilities[i] = self.mobiDict[intValues[i]]
 

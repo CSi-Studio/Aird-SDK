@@ -1,4 +1,6 @@
 from pyfastpfor import *
+
+from Compressor.Delta import Delta
 from Enums.IntCompType import IntCompType
 import numpy as np
 
@@ -12,10 +14,10 @@ class IntegratedIntCompressor:
         return IntCompType.BP
 
     def encode(self, input):
-        array = np.array(input, dtype=np.uint32)
+        array = np.array(input, dtype=np.uint32).ravel()
         arraySize = len(input)
         delta4(array, len(array))
-        inpComp = np.zeros(arraySize + 1024, dtype=np.uint32)
+        inpComp = np.zeros(arraySize + 1024, dtype=np.uint32).ravel()
         codec = getCodec(self.codec)
         compSize = codec.encodeArray(array, arraySize, inpComp, len(inpComp))
         compressed = np.insert(inpComp[:compSize], 0, arraySize)
@@ -30,5 +32,6 @@ class IntegratedIntCompressor:
         decompress = np.zeros(originalSize, dtype=np.uint32).ravel()
         codec = getCodec(self.codec)
         codec.decodeArray(array, len(array), decompress, originalSize)
-        prefixSum4(decompress, originalSize)
-        return decompress.tolist()
+        # prefixSum4(decompress, originalSize)
+        originArray = Delta.recover(decompress.tolist())
+        return originArray
