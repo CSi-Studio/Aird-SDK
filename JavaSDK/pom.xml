@@ -9,8 +9,8 @@
     <version>3.0.0</version>
     <name>Aird-SDK</name>
     <packaging>jar</packaging>
-    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing
-        and Storage
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage
+        AirdPro Version > 4.0.0
     </description>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
 
