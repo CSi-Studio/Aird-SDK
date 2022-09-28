@@ -7,7 +7,7 @@ VERSION = '0.1.0'
 setup(
     name='AirdSDK',  # package name
     version="0.0.1",  # package version
-    url="http",
+    url="https://github.com/CSi-Studio/Aird-SDK/",
     author="CSi-Studio",
     author_email="csi@csibio.net",
     maintainer="Miaoshan Lu",
