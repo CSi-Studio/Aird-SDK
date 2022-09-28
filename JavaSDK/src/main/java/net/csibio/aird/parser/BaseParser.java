@@ -516,6 +516,7 @@ public abstract class BaseParser {
      * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
      * @param mzOffsets  mz块的大小列表 the mz block size list
      * @param intOffsets intensity块的大小列表 the intensity block size list
+     * @param mobiOffsets mobiOffsets块的大小列表 the mobility block size list
      * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
      */
     public TreeMap<Double, Spectrum> getSpectra(long start, long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets) {

@@ -25,7 +25,7 @@ def print_hi(name):
     #     airdPath = AirdScanUtil.getAirdPathByIndexPath(filePath)
     #     print(airdPath)
 
-    # input = [1, 2, 3]
+    # input = [1] * 12
     # bytes = ByteTrans.intToByte(input)
     # print(ByteTrans.byteToInt(bytes))
     # compressed = BinPackingWrapper().encode(input)
@@ -37,11 +37,11 @@ def print_hi(name):
     # print(decompressed1)
     # parser = DDAParser('/mnt/d/AirdTest/ComboComp4dp/File2.json')
     parser = DDAParser('/mnt/d/AirdTest/File2.json')
-    blockIndex = parser.getMs1Index()
-    spectrum = parser.getSpectrumByNum(2)
-    # map = parser.readAllToMemeory()
+    # blockIndex = parser.getMs1Index()
+    # spectrum = parser.getSpectrumByNum(2)
+    map = parser.readAllToMemeory()
     # count = len(map)
-    print(len(spectrum.mzs))
+    # print(len(spectrum.mzs))
     # with open('/mnt/d/AirdTest/ComboComp4dp/File1.json', "r") as indexFile:
     #     airdInfo = json.load(indexFile)
     #     print('JSON Format:', airdInfo)

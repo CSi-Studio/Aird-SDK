@@ -6,7 +6,7 @@ from pyfastpfor import *
 class BinPackingWrapper:
 
     def __init__(self):
-        self.codec = getCodec('simdbinarypacking')
+        self.codec = getCodec('fastbinarypacking32')  # binary packing with variable byte
 
     def getName(self):
         return IntCompType.BP

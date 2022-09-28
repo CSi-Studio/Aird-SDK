@@ -1,5 +1,3 @@
-import time
-
 from Beans.DDAMs import DDAMs
 from Parser.BaseParser import BaseParser
 from Utils.DDAUtil import DDAUtil
@@ -32,10 +30,7 @@ class DDAParser(BaseParser):
 
     def readAllToMemeory(self):
         ms1Index = self.getMs1Index()
-        start = time.time()
         ms1Map = self.getSpectraByIndex(ms1Index)
-        print("读取MS1 List,耗时:")
-        print(time.time() - start)
         ms1RtList = list(ms1Map.keys())
         ms1List = self.buildDDAMsList(ms1RtList, ms1Index, ms1Map, True)
         return ms1List

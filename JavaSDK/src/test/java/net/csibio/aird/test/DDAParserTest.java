@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class DDAParserTest {
 
 //    String filePath1 = "D:\\AirdTest\\ComboComp2\\File2.json";
-    String filePath1 = "D:\\AirdTest\\ComboComp4dp\\File2.json";
+    String filePath1 = "D:\\AirdTest\\File2.json";
     String filePath2 = "D:\\metabolomics\\neiyansuo\\LIPPOS\\Set2\\LIPPOS-1-A-B-SAM-98.json";
 
     @Test

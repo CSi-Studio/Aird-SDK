@@ -33,13 +33,13 @@ public class BinPackingWrapper implements IntComp {
      */
     @Override
     public int[] encode(int[] uncompressed) {
-        int[] compressedInts = new IntCompressor(new BinaryPacking()).compress(uncompressed);
+        int[] compressedInts = new IntCompressor().compress(uncompressed);
         return compressedInts;
     }
 
     @Override
     public int[] decode(int[] compressed) {
-        int[] uncompressed = new IntCompressor(new BinaryPacking()).uncompress(compressed);
+        int[] uncompressed = new IntCompressor().uncompress(compressed);
         return uncompressed;
     }
 }
