@@ -29,6 +29,9 @@ public enum IntCompType {
      * Variable Byte
      */
     VB(3, "VB"),
+
+
+    BPVB(4, "BPVB"),
     ;
 
     /**

@@ -170,7 +170,7 @@ class BaseParser:
     def parseComp(name):
         if name == 'VB':
             return VarByteWrapper()
-        elif name == 'BP':
+        elif name == 'BPVB':
             return BinPackingWrapper()
         elif name == 'FPF256':
             return FastPFor256Wrapper()
