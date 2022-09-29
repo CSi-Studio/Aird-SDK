@@ -1,0 +1,14 @@
+# Target labels
+ googletest
+# Source files and their labels
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/CMakeFiles/googletest
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/CMakeFiles/googletest.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/CMakeFiles/googletest-complete.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-build.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-configure.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-download.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-install.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-mkdir.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-patch.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-test.rule
+/mnt/d/workspace/Aird-SDK/CPPSDK/FastPFor/googletest-download/googletest-prefix/src/googletest-stamp/googletest-update.rule
