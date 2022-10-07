@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <groupId>net.csibio.aird</groupId>
+    <artifactId>aird-sdk</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <version>3.0.0</version>
+    <name>Aird-SDK</name>
+    <packaging>jar</packaging>
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage
+        AirdPro Version > 4.0.0
+    </description>
+    <url>https://github.com/CSi-Studio/Aird-SDK</url>
+
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <licenses>
+        <license>
+            <distribution>repo</distribution>
+            <name>Mulan PSL v2</name>
+            <url>http://license.coscl.org.cn/MulanPSL2</url>
+        </license>
+    </licenses>
+
+    <dependencies>
+        <dependency>
+            <artifactId>lombok</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <scope>provided</scope>
+            <version>1.18.24</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-lang3</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <version>3.12.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-codec</artifactId>
+            <groupId>commons-codec</groupId>
+            <version>1.15</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
+            <version>2.0.12</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>JavaFastPFOR</artifactId>
+            <groupId>me.lemire.integercompression</groupId>
+            <version>0.1.12</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>commons-math3</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <version>3.6.1</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>jocl</artifactId>
+            <groupId>org.jocl</groupId>
+            <version>2.0.4</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>snappy-java</artifactId>
+            <groupId>org.xerial.snappy</groupId>
+            <version>1.1.8.4</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>brotli4j</artifactId>
+            <groupId>com.aayushatharva.brotli4j</groupId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>zstd-jni</artifactId>
+            <groupId>com.github.luben</groupId>
+            <version>1.5.2-3</version>
+        </dependency>
+
+        <dependency>
+            <artifactId>junit</artifactId>
+            <groupId>junit</groupId>
+            <scope>test</scope>
+            <version>4.13.2</version>
+        </dependency>
+        <dependency>
+            <artifactId>commons-io</artifactId>
+            <groupId>commons-io</groupId>
+            <version>2.11.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>jna</artifactId>
+            <groupId>net.java.dev.jna</groupId>
+            <scope>test</scope>
+            <version>5.11.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>msdk-io-mzml</artifactId>
+            <groupId>io.github.msdk</groupId>
+            <scope>test</scope>
+            <version>0.0.27</version>
+        </dependency>
+        <dependency>
+            <artifactId>annotations</artifactId>
+            <groupId>org.jetbrains</groupId>
+            <scope>test</scope>
+            <version>22.0.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>xz</artifactId>
+            <groupId>org.tukaani</groupId>
+            <version>1.9</version>
+        </dependency>
+        <dependency>
+            <artifactId>javacsv</artifactId>
+            <groupId>net.sourceforge.javacsv</groupId>
+            <scope>test</scope>
+            <version>2.0</version>
+        </dependency>
+        <dependency>
+            <artifactId>opencsv</artifactId>
+            <groupId>com.opencsv</groupId>
+            <scope>test</scope>
+            <version>5.6</version>
+        </dependency>
+    </dependencies>
+
+    <developers>
+        <developer>
+            <email>csi@csibio.net</email>
+            <name>MiaoShan Lu</name>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <email>a@csibio.net</email>
+            <name>Shaowei An</name>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <email>wrm@csibio.net</email>
+            <name>Ruimin Wang</name>
+            <organization>csi biotech</organization>
+        </developer>
+        <developer>
+            <email>wjy@csibio.net</email>
+            <name>Jinyin Wang</name>
+            <organization>csi biotech</organization>
+        </developer>
+    </developers>
+    <distributionManagement>
+        <!--        <repository>-->
+        <!--            <id>rdc-releases</id>-->
+        <!--            <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>-->
+        <!--        </repository>-->
+        <!--        <snapshotRepository>-->
+        <!--            <id>rdc-snapshots</id>-->
+        <!--            <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>-->
+        <!--        </snapshotRepository>-->
+        <!--        <repository>-->
+        <!--            <id>space-csi</id>-->
+        <!--            <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
+        <!--        </repository>-->
+        <!--        远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件-->
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>alimaven</id>
+            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <repository>
+            <id>snapshots-repo</id>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>pst-release</id>
+            <name>EBI Nexus Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-release</url>
+        </repository>
+        <!-- EBI SNAPSHOT repo -->
+        <repository>
+            <id>pst-snapshots</id>
+            <name>EBI Nexus Snapshots Repository</name>
+            <url>http://www.ebi.ac.uk/Tools/maven/repos/content/repositories/pst-snapshots</url>
+        </repository>
+    </repositories>
+
+    <build>
+        <!--        <finalName>aird-sdk</finalName>-->
+        <plugins>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.2.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <charset>UTF-8</charset>
+                    <docencoding>UTF-8</docencoding>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.3.1</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>16</source>
+                    <target>16</target>
+                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.8.0</version>
+            </plugin>
+            <!-- GPG 当需要Deploy到Maven中心仓库的时候使用本插件 -->
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                        <phase>verify</phase>
+                    </execution>
+                </executions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>1.5</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.5.3</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>2.5</version>
+            </plugin>
+        </plugins>
+        <sourceDirectory>src/main/java</sourceDirectory>
+        <testSourceDirectory>src/main/java</testSourceDirectory>
+    </build>
+
+    <scm>
+        <tag>1.0</tag>
+        <url>git@github.com:CSi-Studio/Aird-SDK.git</url>
+    </scm>
+
+</project>

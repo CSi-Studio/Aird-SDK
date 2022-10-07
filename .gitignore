@@ -23,6 +23,11 @@
 hs_err_pid*
 /aird.iml
 /.idea
-/aird-sdk-java.iml
-/aird-sdk.iml
+*/.idea
+
+# visual studio
+*/.vs
+*/obj 
+*.pyc
+/*.iml
 /target/
