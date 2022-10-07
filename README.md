@@ -1,25 +1,24 @@
-# What is Aird?
+# 1 What is Aird?
+
+## 1.1 Abstract
 
 Aird is a new format for mass spectrometry data storage. It is an opensource and
 computation-oriented format with controllable precision, flexible indexing strategies, and high
-compression rate for m/z and intensity pairs. Aird provides a novel compressor call ZDPD for m/z
-data compression,which makes up an amazing compression rate. Compared with Zip, m/z data is about
-55% lower in the Aird on average. Aird is a computational friendly algorithm. Through SIMD
-optimization, the decoding speed of Aird is much higher than that of Zip. <br/>
-Aird SDK is a developer tool written in Java. It is convenient for developers who want to read the
-spectrum data in the Aird file quickly. With the high performance of reading and excellent
+compression rate for _**m/z**_, **intensity** and **ion mobility** pairs. Aird provides a novel compressor called
+**ComboComp** for _m/z_ data compression,which makes up an amazing compression rate. Compared with Zlib, m/z data is
+about
+65% lower in the Aird on average. Aird is a computational friendly algorithm. Through SIMD
+optimization, the decoding speed of Aird is much higher than that of Zlib. <br/>
+Aird SDK is a developer tool written in Java, C# and Python language. It is convenient for developers who want to read
+the spectrum data in the Aird file quickly. With the high performance of reading and excellent
 compression rate, developer can develop a lot of application based on Aird for data visualization
 and analysis.
 
-# Citation
+Aird Index File Suffix: .json <br/>
+Aird Data File Suffix: .aird <br/>
+Aird Index File and Aird Data File show be stored in the same directory with the same file.
 
-1. Lu, M., An, S., Wang, R. et al. Aird: a computation-oriented mass spectrometry data format enables a
-   higher compression ratio and less decoding time. BMC Bioinformatics 23, 35 (2022)
-
-2. Wang,J. et al. StackZDPD: a novel encoding scheme for mass spectrometry data optimized for speed and compression
-   ratio. Scientific Reports, 12, 5384.(2022)
-
-# AirdPro
+## 1.2 AirdPro: Conversion Client for Vendor Files
 
 You should use the AirdPro client to transfer the vendor files into Aird format.<br/>
 You can download the AirdPro from the github: <br/>
@@ -28,32 +27,7 @@ After downloading, unzip the file, click the AirdPro.exe to start the AirdPro Ap
 written in C#, it is also an opensource project. Simple UI is provided by AirdPro for people to
 convert the vendor file to the Aird file quickly.
 
-# What does Aird format like?
-
-Aird Index File Suffix: .json <br/>
-Aird Data File Suffix: .aird <br/>
-Aird Index File and Aird Data File show be stored in the same directory with the same file name but
-with different suffix, so that AirdScanUtil class can scan both of the two files with the same file
-name;<br/>
-When dealing with Spectra, we advise that you should process with SWATH Window one by one so that we
-can control the Memory
-
-# Maven for Java SDK
-
-    <dependency>
-        <groupId>net.csibio.aird</groupId>
-        <artifactId>aird-sdk</artifactId>
-        <version>2.0.4</version>
-    </dependency>
-
-# Nuget for C# SDK
-
-Search "AirdSDK" in Nuget Package Manager
-
-# Main API Class
-
-AirdManager is the entry level class. You can also use the Parsers under the parser package.
-Aird-SDK 1.1.X is currently support three types of MS file.
+## 1.3 Supported Acquisition Methods
 
 - DIA/SWATH
 - DDA
@@ -61,17 +35,37 @@ Aird-SDK 1.1.X is currently support three types of MS file.
 - DIA_PASEF
 - DDA_PASEF
 
-Demo code: see SampleCode.java in the project
+Demo code: see SampleCode.java in the project or in the "How to use" chapter
 
-# MetaData JSON Schema
+## 1.4 Citation
 
-refer in the root package of the project: AirdMetaData.json
+1. Lu, M., An, S., Wang, R. et al. Aird: a computation-oriented mass spectrometry data format enables a
+   higher compression ratio and less decoding time. BMC Bioinformatics 23, 35 (2022)
 
-# Detail Documentation
+2. Wang,J. et al. StackZDPD: a novel encoding scheme for mass spectrometry data optimized for speed and compression
+   ratio. Scientific Reports, 12, 5384.(2022)
 
-## 1.1 Domain Description
+# 2. How to import (Java, C#, Python)
 
-### 1.1.1 AirdInfo
+## 2.1 Maven for Java SDK
+
+    <dependency>
+        <groupId>net.csibio.aird</groupId>
+        <artifactId>aird-sdk</artifactId>
+        <version>2.0.4</version>
+    </dependency>
+
+## 2.2 Nuget for C# SDK
+
+Search "AirdSDK" in Nuget Package Manager
+
+## 2.3 PyPI for Python SDK
+
+    pip install AirdSDK
+
+# 3 Domain Definition
+
+## 3.1 AirdInfo
 
 | Name                     | Type                 | Required | Description                                                                                                                                             |
 |--------------------------|----------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -99,7 +93,7 @@ refer in the root package of the project: AirdMetaData.json
 | createDate               | String               | False    | The create date for the aird file                                                                                                                       |
 | features                 | String               | False    | Some other features stored with “key:value;key:value” format                                                                                            |
 
-### 1.1.2 Compressor
+## 3.2 Compressor
 
 | Name      | Type         | Required | Description                                           |
 |-----------|--------------|----------|-------------------------------------------------------|
@@ -109,7 +103,7 @@ refer in the root package of the project: AirdMetaData.json
 | digit     | Integer      | False    | Use for StackZDPD algorithm, 2^digit = layers         |
 | byteOrder | String       | True     | LITTLE_ENDIAN(default), BIG_ENDIAN                    |
 
-### 1.1.3 WindowRange
+## 3.3 WindowRange
 
 | Name     | Type    | Required | Description                                                  |
 |----------|---------|----------|--------------------------------------------------------------|
@@ -119,7 +113,7 @@ refer in the root package of the project: AirdMetaData.json
 | charge   | Integer | False    | Precursor charge, 0 when empty                               |
 | features | String  | False    | Some other features stored with “key:value;key:value” format |
 
-### 1.1.4 BlockIndex
+## 3.4 BlockIndex
 
 | Name                | Type              | Required | Description                                                                                                                          |
 |---------------------|-------------------|----------|--------------------------------------------------------------------------------------------------------------------------------------|
@@ -140,7 +134,7 @@ refer in the root package of the project: AirdMetaData.json
 | cvList              | List<List<CV>>    | False    | PSI Controlled Vocabulary                                                                                                            |
 | features            | String            | False    | Some other features stored with “key:value;key:value” format                                                                         |
 
-### 1.1.5 Instrument
+## 3.5 Instrument
 
 | Name         | Type         | Required | Description                                                  |
 |--------------|--------------|----------|--------------------------------------------------------------|
@@ -152,13 +146,13 @@ refer in the root package of the project: AirdMetaData.json
 | analyzer     | List<String> | False    | Analyzer: “quadrupole”, “orbitrap”                           |
 | detector     | List<String> | False    | Detector: ”inductive detector”                               |
 
-### 1.1.6 DataProcessing
+## 3.6 DataProcessing
 
 | Name                 | Type         | Required | Description                                                                      |
 |----------------------|--------------|----------|----------------------------------------------------------------------------------|
 | processingOperations | List<String> | False    | Any additional manipulation not included elsewhere in the dataProcessing element |
 
-## 1.1.7 Software
+## 3.7 Software
 
 | Name    | Type   | Required | Description                                    |
 |---------|--------|----------|------------------------------------------------|
@@ -166,7 +160,7 @@ refer in the root package of the project: AirdMetaData.json
 | version | String | False    | The software version                           |
 | type    | String | False    | The software function type, like "acquisition" |
 
-### 1.1.8 ParentFile
+## 3.8 ParentFile
 
 | Name     | Type   | Required | Description       |
 |----------|--------|----------|-------------------|
@@ -174,7 +168,7 @@ refer in the root package of the project: AirdMetaData.json
 | location | String | False    | The file location |
 | type     | String | False    | The file type     |
 
-### 1.1.9 MobiInfo
+## 3.9 MobiInfo
 
 | Name      | Type   | Required | Description                               |
 |-----------|--------|----------|-------------------------------------------|
@@ -183,11 +177,9 @@ refer in the root package of the project: AirdMetaData.json
 | unit      | String | False    | ion mobility unit                         |
 | type      | String | False    | ion mobility type, see MobilityType       |
 
-# API Description
+# 4 API Document
 
-## DDAParser API
-
-## Scan Aird files from target directory
+## 4.1 Scan Aird files from target directory
 
 ```
     List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
@@ -196,7 +188,7 @@ refer in the root package of the project: AirdMetaData.json
     });
 ```
 
-## Load Aird Info into memory
+## 4.2 Load Aird Info into memory
 
 ```
     DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
@@ -206,31 +198,43 @@ refer in the root package of the project: AirdMetaData.json
     PRMParser prmParser = new PRMParser("\\FilePath\\file.json");
 ```
 
-## Read AirdInfo
+## 4.3 Read AirdInfo
 
 ```
+    DDAParser parser1 = new DDAParser(YOUR_AIRD_INDEX_FILE_PATH);
     AirdInfo airdInfo = parser.getAirdInfo();
 ```
 
-## Read Spectrum directly
+## 4.4 Read Spectrum by spectrum number
 
 ```
-    Spectrum pairs = parser.getSpectrum(0);
+    int num = 12
+    Spectrum pairs = parser.getSpectrum(num);
 ```
 
-## Read DIA SWATH block one by one
+## 4.5 Read Spectrum by spectrum number
 
 ```
+    double rt = 12.3456
+    Spectrum pairs = parser.getSpectrum(num);
+```
+
+## 4.6 Read DIA/SWATH window block one by one
+
+```
+    DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
+    AirdInfo airdInfo = diaParser.getAirdInfo();
     airdInfo.getIndexList().forEach(blockIndex -> {
-       TreeMap<Float, Spectrum> map = diaParser.getSpectrums(blockIndex);
+       TreeMap<Double, Spectrum> map = diaParser.getSpectrums(blockIndex); //key is retention time
     });
 ```
 
-## Read DDA MsCycle
+## 4.7 Read All data into memory
 
-Read all spectra into the memory
+This is only for DDAParser with small DDA data file(< 200MB as an advice). Read all spectra into the memory
 
 ```
+    DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
 
