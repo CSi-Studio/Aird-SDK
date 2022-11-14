@@ -162,29 +162,29 @@
         </developer>
     </developers>
     <distributionManagement>
-                <repository>
-                    <id>rdc-releases</id>
-                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>rdc-snapshots</id>
-                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>
-                </snapshotRepository>
+<!--                <repository>-->
+<!--                    <id>rdc-releases</id>-->
+<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>-->
+<!--                </repository>-->
+<!--                <snapshotRepository>-->
+<!--                    <id>rdc-snapshots</id>-->
+<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>-->
+<!--                </snapshotRepository>-->
 <!--                <repository>-->
 <!--                    <id>space-csi</id>-->
 <!--                    <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
 <!--                </repository>-->
         <!--        远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus-staging</id>-->
-<!--            <name>Nexus Release Repository</name>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>sonatype-nexus-snapshots</id>-->
-<!--            <name>Sonatype Nexus Snapshots</name>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-<!--        </snapshotRepository>-->
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>

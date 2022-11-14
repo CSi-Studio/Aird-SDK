@@ -41,6 +41,11 @@ public class PSI {
      */
     public static final String cvMS1Spectrum = "1000579";
 
+    /**
+     * Constant <code>cvMz="1000927"</code>
+     */
+    public static final String cvInjectionTime = "1000927";
+
     // m/z and charge state
     /**
      * Constant <code>cvMz="1000040"</code>
