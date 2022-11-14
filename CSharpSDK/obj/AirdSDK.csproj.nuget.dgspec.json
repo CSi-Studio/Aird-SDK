@@ -5,19 +5,19 @@
   },
   "projects": {
     "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj": {
-      "version": "2.0.3.1-beta2",
+      "version": "2.1.1",
       "restore": {
         "projectUniqueName": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
         "projectName": "AirdSDK",
         "projectPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\AirdSDK.csproj",
-        "packagesPath": "C:\\Users\\lms19\\.nuget\\packages\\",
+        "packagesPath": "C:\\Users\\LMS\\.nuget\\packages\\",
         "outputPath": "D:\\workspace\\Aird-SDK\\CSharpSDK\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Softwares\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\lms19\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\LMS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -73,11 +73,12 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.203\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

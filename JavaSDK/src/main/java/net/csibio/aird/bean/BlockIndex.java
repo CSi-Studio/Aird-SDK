@@ -70,6 +70,11 @@ public class BlockIndex {
     List<Long> tics;
 
     /**
+     * Every Spectrum's injection time列表
+     */
+    List<Float> injectionTimes;
+
+    /**
      * Every Spectrum's total base peak intensity in the block 所有该块中的base peak intensity列表
      */
     List<Double> basePeakIntensities;

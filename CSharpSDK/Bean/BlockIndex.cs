@@ -69,6 +69,12 @@ namespace AirdSDK.Beans
         public List<double> basePeakIntensities = new List<double>();
 
         /**
+         * Every Spectrum's injection times
+         * 该光谱的注入时间
+         */
+        public List<float> injectionTimes = new List<float>();
+
+        /**
         * Every Spectrum's total base peak mz in the block
         * 所有该块中的tic列表
         */

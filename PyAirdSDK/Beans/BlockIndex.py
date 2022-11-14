@@ -17,6 +17,7 @@ class BlockIndex:
         self.nums = dict['nums'] if 'nums' in dict else None
         self.rts = dict['rts'] if 'rts' in dict else None
         self.tics = dict['tics'] if 'tics' in dict else None
+        self.injectionTimes = dict['injectionTimes'] if 'injectionTimes' in dict else None
         self.basePeakIntensities = dict['basePeakIntensities'] if 'basePeakIntensities' in dict else None
         self.basePeakMzs = dict['basePeakMzs'] if 'basePeakMzs' in dict else None
         self.mzs = dict['mzs'] if 'mzs' in dict else None
