@@ -476,6 +476,7 @@ public abstract class BaseParser
             map.Add(rtList[rtIndex],
                 getSpectrum(result, iter, mzOffsets[rtIndex], intOffsets[rtIndex], mobiOffsets[rtIndex]));
             iter = iter + mzOffsets[rtIndex] + intOffsets[rtIndex] + mobiOffsets[rtIndex];
+            rtIndex++;
         }
 
         return map;

@@ -594,6 +594,7 @@ public abstract class BaseParser {
             while (rtIndex < rtList.size()) {
                 map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
                 iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+                rtIndex++;
             }
             return map;
         } catch (Exception e) {
