@@ -101,58 +101,6 @@ public class DDAParser : BaseParser
     }
 
     /**
-   * @param num 所需要搜索的scan number
-   * @return
-   */
-    public Spectrum getSpectrumByNum(int num)
-    {
-        List<BlockIndex> indexList = airdInfo.indexList;
-        foreach (BlockIndex blockIndex in indexList)
-        {
-            int index = blockIndex.nums.IndexOf(num);
-            if (index >= 0)
-            {
-                return getSpectrumByIndex(blockIndex, index);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * @param nums 所需要搜索的scan numbers
-     * @return
-     */
-    public Spectrum[] getSpectraByNums(int[] nums)
-    {
-        List<BlockIndex> indexList = airdInfo.indexList;
-        Spectrum[] spectra = new Spectrum[nums.Length];
-        for (int i = 0; i < nums.Length; i++)
-        {
-            if (nums[i] == null)
-            {
-                spectra[i] = null;
-                continue;
-            }
-
-            Spectrum spectrum = null;
-            foreach (BlockIndex blockIndex in indexList)
-            {
-                int index = blockIndex.nums.IndexOf(nums[i]);
-                if (index >= 0)
-                {
-                    spectrum = getSpectrumByIndex(blockIndex, index);
-                    break;
-                }
-            }
-
-            spectra[i] = spectrum;
-        }
-
-        return spectra;
-    }
-
-    /**
     * @param rtStart
     * @param rtEnd
     * @return

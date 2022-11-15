@@ -417,6 +417,46 @@ public abstract class BaseParser {
     }
 
     /**
+     * @param num 所需要搜索的scan number
+     * @return the target spectrum
+     */
+    public Spectrum getSpectrumByNum(Integer num) {
+        List<BlockIndex> indexList = airdInfo.getIndexList();
+        for (BlockIndex blockIndex : indexList) {
+            int index = blockIndex.getNums().indexOf(num);
+            if (index >= 0) {
+                return getSpectrumByIndex(blockIndex, index);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param nums 所需要搜索的scan numbers
+     * @return the target spectra
+     */
+    public Spectrum[] getSpectraByNums(Integer... nums) {
+        List<BlockIndex> indexList = airdInfo.getIndexList();
+        Spectrum[] spectra = new Spectrum[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == null) {
+                spectra[i] = null;
+                continue;
+            }
+            Spectrum spectrum = null;
+            for (BlockIndex blockIndex : indexList) {
+                int index = blockIndex.getNums().indexOf(nums[i]);
+                if (index >= 0) {
+                    spectrum = getSpectrumByIndex(blockIndex, index);
+                    break;
+                }
+            }
+            spectra[i] = spectrum;
+        }
+        return spectra;
+    }
+
+    /**
      * 根据RT范围解码光谱图
      *
      * @param startPtr   起始位置 the start point of the target spectrum
