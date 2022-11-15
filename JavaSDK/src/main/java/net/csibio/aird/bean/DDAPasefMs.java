@@ -40,6 +40,11 @@ public class DDAPasefMs implements Serializable {
     Long tic;
 
     /**
+     * injection time for single spectrum
+     */
+    Float injectionTime;
+
+    /**
      * cvList for current scan
      */
     List<CV> cvList;

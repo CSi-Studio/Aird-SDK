@@ -39,6 +39,9 @@ public class DDAUtil {
         if (index.getRangeList() != null && index.getRangeList().size() > 0) {
             ms.setRange(index.getRangeList().get(loc));
         }
+        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0){
+            ms.setInjectionTime(index.getInjectionTimes().get(loc));
+        }
     }
 
     /**
@@ -60,6 +63,9 @@ public class DDAUtil {
         }
         if (index.getRangeList() != null && index.getRangeList().size() > 0) {
             ms.setRange(index.getRangeList().get(loc));
+        }
+        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0){
+            ms.setInjectionTime(index.getInjectionTimes().get(loc));
         }
     }
 }
