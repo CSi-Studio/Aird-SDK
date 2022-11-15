@@ -22,14 +22,14 @@ namespace AirdSDK.Compressor
 
         public override int[] encode(int[] uncompressed)
         {
-            int[] compressedInts = new IntCompressor(new BinaryPacking()).compress(uncompressed);
+            int[] compressedInts = new IntCompressor().compress(uncompressed);
             return compressedInts;
         }
 
         //使用BinaryPacking算法对已经压缩的int数组进行解压缩
         public override int[] decode(int[] compressed)
         {
-            int[] sortedInts = new IntCompressor(new BinaryPacking()).uncompress(compressed);
+            int[] sortedInts = new IntCompressor().uncompress(compressed);
             return sortedInts;
         }
     }
