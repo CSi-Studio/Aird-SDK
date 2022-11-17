@@ -16,6 +16,7 @@ using AirdSDK.Beans.Common;
 using AirdSDK.Compressor;
 using AirdSDK.Enums;
 using AirdSDK.Exception;
+using AirdSDK.Utils;
 
 namespace AirdSDK.Parser;
 

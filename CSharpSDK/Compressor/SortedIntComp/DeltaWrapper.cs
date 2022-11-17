@@ -8,7 +8,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-using CSharpFastPFOR.Differential;
+using AirdSDK.Enums;
 
 namespace AirdSDK.Compressor
 {

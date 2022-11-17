@@ -8,6 +8,8 @@
  * See the Mulan PSL v2 for more details.
  */
 
+using AirdSDK.Enums;
+
 namespace AirdSDK.Compressor
 {
     public abstract class SortedIntComp : BaseComp<int>

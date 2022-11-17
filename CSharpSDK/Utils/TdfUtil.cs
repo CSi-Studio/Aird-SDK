@@ -10,7 +10,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace AirdPro.Utils;
+namespace AirdSDK.Utils;
 
 public class TdfUtil
 {

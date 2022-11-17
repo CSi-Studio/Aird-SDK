@@ -8,7 +8,7 @@
  * See the Mulan PSL v2 for more details.
  */
 
-namespace AirdSDK.Compressor
+namespace AirdSDK.Enums
 {
     public enum IntCompType
     {
