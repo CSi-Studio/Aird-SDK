@@ -11,7 +11,7 @@
 using System;
 using System.Net;
 
-namespace AirdPro.Utils;
+namespace AirdSDK.Utils;
 
 public class NetworkUtil
 {

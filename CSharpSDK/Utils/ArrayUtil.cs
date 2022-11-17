@@ -10,8 +10,7 @@
 
 using System.Collections.Generic;
 
-namespace AirdPro.Utils;
-
+namespace AirdSDK.Utils;
 public class ArrayUtil
 {
     public static double[] toPrimitive(List<double> list)

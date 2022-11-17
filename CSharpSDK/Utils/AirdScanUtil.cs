@@ -11,11 +11,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using AirdPro.Utils;
 using AirdSDK.Beans;
 using AirdSDK.Constants;
 using Newtonsoft.Json;
 
+namespace AirdSDK.Utils;
 public class AirdScanUtil
 {
     /**

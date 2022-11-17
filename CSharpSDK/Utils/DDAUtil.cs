@@ -9,8 +9,7 @@
  */
 
 using AirdSDK.Beans;
-
-namespace AirdPro.Utils;
+namespace AirdSDK.Utils;
 
 public class DDAUtil
 {
