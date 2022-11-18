@@ -527,12 +527,6 @@ public abstract class BaseParser
         Spectrum[] spectra = new Spectrum[nums.Length];
         for (int i = 0; i < nums.Length; i++)
         {
-            if (nums[i] == null)
-            {
-                spectra[i] = null;
-                continue;
-            }
-
             Spectrum spectrum = null;
             foreach (BlockIndex blockIndex in indexList)
             {
