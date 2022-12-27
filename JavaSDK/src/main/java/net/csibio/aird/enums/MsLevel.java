@@ -24,4 +24,8 @@ public enum MsLevel {
     public Integer getCode() {
         return code;
     }
+
+    public String getName() {
+        return name;
+    }
 }
