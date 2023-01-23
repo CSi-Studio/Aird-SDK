@@ -17,7 +17,8 @@ namespace AirdSDK.Enums
         public const string PRM_PASEF = "PRM_PASEF";
         public const string DIA = "DIA"; // Precursor-mz -> MS2 Group
         public const string PRM = "PRM"; // Precursor-mz -> MS2 Group
-        public const string SCANNING_SWATH = "SCANNING_SWATH"; // 
+        public const string SCANNING_SWATH = "SCANNING_SWATH"; // 暂未支持
         public const string DDA = "DDA"; // MS1 -> MS2 Group
+        public const string MRM = "MRM"; // Chromatogram
     }
 }
