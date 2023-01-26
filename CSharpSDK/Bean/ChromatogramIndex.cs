@@ -27,7 +27,7 @@ namespace AirdSDK.Beans
         /**
          * 1:MS1;2:MS2
          */
-        public List<string> ids;
+        public List<string> ids = new();
 
         /**
          * the block start position in the file
@@ -42,21 +42,32 @@ namespace AirdSDK.Beans
         public long endPtr;
 
         /**
-         * 用于存储TIC和BPC图的基本信息
+         * Every Chromatogram's activator in the block
+         * 所有该块中的activator列表
          */
-        public List<double> rtList;
-        public List<double> ticList;
-        public List<double> basePeakList;
+        public List<string> activators = new List<string>();
+
+        /**
+         * Every Chromatogram's energy in the block
+         * 所有该块中的energy列表
+         */
+        public List<float> energies = new List<float>();
+
+        /**
+         * Every Chromatogram's polarity in the block
+         * 所有该块中的polarity列表
+         */
+        public List<string> polarities = new List<string>();
+
         /**
          * The precursor ion list
          */
-        public List<WindowRange> precursorList;
+        public List<WindowRange> precursors = new();
 
-        
         /**
          * The product ion list
          */
-        public List<WindowRange> productList;
+        public List<WindowRange> products = new();
 
         /**
          * when msLevel = 1, this field means the related num of every MS1.
@@ -83,7 +94,7 @@ namespace AirdSDK.Beans
          * PSI CV
          * PSI可控词汇表
          */
-        public List<List<CV>> cvList = new List<List<CV>>();
+        public List<List<CV>> cvs = new List<List<CV>>();
 
         /**
          * Features of every block index
