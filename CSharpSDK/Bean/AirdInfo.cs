@@ -19,13 +19,13 @@ namespace AirdSDK.Beans
         * Aird version
         * Aird的版本号
         */
-        public string version = "2.0.0";
+        public string version = "2.1.0";
 
         /**
          * Aird Code
          * Aird的版本编码
          */
-        public int versionCode = 5;
+        public int versionCode = 6;
 
         /**
        * [Core Field]
@@ -59,9 +59,9 @@ namespace AirdSDK.Beans
 
         /**
          * [Core Field]
-         * Store the window rangs which have been adjusted with experiment overlap
+         * Store the window ranges
          * [核心字段]
-         * 存储SWATH窗口信息,窗口已经根据overlap进行过调整
+         * 存储SWATH窗口信息
          */
         public List<WindowRange> rangeList;
 
@@ -77,9 +77,16 @@ namespace AirdSDK.Beans
 
         /**
          * [Core Field]
-         * AirdType, Support for DIA/SWATH, PRM, DDA, SCANNING_SWATH, COMMON
          * [核心字段]
-         * Aird支持的采集模式的类型,目前支持DIA,PRM,DDA, DDAPasef, DIAPasef, SCANNING_SWATH和COMMON 5种
+         * 用于SRM采集模式下色谱信息的存储
+         */
+        public ChromatogramIndex chromatogramIndex;
+
+        /**
+         * [Core Field]
+         * AcquisitionMethod, Support for DIA/SWATH, PRM, DDA, SRM/MRM, DDAPasef, DIAPasef
+         * [核心字段]
+         * Aird支持的采集模式的类型,目前支持SRM/MRM, DIA, PRM, DDA, DDAPasef, DIAPasef 6种
          */
         public string type;
 
@@ -94,11 +101,6 @@ namespace AirdSDK.Beans
          * 总计拥有的光谱数
          */
         public long totalCount;
-
-        /**
-         * the total chromatograms count
-         */
-        public long totalChromatograms;
 
         /**
         * the aird file path.

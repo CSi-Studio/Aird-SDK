@@ -8,12 +8,9 @@
  * See the Mulan PSL v2 for more details.
  */
 
-using System;
-
 namespace AirdSDK.Enums
 {
-    [Obsolete("use AcquisitionMethod instead")]
-    public static class AirdType
+    public static class AcquisitionMethod
     {
         public const string DIA_PASEF = "DIA_PASEF";
         public const string DDA_PASEF = "DDA_PASEF";

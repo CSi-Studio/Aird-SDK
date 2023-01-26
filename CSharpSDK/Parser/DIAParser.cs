@@ -32,7 +32,7 @@ public class DIAParser : BaseParser
      * @throws ScanException scan exception
      */
     public DIAParser(string airdPath, Beans.Compressor mzCompressor, Beans.Compressor intCompressor) : base(airdPath,
-        mzCompressor, intCompressor, null, AirdType.DIA)
+        mzCompressor, intCompressor, null, AcquisitionMethod.DIA)
     {
     }
 }

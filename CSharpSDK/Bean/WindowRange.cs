@@ -22,7 +22,7 @@ namespace AirdSDK.Beans
         public double mz;
 
         //前体的带电量,大多情况为0,表示未知
-        public int charge;
+        public int? charge;
 
         public string features;
 
