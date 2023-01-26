@@ -78,6 +78,11 @@ public abstract class BaseParser
     public ByteComp mzByteComp;
     public double mzPrecision;
 
+    public SortedIntComp rtIntComp4Chroma = new IntegratedVarByteWrapper();
+    public ByteComp rtByteComp4Chroma = new ZstdWrapper();
+    public IntComp intIntComp4Chroma = new VarByteWrapper();
+    public ByteComp intByteComp4Chroma = new ZstdWrapper();
+
     public BaseParser()
     {
     }
@@ -349,7 +354,6 @@ public abstract class BaseParser
         double[] intensityArray = getInts(bytes, offset, intOffset);
         return new Spectrum(mzArray, intensityArray);
     }
-
 
     public Dictionary<double, Spectrum> getSpectraByRtRange(long startPtr, long endPtr, List<double> rtList,
         List<int> mzOffsets, List<int> intOffsets, double rtStart, double rtEnd)

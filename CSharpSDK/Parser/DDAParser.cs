@@ -151,7 +151,7 @@ public class DDAParser : BaseParser
         for (int i = 0; i < rtList.Count; i++)
         {
             DDAMs ms1 = new DDAMs(rtList[i], ms1Map[rtList[i]]);
-            DDAUtil.initFromIndex(ms1, ms1Index, i);
+            DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             if (includeMS2)
             {
                 BlockIndex ms2Index = ms2IndexMap[ms1.num];
@@ -164,7 +164,7 @@ public class DDAParser : BaseParser
                     for (int j = 0; j < ms2RtList.Count; j++)
                     {
                         DDAMs ms2 = new DDAMs(ms2RtList[j], ms2Map[ms2RtList[j]]);
-                        DDAUtil.initFromIndex(ms2, ms2Index, j);
+                        DDAUtil.initFromIndex(airdInfo, ms2, ms2Index, j);
                         ms2List.Add(ms2);
                     }
 

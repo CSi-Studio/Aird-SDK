@@ -5,7 +5,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>AirdSDK</Title>
-    <Version>2.1.4</Version>
+    <Version>2.2.0</Version>
     <Company>CSi_Studio</Company>
     <Authors>LuMiaoShan</Authors>
     <Description>Aird SDK for C#</Description>
@@ -32,7 +32,6 @@
 
 	<ItemGroup>
     <Folder Include="Constants\" />
-    <Folder Include="Parser\" />
     <Folder Include="Exception\" />
   </ItemGroup>
 

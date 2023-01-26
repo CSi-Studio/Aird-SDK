@@ -17,8 +17,8 @@ namespace AirdSDK.Beans
     public class DDAMs
     {
         /**
-      * order number for current spectrum
-      */
+         * order number for current spectrum
+         */
         public int num;
 
         /**
@@ -30,6 +30,36 @@ namespace AirdSDK.Beans
          * the tic data for current scan
          */
         public long tic;
+
+        /**
+         * the filter string for current scan
+         */
+        public string filterString;
+
+        /**
+         * the polarity for current scan, Negative, Position
+         */
+        public string polarity;
+
+        /**
+         * the activator for current scan, CID, HCD...
+         */
+        public string activator;
+
+        /**
+         * the activator energy;
+         */
+        public float energy;
+
+        /**
+         * the mass spectrum type. Profile or Centroid
+         */
+        public string msType;
+
+        /**
+         * the injection time
+         */
+        public float injectionTime;
 
         /**
          * cvList for current scan
