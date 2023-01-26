@@ -63,6 +63,12 @@ namespace AirdSDK.Beans
         public List<long> tics = new List<long>();
 
         /**
+        * Every Spectrum's filterString in the block
+        * 所有该块中的filterString列表
+        */
+        public List<string> filterStrings = new List<string>();
+
+        /**
          * Every Spectrum's total base peak intensity in the block
          * 所有该块中的tic列表
          */
@@ -79,6 +85,30 @@ namespace AirdSDK.Beans
         * 所有该块中的tic列表
         */
         public List<double> basePeakMzs = new List<double>();
+
+        /**
+         * Every Spectrum's activator in the block
+         * 所有该块中的activator列表
+         */
+        public List<string> activators = new List<string>();
+
+        /**
+         * Every Spectrum's energy in the block
+         * 所有该块中的energy列表
+         */
+        public List<float> energies = new List<float>();
+
+        /**
+         * Every Spectrum's polarity in the block
+         * 所有该块中的polarity列表
+         */
+        public List<string> polarities = new List<string>();
+
+        /**
+         * Every Spectrum's msType in the block
+         * 所有该块中的msType列表
+         */
+        public List<string> msTypes = new List<string>();
 
         /**
          * COMMON type: it store the start position of every compressed mz block

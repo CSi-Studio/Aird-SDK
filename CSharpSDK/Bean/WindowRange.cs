@@ -24,7 +24,7 @@ namespace AirdSDK.Beans
         //前体的带电量,大多情况为0,表示未知
         public int? charge;
 
-        public string features;
+        public string? features;
 
         public WindowRange()
         {

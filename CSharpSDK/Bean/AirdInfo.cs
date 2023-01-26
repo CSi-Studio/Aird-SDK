@@ -137,6 +137,11 @@ namespace AirdSDK.Beans
         public string polarity;
 
         /**
+         * filter String
+         */
+        public string filterString;
+
+        /**
          * If ignore the point which intensity = 0
          * 是否忽略intensity为0的点
          */
