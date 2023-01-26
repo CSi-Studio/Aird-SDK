@@ -96,6 +96,11 @@ namespace AirdSDK.Beans
         public long totalCount;
 
         /**
+         * the total chromatograms count
+         */
+        public long totalChromatograms;
+
+        /**
         * the aird file path.
         * 转换压缩后的aird二进制文件路径,默认读取同目录下的同名文件,如果不存在才去读本字段对应的路径
         */

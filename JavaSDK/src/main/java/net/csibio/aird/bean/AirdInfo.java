@@ -94,6 +94,11 @@ public class AirdInfo {
     Long totalCount;
 
     /**
+     * 总计色谱图数目,不含TIC和BPC图, Total Spectra Count exclude TIC and BPC
+     */
+    Long totalChromatograms;
+
+    /**
      * 转换压缩后的aird二进制文件路径,默认读取同目录下的同名文件,如果不存在才去去读本字段对应的路径 The .aird file path
      */
     String airdPath;
