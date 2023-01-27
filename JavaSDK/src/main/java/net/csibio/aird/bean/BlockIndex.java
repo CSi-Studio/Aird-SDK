@@ -85,6 +85,36 @@ public class BlockIndex {
     List<Double> basePeakMzs;
 
     /**
+     * Every Spectrum's filterString in the block
+     * 所有该块中的filterString列表
+     */
+    List<String> filterStrings;
+
+    /**
+     * Every Spectrum's activator in the block
+     * 所有该块中的activator列表
+     */
+    List<String> activators;
+
+    /**
+     * Every Spectrum's energy in the block
+     * 所有该块中的energy列表
+     */
+    List<Float> energies;
+
+    /**
+     * Every Spectrum's polarity in the block
+     * 所有该块中的polarity列表
+     */
+    List<String> polarities;
+
+    /**
+     * Every Spectrum's msType in the block
+     * 所有该块中的msType列表
+     */
+    List<String> msTypes;
+
+    /**
      * 一个块中所有子谱图的mz的压缩后的大小列表 every compressed mz array's binary size in the block index
      */
     List<Integer> mzs;

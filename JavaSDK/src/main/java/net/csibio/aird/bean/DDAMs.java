@@ -41,6 +41,31 @@ public class DDAMs implements Serializable {
     Long tic;
 
     /**
+     * the filter string for current scan
+     */
+    String filterString;
+
+    /**
+     * the polarity for current scan, Negative, Position
+     */
+    String polarity;
+
+    /**
+     * the activator for current scan, CID, HCD...
+     */
+    String activator;
+
+    /**
+     * the activator energy;
+     */
+    Float energy;
+
+    /**
+     * the mass spectrum type. Profile or Centroid
+     */
+    String msType;
+
+    /**
      * injection time for single spectrum
      */
     Float injectionTime;

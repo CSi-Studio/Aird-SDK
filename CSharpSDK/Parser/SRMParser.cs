@@ -114,7 +114,7 @@ public class SRMParser : DDAParser
         var intValues = ByteTrans.byteToInt(decodedData);
         intValues = rtIntComp4Chroma.decode(intValues);
         var doubleValues = new double[intValues.Length];
-        for (var index = 0; index < intValues.Length; index++) doubleValues[index] = intValues[index] / 10000d;
+        for (var index = 0; index < intValues.Length; index++) doubleValues[index] = intValues[index] / 100000d;
 
         return doubleValues;
     }

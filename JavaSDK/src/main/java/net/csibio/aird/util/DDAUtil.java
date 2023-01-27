@@ -10,6 +10,7 @@
 
 package net.csibio.aird.util;
 
+import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.DDAPasefMs;
@@ -26,7 +27,7 @@ public class DDAUtil {
      * @param index index information
      * @param loc   index location
      */
-    public static void initFromIndex(DDAMs ms, BlockIndex index, Integer loc) {
+    public static void initFromIndex(AirdInfo airdInfo, DDAMs ms, BlockIndex index, Integer loc) {
         if (index.getNums() != null && index.getNums().size() > 0) {
             ms.setNum(index.getNums().get(loc));
         }
@@ -39,8 +40,38 @@ public class DDAUtil {
         if (index.getRangeList() != null && index.getRangeList().size() > 0) {
             ms.setRange(index.getRangeList().get(loc));
         }
-        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0){
+        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0) {
             ms.setInjectionTime(index.getInjectionTimes().get(loc));
+        }
+
+        if (index.getPolarities() != null && index.getPolarities().size() > 0) {
+            ms.setPolarity(index.getPolarities().get(loc));
+        } else {
+            ms.setPolarity(airdInfo.getPolarity());
+        }
+
+        if (index.getFilterStrings() != null && index.getFilterStrings().size() > 0) {
+            ms.setFilterString(index.getFilterStrings().get(loc));
+        } else {
+            ms.setFilterString(airdInfo.getFilterString());
+        }
+
+        if (index.getActivators() != null && index.getActivators().size() > 0) {
+            ms.setActivator(index.getActivators().get(loc));
+        } else {
+            ms.setActivator(airdInfo.getActivator());
+        }
+
+        if (index.getEnergies() != null && index.getEnergies().size() > 0) {
+            ms.setEnergy(index.getEnergies().get(loc));
+        } else {
+            ms.setEnergy(airdInfo.getEnergy());
+        }
+
+        if (index.getMsTypes() != null && index.getMsTypes().size() > 0) {
+            ms.setMsType(index.getMsTypes().get(loc));
+        } else {
+            ms.setMsType(airdInfo.getMsType());
         }
     }
 
@@ -51,7 +82,7 @@ public class DDAUtil {
      * @param index index information
      * @param loc   index location
      */
-    public static void initFromIndex(DDAPasefMs ms, BlockIndex index, Integer loc) {
+    public static void initFromIndex(AirdInfo airdInfo, DDAPasefMs ms, BlockIndex index, Integer loc) {
         if (index.getNums() != null && index.getNums().size() > 0) {
             ms.setNum(index.getNums().get(loc));
         }
@@ -64,8 +95,38 @@ public class DDAUtil {
         if (index.getRangeList() != null && index.getRangeList().size() > 0) {
             ms.setRange(index.getRangeList().get(loc));
         }
-        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0){
+        if (index.getInjectionTimes() != null && index.getInjectionTimes().size() > 0) {
             ms.setInjectionTime(index.getInjectionTimes().get(loc));
+        }
+
+        if (index.getPolarities() != null && index.getPolarities().size() > 0) {
+            ms.setPolarity(index.getPolarities().get(loc));
+        } else {
+            ms.setPolarity(airdInfo.getPolarity());
+        }
+
+        if (index.getFilterStrings() != null && index.getFilterStrings().size() > 0) {
+            ms.setFilterString(index.getFilterStrings().get(loc));
+        } else {
+            ms.setFilterString(airdInfo.getFilterString());
+        }
+
+        if (index.getActivators() != null && index.getActivators().size() > 0) {
+            ms.setActivator(index.getActivators().get(loc));
+        } else {
+            ms.setActivator(airdInfo.getActivator());
+        }
+
+        if (index.getEnergies() != null && index.getEnergies().size() > 0) {
+            ms.setEnergy(index.getEnergies().get(loc));
+        } else {
+            ms.setEnergy(airdInfo.getEnergy());
+        }
+
+        if (index.getMsTypes() != null && index.getMsTypes().size() > 0) {
+            ms.setMsType(index.getMsTypes().get(loc));
+        } else {
+            ms.setMsType(airdInfo.getMsType());
         }
     }
 }

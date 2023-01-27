@@ -137,6 +137,11 @@ public abstract class BaseParser {
      */
     public double[] mobiDict;
 
+    public SortedIntComp rtIntComp4Chroma = new IntegratedVarByteWrapper();
+    public ByteComp rtByteComp4Chroma = new ZstdWrapper();
+    public IntComp intIntComp4Chroma = new VarByteWrapper();
+    public ByteComp intByteComp4Chroma = new ZstdWrapper();
+
     /**
      * 构造函数
      */
@@ -217,7 +222,6 @@ public abstract class BaseParser {
             e.printStackTrace();
             throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
         }
-
 
         if (mzCompressor != null) {
             this.mzCompressor = mzCompressor;

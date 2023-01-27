@@ -28,12 +28,12 @@ public class AirdInfo {
     /**
      * Format Version 应用版本号
      */
-    String version = "2.0.0";
+    String version = "2.2.0";
 
     /**
      * Version Code. Integer code from 1 to N 应用版本编码,从1开始计数的整型编码
      */
-    Integer versionCode = 5;
+    Integer versionCode = 6;
 
     /**
      * [核心字段] 数组压缩策略 [Core Field] Data Compression Strategies
@@ -76,6 +76,13 @@ public class AirdInfo {
     List<BlockIndex> indexList;
 
     /**
+     * [Core Field]
+     * [核心字段]
+     * 用于SRM采集模式下色谱信息的存储
+     */
+    ChromatogramIndex chromatogramIndex;
+
+    /**
      * [核心字段] Aird文件类型 [Core Field] Aird File Type
      *
      * @see AirdType
@@ -92,11 +99,6 @@ public class AirdInfo {
      * 总计光谱数 Total Spectra Count
      */
     Long totalCount;
-
-    /**
-     * 总计色谱图数目,不含TIC和BPC图, Total Spectra Count exclude TIC and BPC
-     */
-    Long totalChromatograms;
 
     /**
      * 转换压缩后的aird二进制文件路径,默认读取同目录下的同名文件,如果不存在才去去读本字段对应的路径 The .aird file path
@@ -132,6 +134,11 @@ public class AirdInfo {
      * @see net.csibio.aird.enums.PolarityType
      */
     String polarity;
+
+    /**
+     * filter String
+     */
+    String filterString;
 
     /**
      * 是否忽略intensity为0的点 Ignore the point which intensity is 0

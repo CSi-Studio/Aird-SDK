@@ -19,7 +19,7 @@ namespace AirdSDK.Beans
         * Aird version
         * Aird的版本号
         */
-        public string version = "2.1.0";
+        public string version = "2.2.0";
 
         /**
          * Aird Code
@@ -151,7 +151,7 @@ namespace AirdSDK.Beans
          * Use in ion mobility acquisition method
          * 如果是Mobility采集模式,本字段会启用
          */
-        public MobiInfo mobiInfo;
+        public MobiInfo mobiInfo = new MobiInfo();
 
         /**
         * the aird file creator

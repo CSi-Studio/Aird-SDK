@@ -70,23 +70,18 @@ namespace AirdSDK.Beans
         public List<WindowRange> products = new();
 
         /**
-         * when msLevel = 1, this field means the related num of every MS1.
-         * when msLevel = 2, this field means the related num of every MS2.
-         * 当msLevel=1时,本字段为每一个MS1谱图的序号,当msLevel=2时本字段为每一个MS2谱图序列号
+         * chromatogram num list
+         * 谱图序列号
          */
         public List<int> nums = new List<int>();
 
         /**
-         * COMMON type: it store the start position of every compressed mz block
-         * Other types: it store the size of every compressed mz block
-         * 一个块中所有子谱图的rt的压缩后的大小列表
+         * 一个块中所有子图的rt的压缩后的大小列表
          */
         public List<int> rts = new List<int>();
 
         /**
-         * COMMON type: it store the start position of every compressed intensity block
-         * Other types: it store the size of every compressed intensity block
-         * 一个块中所有子谱图的intensity的压缩后的大小列表,当为Common类型时,每一个存储的不是块大小,而是起始位置
+         * 一个块中所有子图的intensity的压缩后的大小列表
          */
         public List<int> ints = new List<int>();
 
@@ -97,7 +92,7 @@ namespace AirdSDK.Beans
         public List<List<CV>> cvs = new List<List<CV>>();
 
         /**
-         * Features of every block index
+         * Features of every index
          * 用于存储KV键值对
          */
         public string features;

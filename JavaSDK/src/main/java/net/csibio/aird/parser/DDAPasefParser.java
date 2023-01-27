@@ -89,7 +89,7 @@ public class DDAPasefParser extends BaseParser {
 
         for (int i = 0; i < ms1RtList.size(); i++) {
             DDAPasefMs ms1 = new DDAPasefMs(ms1RtList.get(i), ms1Map.get(ms1RtList.get(i)));
-            DDAUtil.initFromIndex(ms1, ms1Index, i);
+            DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             Optional<BlockIndex> ms2IndexRes = ms2IndexList.stream().filter(index -> index.getParentNum().equals(ms1.getNum())).findFirst();
             if (ms2IndexRes.isPresent()) {
                 BlockIndex ms2Index = ms2IndexRes.get();
@@ -99,7 +99,7 @@ public class DDAPasefParser extends BaseParser {
                     List<DDAPasefMs> ms2List = new ArrayList<>();
                     for (int j = 0; j < ms2RtList.size(); j++) {
                         DDAPasefMs ms2 = new DDAPasefMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
-                        DDAUtil.initFromIndex(ms2, ms2Index, j);
+                        DDAUtil.initFromIndex(airdInfo, ms2, ms2Index, j);
                         ms2List.add(ms2);
                     }
                     ms1.setMs2List(ms2List);

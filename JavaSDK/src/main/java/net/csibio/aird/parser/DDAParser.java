@@ -156,7 +156,7 @@ public class DDAParser extends BaseParser {
         }
         for (int i = 0; i < rtList.size(); i++) {
             DDAMs ms1 = new DDAMs(rtList.get(i), ms1Map.get(rtList.get(i)));
-            DDAUtil.initFromIndex(ms1, ms1Index, i);
+            DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             if (includeMS2) {
                 BlockIndex ms2Index = ms2IndexMap.get(ms1.getNum());
                 if (ms2Index != null) {
@@ -166,7 +166,7 @@ public class DDAParser extends BaseParser {
                     List<DDAMs> ms2List = new ArrayList<>();
                     for (int j = 0; j < ms2RtList.size(); j++) {
                         DDAMs ms2 = new DDAMs(ms2RtList.get(j), ms2Map.get(ms2RtList.get(j)));
-                        DDAUtil.initFromIndex(ms2, ms2Index, j);
+                        DDAUtil.initFromIndex(airdInfo, ms2, ms2Index, j);
                         ms2List.add(ms2);
                     }
                     ms1.setMs2List(ms2List);
