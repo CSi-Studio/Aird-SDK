@@ -13,7 +13,7 @@ namespace AirdSDK.Beans.Common
 
         public string id;
 
-        public string pair;
+        public string key;
 
         public WindowRange precursor;
         public WindowRange product;

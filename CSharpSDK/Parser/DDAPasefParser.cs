@@ -64,7 +64,7 @@ public class DDAPasefParser : BaseParser
         for (int i = 0; i < ms1RtList.Count; i++)
         {
             DDAPasefMs ms1 = new DDAPasefMs(ms1RtList[i], ms1Map[ms1RtList[i]]);
-            DDAUtil.initFromIndex(ms1, ms1Index, i);
+            DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             BlockIndex ms2Index = ms2IndexList.Find(delegate(BlockIndex index)
             {
                 return index.getParentNum().Equals(ms1.num);
@@ -79,7 +79,7 @@ public class DDAPasefParser : BaseParser
                 for (int j = 0; j < ms2RtList.Count; j++)
                 {
                     DDAPasefMs ms2 = new DDAPasefMs(ms2RtList[j], ms2Map[ms2RtList[j]]);
-                    DDAUtil.initFromIndex(ms2, ms2Index, j);
+                    DDAUtil.initFromIndex(airdInfo, ms2, ms2Index, j);
                     ms2List.Add(ms2);
                 }
 

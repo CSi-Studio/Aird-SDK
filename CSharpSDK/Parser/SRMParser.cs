@@ -41,6 +41,7 @@ public class SRMParser : DDAParser
             index.products.Count == 0) return null;
 
         var pairs = new List<SrmPair>();
+        var dict = getChromatograms(index.startPtr, index.endPtr, index.ids, index.rts, index.ints);
         for (var i = 0; i < index.precursors.Count; i++)
         {
             var pair = new SrmPair();
@@ -53,7 +54,12 @@ public class SRMParser : DDAParser
             pair.precursor = index.precursors[i];
             pair.product = index.products[i];
             pair.key = pair.precursor.mz + "-" + pair.product.mz;
-            // pair.rts = getRts4Chroma()
+            if (dict.ContainsKey(pair.id))
+            {
+                pair.rts = dict[pair.id].rts;
+                pair.ints = dict[pair.id].ints;
+            }
+            pairs.Add(pair);
         }
 
         return pairs;
