@@ -74,6 +74,34 @@ public class ByteTrans {
     }
 
     /**
+     * double to int conversion
+     *
+     * @param doubles the doubles array to convert
+     * @return the converted data
+     */
+    public static int[] doubleToInt(double[] doubles, int precision) {
+        int[] newArray = new int[doubles.length];
+        for (int i = 0; i < newArray.length; i++) {
+            newArray[i] = (int)Math.round(doubles[i]*precision);
+        }
+        return newArray;
+    }
+
+    /**
+     * int to double conversion
+     *
+     * @param ints the int array to convert
+     * @return the converted data
+     */
+    public static double[] intToDouble(int[] ints, double precision) {
+        double[] newArray = new double[ints.length];
+        for (int i = 0; i < newArray.length; i++) {
+            newArray[i] = ints[i]/precision;
+        }
+        return newArray;
+    }
+
+    /**
      * float to Byte conversion
      *
      * @param floats the floats array

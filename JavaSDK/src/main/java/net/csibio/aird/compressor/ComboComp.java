@@ -78,6 +78,23 @@ public class ComboComp {
     }
 
     /**
+     * encode method
+     *
+     * @param sortedIntComp  the integer compressor
+     * @param byteComp the byte compressor
+     * @param target   the target to encode
+     * @return the compressed data
+     */
+    public static byte[] encode(SortedIntComp sortedIntComp, ByteComp byteComp, double[] target, int precision) {
+        int[] newTarget = new int[target.length];
+        for (int i = 0; i < target.length; i++) {
+            newTarget[i] = (int)Math.round(target[i]*precision);
+        }
+
+        return byteComp.encode(ByteTrans.intToByte(sortedIntComp.encode(newTarget)));
+    }
+
+    /**
      * decode method
      *
      * @param sortedIntComp the sorted integer compressor
