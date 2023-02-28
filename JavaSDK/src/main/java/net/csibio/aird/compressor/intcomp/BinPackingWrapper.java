@@ -10,7 +10,6 @@
 
 package net.csibio.aird.compressor.intcomp;
 
-import me.lemire.integercompression.BinaryPacking;
 import me.lemire.integercompression.IntCompressor;
 import net.csibio.aird.enums.IntCompType;
 
