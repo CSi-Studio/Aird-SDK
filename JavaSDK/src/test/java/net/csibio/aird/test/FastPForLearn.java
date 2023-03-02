@@ -10,6 +10,9 @@
 
 package net.csibio.aird.test;
 
+import me.lemire.integercompression.FastPFOR;
+import me.lemire.integercompression.VariableByte;
+import me.lemire.integercompression.differential.IntegratedIntCompressor;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedBinPackingWrapper;
 
 import java.util.Random;
@@ -34,6 +37,8 @@ public class FastPForLearn {
 
         int[] newTest = new IntegratedBinPackingWrapper().encode(test);
         int[] oldTest = new IntegratedBinPackingWrapper().decode(newTest);
+//        new IntegratedIntCompressor(new FastPFOR());
+
 //        int[] newTest2 = CompressUtil.fastPForEncoder(test2);
 //        int[] newFinalTest = CompressUtil.fastPForEncoder(finalTest);
 
