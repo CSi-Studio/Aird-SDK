@@ -111,7 +111,7 @@ public class DIAPasefParser extends BaseParser {
      * @return 对应光谱数据
      */
     public Spectrum getSpectrumByIndex(BlockIndex blockIndex, int index) {
-        return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(), index);
+        return getSpectrumByIndex(blockIndex.getStartPtr(), blockIndex.getMzs(), blockIndex.getInts(), blockIndex.getMobilities(), index);
     }
 
     /**
@@ -126,19 +126,20 @@ public class DIAPasefParser extends BaseParser {
      * @param index      光谱在block块中的索引位置 the spectrum index in the block
      * @return 某个时刻的光谱信息 the spectrum of the target retention time
      */
-    public Spectrum getSpectrumByIndex(long startPtr, List<Integer> mzOffsets, List<Integer> intOffsets, int index) {
+    public Spectrum getSpectrumByIndex(long startPtr, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets, int index) {
         long start = startPtr;
 
         for (int i = 0; i < index; i++) {
             start += mzOffsets.get(i);
             start += intOffsets.get(i);
+            start += mobiOffsets.get(i);
         }
 
         try {
             raf.seek(start);
-            byte[] reader = new byte[mzOffsets.get(index) + intOffsets.get(index)];
+            byte[] reader = new byte[mzOffsets.get(index) + intOffsets.get(index) + mobiOffsets.get(index)];
             raf.read(reader);
-            return getSpectrum(reader, 0, mzOffsets.get(index), intOffsets.get(index));
+            return getSpectrum(reader, 0, mzOffsets.get(index), intOffsets.get(index), mobiOffsets.get(index));
 
         } catch (Exception e) {
             e.printStackTrace();
