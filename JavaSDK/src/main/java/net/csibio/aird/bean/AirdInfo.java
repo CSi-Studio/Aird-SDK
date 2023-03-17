@@ -168,6 +168,11 @@ public class AirdInfo {
     String createDate;
 
     /**
+     * 采集时间
+     */
+    String startTimeStamp;
+
+    /**
      * @param target target compressor dimension
      * @return the target compressor
      */

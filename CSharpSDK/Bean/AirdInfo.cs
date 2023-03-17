@@ -166,6 +166,11 @@ namespace AirdSDK.Beans
         public string features;
 
         /**
+         * 采集日期
+         */
+        public string startTimeStamp;
+
+        /**
         * the create data
         * 文件的创建日期
         */
