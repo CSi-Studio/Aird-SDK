@@ -86,7 +86,7 @@ public class AirdMatrixTestForDDA {
             }
         }
         TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
-        System.out.println("质谱数据读取完毕,耗时"+(System.currentTimeMillis() - startTime));
+        System.out.println("质谱数据读取完毕,耗时" + (System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
         TreeSet<Double> mzs = new TreeSet<>();
         for (Spectrum value : ms1Map.values()) {
@@ -94,55 +94,56 @@ public class AirdMatrixTestForDDA {
                 mzs.add(value.getMzs()[i]);
             }
         }
-        System.out.println("质荷比统计完成，总计有" + mzs.size() + "个不同的质荷比,耗时："+(System.currentTimeMillis() - startTime));
+        System.out.println("质荷比统计完成，总计有" + mzs.size() + "个不同的质荷比,耗时：" + (System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
         int rowSize = ms1Map.size();
-        int firstMz = (int) (mzs.first() * mzPrecsion) - 1; //保存左开右毕
-        int lastMz = (int) (mzs.last() * mzPrecsion);
-        int range = lastMz - firstMz;
-        int block = range / 10;
-        for (int start = firstMz; start <= lastMz; start += block) {
+        double firstMz = mzs.first() - 0.00001; //保存左开右毕
+        double lastMz = mzs.last();
+        System.out.println("最小值为："+mzs.first()+"-最大值为："+mzs.last());
+        double range = lastMz - firstMz;
+        double block = range / 1000;
+
+        for (double start = firstMz; start <= lastMz; start += block) {
             //初始化一个Map用于存放列元素
             TreeMap<Double, int[]> rowMap = new TreeMap<>();
             for (Double mz : mzs) {
-                if (mz < start){
+                if (mz < start) {
                     continue;
                 }
-                if (mz > start && mz <= start + block){
+                if (mz > start && mz <= start + block) {
                     rowMap.put(mz, new int[rowSize]);
                 }
-                if (mz > start + block){
+                if (mz > start + block) {
                     break;
                 }
             }
-            System.out.println(firstMz+"_"+(firstMz+block)+"矩阵构建完成");
+            System.out.println(start + "_" + (start + block) + "矩阵构建完成");
             int spectrumId = 0;
+            Set<Double> tempMzs = rowMap.keySet();
             for (Spectrum spectrum : ms1Map.values()) {
                 double[] currentMzs = spectrum.getMzs();
                 double[] currentInts = spectrum.getInts();
                 int iter = 0;
-                for (Double mz : mzs) {
-                    if (mz < start){
+                for (Double mz : tempMzs) {
+                    if (mz < start) {
                         continue;
                     }
-                    if (mz > start && mz <= start + block){
+                    if (mz > start && mz <= start + block) {
                         if (currentMzs[iter] == mz) {
                             rowMap.get(mz)[spectrumId] = (int) (currentInts[iter] * intPrecsion);
                             iter++;
                         } else {
                             rowMap.get(mz)[spectrumId] = 0;
                         }
-                    }else if (mz > start+block){
+                    } else if (mz > start + block) {
                         break;
                     }
                 }
                 spectrumId++;
-                System.out.println("已经处理光谱：" + spectrumId + "/" + ms1Map.size());
+//                System.out.println("已经处理光谱：" + spectrumId + "/" + ms1Map.size());
             }
             System.out.println("数据处理完毕");
         }
-
-
 
 
     }
