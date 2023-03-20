@@ -5,6 +5,9 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.compressor.ByteTrans;
+import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
+import net.csibio.aird.compressor.intcomp.VarByteWrapper;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
@@ -13,7 +16,9 @@ import java.util.*;
 
 public class AirdMatrixTestForDDA {
 
-    static String indexPath = "D:\\AirdTest\\ComboComp\\File1.json";
+//    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Thermo-MTBLS733-SA1.json";
+//    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Sciex-MTBLS733-SampleA_1.json";
+    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Agilent-PXD004712-Set 3_F1.json";
 
     static List<Double> targets = new ArrayList<>();
 
@@ -34,7 +39,7 @@ public class AirdMatrixTestForDDA {
 
         AirdInfo airdInfo = parser.getAirdInfo();
         List<BlockIndex> indexList = airdInfo.getIndexList();
-        System.out.println(indexList.size() + "张谱图");
+        System.out.println(indexList.get(0).getNums().size() + "张谱图,MS1块大小为:" + (indexList.get(0).getEndPtr() - indexList.get(0).getStartPtr()) / 1024 / 1024 + "MB");
         long start = System.currentTimeMillis();
         TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
         for (int i = 0; i < targets.size(); i++) {
@@ -86,65 +91,65 @@ public class AirdMatrixTestForDDA {
             }
         }
         TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
+        List<BlockIndex> indexList = airdInfo.getIndexList();
         System.out.println("质谱数据读取完毕,耗时" + (System.currentTimeMillis() - startTime));
+        System.out.println(indexList.get(0).getNums().size() + "张谱图,MS1块大小为:" + (indexList.get(0).getEndPtr() - indexList.get(0).getStartPtr()) / 1024 / 1024 + "MB");
         startTime = System.currentTimeMillis();
-        TreeSet<Double> mzs = new TreeSet<>();
+        HashSet<Double> mzsSet = new HashSet<>();
         for (Spectrum value : ms1Map.values()) {
             for (int i = 0; i < value.getMzs().length; i++) {
-                mzs.add(value.getMzs()[i]);
+                mzsSet.add(value.getMzs()[i]);
             }
         }
+        List<Double> mzs = new ArrayList<>(mzsSet);
+        Collections.sort(mzs);
+
         System.out.println("质荷比统计完成，总计有" + mzs.size() + "个不同的质荷比,耗时：" + (System.currentTimeMillis() - startTime));
         startTime = System.currentTimeMillis();
-        int rowSize = ms1Map.size();
-        double firstMz = mzs.first() - 0.00001; //保存左开右毕
-        double lastMz = mzs.last();
-        System.out.println("最小值为："+mzs.first()+"-最大值为："+mzs.last());
-        double range = lastMz - firstMz;
-        double block = range / 1000;
-
-        for (double start = firstMz; start <= lastMz; start += block) {
+        double firstMz = mzs.get(0);
+        double lastMz = mzs.get(mzs.size() - 1);
+        System.out.println("最小值为：" + firstMz + "-最大值为：" + lastMz);
+        Collection<Spectrum> ms1List = ms1Map.values();
+        HashMap<Integer, Integer> ptrMap = new HashMap<>();
+        for (int i = 0; i < ms1Map.size(); i++) {
+            ptrMap.put(i, 0);
+        }
+        System.out.println("宽度为" + ms1Map.size());
+        int totalEffectNum = 0;
+        int totalIntensityNum = 0;
+        for (Spectrum spectrum : ms1Map.values()) {
+            totalIntensityNum += spectrum.getInts().length;
+        }
+        System.out.println("总计包含有效点数：" + totalIntensityNum);
+        long totalSize = 0;
+        int step = 1;
+        for (Double mz : mzs) {
             //初始化一个Map用于存放列元素
-            TreeMap<Double, int[]> rowMap = new TreeMap<>();
-            for (Double mz : mzs) {
-                if (mz < start) {
-                    continue;
-                }
-                if (mz > start && mz <= start + block) {
-                    rowMap.put(mz, new int[rowSize]);
-                }
-                if (mz > start + block) {
-                    break;
-                }
-            }
-            System.out.println(start + "_" + (start + block) + "矩阵构建完成");
+            int[] intensityList = new int[ms1Map.size()];
             int spectrumId = 0;
-            Set<Double> tempMzs = rowMap.keySet();
+            step++;
+            if (step % 100000 == 0) {
+                System.out.println("进度：" + step * 100 / mzs.size() + "%");
+            }
             for (Spectrum spectrum : ms1Map.values()) {
                 double[] currentMzs = spectrum.getMzs();
                 double[] currentInts = spectrum.getInts();
-                int iter = 0;
-                for (Double mz : tempMzs) {
-                    if (mz < start) {
-                        continue;
-                    }
-                    if (mz > start && mz <= start + block) {
-                        if (currentMzs[iter] == mz) {
-                            rowMap.get(mz)[spectrumId] = (int) (currentInts[iter] * intPrecsion);
-                            iter++;
-                        } else {
-                            rowMap.get(mz)[spectrumId] = 0;
-                        }
-                    } else if (mz > start + block) {
-                        break;
-                    }
+                int iter = ptrMap.get(spectrumId);
+
+                while (iter < currentMzs.length && currentMzs[iter] == mz) { //使用while防止出现连续的mz
+                    intensityList[spectrumId] = (int) currentInts[iter];
+                    iter++;
+                    totalEffectNum++;
+                    ptrMap.put(spectrumId, iter);
                 }
                 spectrumId++;
-//                System.out.println("已经处理光谱：" + spectrumId + "/" + ms1Map.size());
             }
-            System.out.println("数据处理完毕");
+            byte[] compressed = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(intensityList)));
+            totalSize += compressed.length;
         }
-
+        System.out.println("有效值有：" + totalEffectNum + ";覆盖率：" + totalEffectNum * 1.0 / (mzs.size() * ms1Map.size()));
+        System.out.println("全部数据处理完毕，总耗时：" + (System.currentTimeMillis() - startTime));
+        System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
 
     }
 }

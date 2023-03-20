@@ -17,13 +17,13 @@ using AirdSDK.Compressor;
 
 namespace AirdSDK.Parser;
 
-public class SRMParser : DDAParser
+public class MRMParser : DDAParser
 {
-    public SRMParser(string indexFilePath) : base(indexFilePath)
+    public MRMParser(string indexFilePath) : base(indexFilePath)
     {
     }
 
-    public SRMParser(string indexFilePath, AirdInfo airdInfo) : base(indexFilePath, airdInfo)
+    public MRMParser(string indexFilePath, AirdInfo airdInfo) : base(indexFilePath, airdInfo)
     {
     }
 
