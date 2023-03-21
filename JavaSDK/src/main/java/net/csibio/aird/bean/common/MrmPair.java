@@ -7,7 +7,7 @@ import net.csibio.aird.bean.WindowRange;
 import java.util.List;
 
 @Data
-public class SrmPair {
+public class MrmPair {
 
     /**
      * order number for current spectrum

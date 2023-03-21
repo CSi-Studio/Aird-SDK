@@ -12,7 +12,7 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.ChromatogramIndex;
-import net.csibio.aird.bean.common.SrmPair;
+import net.csibio.aird.bean.common.MrmPair;
 import net.csibio.aird.bean.common.Xic;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.exception.ScanException;
@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * @see SRMParser for SRM/MRM acquisition method
+ * @see MRMParser for SRM/MRM acquisition method
  * for chromatograms and spectra storage.
  */
-public class SRMParser extends DDAParser {
+public class MRMParser extends DDAParser {
 
     /**
      * 构造函数
@@ -34,11 +34,11 @@ public class SRMParser extends DDAParser {
      * @param indexFilePath index file path
      * @throws ScanException scan exception
      */
-    public SRMParser(String indexFilePath) throws Exception {
+    public MRMParser(String indexFilePath) throws Exception {
         super(indexFilePath);
     }
 
-    public SRMParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
+    public MRMParser(String indexFilePath, AirdInfo airdInfo) throws Exception {
         super(indexFilePath, airdInfo);
     }
 
@@ -49,16 +49,16 @@ public class SRMParser extends DDAParser {
         return null;
     }
 
-    public List<SrmPair> getAllSrmPairs() throws IOException {
+    public List<MrmPair> getAllMrmPairs() throws IOException {
         var index = getChromatogramIndex();
         if (index == null || index.getPrecursors() == null || index.getProducts() == null || index.getPrecursors().size() == 0 ||
                 index.getProducts().size() == 0) return null;
 
-        ArrayList<SrmPair> pairs = new ArrayList<>();
+        ArrayList<MrmPair> pairs = new ArrayList<>();
         HashMap<String, Xic> dict = getChromatograms(index.getStartPtr(), index.getEndPtr(), index.getIds(), index.getRts(), index.getInts());
         for (var i = 0; i < index.getPrecursors().size(); i++)
         {
-            var pair = new SrmPair();
+            var pair = new MrmPair();
             pair.setId(index.getIds().get(i));
             pair.setNum(index.getNums().get(i));
             pair.setPolarity(index.getPolarities().get(i));

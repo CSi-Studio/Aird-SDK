@@ -78,7 +78,7 @@ public class AirdInfo {
     /**
      * [Core Field]
      * [核心字段]
-     * 用于SRM采集模式下色谱信息的存储
+     * 用于MRM采集模式下色谱信息的存储
      */
     ChromatogramIndex chromatogramIndex;
 
