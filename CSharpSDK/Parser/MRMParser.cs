@@ -34,17 +34,17 @@ public class MRMParser : DDAParser
         return null;
     }
 
-    public List<SrmPair> getAllSrmPairs()
+    public List<MrmPair> getAllSrmPairs()
     {
         var index = getChromatogramIndex();
         if (index == null || index.precursors == null || index.products == null || index.precursors.Count == 0 ||
             index.products.Count == 0) return null;
 
-        var pairs = new List<SrmPair>();
+        var pairs = new List<MrmPair>();
         var dict = getChromatograms(index.startPtr, index.endPtr, index.ids, index.rts, index.ints);
         for (var i = 0; i < index.precursors.Count; i++)
         {
-            var pair = new SrmPair();
+            var pair = new MrmPair();
             pair.id = index.ids[i];
             pair.num = index.nums[i];
             pair.polarity = index.polarities[i];

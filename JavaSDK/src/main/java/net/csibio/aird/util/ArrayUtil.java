@@ -150,8 +150,16 @@ public class ArrayUtil {
      * @param list the list to convert
      * @return the converted data
      */
-    public static double[] toPrimitive(List<Double> list) {
+    public static double[] toDoublePrimitive(List<Double> list) {
         double[] array = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            array[i] = list.get(i);
+        }
+        return array;
+    }
+
+    public static int[] toIntPrimitive(List<Integer> list) {
+        int[] array = new int[list.size()];
         for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }

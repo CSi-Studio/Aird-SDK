@@ -13,7 +13,7 @@ using System.Collections.Generic;
 namespace AirdSDK.Utils;
 public class ArrayUtil
 {
-    public static double[] toPrimitive(List<double> list)
+    public static double[] toDoublePrimitive(List<double> list)
     {
         double[] array = new double[list.Count];
         for (int i = 0; i < list.Count; i++)

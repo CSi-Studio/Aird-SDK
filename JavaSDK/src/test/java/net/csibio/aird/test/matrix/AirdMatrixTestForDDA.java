@@ -10,6 +10,7 @@ import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
 import net.csibio.aird.compressor.intcomp.VarByteWrapper;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DDAParser;
+import net.csibio.aird.util.ArrayUtil;
 import org.junit.Test;
 
 import java.util.*;
@@ -115,7 +116,7 @@ public class AirdMatrixTestForDDA {
             ptrMap.put(i, 0);
         }
         System.out.println("宽度为" + ms1Map.size());
-        int totalEffectNum = 0;
+
         int totalIntensityNum = 0;
         for (Spectrum spectrum : ms1Map.values()) {
             totalIntensityNum += spectrum.getInts().length;
@@ -125,7 +126,8 @@ public class AirdMatrixTestForDDA {
         int step = 1;
         for (Double mz : mzs) {
             //初始化一个Map用于存放列元素
-            int[] intensityList = new int[ms1Map.size()];
+            List<Integer> spectrumIdList = new ArrayList<>();
+            List<Integer> intensityList = new ArrayList<>();
             int spectrumId = 0;
             step++;
             if (step % 100000 == 0) {
@@ -136,18 +138,20 @@ public class AirdMatrixTestForDDA {
                 double[] currentInts = spectrum.getInts();
                 int iter = ptrMap.get(spectrumId);
 
-                while (iter < currentMzs.length && currentMzs[iter] == mz) { //使用while防止出现连续的mz
-                    intensityList[spectrumId] = (int) currentInts[iter];
+                if (iter < currentMzs.length && currentMzs[iter] == mz) { //使用while防止出现连续的mz
+                    spectrumIdList.add(spectrumId);
+                    intensityList.add((int) currentInts[iter]);
                     iter++;
-                    totalEffectNum++;
                     ptrMap.put(spectrumId, iter);
                 }
                 spectrumId++;
             }
-            byte[] compressed = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(intensityList)));
-            totalSize += compressed.length;
+            int[] spectrumIds = ArrayUtil.toIntPrimitive(spectrumIdList);
+            int[] intIds = ArrayUtil.toIntPrimitive(intensityList);
+            byte[] compressedSpectrumIds = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(spectrumIds)));
+            byte[] compressedInts = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(intIds)));
+            totalSize += (compressedSpectrumIds.length+compressedInts.length);
         }
-        System.out.println("有效值有：" + totalEffectNum + ";覆盖率：" + totalEffectNum * 1.0 / (mzs.size() * ms1Map.size()));
         System.out.println("全部数据处理完毕，总耗时：" + (System.currentTimeMillis() - startTime));
         System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
 

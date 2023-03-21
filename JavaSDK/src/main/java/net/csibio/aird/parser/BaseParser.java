@@ -473,7 +473,7 @@ public abstract class BaseParser {
      * @return spectrum map for the search result
      */
     public TreeMap<Double, Spectrum> getSpectraByRtRange(long startPtr, long endPtr, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, double rtStart, double rtEnd) {
-        double[] rts = ArrayUtil.toPrimitive(rtList);
+        double[] rts = ArrayUtil.toDoublePrimitive(rtList);
         //如果范围不在已有的rt数组范围内,则直接返回empty map
         if (rtStart > rts[rts.length - 1] || rtEnd < rts[0]) {
             return null;

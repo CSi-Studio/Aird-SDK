@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AirdSDK.Beans.Common
 {
-    public class SrmPair
+    public class MrmPair
     {
 
         /**
