@@ -7,7 +7,9 @@ import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
+import net.csibio.aird.compressor.intcomp.Empty;
 import net.csibio.aird.compressor.intcomp.VarByteWrapper;
+import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.util.ArrayUtil;
@@ -124,6 +126,7 @@ public class AirdMatrixTestForDDA {
         System.out.println("总计包含有效点数：" + totalIntensityNum);
         long totalSize = 0;
         int step = 1;
+        List<Spectrum> spectra = new ArrayList<>(ms1Map.values());
         for (Double mz : mzs) {
             //初始化一个Map用于存放列元素
             List<Integer> spectrumIdList = new ArrayList<>();
@@ -133,11 +136,11 @@ public class AirdMatrixTestForDDA {
             if (step % 100000 == 0) {
                 System.out.println("进度：" + step * 100 / mzs.size() + "%");
             }
-            for (Spectrum spectrum : ms1Map.values()) {
+            for (int i = 0; i < spectra.size(); i++) {
+                Spectrum spectrum = spectra.get(i);
                 double[] currentMzs = spectrum.getMzs();
                 double[] currentInts = spectrum.getInts();
                 int iter = ptrMap.get(spectrumId);
-
                 if (iter < currentMzs.length && currentMzs[iter] == mz) { //使用while防止出现连续的mz
                     spectrumIdList.add(spectrumId);
                     intensityList.add((int) currentInts[iter]);
@@ -148,12 +151,11 @@ public class AirdMatrixTestForDDA {
             }
             int[] spectrumIds = ArrayUtil.toIntPrimitive(spectrumIdList);
             int[] intIds = ArrayUtil.toIntPrimitive(intensityList);
-            byte[] compressedSpectrumIds = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(spectrumIds)));
+            byte[] compressedSpectrumIds = new ZstdWrapper().encode(ByteTrans.intToByte(new IntegratedVarByteWrapper().encode(spectrumIds)));
             byte[] compressedInts = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(intIds)));
             totalSize += (compressedSpectrumIds.length+compressedInts.length);
         }
         System.out.println("全部数据处理完毕，总耗时：" + (System.currentTimeMillis() - startTime));
         System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
-
     }
 }
