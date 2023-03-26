@@ -30,7 +30,7 @@ public class AirdMatrixTestForDDA {
 
 
     public void random() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 10; i++) {
             double random = new Random().nextDouble() * 16; //0-16之间的数字
             random += 4; //4-20之间的数字
             random *= 100; //400-2000之间的浮点数字
@@ -41,27 +41,31 @@ public class AirdMatrixTestForDDA {
     @Test
     public void speedTest() throws Exception {
         random();
-        DDAParser parser = new DDAParser(indexPath);
-
-        AirdInfo airdInfo = parser.getAirdInfo();
-        List<BlockIndex> indexList = airdInfo.getIndexList();
-        System.out.println(indexList.get(0).getNums().size() + "张谱图,MS1块大小为:" + (indexList.get(0).getEndPtr() - indexList.get(0).getStartPtr()) / 1024 / 1024 + "MB");
         long start = System.currentTimeMillis();
-        TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
-        for (int i = 0; i < targets.size(); i++) {
-            double target = targets.get(i);
-            double targetStart = target - 0.015;
-            double targetEnd = target + 0.015;
-            double[] xic = new double[ms1Map.size()];
-            Collection<Spectrum> ms1List = ms1Map.values();
-            int iter = 0;
-            for (Spectrum spectrum : ms1List) {
-                double result = Extractor.accumulation(spectrum, targetStart, targetEnd);
-                xic[iter] = result;
-                iter++;
+        int simulatorFiles = 100;
+        for (int count = 0; count < simulatorFiles; count++) {
+            DDAParser parser = new DDAParser(indexPath);
+//            AirdInfo airdInfo = parser.getAirdInfo();
+//            List<BlockIndex> indexList = airdInfo.getIndexList();
+            TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
+            for (int i = 0; i < targets.size(); i++) {
+                double target = targets.get(i);
+                double targetStart = target - 0.015;
+                double targetEnd = target + 0.015;
+                double[] xic = new double[ms1Map.size()];
+                Collection<Spectrum> ms1List = ms1Map.values();
+                int iter = 0;
+                for (Spectrum spectrum : ms1List) {
+                    double result = Extractor.accumulation(spectrum, targetStart, targetEnd);
+                    xic[iter] = result;
+                    iter++;
+                }
             }
+            parser.close();
         }
-        System.out.println("搜索时间：" + (System.currentTimeMillis() - start));
+
+        System.out.println("模拟搜索"+simulatorFiles+"个文件中搜索"+targets.size()
+                +"个靶标的时间为：" + (System.currentTimeMillis() - start)/1000d+"秒");
     }
 
     @Test
@@ -205,6 +209,7 @@ public class AirdMatrixTestForDDA {
         System.out.println("全部数据处理完毕，总耗时：" + (System.currentTimeMillis() - startTime));
         System.out.println("有效点数" + totalPoint+"个");
         System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
+
 
         //开始测试读取性能
     }
