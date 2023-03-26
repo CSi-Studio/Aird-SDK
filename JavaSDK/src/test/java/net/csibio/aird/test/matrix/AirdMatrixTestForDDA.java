@@ -45,8 +45,6 @@ public class AirdMatrixTestForDDA {
         int simulatorFiles = 100;
         for (int count = 0; count < simulatorFiles; count++) {
             DDAParser parser = new DDAParser(indexPath);
-//            AirdInfo airdInfo = parser.getAirdInfo();
-//            List<BlockIndex> indexList = airdInfo.getIndexList();
             TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
             for (int i = 0; i < targets.size(); i++) {
                 double target = targets.get(i);
@@ -210,7 +208,25 @@ public class AirdMatrixTestForDDA {
         System.out.println("有效点数" + totalPoint+"个");
         System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
 
-
         //开始测试读取性能
+        random();
+        int simulatorFiles = 100;
+        for (int count = 0; count < simulatorFiles; count++) {
+            for (int i = 0; i < targets.size(); i++) {
+                double target = targets.get(i);
+                double targetStart = target - 0.015;
+                double targetEnd = target + 0.015;
+                double[] xic = new double[ms1Map.size()];
+//                Collection<Spectrum> ms1List = ms1Map.values();
+//                int iter = 0;
+//                for (Spectrum spectrum : ms1List) {
+//                    double result = Extractor.accumulation(spectrum, targetStart, targetEnd);
+//                    xic[iter] = result;
+//                    iter++;
+//                }
+            }
+            parser.close();
+        }
+
     }
 }
