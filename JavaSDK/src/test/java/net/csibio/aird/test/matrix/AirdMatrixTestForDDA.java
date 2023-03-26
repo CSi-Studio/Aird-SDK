@@ -4,6 +4,7 @@ import com.sun.source.tree.Tree;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.common.CompressedPairs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
@@ -13,6 +14,7 @@ import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.util.ArrayUtil;
+import net.csibio.aird.util.PrecisionUtil;
 import org.junit.Test;
 
 import java.util.*;
@@ -21,7 +23,8 @@ public class AirdMatrixTestForDDA {
 
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Thermo-MTBLS733-SA1.json";
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Sciex-MTBLS733-SampleA_1.json";
-    static String indexPath = "D:\\AirdMatrixTest\\Aird\\DDA-Agilent-PXD004712-Set 3_F1.json";
+    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Agilent-PXD004712-Set 3_F1.json";
+//    static String indexPath = "D:\\AirdMatrixTest\\Aird\\4dp\\DDA-Agilent-PXD004712-Set 3_F1.json";
 
     static List<Double> targets = new ArrayList<>();
 
@@ -80,6 +83,40 @@ public class AirdMatrixTestForDDA {
     }
 
     @Test
+    public void precisionControl() throws Exception {
+        long startTime = System.currentTimeMillis();
+        DDAParser parser = new DDAParser(indexPath);
+        AirdInfo airdInfo = parser.getAirdInfo();
+        int mzPrecsion = 0;
+        int intPrecsion = 0;
+        for (Compressor compressor : airdInfo.getCompressors()) {
+            if (compressor.getTarget().equals(Compressor.TARGET_MZ)) {
+                mzPrecsion = compressor.getPrecision();
+            } else if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)) {
+                intPrecsion = compressor.getPrecision();
+            }
+        }
+        TreeMap<Double, Spectrum> ms1Map = parser.getMs1SpectraMap();
+        List<BlockIndex> indexList = airdInfo.getIndexList();
+        System.out.println("质谱数据读取完毕,耗时" + (System.currentTimeMillis() - startTime));
+        System.out.println(indexList.get(0).getNums().size() + "张谱图,MS1块大小为:" + (indexList.get(0).getEndPtr() - indexList.get(0).getStartPtr()) / 1024 / 1024 + "MB");
+        startTime = System.currentTimeMillis();
+        HashSet<Double> mzs3dpSet = new HashSet<>();
+        HashSet<Double> mzs4dpSet = new HashSet<>();
+        HashSet<Double> mzs5dpSet = new HashSet<>();
+        for (Spectrum value : ms1Map.values()) {
+            for (int i = 0; i < value.getMzs().length; i++) {
+                mzs3dpSet.add(PrecisionUtil.trunc(value.getMzs()[i], 1000));
+                mzs4dpSet.add(PrecisionUtil.trunc(value.getMzs()[i], 10000));
+                mzs5dpSet.add(PrecisionUtil.trunc(value.getMzs()[i], 100000));
+            }
+        }
+        System.out.println("3dp下有效mz有"+mzs3dpSet.size()+"个");
+        System.out.println("4dp下有效mz有"+mzs4dpSet.size()+"个");
+        System.out.println("5dp下有效mz有"+mzs5dpSet.size()+"个");
+    }
+
+    @Test
     public void trans() throws Exception {
         long startTime = System.currentTimeMillis();
         DDAParser parser = new DDAParser(indexPath);
@@ -127,6 +164,8 @@ public class AirdMatrixTestForDDA {
         long totalSize = 0;
         int step = 1;
         List<Spectrum> spectra = new ArrayList<>(ms1Map.values());
+        long totalPoint = 0;
+        TreeMap<Double, CompressedPairs> treeRow = new TreeMap<>();
         for (Double mz : mzs) {
             //初始化一个Map用于存放列元素
             List<Integer> spectrumIdList = new ArrayList<>();
@@ -141,21 +180,32 @@ public class AirdMatrixTestForDDA {
                 double[] currentMzs = spectrum.getMzs();
                 double[] currentInts = spectrum.getInts();
                 int iter = ptrMap.get(spectrumId);
-                if (iter < currentMzs.length && currentMzs[iter] == mz) { //使用while防止出现连续的mz
-                    spectrumIdList.add(spectrumId);
-                    intensityList.add((int) currentInts[iter]);
+                boolean effect = false;
+                int intensity = 0;
+                while (iter < currentMzs.length && currentMzs[iter] == mz) {
+                    effect = true;
+                    intensity += (int) currentInts[iter];
                     iter++;
+                }
+                if (effect){
+                    spectrumIdList.add(spectrumId);
+                    intensityList.add(intensity);
                     ptrMap.put(spectrumId, iter);
                 }
                 spectrumId++;
             }
             int[] spectrumIds = ArrayUtil.toIntPrimitive(spectrumIdList);
             int[] intIds = ArrayUtil.toIntPrimitive(intensityList);
+            totalPoint+=intIds.length;
             byte[] compressedSpectrumIds = new ZstdWrapper().encode(ByteTrans.intToByte(new IntegratedVarByteWrapper().encode(spectrumIds)));
             byte[] compressedInts = new ZstdWrapper().encode(ByteTrans.intToByte(new VarByteWrapper().encode(intIds)));
+            treeRow.put(mz, new CompressedPairs(compressedSpectrumIds, compressedInts));
             totalSize += (compressedSpectrumIds.length+compressedInts.length);
         }
         System.out.println("全部数据处理完毕，总耗时：" + (System.currentTimeMillis() - startTime));
+        System.out.println("有效点数" + totalPoint+"个");
         System.out.println("总体积为：" + totalSize / 1024 / 1024 + "MB");
+
+        //开始测试读取性能
     }
 }
