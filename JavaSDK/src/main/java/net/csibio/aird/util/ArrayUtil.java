@@ -14,7 +14,9 @@ import net.csibio.aird.structure.SortInt;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.math3.util.Pair;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -241,5 +243,16 @@ public class ArrayUtil {
             }
         }
         return true;
+    }
+
+    public static HashMap<Integer, Integer> toMap(int[] a, int[] b) {
+        if (a.length != b.length) {
+            return null;
+        }
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < a.length; i++) {
+            map.put(a[i], b[i]);
+        }
+        return map;
     }
 }
