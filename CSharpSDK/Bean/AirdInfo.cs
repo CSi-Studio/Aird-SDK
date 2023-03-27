@@ -19,13 +19,13 @@ namespace AirdSDK.Beans
         * Aird version
         * Aird的版本号
         */
-        public string version = "2.2.0";
+        public string version = "2.3.0";
 
         /**
          * Aird Code
          * Aird的版本编码
          */
-        public int versionCode = 6;
+        public int versionCode = 7;
 
         /**
        * [Core Field]
@@ -74,6 +74,18 @@ namespace AirdSDK.Beans
          * 当存储SWATH窗口信息,窗口已经根据overlap进行过调整
          */
         public List<BlockIndex> indexList;
+
+        /**
+         * BlockIndex经过压缩以后的二进制数据开始位置
+         * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
+         */
+        public long indexStartPtr;
+
+        /**
+         * BlockIndex经过压缩以后的二进制数据结束位置
+         * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
+         */
+        public long indexEndPtr;
 
         /**
          * [Core Field]

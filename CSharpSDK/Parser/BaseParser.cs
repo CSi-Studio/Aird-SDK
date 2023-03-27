@@ -17,6 +17,7 @@ using AirdSDK.Compressor;
 using AirdSDK.Enums;
 using AirdSDK.Exception;
 using AirdSDK.Utils;
+using Newtonsoft.Json;
 
 namespace AirdSDK.Parser;
 
@@ -95,7 +96,7 @@ public abstract class BaseParser
 
         airdFile = new FileInfo(AirdScanUtil.getAirdPathByIndexPath(indexPath));
         fs = File.OpenRead(airdFile.FullName);
-
+        readIndexListBytes();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
@@ -115,7 +116,7 @@ public abstract class BaseParser
         airdFile = new FileInfo(AirdScanUtil.getAirdPathByIndexPath(indexPath));
 
         fs = File.OpenRead(airdFile.FullName);
-
+        readIndexListBytes();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
@@ -149,7 +150,7 @@ public abstract class BaseParser
             this.mobiCompressor = mobiCompressor;
             mobiPrecision = mobiCompressor.precision;
         }
-
+        readIndexListBytes();
         parseComboComp();
         parseMobilityDict();
     }
@@ -193,6 +194,25 @@ public abstract class BaseParser
         }
 
         throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+    }
+
+    public void readIndexListBytes()
+    {
+        if (airdInfo != null && airdInfo.indexList == null)
+        {
+            var delta = (int)(airdInfo.indexEndPtr - airdInfo.indexStartPtr);
+            if (delta > 0)
+            {
+                fs.Seek(airdInfo.indexEndPtr, SeekOrigin.Begin);
+                byte[] result = new byte[delta];
+                fs.Read(result, 0, delta);
+                byte[] indexListBytes = new ZstdWrapper().decode(result);
+                string indexListStr = System.Text.Encoding.UTF8.GetString(indexListBytes);
+                JsonSerializer serializer = new JsonSerializer();
+                List<BlockIndex> indexList = JsonConvert.DeserializeObject<List<BlockIndex>>(indexListStr);
+                airdInfo.indexList = indexList;
+            }
+        }
     }
 
     public static Beans.Compressor fetchTargetCompressor(List<Beans.Compressor> compressors, string target)
