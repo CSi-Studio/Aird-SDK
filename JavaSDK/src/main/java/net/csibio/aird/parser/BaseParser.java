@@ -10,6 +10,8 @@
 
 package net.csibio.aird.parser;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
 import lombok.Data;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
@@ -168,7 +170,7 @@ public abstract class BaseParser {
             e.printStackTrace();
             throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
         }
-
+        parseIndexList();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
@@ -193,10 +195,26 @@ public abstract class BaseParser {
             e.printStackTrace();
             throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
         }
-
+        parseIndexList();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
+    }
+
+    public void parseIndexList() throws IOException {
+        if (airdInfo != null && airdInfo.getIndexList() == null) {
+            var delta = (int)(airdInfo.getIndexEndPtr() - airdInfo.getIndexStartPtr());
+            if (delta > 0)
+            {
+                raf.seek(airdInfo.getIndexStartPtr());
+                byte[] result = new byte[delta];
+                raf.read(result);
+                byte[] indexListBytes = new ZstdWrapper().decode(result);
+                String indexListStr = new String(indexListBytes);
+                List<BlockIndex> indexList = JSONArray.parseArray(indexListStr, BlockIndex.class);
+                airdInfo.setIndexList(indexList);
+            }
+        }
     }
 
     /**
@@ -237,7 +255,7 @@ public abstract class BaseParser {
             this.mobiCompressor = mobiCompressor;
             this.mobiPrecision = mobiCompressor.getPrecision();
         }
-
+        parseIndexList();
         parseComboComp();
         parseMobilityDict();
     }

@@ -28,8 +28,14 @@ import java.util.stream.Collectors;
 public class DIAParserTest {
 
     @Test
+    public void testDIA() throws Exception {
+        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\File6.json");
+        Spectrum spectrum = parser.getSpectrumByNum(100);
+        System.out.printf("Spectrum Point:"+spectrum.getMzs().length);
+    }
+    @Test
     public void testXICSpeed() throws Exception {
-        DIAParser parser = new DIAParser("D:\\proteomics\\Project\\HYE110_6600_32Fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
+        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\File6.json");
         AirdInfo airdInfo = parser.getAirdInfo();
 
         //加载标准库

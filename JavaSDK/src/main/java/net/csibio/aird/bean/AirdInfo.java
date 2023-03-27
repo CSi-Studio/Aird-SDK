@@ -76,6 +76,18 @@ public class AirdInfo {
     List<BlockIndex> indexList;
 
     /**
+     * BlockIndex经过压缩以后的二进制数据开始位置
+     * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
+     */
+    long indexStartPtr;
+
+    /**
+     * BlockIndex经过压缩以后的二进制数据结束位置
+     * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
+     */
+    long indexEndPtr;
+
+    /**
      * [Core Field]
      * [核心字段]
      * 用于MRM采集模式下色谱信息的存储

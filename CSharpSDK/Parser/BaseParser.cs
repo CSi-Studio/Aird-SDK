@@ -96,7 +96,7 @@ public abstract class BaseParser
 
         airdFile = new FileInfo(AirdScanUtil.getAirdPathByIndexPath(indexPath));
         fs = File.OpenRead(airdFile.FullName);
-        readIndexListBytes();
+        parseIndexList();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
@@ -116,7 +116,7 @@ public abstract class BaseParser
         airdFile = new FileInfo(AirdScanUtil.getAirdPathByIndexPath(indexPath));
 
         fs = File.OpenRead(airdFile.FullName);
-        readIndexListBytes();
+        parseIndexList();
         parseCompsFromAirdInfo();
         parseComboComp();
         parseMobilityDict();
@@ -150,7 +150,7 @@ public abstract class BaseParser
             this.mobiCompressor = mobiCompressor;
             mobiPrecision = mobiCompressor.precision;
         }
-        readIndexListBytes();
+        parseIndexList();
         parseComboComp();
         parseMobilityDict();
     }
@@ -196,14 +196,14 @@ public abstract class BaseParser
         throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
     }
 
-    public void readIndexListBytes()
+    public void parseIndexList()
     {
         if (airdInfo != null && airdInfo.indexList == null)
         {
             var delta = (int)(airdInfo.indexEndPtr - airdInfo.indexStartPtr);
             if (delta > 0)
             {
-                fs.Seek(airdInfo.indexEndPtr, SeekOrigin.Begin);
+                fs.Seek(airdInfo.indexStartPtr, SeekOrigin.Begin);
                 byte[] result = new byte[delta];
                 fs.Read(result, 0, delta);
                 byte[] indexListBytes = new ZstdWrapper().decode(result);
