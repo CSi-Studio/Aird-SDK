@@ -10,6 +10,6 @@
 
 package net.csibio.aird.bean.common;
 
-public record IntegerPair(int left, int right) {
+public record IntegerPair(Integer left, Integer right) {
 
 }
