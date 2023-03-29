@@ -10,10 +10,9 @@
 
 namespace AirdSDK.Enums
 {
-    public class Scene
+    public class MsLevel
     {
-        public static string Computation = "Computation";
-        public static string Storage = "Storage";
-        public static string SearchEngine = "SearchEngine";
+        public static string MS1 = "1";
+        public static string MS2 = "2";
     }
 }
