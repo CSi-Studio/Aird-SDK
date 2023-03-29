@@ -1,13 +1,11 @@
-package net.csibio.aird.test.matrix;
+package net.csibio.aird.test.searchengine;
 
-import com.sun.source.tree.Tree;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.common.*;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
-import net.csibio.aird.compressor.intcomp.Empty;
 import net.csibio.aird.compressor.intcomp.VarByteWrapper;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
 import net.csibio.aird.eic.Extractor;
@@ -21,9 +19,9 @@ import java.util.*;
 
 public class AirdMatrixTestForDDA {
 
-    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Thermo-MTBLS733-SA1.json";
+//    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Thermo-MTBLS733-SA1.json";
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\4dp\\DDA-Sciex-MTBLS733-SampleA_1.json";
-//    static String indexPath = "D:\\AirdMatrixTest\\Aird\\4dp\\DDA-Agilent-PXD004712-Set 3_F1.json";
+    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Agilent-PXD004712-Set 3_F1.json";
 
     static List<Double> targets = new ArrayList<>();
 

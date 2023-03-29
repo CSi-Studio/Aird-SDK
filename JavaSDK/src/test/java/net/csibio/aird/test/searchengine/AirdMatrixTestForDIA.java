@@ -1,10 +1,8 @@
-package net.csibio.aird.test.matrix;
+package net.csibio.aird.test.searchengine;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.eic.Extractor;
-import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
 
