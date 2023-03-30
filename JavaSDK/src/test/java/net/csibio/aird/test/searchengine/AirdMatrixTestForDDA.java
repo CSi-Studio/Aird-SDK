@@ -174,7 +174,7 @@ public class AirdMatrixTestForDDA {
             //初始化一个Map用于存放列元素
             List<Integer> spectrumIdList = new ArrayList<>();
             List<Integer> intensityList = new ArrayList<>();
-            int spectrumId = 0;
+//            int spectrumId = 0;
             step++;
             if (step % 100000 == 0) {
                 System.out.println("进度：" + step * 100 / mzs.size() + "%");
@@ -183,7 +183,7 @@ public class AirdMatrixTestForDDA {
                 Spectrum spectrum = spectra.get(i);
                 double[] currentMzs = spectrum.getMzs();
                 double[] currentInts = spectrum.getInts();
-                int iter = ptrMap.get(spectrumId);
+                int iter = ptrMap.get(i);
                 boolean effect = false;
                 int intensity = 0;
                 while (iter < currentMzs.length && currentMzs[iter] == mz) {
@@ -192,11 +192,11 @@ public class AirdMatrixTestForDDA {
                     iter++;
                 }
                 if (effect) {
-                    spectrumIdList.add(spectrumId);
+                    spectrumIdList.add(i);
                     intensityList.add(intensity);
-                    ptrMap.put(spectrumId, iter);
+                    ptrMap.put(i, iter);
                 }
-                spectrumId++;
+//                spectrumId++;
             }
             int[] spectrumIds = ArrayUtil.toIntPrimitive(spectrumIdList);
             int[] intIds = ArrayUtil.toIntPrimitive(intensityList);

@@ -23,4 +23,15 @@ public class ArrayUtil
 
         return array;
     }
+
+    public static int[] toIntArray(List<int> list)
+    {
+        int[] array = new int[list.Count];
+        for (int i = 0; i < list.Count; i++)
+        {
+            array[i] = list[i];
+        }
+
+        return array;
+    }
 }
