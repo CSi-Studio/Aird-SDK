@@ -18,6 +18,7 @@ namespace AirdSDK.Beans
         public static string TARGET_MZ = "mz";
         public static string TARGET_INTENSITY = "intensity";
         public static string TARGET_MOBILITY = "mobility";
+        public static string TARGET_RT = "rt";
 
         /**
          * Compression target, support for mz and intensity

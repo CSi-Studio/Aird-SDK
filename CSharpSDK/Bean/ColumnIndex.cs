@@ -24,12 +24,18 @@ public class ColumnIndex
      */
     public WindowRange range;
 
-    public List<int> mzs; //矩阵横坐标
+    public long startMzListPtr;
+    public long endMzListPtr;
 
-    public List<int> rts; //矩阵纵坐标
+    public long startRtListPtr;
+    public long endRtListPtr;
 
-    public List<long> spectraIds; //spectraId的数组文件坐标delta值
+    public List<int> mzs = new(); //矩阵横坐标
 
-    public List<long> intensities; //强度数组坐标delta
+    public List<int> rts = new(); //矩阵纵坐标
+
+    public List<int> spectraIds = new(); //spectraId的数组文件坐标delta值
+
+    public List<int> intensities = new(); //强度数组坐标delta
 
 }
