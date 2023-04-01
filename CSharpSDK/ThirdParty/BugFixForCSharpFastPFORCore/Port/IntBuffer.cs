@@ -26,7 +26,6 @@ namespace CSharpFastPFOR.Port
 
                 if (BitConverter.IsLittleEndian && _order == ByteOrder.BIG_ENDIAN)
                     value = reverseBytes(value);
-
                 dst[i] = value;
             }
         }

@@ -42,7 +42,7 @@ namespace CSharpFastPFOR
          */
         public int[] compress(int[] input)
         {
-            int[] compressed = new int[input.Length + 1024];
+            int[] compressed = new int[input.Length + 4096];
             compressed[0] = input.Length;
             IntWrapper outpos = new IntWrapper(1);
             codec.headlessCompress(input, new IntWrapper(0), input.Length, compressed, outpos);

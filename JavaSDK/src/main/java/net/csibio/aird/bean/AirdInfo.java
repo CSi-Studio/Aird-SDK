@@ -76,6 +76,11 @@ public class AirdInfo {
     List<BlockIndex> indexList;
 
     /**
+     * [核心字段] 用于列式存储的索引 [Core Field] Store the Column Index
+     */
+    List<ColumnIndex> columnIndexList;
+
+    /**
      * BlockIndex经过压缩以后的二进制数据开始位置
      * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
      */

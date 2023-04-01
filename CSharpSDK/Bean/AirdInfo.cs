@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using AirdSDK.Enums;
 
 namespace AirdSDK.Beans
 {
@@ -34,6 +35,11 @@ namespace AirdSDK.Beans
        * 数组压缩策略
        */
         public List<Beans.Compressor> compressors;
+
+        /**
+         * 格式类型,见Scene
+         */
+        public string scene = Scene.Computation;
 
         /**
          * Instrument information list
@@ -76,7 +82,13 @@ namespace AirdSDK.Beans
          */
         public List<BlockIndex> indexList;
 
-        
+        /**
+         * [Core Field]
+         * Used for Scene of SearchEngine. Save data in Column dim
+         * 按列存储时使用的索引，用于存储每一列的元数据
+         */
+        public List<ColumnIndex> columnIndexList;
+
         /**
          * BlockIndex经过压缩以后的二进制数据开始位置
          * version code >=7 以后支持的字段，支持索引数据使用二进制的方式存储于Aird文件中
