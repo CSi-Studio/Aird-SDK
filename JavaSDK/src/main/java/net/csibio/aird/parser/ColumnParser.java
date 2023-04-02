@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ColumnParser {
@@ -69,8 +71,9 @@ public class ColumnParser {
             if (columnIndex.getRts() == null){
                 byte[] rtsByte = readByte(columnIndex.getStartRtListPtr(), columnIndex.getEndRtListPtr());
                 int[] rtsAsInt = new IntegratedVarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(rtsByte)));
+                columnIndex.setRts(rtsAsInt);
             }
-
+            
 
         }
     }

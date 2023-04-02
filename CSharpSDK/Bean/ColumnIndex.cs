@@ -36,13 +36,13 @@ public class ColumnIndex
     public long startIntensityListPtr;
     public long endIntensityListPtr;
 
-    public List<int> mzs = new(); //矩阵横坐标
+    public int[] mzs; //矩阵横坐标
 
-    public List<int> rts = new(); //矩阵纵坐标
+    public int[] rts; //矩阵纵坐标
 
-    public List<int> spectraIds = new(); //spectraId的数组文件坐标delta值
+    public int[] spectraIds; //spectraId的数组文件坐标delta值
 
-    public List<int> intensities = new(); //强度数组坐标delta
+    public int[] intensities; //强度数组坐标delta
 
     public string toString()
     {
