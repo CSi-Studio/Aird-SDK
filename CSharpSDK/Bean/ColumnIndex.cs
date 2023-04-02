@@ -30,6 +30,12 @@ public class ColumnIndex
     public long startRtListPtr;
     public long endRtListPtr;
 
+    public long startSpecrtaIdListPtr;
+    public long endSpecrtaIdListPtr;
+
+    public long startIntensityListPtr;
+    public long endIntensityListPtr;
+
     public List<int> mzs = new(); //矩阵横坐标
 
     public List<int> rts = new(); //矩阵纵坐标
@@ -37,5 +43,17 @@ public class ColumnIndex
     public List<int> spectraIds = new(); //spectraId的数组文件坐标delta值
 
     public List<int> intensities = new(); //强度数组坐标delta
+
+    public string toString()
+    {
+        if (level == 1)
+        {
+            return "MS1-Col:";
+        }
+        else
+        {
+            return "MS2-" + range.mz + ":";
+        }
+    }
 
 }
