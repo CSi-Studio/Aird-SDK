@@ -1,5 +1,5 @@
 package net.csibio.aird.bean.common;
 
-public record Column(double mz, int[] intensities) {
+public record Column(int spectraId, double intensity) {
 
 }
