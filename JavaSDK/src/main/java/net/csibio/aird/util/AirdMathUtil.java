@@ -117,6 +117,38 @@ public class AirdMathUtil {
      * @param value search target
      * @return the left and right index of the target value
      */
+    public static IntPair binarySearch(int[] x, int value) {
+        if (x.length == 1) {
+            return new IntPair(0, 0);
+        }
+        int high = x.length - 1;
+        int low = 0;
+        int mid;
+
+        if (value < x[0]) {
+            high = 0;
+        } else if (value > x[x.length - 1]) {
+            low = x.length - 1;
+        } else {
+            while (high - low != 1) {
+                mid = low + (high - low + 1) / 2;
+                if (x[mid] < value) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+            }
+        }
+        return new IntPair(low, high);
+    }
+
+    /**
+     * Get index of first target bigger than mzStart
+     *
+     * @param x     search array
+     * @param value search target
+     * @return the left and right index of the target value
+     */
     public static IntPair binarySearch(double[] x, double value) {
         if (x.length == 1) {
             return new IntPair(0, 0);
