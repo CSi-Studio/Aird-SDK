@@ -12,6 +12,7 @@ package net.csibio.aird.util;
 
 import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.AirdInfo;
+import net.csibio.aird.bean.ColumnInfo;
 import net.csibio.aird.constant.SuffixConst;
 import net.csibio.aird.constant.SymbolConst;
 import net.csibio.aird.enums.ResultCodeEnum;
@@ -85,6 +86,26 @@ public class AirdScanUtil {
     }
 
     /**
+     * load Aird Index Information from index file(JSON Format),and parse into ColumnInfo
+     *
+     * @param indexFile 索引文件
+     * @return 该索引文件内的JSON信息, 即ColumnInfo信息
+     */
+    public static ColumnInfo loadColumnInfo(File indexFile) {
+        String content = FileUtil.readFile(indexFile);
+        ColumnInfo columnInfo = null;
+
+        try {
+            columnInfo = JSON.parseObject(content, ColumnInfo.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        return columnInfo;
+    }
+
+    /**
      * 批量加载索引文件 Batch Load index files
      *
      * @param indexFiles 索引文件列表
@@ -147,6 +168,19 @@ public class AirdScanUtil {
      */
     public static String getAirdPathByIndexPath(String indexPath) {
         if (indexPath == null || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.JSON)) {
+            return null;
+        }
+        return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
+    }
+
+    /**
+     * 根据索引文件路径获取aird文件路径
+     *
+     * @param indexPath 索引文件路径
+     * @return aird文件路径
+     */
+    public static String getAirdPathByColumnIndexPath(String indexPath) {
+        if (indexPath == null || !indexPath.contains(SymbolConst.DOT) || !indexPath.endsWith(SuffixConst.CJSON)) {
             return null;
         }
         return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;

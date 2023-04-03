@@ -1,10 +1,7 @@
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.ColumnIndex;
-import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.common.Column;
-import net.csibio.aird.bean.common.Columns;
+import net.csibio.aird.bean.ColumnInfo;
 import net.csibio.aird.bean.common.IntPair;
 import net.csibio.aird.bean.common.Xic;
 import net.csibio.aird.compressor.ByteTrans;
@@ -15,8 +12,6 @@ import net.csibio.aird.enums.ResultCodeEnum;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdMathUtil;
 import net.csibio.aird.util.AirdScanUtil;
-import org.ejml.data.*;
-import org.ejml.ops.CommonOps_BDRM;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,14 +27,14 @@ public class ColumnParser {
     public File airdFile;
 
     /**
-     * the aird index file. JSON format
+     * the column index file. JSON format,with cjson
      */
     public File indexFile;
 
     /**
      * the airdInfo from the index file.
      */
-    public AirdInfo airdInfo;
+    public ColumnInfo columnInfo;
 
     /**
      * mz precision
@@ -58,12 +53,12 @@ public class ColumnParser {
 
     public ColumnParser(String indexPath) throws IOException {
         this.indexFile = new File(indexPath);
-        airdInfo = AirdScanUtil.loadAirdInfo(indexFile);
-        if (airdInfo == null) {
+        columnInfo = AirdScanUtil.loadColumnInfo(indexFile);
+        if (columnInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }
 
-        this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
+        this.airdFile = new File(AirdScanUtil.getAirdPathByColumnIndexPath(indexPath));
         try {
             raf = new RandomAccessFile(airdFile, "r");
         } catch (FileNotFoundException e) {
@@ -71,20 +66,13 @@ public class ColumnParser {
             throw new ScanException(ResultCodeEnum.AIRD_FILE_PARSE_ERROR);
         }
         //获取mzPrecision
-        for (Compressor compressor : airdInfo.getCompressors()) {
-            if (compressor.getTarget().equals(Compressor.TARGET_MZ)) {
-                mzPrecision = compressor.getPrecision();
-            }
-            if (compressor.getTarget().equals(Compressor.TARGET_INTENSITY)) {
-                intPrecision = compressor.getPrecision();
-            }
-        }
-
+        mzPrecision = columnInfo.getMzPrecision();
+        intPrecision = columnInfo.getIntPrecision();
         parseColumnIndex();
     }
 
     public void parseColumnIndex() throws IOException {
-        List<ColumnIndex> indexList = airdInfo.getColumnIndexList();
+        List<ColumnIndex> indexList = columnInfo.getIndexList();
         for (ColumnIndex columnIndex : indexList) {
             if (columnIndex.getMzs() == null) {
                 byte[] mzsByte = readByte(columnIndex.getStartMzListPtr(), columnIndex.getEndMzListPtr());
@@ -124,19 +112,19 @@ public class ColumnParser {
         return result;
     }
 
-    public Xic getColumns(double mzStart, double mzEnd, Double precursorMz) throws IOException {
-        if (airdInfo.getColumnIndexList() == null || airdInfo.getColumnIndexList().size() == 0) {
+    public Xic getColumns(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
+        if (columnInfo.getIndexList() == null || columnInfo.getIndexList().size() == 0) {
             return null;
         }
         ColumnIndex index = null;
         if (precursorMz != null) {
-            for (ColumnIndex columnIndex : airdInfo.getColumnIndexList()) {
+            for (ColumnIndex columnIndex : columnInfo.getIndexList()) {
                 if (columnIndex.getRange() != null && columnIndex.getRange().getStart() <= precursorMz && columnIndex.getRange().getEnd() > precursorMz) {
                     index = columnIndex;
                 }
             }
         } else {
-            index = airdInfo.getColumnIndexList().get(0);
+            index = columnInfo.getIndexList().get(0);
         }
         if (index == null) {
             return null;
@@ -145,15 +133,19 @@ public class ColumnParser {
         int[] mzs = index.getMzs();
         int start = (int) (mzStart * mzPrecision);
         int end = (int) (mzEnd * mzPrecision);
-        IntPair leftPair = AirdMathUtil.binarySearch(mzs, start);
-        int leftIndex = leftPair.right();
-        IntPair rightPair = AirdMathUtil.binarySearch(mzs, end);
-        int rightIndex = rightPair.left();
+        IntPair leftMzPair = AirdMathUtil.binarySearch(mzs, start);
+        int leftMzIndex = leftMzPair.right();
+        IntPair rightMzPair = AirdMathUtil.binarySearch(mzs, end);
+        int rightMzIndex = rightMzPair.left();
+
+        if (rtStart != null && rtEnd != null){
+
+        }
 
         int[] spectraIdLengths = index.getSpectraIds();
         int[] intensityLengths = index.getIntensities();
         long startPtr = index.getStartPtr();
-        for (int i = 0; i < leftIndex; i++) {
+        for (int i = 0; i < leftMzIndex; i++) {
             startPtr += spectraIdLengths[i];
             startPtr += intensityLengths[i];
         }
@@ -162,7 +154,7 @@ public class ColumnParser {
 //        double[] columnOne = new double[index.getRts().length];
 //        DMatrixRMaj matrixColumn = new DMatrixRMaj(columnOne);
 
-        for (int k = leftIndex; k <= rightIndex; k++) {
+        for (int k = leftMzIndex; k <= rightMzIndex; k++) {
             byte[] spectraIdBytes = readByte(startPtr, spectraIdLengths[k]);
             startPtr += spectraIdLengths[k];
             byte[] intensityBytes = readByte(startPtr, intensityLengths[k]);
