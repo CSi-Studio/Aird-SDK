@@ -1,5 +1,6 @@
 package net.csibio.aird.parser;
 
+import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.ColumnIndex;
 import net.csibio.aird.bean.ColumnInfo;
 import net.csibio.aird.bean.common.IntPair;
@@ -112,6 +113,14 @@ public class ColumnParser {
         return result;
     }
 
+    public Xic getColumnsByMz(Double mz, Double mzWindow) throws IOException {
+        return getColumns(mz-mzWindow, mz+mzWindow, null, null, null);
+    }
+
+    public Xic getColumnsByWindow(Double mz, Double mzWindow, Double rt, Double rtWindow, Double precursorMz) throws IOException {
+        return getColumns(mz - mzWindow, mz + mzWindow, rt - rtWindow, rt + rtWindow, precursorMz);
+    }
+
     public Xic getColumns(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
         if (columnInfo.getIndexList() == null || columnInfo.getIndexList().size() == 0) {
             return null;
@@ -138,7 +147,7 @@ public class ColumnParser {
         IntPair rightMzPair = AirdMathUtil.binarySearch(mzs, end);
         int rightMzIndex = rightMzPair.left();
 
-        if (rtStart != null && rtEnd != null){
+        if (rtStart != null && rtEnd != null) {
 
         }
 
@@ -150,9 +159,6 @@ public class ColumnParser {
             startPtr += intensityLengths[i];
         }
         List<Map<Integer, Double>> columnMapList = new ArrayList<>();
-//        DMatrixSparseCSC matrix = new DMatrixSparseCSC(index.getRts().length, rightIndex - leftIndex + 1);
-//        double[] columnOne = new double[index.getRts().length];
-//        DMatrixRMaj matrixColumn = new DMatrixRMaj(columnOne);
 
         for (int k = leftMzIndex; k <= rightMzIndex; k++) {
             byte[] spectraIdBytes = readByte(startPtr, spectraIdLengths[k]);
@@ -161,42 +167,34 @@ public class ColumnParser {
             startPtr += intensityLengths[k];
             int[] spectraIds = decodeAsSortedInteger(spectraIdBytes);
             int[] ints = decode(intensityBytes);
-            double[] intensities = new double[ints.length];
             HashMap<Integer, Double> map = new HashMap<>();
+            //解码intensity
             for (int i = 0; i < ints.length; i++) {
                 double intensity = ints[i];
                 if (intensity < 0) {
                     intensity = Math.pow(2, -intensity / 100000d);
                 }
-                intensities[i] = intensity / intPrecision;
-//                matrix.set(spectraIds[i], k - leftIndex, intensity);
-                map.put(spectraIds[i], intensity);
+                map.put(spectraIds[i], intensity / intPrecision);
             }
 
             columnMapList.add(map);
         }
 
-        Xic xic = new Xic();
         double[] intensities = new double[index.getRts().length];
         double[] rts = new double[index.getRts().length];
-        boolean startCount = false;
-        int iter = 0;
+
         for (int i = 0; i < index.getRts().length; i++) {
             double intensity = 0;
             for (int j = 0; j < columnMapList.size(); j++) {
-                intensity += columnMapList.get(j).getOrDefault(i,0d);
-            }
-            if (intensity != 0){
-                startCount = true;
+                intensity += columnMapList.get(j).getOrDefault(i, 0d);
             }
 
-            if (startCount){
-                intensities[iter] = intensity;
-                rts[iter] = index.getRts()[i]/1000d;
-                iter++;
-            }
+            intensities[i] = intensity;
+            rts[i] = index.getRts()[i] / 1000d;
         }
 
+        System.out.println(JSON.toJSONString(rts));
+        System.out.println(JSON.toJSONString(intensities));
         return new Xic(rts, intensities);
     }
 

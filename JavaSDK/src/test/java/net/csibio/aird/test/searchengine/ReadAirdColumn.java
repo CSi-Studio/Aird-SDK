@@ -25,25 +25,17 @@ public class ReadAirdColumn {
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Thermo-MTBLS733-SA1.json";
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\4dp\\DDA-Sciex-MTBLS733-SampleA_1.json";
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp-SearchEngine\\LIPPOS-1-A-B-SAM-21.json";
-    static String indexPath = "C:\\Users\\lms19\\Desktop\\DDA-Agilent-PXD004712-Set 3_F1.cjson";
+    static String indexPath = "D:\\AirdColumn\\Neiyansuo\\3dp\\LIPPOS-1-A-B-BLK-1.cjson";
 
-    static List<Double> targets = new ArrayList<>();
-
-    public void random() {
-        for (int i = 0; i < 10; i++) {
-            double random = new Random().nextDouble() * 16; //0-16之间的数字
-            random += 4; //4-20之间的数字
-            random *= 100; //400-2000之间的浮点数字
-            targets.add(random);
-        }
-    }
+    double[] targets = new double[]{967.97259,487.3524,753.61337,711.56642,864.63014,755.55625,647.51225,829.79845};
 
     @Test
     public void speedTest() throws Exception {
         long start = System.currentTimeMillis();
         ColumnParser parser = new ColumnParser(indexPath);
-        System.out.println("Cost:"+(System.currentTimeMillis() - start));
-        parser.getColumns(599.3102d, 599.3302d, null,null,null);
+        for (double target : targets) {
+            parser.getColumns(target-0.015, target+0.015, null,null,null);
+        }
         System.out.println("Cost:"+(System.currentTimeMillis() - start));
     }
 }
