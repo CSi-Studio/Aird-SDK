@@ -1,24 +1,7 @@
 package net.csibio.aird.test.searchengine;
 
-import net.csibio.aird.bean.AirdInfo;
-import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.Compressor;
-import net.csibio.aird.bean.common.CompressedPairs;
-import net.csibio.aird.bean.common.IntPair;
-import net.csibio.aird.bean.common.Spectrum;
-import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
-import net.csibio.aird.compressor.intcomp.VarByteWrapper;
-import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
-import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.parser.ColumnParser;
-import net.csibio.aird.parser.DDAParser;
-import net.csibio.aird.util.AirdMathUtil;
-import net.csibio.aird.util.ArrayUtil;
-import net.csibio.aird.util.PrecisionUtil;
 import org.junit.Test;
-
-import java.util.*;
 
 public class ReadAirdColumn {
 
@@ -34,7 +17,7 @@ public class ReadAirdColumn {
         long start = System.currentTimeMillis();
         ColumnParser parser = new ColumnParser(indexPath);
         for (double target : targets) {
-            parser.getColumns(target-0.01, target+0.01, 80d,90d,null);
+            parser.calcXic(target-0.01, target+0.01, 80d,90d,null);
         }
         System.out.println("Cost:"+(System.currentTimeMillis() - start));
     }

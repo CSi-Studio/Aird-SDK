@@ -113,15 +113,15 @@ public class ColumnParser {
         return result;
     }
 
-    public Xic getColumnsByMz(Double mz, Double mzWindow) throws IOException {
-        return getColumns(mz - mzWindow, mz + mzWindow, null, null, null);
+    public Xic calcXicByMz(Double mz, Double mzWindow) throws IOException {
+        return calcXic(mz - mzWindow, mz + mzWindow, null, null, null);
     }
 
-    public Xic getColumnsByWindow(Double mz, Double mzWindow, Double rt, Double rtWindow, Double precursorMz) throws IOException {
-        return getColumns(mz - mzWindow, mz + mzWindow, rt - rtWindow, rt + rtWindow, precursorMz);
+    public Xic calcXicByWindow(Double mz, Double mzWindow, Double rt, Double rtWindow, Double precursorMz) throws IOException {
+        return calcXic(mz - mzWindow, mz + mzWindow, rt - rtWindow, rt + rtWindow, precursorMz);
     }
 
-    public Xic getColumns(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
+    public Xic calcXic(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
         if (columnInfo.getIndexList() == null || columnInfo.getIndexList().size() == 0) {
             return null;
         }
