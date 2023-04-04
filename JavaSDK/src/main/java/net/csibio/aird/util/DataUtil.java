@@ -4,7 +4,13 @@ import java.util.HashMap;
 
 public class DataUtil {
 
-    public static double[] getIntensity(int[] originIntensities, double intPrecision){
+    /**
+     * 从Aird中读取的Intensity数据采用了一种特殊的转换规则，需要通过本函数转换
+     * @param originIntensities
+     * @param intPrecision
+     * @return
+     */
+    public static double[] parseIntensity(int[] originIntensities, double intPrecision){
         double[] intensities = new double[originIntensities.length];
         for (int i = 0; i < originIntensities.length; i++) {
             double intensity = originIntensities[i];

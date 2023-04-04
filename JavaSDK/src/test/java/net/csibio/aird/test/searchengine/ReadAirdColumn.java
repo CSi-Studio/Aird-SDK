@@ -34,7 +34,7 @@ public class ReadAirdColumn {
         long start = System.currentTimeMillis();
         ColumnParser parser = new ColumnParser(indexPath);
         for (double target : targets) {
-            parser.getColumns(target-0.015, target+0.015, null,null,null);
+            parser.getColumns(target-0.01, target+0.01, 80d,90d,null);
         }
         System.out.println("Cost:"+(System.currentTimeMillis() - start));
     }

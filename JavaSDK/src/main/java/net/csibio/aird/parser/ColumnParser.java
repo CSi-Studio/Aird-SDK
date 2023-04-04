@@ -114,7 +114,7 @@ public class ColumnParser {
     }
 
     public Xic getColumnsByMz(Double mz, Double mzWindow) throws IOException {
-        return getColumns(mz-mzWindow, mz+mzWindow, null, null, null);
+        return getColumns(mz - mzWindow, mz + mzWindow, null, null, null);
     }
 
     public Xic getColumnsByWindow(Double mz, Double mzWindow, Double rt, Double rtWindow, Double precursorMz) throws IOException {
@@ -147,9 +147,18 @@ public class ColumnParser {
         IntPair rightMzPair = AirdMathUtil.binarySearch(mzs, end);
         int rightMzIndex = rightMzPair.left();
 
-        if (rtStart != null && rtEnd != null) {
-
+        int leftRtIndex = 0;
+        int rightRtIndex = index.getRts().length - 1;
+        if (rtStart != null) {
+            IntPair leftRtPair = AirdMathUtil.binarySearch(index.getRts(), (int) (rtStart * 1000));
+            leftRtIndex = leftRtPair.right();
         }
+
+        if (rtEnd != null) {
+            IntPair rightRtPair = AirdMathUtil.binarySearch(index.getRts(), (int) (rtEnd * 1000));
+            rightRtIndex = rightRtPair.left();
+        }
+
 
         int[] spectraIdLengths = index.getSpectraIds();
         int[] intensityLengths = index.getIntensities();
@@ -169,7 +178,7 @@ public class ColumnParser {
             int[] ints = decode(intensityBytes);
             HashMap<Integer, Double> map = new HashMap<>();
             //解码intensity
-            for (int i = 0; i < ints.length; i++) {
+            for (int i = leftRtIndex; i <= rightRtIndex; i++) {
                 double intensity = ints[i];
                 if (intensity < 0) {
                     intensity = Math.pow(2, -intensity / 100000d);
@@ -180,10 +189,11 @@ public class ColumnParser {
             columnMapList.add(map);
         }
 
-        double[] intensities = new double[index.getRts().length];
-        double[] rts = new double[index.getRts().length];
+        int rtRange = rightRtIndex - leftRtIndex + 1;
+        double[] intensities = new double[rtRange];
+        double[] rts = new double[rtRange];
 
-        for (int i = 0; i < index.getRts().length; i++) {
+        for (int i = 0; i < rtRange; i++) {
             double intensity = 0;
             for (int j = 0; j < columnMapList.size(); j++) {
                 intensity += columnMapList.get(j).getOrDefault(i, 0d);
