@@ -84,7 +84,7 @@ namespace AirdSDK.Beans
 
         /**
          * [Core Field]
-         * Used for Scene of SearchEngine. Save data in Column dim
+         * Used for Scene of Search. Save data in Column dim
          * 按列存储时使用的索引，用于存储每一列的元数据
          */
         // public List<ColumnIndex> columnIndexList;

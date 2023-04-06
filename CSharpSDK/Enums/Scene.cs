@@ -15,6 +15,6 @@ namespace AirdSDK.Enums
     {
         public static string Computation = "Computation";
         public static string Storage = "Storage";
-        public static string SearchEngine = "SearchEngine";
+        public static string Search = "Search";
     }
 }
