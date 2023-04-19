@@ -96,7 +96,7 @@ public class DDAParser extends BaseParser {
         BlockIndex ms1Index = getMs1Index();//所有的ms1谱图都在第一个index中
         TreeMap<Double, Spectrum> ms1Map = getSpectra(ms1Index);
         List<Double> ms1RtList = new ArrayList<>(ms1Map.keySet());
-        List<DDAMs> ms1List = buildDDAMsList(ms1RtList, ms1Index, ms1Map, true);
+        List<DDAMs> ms1List = buildDDAMsList(ms1RtList, 0, ms1RtList.size(), ms1Index, ms1Map, true);
         return ms1List;
     }
 
@@ -113,7 +113,7 @@ public class DDAParser extends BaseParser {
     /**
      * @param rtStart the start of the retention time
      * @param rtEnd   the end of the retention time
-     * @return all the spectras in the target retention time range
+     * @return all the spectra in the target retention time range
      */
     public List<DDAMs> getSpectraByRtRange(double rtStart, double rtEnd, boolean includeMS2) {
         BlockIndex ms1Index = getMs1Index();
@@ -137,24 +137,26 @@ public class DDAParser extends BaseParser {
             ms1Map.put(rts[i], getSpectrumByIndex(ms1Index, i));
         }
 
-        List<DDAMs> ms1List = buildDDAMsList(ms1Index.getRts().subList(start, end + 1), ms1Index, ms1Map, includeMS2);
+        List<DDAMs> ms1List = buildDDAMsList(ms1Index.getRts(), start, end+1, ms1Index, ms1Map, includeMS2);
         return ms1List;
     }
 
     /**
      * @param rtList     the target rt list
+     * @param start      start
+     * @param end        end
      * @param ms1Index   the ms1 index
      * @param ms1Map     the ms1 map
      * @param includeMS2 if including the ms2 spectra
      * @return the search DDAMs results
      */
-    private List<DDAMs> buildDDAMsList(List<Double> rtList, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
+    private List<DDAMs> buildDDAMsList(List<Double> rtList, int start, int end, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
         List<DDAMs> ms1List = new ArrayList<>();
         Map<Integer, BlockIndex> ms2IndexMap = null;
         if (includeMS2) {
             ms2IndexMap = getMs2IndexMap();
         }
-        for (int i = 0; i < rtList.size(); i++) {
+        for (int i = start; i <= (end - start); i++) {
             DDAMs ms1 = new DDAMs(rtList.get(i), ms1Map.get(rtList.get(i)));
             DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             if (includeMS2) {
