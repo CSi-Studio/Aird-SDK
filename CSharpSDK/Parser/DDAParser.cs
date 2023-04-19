@@ -134,11 +134,11 @@ public class DDAParser : BaseParser
             ms1Map.Add(rts[i], getSpectrumByIndex(ms1Index, i));
         }
 
-        List<DDAMs> ms1List = buildDDAMsList(ms1Index.rts.GetRange(start, end + 1), ms1Index, ms1Map, includeMS2);
+        List<DDAMs> ms1List = buildDDAMsList(ms1Index.rts, start, end + 1, ms1Index, ms1Map, includeMS2);
         return ms1List;
     }
 
-    private List<DDAMs> buildDDAMsList(List<double> rtList, BlockIndex ms1Index, Dictionary<double, Spectrum> ms1Map,
+    private List<DDAMs> buildDDAMsList(List<double> rtList, int start, int end, BlockIndex ms1Index, Dictionary<double, Spectrum> ms1Map,
         bool includeMS2)
     {
         List<DDAMs> ms1List = new List<DDAMs>();
@@ -148,7 +148,7 @@ public class DDAParser : BaseParser
             ms2IndexMap = getMs2IndexMap();
         }
 
-        for (int i = 0; i < rtList.Count; i++)
+        for (int i = start; i <= (end - start); i++)
         {
             DDAMs ms1 = new DDAMs(rtList[i], ms1Map[rtList[i]]);
             DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
