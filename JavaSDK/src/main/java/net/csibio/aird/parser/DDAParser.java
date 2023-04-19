@@ -156,7 +156,7 @@ public class DDAParser extends BaseParser {
         if (includeMS2) {
             ms2IndexMap = getMs2IndexMap();
         }
-        for (int i = start; i <= (end - start); i++) {
+        for (int i = start; i < end; i++) {
             DDAMs ms1 = new DDAMs(rtList.get(i), ms1Map.get(rtList.get(i)));
             DDAUtil.initFromIndex(airdInfo, ms1, ms1Index, i);
             if (includeMS2) {
