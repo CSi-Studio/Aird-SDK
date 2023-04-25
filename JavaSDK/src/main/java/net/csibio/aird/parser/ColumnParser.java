@@ -196,7 +196,9 @@ public class ColumnParser {
         for (int i = leftRtIndex; i <= rightRtIndex; i++) {
             double intensity = 0;
             for (int j = 0; j < columnMapList.size(); j++) {
-                intensity += columnMapList.get(j).getOrDefault(i, 0d);
+                if (columnMapList.get(j).containsKey(i)){
+                    intensity += columnMapList.get(j).get(i);
+                }
             }
             intensities[iteration] = intensity;
             rts[iteration] = index.getRts()[i] / 1000d;

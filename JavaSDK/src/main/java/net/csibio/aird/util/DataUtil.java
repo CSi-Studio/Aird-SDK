@@ -21,4 +21,12 @@ public class DataUtil {
         }
         return intensities;
     }
+
+    public static double fetchIntensity(int origin, double intPrecision){
+        double intensity = origin;
+        if (intensity < 0) {
+            intensity = Math.pow(2, -intensity / 100000d);
+        }
+        return intensity / intPrecision;
+    }
 }
