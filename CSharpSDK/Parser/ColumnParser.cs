@@ -161,22 +161,22 @@ public class ColumnParser
         int start = (int)(mzStart * mzPrecision);
         int end = (int)(mzEnd * mzPrecision);
         IntPair leftMzPair = AirdMathUtil.binarySearch(mzs, start);
-        int leftMzIndex = leftMzPair.right();
+        int leftMzIndex = leftMzPair.right;
         IntPair rightMzPair = AirdMathUtil.binarySearch(mzs, end);
-        int rightMzIndex = rightMzPair.left();
+        int rightMzIndex = rightMzPair.left;
 
         int leftRtIndex = 0;
         int rightRtIndex = index.rts.Length - 1;
         if (rtStart != null)
         {
             IntPair leftRtPair = AirdMathUtil.binarySearch(index.rts, (int)(rtStart * 1000));
-            leftRtIndex = leftRtPair.right();
+            leftRtIndex = leftRtPair.right;
         }
 
         if (rtEnd != null)
         {
             IntPair rightRtPair = AirdMathUtil.binarySearch(index.rts, (int)(rtEnd * 1000));
-            rightRtIndex = rightRtPair.left();
+            rightRtIndex = rightRtPair.left;
         }
 
         int[] spectraIdLengths = index.spectraIds;
