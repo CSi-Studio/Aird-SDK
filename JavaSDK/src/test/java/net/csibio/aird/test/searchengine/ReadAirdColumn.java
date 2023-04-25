@@ -44,14 +44,14 @@ public class ReadAirdColumn {
             "File16.20220905_HFX_cy_MCF_phospho_TNF_DIA_4_120min.cjson",
     };
 
-    double[] targets = new double[]{967.97259, 487.3524, 753.61337, 711.56642, 864.63014, 755.55625, 647.51225, 829.79845};
+    static double[] targets = new double[]{967.97259, 487.3524, 753.61337, 711.56642, 864.63014, 755.55625, 647.51225, 829.79845, 637.51225, 429.79845};
 //    double[] targets = new double[]{967.97259};
 //    double[] targets = new double[]{864.63014};
 
     @Test
     public void speedTest() throws Exception {
         double[] randomTargets = generateRandomTargets(1, 400, 1500);
-
+        xic("C:\\Users\\lms19\\Desktop\\jaeger3_0001.cjson", 0, new long[1], new long[1]);
         for (int i = 0; i < precisionFolders.length; i++) {
             String precisionFolder = precisionFolders[i];
             System.out.println("Precision Mode:" + precisionFolder);
@@ -60,15 +60,16 @@ public class ReadAirdColumn {
             for (int j = 0; j < filenames.length; j++) {
                 String filename = filenames[j];
                 String indexPath = parentFolder + precisionFolder + filename;
-                long startWithIndex = System.currentTimeMillis();
-                ColumnParser parser = new ColumnParser(indexPath);
-                long startWithoutIndex = System.currentTimeMillis();
-                for (int t = 0; t < targets.length; t++) {
-                    double target = targets[t];
-                    parser.calcXic(target - 0.015, target + 0.015, null, null, null);
-                }
-                timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
-                timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
+                xic(indexPath, j, timeWithIndex, timeWithoutIndex);
+//                long startWithIndex = System.currentTimeMillis();
+//                ColumnParser parser = new ColumnParser(indexPath);
+//                long startWithoutIndex = System.currentTimeMillis();
+//                for (int t = 0; t < targets.length; t++) {
+//                    double target = targets[t];
+//                    parser.calcXic(target - 0.015, target + 0.015, null, null, null);
+//                }
+//                timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
+//                timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
             }
             System.out.println("Time With Index:");
             System.out.println(JSON.toJSONString(timeWithIndex));
@@ -77,6 +78,18 @@ public class ReadAirdColumn {
             System.out.println("");
         }
 
+    }
+
+    public static void xic(String indexPath, int j, long[] timeWithIndex, long[] timeWithoutIndex) throws IOException {
+        long startWithIndex = System.currentTimeMillis();
+        ColumnParser parser = new ColumnParser(indexPath);
+        long startWithoutIndex = System.currentTimeMillis();
+        for (int t = 0; t < targets.length; t++) {
+            double target = targets[t];
+            parser.calcXic(target - 0.015, target + 0.015, null, null, null);
+        }
+        timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
+        timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
     }
 
     public static double[] generateRandomTargets(int count, int start, int end) {
