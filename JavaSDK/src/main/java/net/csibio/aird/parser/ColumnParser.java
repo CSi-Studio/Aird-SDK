@@ -1,6 +1,5 @@
 package net.csibio.aird.parser;
 
-import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.ColumnIndex;
 import net.csibio.aird.bean.ColumnInfo;
 import net.csibio.aird.bean.common.IntPair;
@@ -200,13 +199,9 @@ public class ColumnParser {
                 intensity += columnMapList.get(j).getOrDefault(i, 0d);
             }
             intensities[iteration] = intensity;
-            rts[iteration] = index.getRts()[i] / 1000d/ 60;
+            rts[iteration] = index.getRts()[i] / 1000d;
             iteration++;
         }
-        System.out.println("RT:");
-        System.out.println(JSON.toJSONString(rts));
-        System.out.println("Intensity:");
-        System.out.println(JSON.toJSONString(intensities));
         return new Xic(rts, intensities);
     }
 

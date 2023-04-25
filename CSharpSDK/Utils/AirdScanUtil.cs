@@ -67,6 +67,19 @@ public class AirdScanUtil
     }
 
     /**
+     * load Aird Index Information from index file(CJSON Format),and parse into ColumnInfo
+     *
+     * @param indexFile 索引文件
+     * @return 该索引文件内的JSON信息, 即ColumnInfo信息
+     */
+    public static ColumnInfo loadColumnInfo(FileInfo indexFile) {
+        String content = FileUtil.readFile(indexFile);
+        JsonSerializer serializer = new JsonSerializer();
+        ColumnInfo columnInfo = JsonConvert.DeserializeObject<ColumnInfo>(content);
+        return columnInfo;
+    }
+    
+    /**
      * 根据索引文件路径获取aird文件路径
      *
      * @param indexPath 索引文件路径
@@ -90,5 +103,18 @@ public class AirdScanUtil
         }
 
         return airdPath.Substring(0, airdPath.LastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
+    }
+    
+    /**
+     * 根据索引文件路径获取aird文件路径
+     *
+     * @param indexPath 索引文件路径
+     * @return aird文件路径
+     */
+    public static string getAirdPathByColumnIndexPath(string indexPath) {
+        if (indexPath == null || !indexPath.Contains(SymbolConst.DOT) || !indexPath.EndsWith(SuffixConst.CJSON)) {
+            return null;
+        }
+        return indexPath.Substring(0, indexPath.LastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
     }
 }
