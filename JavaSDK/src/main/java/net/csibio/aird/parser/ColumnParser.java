@@ -209,10 +209,18 @@ public class ColumnParser {
     }
 
     public int[] decodeAsSortedInteger(byte[] origin) {
-        return new IntegratedVarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
+        if (origin.length > 4) {
+            return new IntegratedVarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
+        } else {
+            return ByteTrans.byteToInt(origin);
+        }
     }
 
     public int[] decode(byte[] origin) {
-        return new VarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
+        if (origin.length > 4) {
+            return new VarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
+        } else {
+            return ByteTrans.byteToInt(origin);
+        }
     }
 }

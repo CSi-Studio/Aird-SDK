@@ -85,7 +85,7 @@ public class DDAParser : BaseParser
         BlockIndex ms1Index = getMs1Index(); //所有的ms1谱图都在第一个index中
         Dictionary<double, Spectrum> ms1Map = getSpectra(ms1Index);
         List<double> ms1RtList = new List<double>(ms1Map.Keys);
-        List<DDAMs> ms1List = buildDDAMsList(ms1RtList,0,ms2RtList.length, ms1Index, ms1Map, true);
+        List<DDAMs> ms1List = buildDDAMsList(ms1RtList,0,ms1RtList.Count, ms1Index, ms1Map, true);
         return ms1List;
     }
 
