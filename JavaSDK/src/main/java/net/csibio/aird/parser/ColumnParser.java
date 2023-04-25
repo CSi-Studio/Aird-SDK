@@ -159,7 +159,6 @@ public class ColumnParser {
             rightRtIndex = rightRtPair.left();
         }
 
-
         int[] spectraIdLengths = index.getSpectraIds();
         int[] intensityLengths = index.getIntensities();
         long startPtr = index.getStartPtr();
@@ -178,12 +177,14 @@ public class ColumnParser {
             int[] ints = decode(intensityBytes);
             HashMap<Integer, Double> map = new HashMap<>();
             //解码intensity
-            for (int i = leftRtIndex; i <= rightRtIndex; i++) {
-                double intensity = ints[i];
-                if (intensity < 0) {
-                    intensity = Math.pow(2, -intensity / 100000d);
+            for (int t = 0; t < spectraIds.length; t++) {
+                if (spectraIds[t] >= leftRtIndex && spectraIds[t] <= rightRtIndex) {
+                    double intensity = ints[t];
+                    if (intensity < 0) {
+                        intensity = Math.pow(2, -intensity / 100000d);
+                    }
+                    map.put(spectraIds[t], intensity / intPrecision);
                 }
-                map.put(spectraIds[i], intensity / intPrecision);
             }
 
             columnMapList.add(map);
@@ -192,24 +193,25 @@ public class ColumnParser {
         int rtRange = rightRtIndex - leftRtIndex + 1;
         double[] intensities = new double[rtRange];
         double[] rts = new double[rtRange];
-
-        for (int i = 0; i < rtRange; i++) {
+        int iteration = 0;
+        for (int i = leftRtIndex; i <= rightRtIndex; i++) {
             double intensity = 0;
             for (int j = 0; j < columnMapList.size(); j++) {
                 intensity += columnMapList.get(j).getOrDefault(i, 0d);
             }
-
-            intensities[i] = intensity;
-            rts[i] = index.getRts()[i] / 1000d;
+            intensities[iteration] = intensity;
+            rts[iteration] = index.getRts()[i] / 1000d/ 60;
+            iteration++;
         }
-
+        System.out.println("RT:");
         System.out.println(JSON.toJSONString(rts));
+        System.out.println("Intensity:");
         System.out.println(JSON.toJSONString(intensities));
         return new Xic(rts, intensities);
     }
 
     public int[] decodeAsSortedInteger(byte[] origin) {
-        if (origin.length > 4) {
+        if (origin.length > 16) {
             return new IntegratedVarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
         } else {
             return ByteTrans.byteToInt(origin);
@@ -217,7 +219,7 @@ public class ColumnParser {
     }
 
     public int[] decode(byte[] origin) {
-        if (origin.length > 4) {
+        if (origin.length > 16) {
             return new VarByteWrapper().decode(ByteTrans.byteToInt(new ZstdWrapper().decode(origin)));
         } else {
             return ByteTrans.byteToInt(origin);
