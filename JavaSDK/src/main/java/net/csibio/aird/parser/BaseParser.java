@@ -18,6 +18,7 @@ import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
 import net.csibio.aird.bean.MobiInfo;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.bean.common.Xic;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.bytecomp.*;
 import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
@@ -28,6 +29,7 @@ import net.csibio.aird.compressor.sortedintcomp.DeltaWrapper;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedBinPackingWrapper;
 import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
 import net.csibio.aird.compressor.sortedintcomp.SortedIntComp;
+import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.enums.*;
 import net.csibio.aird.exception.ScanException;
 import net.csibio.aird.util.AirdScanUtil;
@@ -943,6 +945,17 @@ public abstract class BaseParser {
         return tags;
     }
 
+    public Xic calcXic(TreeMap<Double, Spectrum> map, double mzStart, double mzEnd){
+        double[] rts = new double[map.size()];
+        double[] intensities = new double[map.size()];
+        int iter = 0;
+        map.forEach((rt, spectrum)->{
+            rts[iter] = rt;
+            intensities[iter] = Extractor.accumulation(spectrum, mzStart, mzEnd);
+        });
+        Xic xic = new Xic(rts, intensities);
+        return xic;
+    }
     /**
      * @return the airdinfo
      */
