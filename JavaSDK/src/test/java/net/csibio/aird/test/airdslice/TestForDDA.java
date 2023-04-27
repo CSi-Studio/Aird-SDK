@@ -1,4 +1,4 @@
-package net.csibio.aird.test.searchengine;
+package net.csibio.aird.test.airdslice;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
@@ -17,7 +17,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class AirdMatrixTestForDDA {
+public class TestForDDA {
 
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\3dp\\DDA-Thermo-MTBLS733-SA1.json";
 //    static String indexPath = "D:\\AirdMatrixTest\\Aird\\4dp\\DDA-Sciex-MTBLS733-SampleA_1.json";

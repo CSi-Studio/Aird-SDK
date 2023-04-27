@@ -55,15 +55,6 @@ public class ReadAirdColumn {
                 String filename = filenames[j];
                 String indexPath = parentFolder + precisionFolder + filename;
                 xic(indexPath, j, timeWithIndex, timeWithoutIndex);
-//                long startWithIndex = System.currentTimeMillis();
-//                ColumnParser parser = new ColumnParser(indexPath);
-//                long startWithoutIndex = System.currentTimeMillis();
-//                for (int t = 0; t < targets.length; t++) {
-//                    double target = targets[t];
-//                    parser.calcXic(target - 0.015, target + 0.015, null, null, null);
-//                }
-//                timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
-//                timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
             }
             System.out.println("Time With Index:");
             System.out.println(JSON.toJSONString(timeWithIndex));

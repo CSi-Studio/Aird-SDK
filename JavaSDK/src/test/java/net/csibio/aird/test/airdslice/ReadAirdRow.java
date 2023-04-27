@@ -1,4 +1,4 @@
-package net.csibio.aird.test.searchengine;
+package net.csibio.aird.test.airdslice;
 
 import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.AirdInfo;
@@ -52,36 +52,23 @@ public class ReadAirdRow {
     public void speedTest() throws Exception {
         double[] randomTargets = generateRandomTargets(1, 400, 1500);
         //预热代码用
-        xic("D:\\AirdTest\\ComboComp\\File1.json", 0, new long[1], new long[1]);
+        xic("D:\\AirdTest\\ComboComp\\File1.json", 0, new long[1]);
         for (int i = 0; i < precisionFolders.length; i++) {
             String precisionFolder = precisionFolders[i];
             System.out.println("Precision Mode:" + precisionFolder);
-            long[] timeWithIndex = new long[filenames.length];
             long[] timeWithoutIndex = new long[filenames.length];
             for (int j = 0; j < filenames.length; j++) {
                 String filename = filenames[j];
                 String indexPath = parentFolder + precisionFolder + filename;
-                xic(indexPath, j, timeWithIndex, timeWithoutIndex);
-//                long startWithIndex = System.currentTimeMillis();
-//                ColumnParser parser = new ColumnParser(indexPath);
-//                long startWithoutIndex = System.currentTimeMillis();
-//                for (int t = 0; t < targets.length; t++) {
-//                    double target = targets[t];
-//                    parser.calcXic(target - 0.015, target + 0.015, null, null, null);
-//                }
-//                timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
-//                timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
+                xic(indexPath, j, timeWithoutIndex);
             }
-            System.out.println("Time With Index:");
-            System.out.println(JSON.toJSONString(timeWithIndex));
-            System.out.println("Time Without Index:");
+            System.out.println("Time Index:");
             System.out.println(JSON.toJSONString(timeWithoutIndex));
             System.out.println("");
         }
     }
 
-    public static void xic(String indexPath, int j, long[] timeWithIndex, long[] timeWithoutIndex) throws Exception {
-        long startWithIndex = System.currentTimeMillis();
+    public static void xic(String indexPath, int j, long[] timeWithoutIndex) throws Exception {
         BaseParser parser = BaseParser.buildParser(indexPath);
         AirdInfo airdInfo = parser.getAirdInfo();
         long startWithoutIndex = System.currentTimeMillis();
@@ -101,7 +88,6 @@ public class ReadAirdRow {
             }
         }
 
-        timeWithIndex[j] = (System.currentTimeMillis() - startWithIndex);
         timeWithoutIndex[j] = (System.currentTimeMillis() - startWithoutIndex);
     }
 

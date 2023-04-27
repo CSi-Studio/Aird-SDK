@@ -1,4 +1,4 @@
-package net.csibio.aird.test.searchengine;
+package net.csibio.aird.test.airdslice;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class AirdMatrixTestForDIA {
+public class TestForDIA {
 
     static String indexPath = "D:\\AirdTest\\ComboComp\\File6.json";
 
