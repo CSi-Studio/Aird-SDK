@@ -133,6 +133,12 @@
             <scope>test</scope>
             <version>5.6</version>
         </dependency>
+        <dependency>
+            <groupId>net.sourceforge.jexcelapi</groupId>
+            <artifactId>jxl</artifactId>
+            <scope>test</scope>
+            <version>2.6.10</version>
+        </dependency>
     </dependencies>
 
     <developers>
