@@ -1,79 +1,94 @@
-// prettier-ignore
-const data = [["2000-06-05", 116], ["2000-06-06", 129], ["2000-06-07", 135], ["2000-06-08", 86], ["2000-06-09", 73], ["2000-06-10", 85], ["2000-06-11", 73], ["2000-06-12", 68], ["2000-06-13", 92], ["2000-06-14", 130], ["2000-06-15", 245], ["2000-06-16", 139], ["2000-06-17", 115], ["2000-06-18", 111], ["2000-06-19", 309], ["2000-06-20", 206], ["2000-06-21", 137], ["2000-06-22", 128], ["2000-06-23", 85], ["2000-06-24", 94], ["2000-06-25", 71], ["2000-06-26", 106], ["2000-06-27", 84], ["2000-06-28", 93], ["2000-06-29", 85], ["2000-06-30", 73], ["2000-07-01", 83], ["2000-07-02", 125], ["2000-07-03", 107], ["2000-07-04", 82], ["2000-07-05", 44], ["2000-07-06", 72], ["2000-07-07", 106], ["2000-07-08", 107], ["2000-07-09", 66], ["2000-07-10", 91], ["2000-07-11", 92], ["2000-07-12", 113], ["2000-07-13", 107], ["2000-07-14", 131], ["2000-07-15", 111], ["2000-07-16", 64], ["2000-07-17", 69], ["2000-07-18", 88], ["2000-07-19", 77], ["2000-07-20", 83], ["2000-07-21", 111], ["2000-07-22", 57], ["2000-07-23", 55], ["2000-07-24", 60]];
-const dateList = data.map(function (item) {
-    return item[0];
-});
-const valueList = data.map(function (item) {
-    return item[1];
-});
 option = {
-    // Make gradient line here
-    visualMap: [
+    xAxis: [
         {
-            show: false,
-            type: 'continuous',
-            seriesIndex: 0,
-            min: 0,
-            max: 400
+            gridIndex:0,
+            type: 'category',
+            data: ['File1', 'File2', 'File3', 'File4', 'File5', 'File6', 'File7'
+                , 'File8', 'File9', 'File10', 'File11', 'File12', 'File13', 'File14', 'File15', 'File16'
+            ]
         },
         {
-            show: false,
-            type: 'continuous',
-            seriesIndex: 1,
-            dimension: 0,
-            min: 0,
-            max: dateList.length - 1
-        }
-    ],
-    title: [
+            gridIndex:1,
+            type: 'category',
+            data: ['File1', 'File2', 'File3', 'File4', 'File5', 'File6', 'File7'
+                , 'File8', 'File9', 'File10', 'File11', 'File12', 'File13', 'File14', 'File15', 'File16'
+            ]
+        }],
+    yAxis:[
         {
-            left: 'center',
-            text: 'XIC speed with Aird-Slice'
+            gridIndex: 0,
+            type: 'value'
+        },
+        {
+            gridIndex: 1,
+            type: 'value'
+        }],
+    legend:[{
+        left:'right'
+    }],
+    title:{
+        text:"XIC Speed",
+        left:"left"
+    },
+    grid: [
+        {
+            top: 50,
+            width: '50%',
+            bottom: '45%',
+            left: 10,
+            containLabel: true
         },
         {
             top: '55%',
-            left: 'center',
-            text: 'XIC speed with Aird-ComboComp'
-        }
-    ],
-    tooltip: {
-        trigger: 'axis'
-    },
-    xAxis: [
-        {
-            data: dateList
-        },
-        {
-            data: dateList,
-            gridIndex: 1
-        }
-    ],
-    yAxis: [
-        {},
-        {
-            gridIndex: 1
-        }
-    ],
-    grid: [
-        {
-            bottom: '60%'
-        },
-        {
-            top: '60%'
+            width: '50%',
+            bottom: 0,
+            left: 10,
+            containLabel: true
         }
     ],
     series: [
         {
-            type: 'line',
-            showSymbol: false,
-            data: valueList
+            xAxisIndex: 0,
+            yAxisIndex: 0,
+            name:"1 target",
+            data:[2038,798,325,124,12,420,442,1132,101,255,634,1411,1402,299,247,263],
+            type: 'bar',
         },
         {
-            type: 'line',
-            showSymbol: false,
-            data: valueList,
+            xAxisIndex: 0,
+            yAxisIndex: 0,
+            name:"10 targets",
+            data:[2063,808,361,134,17,436,522,1150,109,269,646,1446,1429,294,248,291],
+            type: 'bar',
+        },
+        {
+            xAxisIndex: 0,
+            yAxisIndex: 0,
+            name:"100 targets",
+            data:[2438,872,415,146,22,445,544,1312,124,275,691,1568,1660,350,344,344],
+            type: 'bar',
+        },
+        {
             xAxisIndex: 1,
-            yAxisIndex: 1
+            yAxisIndex: 1,
+            name:"1 target",
+            data:[11.4857,14.4218,15.5817,5.6279,0.2333,1.443,6.4372,12.5102,0.4427,0.9045,4.4484,14.1759,20.1695,3.0077,3.6081,4.8431],
+            type: 'bar',
+        },
+        {
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            name:"10 targets",
+            data:[527.4482,256.4136,85.8359,31.1905,3.296,25.2543,35.8302,70.6592,4.5187,9.9331,77.975,489.0087,599.2222,87.3544,91.6592,97.6579],
+            type: 'bar',
+        },
+        {
+            xAxisIndex: 1,
+            yAxisIndex: 1,
+            name:"100 targets",
+            data:[1558.9392,1886.1907,832.2725,380.9301,21.5816,151.9003,267.7872,657.5839,40.8306,111.2637,390.11,2293.0564,1928.7265,340.3729,341.4002,363.3627],
+            type: 'bar',
+
         }
     ]
 };

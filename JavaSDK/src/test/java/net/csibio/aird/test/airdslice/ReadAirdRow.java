@@ -13,16 +13,14 @@ import net.csibio.aird.parser.DIAParser;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-import java.util.TreeMap;
+import java.util.*;
 
 public class ReadAirdRow {
 
     static String parentFolder = "D:\\AirdMatrixTest\\ComboComp\\";
     static String[] precisionFolders = new String[]{
-            "3dp\\",
-            "4dp\\",
+//            "3dp\\",
+//            "4dp\\",
             "5dp\\",
     };
     static String[] filenames = new String[]{
@@ -50,9 +48,18 @@ public class ReadAirdRow {
 
     @Test
     public void speedTest() throws Exception {
-        double[] randomTargets = generateRandomTargets(1, 400, 1500);
+        targets = generateRandomTargets(100, 400, 1500);
+        double[] targets1 = Arrays.copyOfRange(targets,0,1);
+        double[] targets10 = Arrays.copyOfRange(targets,0,1);
         //预热代码用
-        xic("D:\\AirdTest\\ComboComp\\File1.json", 0, new long[1]);
+        xic("D:\\AirdTest\\ComboComp\\File1.json",targets1, 0, new long[1]);
+        test(targets);
+        test(targets10);
+        test(targets1);
+
+    }
+
+    public static void test(double[] targetList) throws Exception {
         for (int i = 0; i < precisionFolders.length; i++) {
             String precisionFolder = precisionFolders[i];
             System.out.println("Precision Mode:" + precisionFolder);
@@ -60,7 +67,7 @@ public class ReadAirdRow {
             for (int j = 0; j < filenames.length; j++) {
                 String filename = filenames[j];
                 String indexPath = parentFolder + precisionFolder + filename;
-                xic(indexPath, j, timeWithoutIndex);
+                xic(indexPath, targetList, j, timeWithoutIndex);
             }
             System.out.println("Time Index:");
             System.out.println(JSON.toJSONString(timeWithoutIndex));
@@ -68,22 +75,22 @@ public class ReadAirdRow {
         }
     }
 
-    public static void xic(String indexPath, int j, long[] timeWithoutIndex) throws Exception {
+    public static void xic(String indexPath, double[] targetList, int j, long[] timeWithoutIndex) throws Exception {
         BaseParser parser = BaseParser.buildParser(indexPath);
         AirdInfo airdInfo = parser.getAirdInfo();
         long startWithoutIndex = System.currentTimeMillis();
         if (airdInfo.getType().equals(AirdType.DDA.getName())) {
             DDAParser ddaParser = (DDAParser) parser;
             TreeMap<Double, Spectrum> ms1Map = ddaParser.getMs1SpectraMap();
-            for (int t = 0; t < targets.length; t++) {
-                double target = targets[t];
+            for (int t = 0; t < targetList.length; t++) {
+                double target = targetList[t];
                 ddaParser.calcXic(ms1Map, target - 0.015, target + 0.015);
             }
         } else if (airdInfo.getType().equals(AirdType.DIA.getName())) {
             DIAParser diaParser = (DIAParser) parser;
             TreeMap<Double, Spectrum> ms1Map = diaParser.getSpectra(airdInfo.getIndexList().get(0));
-            for (int t = 0; t < targets.length; t++) {
-                double target = targets[t];
+            for (int t = 0; t < targetList.length; t++) {
+                double target = targetList[t];
                 diaParser.calcXic(ms1Map, target - 0.015, target + 0.015);
             }
         }

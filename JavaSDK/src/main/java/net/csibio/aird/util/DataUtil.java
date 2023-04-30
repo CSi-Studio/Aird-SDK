@@ -1,7 +1,5 @@
 package net.csibio.aird.util;
 
-import java.util.HashMap;
-
 public class DataUtil {
 
     /**
