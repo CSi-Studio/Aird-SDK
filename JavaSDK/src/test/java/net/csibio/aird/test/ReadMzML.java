@@ -1,0 +1,37 @@
+package net.csibio.aird.test;
+
+import net.csibio.aird.compressor.bytecomp.ZlibWrapper;
+import org.junit.Test;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.util.Base64;
+
+public class ReadMzML {
+
+    @Test
+    public void readBase64String(){
+        String mzOriString = "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";
+        String mz = "eJwt021Mk1cUB/AHROh4E52xQEFFY/CNoXPG1pctOachhDk1hGhZdBhxCQk6AcF9YEwwE4pYqy4hfDA4t4TEhRhfJgEmICNEGz/4YYkaUWkHVTpQq2BpEdn+zz18OPnl3nvuPefePk2K2EWaYRetiBS3RefBPMqJhQl5tDtePJAgHlkgVvXsIe32HnL+BQ02WhNlU276SLTGiLviYIKN9s4Ti+aLFR9D8176YuNe5fZNos0ya0cBae0FdPBPeLuASrvEqh6xvrcQFlJjH7xbSL/2i1fuiJ0uWF1MUz8WKyNrxKSfoL2YVtTCdYfIlHlImb5e3LABmg+hL3H7JtFmETM+LUFeCVk+g+YSrIs2C/QfpebXR5W/vxHbxmFiObWYyklbWk7ti8V+hGYux36xPqyaNK2anOFi4xxoqKYLEdBdRxuf1SmTIuyYt9OSueKKSPFKlPiHQZxZeAp1T1HdItFhFH9GaG4HZXscyh3/wEdOWvXEibETdc7Bc7RlULznEfOG4NLzlJ12XpkT24jfsZH+joOGZnw3zUprDExspuUm8evhS6SNXKL9Xt3LdPzfy8otgzdw7g0it3jPI6Ymt2FfG94LGrppPUK3+XUP3rOH0t+IV9/CkV4KH+1VNoxBfy+deymm+cX4l32wj5peiWl+Mf2NePWtOO3rxzn9dHIU+vvJ9FpsfeJCXy68CwwO0v3JQWVgxIN8D+6jO4R9Q8gfQr1ZM4bxnQxT0ydiGkJze+nhkBf5XryH6HsO/V58L2JWAAa9qCO2PhnFvlHUhyvH6PjqMaVhLVw3hnuHsC9EC1/BYBgnIHQjAuEwnKMnxYSgaAxB/xyuGJ+jbBuPwHwEV07oxnDL+xjWtFi+NRGLcSzXvBOzAqJrURxriXHsMEJ/HG8YFy0TMBjHM7P2vRNdAdExKeYGxcqJeBiP88WsgFgfNh/15/OOcBhMZs9UsnL7pAmasF80hsTUKdEz64v3UEthWygF4xSsi3WBVJiKPnQX436LlTXvxLqAmBsUbSExdWp2PnEZ7r2MbUkwuAz9iN9MrYarefl73bUYr1WumoZaBmd+gIkZfGthhnIglIn1TPSra0a/ZuRZ2GjZzJp5Mw/oap/z9zPblJUTOcjLQZ9Q28HXP3ylPBy1kzXDTj6K0BLz+ZfkfGWLCS7N59YU0fMYPsrnFwNw5T4+nL5P2RRfwFpCATfPg+4Kvv60Qul5fAz5x5AP3cc486m4ceYH1K3iLf/BkhquL61RxpbpnuCrZSeUY6W1sJadZdB+mrNqTytdugYH75/rUNZFimuiYNFFrjx4UbnkW5Gqf2MN4dW1X2Nj/TXlw6GbrI3c5MphcYkX2jt4eUOH8o7u2Q5uOC1mOsQJXXsnn2zoVIYXd6FOF7cou1G/W1lU+gD9P+CMMnj2GbefeaascoppZ3UHefeZQaXvuRt9uPnKC7jfw0cOeJS5Iz7M+9jog0WjnIvQvTM6jf/LNLeOwbthVqMrzKq7+7toq1YSbW3XzU6yLvgySZntS7FqIynWTt2VW63307da/wdgUese";
+        String intensityOrigin = "eJytVL9Lw0AU/qCLm4PUOaO6WHAR7BA0dwERyejo4FDQqYogFA3oIJ1cLOogBREc619gRkGEDg4uQszkJE4ODuK7JBev1ySmrRce9+7y7v343seD17JgBJHI1Z5kqJ0xHJc4/EMWnttk579GIpd4K9dTjSMwbdQdGxd3HE6V422co1tm8Hwr2f1TK9x1Hx2KIXTVp0exag8M9+/0r8LxsUp5kMhlVhm6Exw33ShHcRZ5tlvpOUpdvfP3Gb6uOEq7Nh6vbZc+bE3bGJvlwAyHd8JglCNJ8KH3lSWG9SpLzn3xCE9RU14eufkFVqad+OdQbG/7tzeI+6fmIuKHOQZWKi49/pVck3cpsVWe6PmtNf+uV31vKDUOjI+ChawdgXYv41AtjUWOnT3i5C3D1BFDhXjkCs5l8LlH3yjWRx3TNE7LO/293ps87hg53FB10cMifcjjWRq2qo0p9XMGZ45j/pPjsslhvhAvD+gurkPYCd3UYwX9uGXpLulCGpscKwscz98MnU7URze2c1OwSvOV4K3WGN87kvtB9iwpgl8Rm//S1XkTzurl4WaP1IX49Wz+yLnyly9hV2QOSqyGnQPq3O3ZB/SZlZeuj+JnxJ7/AHnYUcQ=";
+        String intensity = "eJytVL9Lw0AU/qCLm4PUOaO6WHAR7BA0dwERyejo4FBwkQqiIBrQQTq5WOoWEMGx/gVmFFw6OLgIMZOTOImT+C7Jxes1SdPWC497d3n3fnzv48FvWzDCWOTyZhkaHYaLCkdwxqKzR3bBWyxyibdyPTfI1rTRdGx0HjicOsf7NEevyuAHVroHV1a06z66FEPoqk+fYjWeGB4/6F+N43OT8iCRy6wz9GY47npxjuIs8vTa2TlKXb0LThi+bzgqBzZ6t7ZLH/bmbUwtcmCBw79kMKqxpPjQ+9oaw3adpeeBeISnqKkoj8L8QivXTvxzKLa//9cbJP1TcxHxoxxDKxOXPv9Krum7jNgqT/T8tlrD61XfG0qNI+OjYCFrR6jdyzhUy/Eqx+ERcfKeYe6coUY8cgXncvjcp++U66OOaRan5Z3+Xu9NEXeMAm6ouuhhmT4U8SwLW9XGlPo1g7PEsfzF4bU4zFfi5SndJXUIO6GbeqxwELc83SU9kl2OjRWOlx+Gbjfuo5vYuRlYZflK8VZrTO4dyf0wf5aUwa+MzX/p6ryJZvX6eLNH6kKCZj5/5FwZ5kvYlZmDEqtx54A6d/v2EX3m5aXrk/iZsOe/ozVRzw==";
+        float[] mzsOrigin = parse(mzOriString);
+        float[] mzs = parse(mz);
+        float[] intsOrigin = parse(intensityOrigin);
+        float[] ints = parse(intensity);
+        System.out.println("HelloWorld");
+    }
+
+    public float[] parse(String base64){
+        byte[] bytes = Base64.getDecoder().decode(base64);
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new ZlibWrapper().decode(bytes));
+        byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
+        FloatBuffer fb = byteBuffer.asFloatBuffer();
+        float[] fs = new float[fb.capacity()];
+        for (int i = 0; i < fb.capacity(); i++) {
+            fs[i] = fb.get(i);
+        }
+        return fs;
+    }
+}
