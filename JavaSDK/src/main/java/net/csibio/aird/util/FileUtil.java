@@ -11,6 +11,10 @@
 package net.csibio.aird.util;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -218,4 +222,22 @@ public class FileUtil {
         }
     }
 
+    public static TreeMap<String, Long> sumFileSizes(String path) {
+        TreeMap<String, Long> fileSizesMap = new TreeMap<>();
+        File dir = new File(path);
+        if (!dir.exists() || !dir.isDirectory()) {
+            return fileSizesMap;
+        }
+        for (File file : Objects.requireNonNull(dir.listFiles())) {
+            if (file.isFile()) {
+                String fileName = file.getName();
+                long fileSize = file.length();
+                if (fileSizesMap.containsKey(fileName)) {
+                    fileSize += fileSizesMap.get(fileName);
+                }
+                fileSizesMap.put(fileName, fileSize);
+            }
+        }
+        return fileSizesMap;
+    }
 }
