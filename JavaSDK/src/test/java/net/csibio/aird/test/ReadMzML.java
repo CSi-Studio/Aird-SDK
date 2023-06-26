@@ -29,22 +29,52 @@ public class ReadMzML {
 
     @Test
     public void statForFileSize() {
+        statMzAirdFileSizes();
         statMzFileSizes();
         statIntensityFileSizes();
     }
 
-    public void statMzFileSizes() {
+    public String parentFolder = "D:\\PrecisionControl\\";
+    public void statMzAirdFileSizes() {
         String[] directories = new String[]{
-                "E:\\PrecisionControl\\mzML\\mz3dp",
-                "E:\\PrecisionControl\\mzML\\mz4dp",
-                "E:\\PrecisionControl\\mzML\\mz5dp",
-                "E:\\PrecisionControl\\mzML\\mz2x5dp",
-                "E:\\PrecisionControl\\mzML\\mz5x5dp",
+                "Aird\\mz3dp",
+                "Aird\\mz4dp",
+                "Aird\\mz5dp"
         };
         boolean printed = false;
         for (String directory : directories) {
-            System.out.println("scanning" + directory + ":");
-            TreeMap<String, Long> fileSizeMap = FileUtil.sumFileSizes(directory);
+            System.out.println("scanning " + directory + ":");
+            TreeMap<String, Long> fileSizeMap = FileUtil.sumFileSizes(parentFolder+directory);
+            long[] sizes = new long[fileSizeMap.size()];
+            String[] fileName = new String[fileSizeMap.size()];
+            int i = 0;
+            for (Map.Entry<String, Long> entry : fileSizeMap.entrySet()) {
+                sizes[i] = entry.getValue()/1024/1024;
+                fileName[i] = entry.getKey();
+                i++;
+            }
+            if (!printed){
+                System.out.println(JSON.toJSONString(fileName));
+                printed = true;
+            }
+            System.out.println(JSON.toJSONString(sizes));
+        }
+    }
+
+    public void statMzFileSizes() {
+        String[] directories = new String[]{
+                "mzML64\\mz3dp",
+                "mzML64\\mz4dp",
+                "mzML64\\mz5dp",
+                "mzML64\\mz2x5dp",
+                "mzML64\\mz5x5dp",
+                "mzML64\\lossless",
+                "rawdata",
+        };
+        boolean printed = false;
+        for (String directory : directories) {
+            System.out.println("scanning " + directory + ":");
+            TreeMap<String, Long> fileSizeMap = FileUtil.sumFileSizes(parentFolder+directory);
             long[] sizes = new long[fileSizeMap.size()];
             String[] fileName = new String[fileSizeMap.size()];
             int i = 0;
@@ -63,15 +93,15 @@ public class ReadMzML {
 
     public void statIntensityFileSizes() {
         String[] directories = new String[]{
-                "E:\\PrecisionControl\\mzML\\int2",
-                "E:\\PrecisionControl\\mzML\\int02",
-                "E:\\PrecisionControl\\mzML\\int002",
-                "E:\\PrecisionControl\\mzML\\int008",
-                "E:\\PrecisionControl\\mzML\\int0002",
+                "mzML64\\int2",
+                "mzML64\\int02",
+                "mzML64\\int002",
+                "mzML64\\int008",
+                "mzML64\\int0002",
         };
         for (String directory : directories) {
-            System.out.println("scanning" + directory + ":");
-            TreeMap<String, Long> fileSizeMap = FileUtil.sumFileSizes(directory);
+            System.out.println("scanning " + directory + ":");
+            TreeMap<String, Long> fileSizeMap = FileUtil.sumFileSizes(parentFolder+directory);
             long[] sizes = new long[fileSizeMap.size()];
             int i = 0;
             for (Map.Entry<String, Long> entry : fileSizeMap.entrySet()) {
