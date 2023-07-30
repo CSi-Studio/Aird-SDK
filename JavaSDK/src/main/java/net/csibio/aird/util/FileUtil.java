@@ -231,6 +231,7 @@ public class FileUtil {
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             if (file.isFile()) {
                 String fileName = file.getName();
+                fileName = fileName.substring(0,fileName.lastIndexOf("."));
                 long fileSize = file.length();
                 if (fileSizesMap.containsKey(fileName)) {
                     fileSize += fileSizesMap.get(fileName);
