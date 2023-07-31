@@ -45,7 +45,7 @@
         <dependency>
             <artifactId>commons-codec</artifactId>
             <groupId>commons-codec</groupId>
-            <version>1.15</version>
+            <version> </version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>

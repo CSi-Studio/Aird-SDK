@@ -25,10 +25,7 @@ import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
 import net.csibio.aird.compressor.intcomp.Empty;
 import net.csibio.aird.compressor.intcomp.IntComp;
 import net.csibio.aird.compressor.intcomp.VarByteWrapper;
-import net.csibio.aird.compressor.sortedintcomp.DeltaWrapper;
-import net.csibio.aird.compressor.sortedintcomp.IntegratedBinPackingWrapper;
-import net.csibio.aird.compressor.sortedintcomp.IntegratedVarByteWrapper;
-import net.csibio.aird.compressor.sortedintcomp.SortedIntComp;
+import net.csibio.aird.compressor.sortedintcomp.*;
 import net.csibio.aird.eic.Extractor;
 import net.csibio.aird.enums.*;
 import net.csibio.aird.exception.ScanException;
@@ -145,6 +142,11 @@ public abstract class BaseParser {
     public ByteComp rtByteComp4Chroma = new ZstdWrapper();
     public IntComp intIntComp4Chroma = new VarByteWrapper();
     public ByteComp intByteComp4Chroma = new ZstdWrapper();
+
+//    public SortedIntComp rtIntComp4Chroma = new SortIntEmptyWrapper();
+//    public ByteComp rtByteComp4Chroma = new ZlibWrapper();
+//    public IntComp intIntComp4Chroma = new Empty();
+//    public ByteComp intByteComp4Chroma = new ZlibWrapper();
 
     /**
      * 构造函数
