@@ -10,11 +10,10 @@
 
 package net.csibio.aird.util;
 
+import net.csibio.aird.bean.common.RawFileInfo;
+
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipOutputStream;
 
@@ -22,6 +21,92 @@ import java.util.zip.ZipOutputStream;
  * Created by James Lu MiaoShan Time: 2018-08-28 21:45
  */
 public class FileUtil {
+
+    public static HashSet<String> rawExtensions = new HashSet<String>();
+
+    static {
+        rawExtensions.add("wiff2");
+        rawExtensions.add("wiff");
+        rawExtensions.add("scan");
+        rawExtensions.add("raw");
+        rawExtensions.add("d");
+        rawExtensions.add("mzml");
+        rawExtensions.add("mzxml");
+        rawExtensions.add("mzmlb");
+        rawExtensions.add("aird");
+        rawExtensions.add("json");
+    }
+
+    /**
+     * 获取某个路径的后缀名
+     * 如果是文件夹
+     *
+     * @param path
+     * @return
+     */
+    public static String getExtension(String path) {
+        String[] parts = path.split("\\.");
+        if (parts.length <= 1) {
+            return "";
+        } else {
+            return parts[parts.length - 1];
+        }
+    }
+
+    /**
+     * 判定文件是否为厂商文件
+     *
+     * @param path
+     * @return
+     */
+    public static RawFileInfo buildRawInfo(String path) {
+        String[] parts = path.split("\\.");
+        if (parts.length <= 1) {
+            return null;
+        }
+
+        String extension = parts[parts.length - 1].toLowerCase();
+        if (rawExtensions.contains(extension)) {
+            RawFileInfo raw = new RawFileInfo();
+            File file = new File(path);
+            raw.setFilePath(path);
+            raw.setExtension(extension);
+            if (file.isFile()) {
+                raw.setFileSize(file.length());
+            } else {
+                raw.setFileSize(getFolderSize(file));
+            }
+            if (extension.equals("scan")) {
+                String substring = file.getName().substring(0, file.getName().lastIndexOf("."));
+                raw.setFileName(substring.substring(0, substring.lastIndexOf(".")));
+            } else {
+                raw.setFileName(file.getName().substring(0, file.getName().lastIndexOf(".")));
+            }
+
+            return raw;
+        }
+        return null;
+    }
+
+    /**
+     * 获取某个文件夹下所有文件的大小总和
+     *
+     * @param folder
+     * @return
+     */
+    public static long getFolderSize(File folder) {
+        long totalSize = 0;
+
+        for (File file : Objects.requireNonNull(folder.listFiles())) {
+            if (file.isFile()) {
+                totalSize += file.length();
+            } else if (file.isDirectory()) {
+                totalSize += getFolderSize(file);
+            }
+        }
+
+        return totalSize;
+    }
 
     /**
      * read all the string in the target file
@@ -231,7 +316,7 @@ public class FileUtil {
         for (File file : Objects.requireNonNull(dir.listFiles())) {
             if (file.isFile()) {
                 String fileName = file.getName();
-                fileName = fileName.substring(0,fileName.lastIndexOf("."));
+                fileName = fileName.substring(0, fileName.lastIndexOf("."));
                 long fileSize = file.length();
                 if (fileSizesMap.containsKey(fileName)) {
                     fileSize += fileSizesMap.get(fileName);
