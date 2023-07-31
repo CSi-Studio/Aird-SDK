@@ -4,11 +4,11 @@ import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.ChromatogramIndex;
 import net.csibio.aird.bean.common.MrmPair;
 import net.csibio.aird.parser.MRMParser;
-import net.csibio.aird.testutil.FileSizeUtil;
+import net.csibio.aird.util.FileSizeUtil;
 import org.junit.Test;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import static com.alibaba.fastjson2.JSON.toJSONString;
 
@@ -25,15 +25,46 @@ public class MRMTest {
     }
 
     @Test
-    public void testMRMFileSize() {
-        String path = "D:\\MRMProTest\\aird\\SmallMoleculeQuantification";
-//        String path = "D:\\MRMProTest\\mzML\\PXD031038";
-//        String path = "D:\\MRMProTest\\mzML\\PXD009543";
-        HashMap<String, Long> sizeMap = FileSizeUtil.sumSizes(path);
+    public void testMRMFileSize() throws Exception {
+        String[] formats = new String[]{"aird", "mzML", "vendor"};
+        String[] datasets = new String[]{"PXD031038", "PXD009543"};
+        String path = "D:\\MRMProTest\\";
+        for (String format : formats) {
+            TreeMap<String, Long> map = new TreeMap<>();
+            for (String dataset : datasets) {
+                String finalPath = path + format + "\\" + dataset;
+                TreeMap<String, Long> sizeMap = FileSizeUtil.sum(finalPath);
+                sizeMap.forEach((key, value) -> {
+                    map.put(key, value / 1024);
+                });
+            }
+            System.out.println(format);
+            System.out.println(JSON.toJSONString(map.keySet()));
+            System.out.println(map.values());
+            System.out.println("");
+        }
+    }
 
-        sizeMap.forEach((key,value)->{
-            sizeMap.put(key, value/1024);
-        });
-        System.out.println(sizeMap.values());
+    @Test
+    public void testMRMFileReadingSpeed() throws Exception {
+        String[] formats = new String[]{"aird", "mzML", "vendor"};
+        String[] datasets = new String[]{"SmallMoleculeQuantification", "PXD031038", "PXD009543"};
+        String path = "D:\\MRMProTest\\";
+        for (String format : formats) {
+            TreeMap<String, Long> map = new TreeMap<>();
+            for (String dataset : datasets) {
+                String finalPath = path + format + "\\" + dataset;
+                TreeMap<String, Long> sizeMap = FileSizeUtil.sum(finalPath);
+                sizeMap.forEach((key, value) -> {
+                    map.put(key, value / 1024);
+                });
+            }
+            System.out.println(format);
+            System.out.println(JSON.toJSONString(map.keySet()));
+            System.out.println(map.values());
+            System.out.println("");
+        }
+
+
     }
 }

@@ -11,6 +11,7 @@
 package net.csibio.aird.util;
 
 import net.csibio.aird.bean.common.RawFileInfo;
+import net.csibio.aird.parser.MRMParser;
 
 import java.io.*;
 import java.util.*;
@@ -59,7 +60,7 @@ public class FileUtil {
      * @param path
      * @return
      */
-    public static RawFileInfo buildRawInfo(String path) {
+    public static RawFileInfo buildRawInfo(String path) throws Exception {
         String[] parts = path.split("\\.");
         if (parts.length <= 1) {
             return null;
