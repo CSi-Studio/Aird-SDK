@@ -52,7 +52,7 @@ Demo code: see SampleCode.java in the project or in the "How to use" chapter
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>2.0.4</version>
+        <version>2.4.1.2</version>
     </dependency>
 
 ## 2.2 Nuget for C# SDK
