@@ -764,6 +764,9 @@ public abstract class BaseParser {
      */
     public double[] getMzs(byte[] value, int offset, int length) {
         try {
+            if (value.length == 0){
+                return new double[0];
+            }
             ByteBuffer byteBuffer = ByteBuffer.wrap(mzByteComp.decode(value, offset, length));
             byteBuffer.order(mzCompressor.fetchByteOrder());
 
@@ -804,6 +807,9 @@ public abstract class BaseParser {
      * @return 解压缩后的数组
      */
     public int[] getMzsAsInteger(byte[] value, int offset, int length) {
+        if (value.length == 0){
+            return new int[0];
+        }
         ByteBuffer byteBuffer = ByteBuffer.wrap(mzByteComp.decode(value, offset, length));
         byteBuffer.order(mzCompressor.fetchByteOrder());
 
@@ -835,7 +841,9 @@ public abstract class BaseParser {
      * @return the decompression intensity array
      */
     public double[] getInts(byte[] value, int start, int length) {
-
+        if (value.length == 0){
+            return new double[0];
+        }
         ByteBuffer byteBuffer = ByteBuffer.wrap(intByteComp.decode(value, start, length));
         byteBuffer.order(intCompressor.fetchByteOrder());
 
@@ -870,6 +878,9 @@ public abstract class BaseParser {
     public double[] getMobilities(byte[] value, int start, int length) {
 
         try {
+            if (value.length == 0){
+                return new double[0];
+            }
             ByteBuffer byteBuffer = ByteBuffer.wrap(mobiByteComp.decode(value, start, length));
             byteBuffer.order(mobiCompressor.fetchByteOrder());
 

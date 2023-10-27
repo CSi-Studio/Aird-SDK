@@ -19,6 +19,10 @@ public class Delta
     */
     public static int[] delta(int[] data)
     {
+        if (data.Length == 0)
+        {
+            return data;
+        }
         int[] res = new int[data.Length];
         res[0] = data[0];
         for (int i = 1; i < data.Length; i++)
@@ -36,6 +40,10 @@ public class Delta
      */
     public static int[] recover(int[] data)
     {
+        if (data.Length == 0)
+        {
+            return data;
+        }
         int[] res = new int[data.Length];
         res[0] = data[0];
         for (int i = 1; i < data.Length; ++i)
