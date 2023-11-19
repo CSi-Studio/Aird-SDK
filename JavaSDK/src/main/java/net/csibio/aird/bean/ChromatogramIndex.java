@@ -32,6 +32,11 @@ public class ChromatogramIndex {
     List<String> ids;
 
     /**
+     * 用于MRM的化合物名称
+     */
+    List<String> compounds;
+
+    /**
      * the block start position in the file
      * 在文件中的开始位置
      */
