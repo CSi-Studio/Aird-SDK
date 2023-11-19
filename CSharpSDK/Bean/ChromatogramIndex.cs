@@ -30,6 +30,11 @@ namespace AirdSDK.Beans
         public List<string> ids = new();
 
         /**
+         * 化合物名称列表
+         */
+        public List<string> compounds = new();
+        
+        /**
          * the block start position in the file
          * 在文件中的开始位置
          */
