@@ -32,9 +32,17 @@ public class ColumnInfo
         {
             proto.IndexList.Add(columnIndex.ToProto());
         }
-       
-        proto.Type = this.type;
-        proto.AirdPath = this.airdPath;
+
+        if (type != null)
+        {
+            proto.Type = this.type;
+        }
+
+        if (airdPath != null)
+        {
+            proto.AirdPath = this.airdPath;
+        }
+        
         proto.MzPrecision = this.mzPrecision;
         proto.IntPrecision = this.intPrecision;
         return proto;

@@ -109,16 +109,48 @@ namespace AirdSDK.Beans
             {
                 TotalCount = this.totalCount,
                 StartPtr = this.startPtr,
-                EndPtr = this.endPtr,
-                Ids = { this.ids },
-                Nums = { this.nums },
-                Rts = { this.rts },
-                Ints = { this.ints },
-                Compounds = { this.compounds },
-                Activators = { this.activators },
-                Energies = { this.energies },
-                Polarities = { this.polarities }
+                EndPtr = this.endPtr
             };
+            if (ids != null && ids.Count > 0)
+            {
+                proto.Ids.AddRange(ids);
+            }
+
+            if (nums != null && nums.Count > 0)
+            {
+                proto.Nums.AddRange(nums);
+            }
+
+            if (rts != null && rts.Count > 0)
+            {
+                proto.Rts.AddRange(rts);
+            }
+
+            if (ints != null && ints.Count > 0)
+            {
+                proto.Ints.AddRange(ints);
+            }
+
+            if (compounds != null && compounds.Count > 0)
+            {
+                proto.Compounds.AddRange(compounds);
+            }
+
+            if (activators != null && activators.Count > 0)
+            {
+                proto.Activators.AddRange(activators);
+            }
+
+            if (energies != null && energies.Count > 0)
+            {
+                proto.Energies.AddRange(energies);
+            }
+
+            if (polarities != null && polarities.Count > 0)
+            {
+                proto.Polarities.AddRange(polarities);
+            }
+            
             if (type != null)
             {
                 proto.Type = type;

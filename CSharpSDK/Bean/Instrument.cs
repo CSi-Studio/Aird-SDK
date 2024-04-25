@@ -43,12 +43,21 @@ namespace AirdSDK.Beans
 
         public InstrumentProto ToProto()
         {
-            InstrumentProto proto = new InstrumentProto()
+            InstrumentProto proto = new InstrumentProto();
+            if (source != null && source.Count > 0)
             {
-                Source = {this.source},
-                Analyzer = {this.analyzer},
-                Detector = {this.detector}
-            };
+                proto.Source.AddRange(source);
+            }
+
+            if (analyzer != null && analyzer.Count > 0)
+            {
+                proto.Analyzer.AddRange(analyzer);
+            }
+
+            if (detector != null && detector.Count > 0)
+            {
+                proto.Detector.AddRange(detector);
+            }
             if (this.manufacturer != null)
             {
                 proto.Manufacturer = manufacturer;

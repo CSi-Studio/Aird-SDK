@@ -120,12 +120,6 @@ public class BlockIndex
     public List<int> mzs = new();
 
     /**
-        * Only using Stack ZDPD. The compressed list for tags of every mz.
-        * 一个块中所有子谱图的mz原层码的压缩后的数组大小列表
-        */
-    public List<int> tags = new();
-
-    /**
          * COMMON type: it store the start position of every compressed intensity block
          * Other types: it store the size of every compressed intensity block
          * 一个块中所有子谱图的intensity的压缩后的大小列表,当为Common类型时,每一个存储的不是块大小,而是起始位置
@@ -181,26 +175,90 @@ public class BlockIndex
             Level = this.level,
             StartPtr = this.startPtr,
             EndPtr = this.endPtr,
-            Num = this.num,
-            // 假设 WindowRange 类也有一个 ToProto 方法
-            RangeList = { this.rangeList.Select(wr => wr.ToProto()) },
-            Nums = { this.nums },
-            Rts = { this.rts },
-            Tics = { this.tics },
-            BasePeakIntensities = { this.basePeakIntensities },
-            InjectionTimes = { this.injectionTimes },
-            BasePeakMzs = { this.basePeakMzs },
-            FilterStrings = { this.filterStrings },
-            Activators = { this.activators },
-            Energies = { this.energies },
-            Polarities = { this.polarities },
-            MsTypes = { this.msTypes },
-            Mzs = { this.mzs },
-            Tags = { this.tags },
-            Ints = { this.ints },
-            Mobilities = { this.mobilities },
-            Features = this.features
+            Num = this.num
         };
+
+        if (features != null)
+        {
+             proto.Features = features;
+        }
+        if (nums != null && nums.Count > 0)
+        {
+             proto.Nums.AddRange(nums);
+        }
+
+        if (rts != null && rts.Count > 0)
+        {
+             proto.Rts.AddRange(rts);
+        }
+
+        if (tics != null && tics.Count > 0)
+        {
+             proto.Tics.AddRange(tics);
+        }
+
+        if (basePeakIntensities != null && basePeakIntensities.Count > 0)
+        {
+             proto.BasePeakIntensities.AddRange(basePeakIntensities);
+        }
+
+        if (injectionTimes != null && injectionTimes.Count > 0)
+        {
+             proto.InjectionTimes.AddRange(injectionTimes);
+        }
+
+        if (basePeakMzs != null && basePeakMzs.Count > 0)
+        {
+             proto.BasePeakMzs.AddRange(basePeakMzs);
+        }
+
+        if (filterStrings != null && filterStrings.Count > 0)
+        {
+             proto.FilterStrings.AddRange(filterStrings);
+        }
+
+        if (activators != null && activators.Count > 0)
+        {
+             proto.Activators.AddRange(activators);
+        }
+
+        if (energies != null && energies.Count > 0)
+        {
+             proto.Energies.AddRange(energies);
+        }
+
+        if (polarities != null && polarities.Count > 0)
+        {
+             proto.Polarities.AddRange(polarities);
+        }
+
+        if (msTypes != null && msTypes.Count > 0)
+        {
+             proto.MsTypes.AddRange(msTypes);
+        }
+
+        if (mzs != null && mzs.Count > 0)
+        {
+             proto.Mzs.AddRange(mzs);
+        }
+
+        if (ints != null && ints.Count > 0)
+        {
+             proto.Ints.AddRange(ints);
+        }
+
+        if (mobilities != null && mobilities.Count > 0)
+        {
+             proto.Mobilities.AddRange(mobilities);
+        }
+        
+        if (rangeList != null && rangeList.Count > 0)
+        {
+             foreach (var windowRange in rangeList)
+             {
+                  proto.RangeList.Add(windowRange.ToProto());
+             }
+        }
         return proto;
     }
     
@@ -228,7 +286,6 @@ public class BlockIndex
               polarities = proto.Polarities.ToList(),
               msTypes = proto.MsTypes.ToList(),
               mzs = proto.Mzs.ToList(),
-              tags = proto.Tags.ToList(),
               ints = proto.Ints.ToList(),
               mobilities = proto.Mobilities.ToList(),
               features = proto.Features
