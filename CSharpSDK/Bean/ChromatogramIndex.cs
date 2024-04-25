@@ -103,27 +103,22 @@ namespace AirdSDK.Beans
         {
         }
         
-        
         public ChromatogramIndexProto ToProto()
         {
             ChromatogramIndexProto proto = new ChromatogramIndexProto
             {
                 TotalCount = this.totalCount,
-                Ids = { this.ids },
-                Compounds = { this.compounds },
                 StartPtr = this.startPtr,
                 EndPtr = this.endPtr,
-                // 假设 WindowRange 类也有一个 ToProto 方法
-                Precursors = { this.precursors.Select(p => p.ToProto()) },
-                Products = { this.products.Select(p => p.ToProto()) },
+                Ids = { this.ids },
                 Nums = { this.nums },
                 Rts = { this.rts },
                 Ints = { this.ints },
+                Compounds = { this.compounds },
                 Activators = { this.activators },
                 Energies = { this.energies },
                 Polarities = { this.polarities }
             };
-
             if (type != null)
             {
                 proto.Type = type;
@@ -131,6 +126,26 @@ namespace AirdSDK.Beans
             if (features != null)
             {
                 proto.Features = features;
+            }
+            if (this.precursors != null && this.precursors.Count > 0)
+            {
+                List<WindowRangeProto> protos = new List<WindowRangeProto>();
+                foreach (var precursor in this.precursors)
+                {
+                    protos.Add(precursor.ToProto());
+                }
+
+                proto.Precursors.AddRange(protos);
+            } 
+            if (this.products != null && this.products.Count > 0)
+            {
+                List<WindowRangeProto> protos = new List<WindowRangeProto>();
+                foreach (var product in this.products)
+                {
+                    protos.Add(product.ToProto());
+                }
+
+                proto.Products.AddRange(protos);
             }
             return proto;
         }
@@ -159,17 +174,23 @@ namespace AirdSDK.Beans
 
             // 将protobuf中的WindowRange列表转换为WindowRange列表
             chromatogramIndex.precursors = new List<WindowRange>();
-            foreach (var precursorProto in proto.Precursors)
+            if (proto.Precursors != null && proto.Precursors.Count > 0)
             {
-                chromatogramIndex.precursors.Add(WindowRange.FromProto(precursorProto));
+                foreach (var precursorProto in proto.Precursors)
+                {
+                    chromatogramIndex.precursors.Add(WindowRange.FromProto(precursorProto));
+                }
             }
 
             chromatogramIndex.products = new List<WindowRange>();
-            foreach (var productProto in proto.Products)
+            if (proto.Products != null && proto.Products.Count > 0)
             {
-                chromatogramIndex.products.Add(WindowRange.FromProto(productProto));
+                foreach (var productProto in proto.Products)
+                {
+                    chromatogramIndex.products.Add(WindowRange.FromProto(productProto));
+                }
             }
-
+            
             return chromatogramIndex;
         }
     }
