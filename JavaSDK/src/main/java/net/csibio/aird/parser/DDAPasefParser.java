@@ -12,7 +12,6 @@ package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.DDAPasefMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.exception.ScanException;
@@ -55,7 +54,7 @@ public class DDAPasefParser extends BaseParser {
      * @return the index info of all the ms1 spectrum
      */
     public BlockIndex getMs1Index() {
-        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
+        if (airdInfo != null && airdInfo.getIndexList() != null && !airdInfo.getIndexList().isEmpty()) {
             return airdInfo.getIndexList().get(0);
         }
         return null;

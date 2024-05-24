@@ -7,6 +7,9 @@ import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.compressor.ByteCompressor;
 import net.csibio.aird.compressor.ByteTrans;
 import net.csibio.aird.compressor.XDPD;
+import net.csibio.aird.compressor.bytecomp.ZlibWrapper;
+import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
+import net.csibio.aird.compressor.sortedintcomp.DeltaWrapper;
 import net.csibio.aird.enums.ByteCompType;
 import net.csibio.aird.parser.DDAParser;
 import org.junit.Test;
@@ -25,6 +28,16 @@ public class CompV3Test {
     static String indexPath = "D:\\Aird_Test\\SA1_6_with_zero.json";
     static int MB = 1024 * 1024;
     static int KB = 1024;
+
+    @Test
+    public void testAny(){
+        float[] data = {208.17925f, 208.17965f, 208.18005f, 208.18046f, 208.18086f, 208.18126f, 208.18167f, 208.18207f, 208.18247f};
+        float[] data1 = {208.17925f, 0.0004f, 0.0004f, 0.00041f, 0.0004f, 0.0004f, 0.0004f, 0.00041f, 0.0004f, 0.0004f};
+        int length = new ZlibWrapper().encode(ByteTrans.floatToByte(data)).length;
+        int length2 = new ZstdWrapper().encode(ByteTrans.floatToByte(data)).length;
+        System.out.println(length);
+        System.out.println(length2);
+    }
 
     @Test
     public void testV1() throws Exception {
