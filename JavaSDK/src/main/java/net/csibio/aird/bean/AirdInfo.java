@@ -243,6 +243,8 @@ public class AirdInfo {
         airdInfo.features = proto.getFeatures();
         airdInfo.createDate = proto.getCreateDate();
         airdInfo.startTimeStamp = proto.getStartTimeStamp();
+        airdInfo.indexStartPtr = proto.getIndexStartPtr();
+        airdInfo.indexEndPtr = proto.getIndexEndPtr();
 
         List<net.csibio.aird.bean.proto.AirdInfo.CompressorProto> compressorProtos = proto.getCompressorsList();
         List<Compressor> compressors = new ArrayList<>();

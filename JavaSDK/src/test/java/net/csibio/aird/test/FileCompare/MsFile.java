@@ -18,15 +18,21 @@ public class MsFile {
     long mzMLb;
     long mzMLb_Numpress;
 
-    long zdpdJsonSize;
-    long ccJsonSize;
-    long ccProtoSize;
+    double zdpdJsonSize;
+    double ccJsonSize;
+    double ccJsonCompressedSize;
+    double ccProtoSize;
 
     String mzCC;
     String intensityCC;
     String mobiCC;
     String rtCC;
     String compressor;
+
+    Double jsonZdpdVsCC;
+    Double jsonVsProto;
+    Double dtZdpdVsCC;
+    Double dtJsonVsProto;
 
     Long spectraCount;
 

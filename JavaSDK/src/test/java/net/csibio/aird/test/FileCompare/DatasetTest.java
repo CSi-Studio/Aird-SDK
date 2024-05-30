@@ -69,9 +69,9 @@ public class DatasetTest {
         System.out.println("代码预热结束");
 
         Map<Integer, Long> vendorMap = scanFolder(vendorPath, null);
-        Map<Integer, Long> zdpdJsonMap = scanFolder(zdpdPath, "json");
         Map<Integer, Long> zdpdMap = scanFolder(zdpdPath, null);
         Map<Integer, Long> ccMap = scanFolder(ccPath, null);
+        Map<Integer, Long> zdpdJsonMap = scanFolder(zdpdPath, "json");
         Map<Integer, Long> ccJsonMap = scanFolder(ccPath, "json");
         Map<Integer, Long> ccProtoMap = scanFolder(ccPath, "index");
         TreeMap<Integer, MsFile> fileMap = new TreeMap<>();
@@ -79,15 +79,19 @@ public class DatasetTest {
         for (int i = 1; i <= 58; i++) {
             MsFile file = new MsFile(i);
             try {
-                long start = System.currentTimeMillis();
-                AirdManager.getInstance().load(zdpdPath + "/" + file.fileNo + ".json");
-                file.dtZdpdJson = System.currentTimeMillis() - start;
-                start = System.currentTimeMillis();
-                AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".json");
-                file.dtJson = System.currentTimeMillis() - start;
-                start = System.currentTimeMillis();
+                long start = System.nanoTime();
+
+                BaseParser parser1 = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".json");
+                file.dtJson = System.nanoTime() - start;
+                start = System.nanoTime();
+
+                BaseParser parser2 = AirdManager.getInstance().load(zdpdPath + "/" + file.fileNo + ".json");
+                file.dtZdpdJson = System.nanoTime() - start;
+                start = System.nanoTime();
+
                 BaseParser parser = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".index");
-                file.dtProto = System.currentTimeMillis() - start;
+                file.dtProto = System.nanoTime() - start;
+                file.ccJsonCompressedSize = (parser.getAirdInfo().getIndexEndPtr() - parser.getAirdInfo().getIndexStartPtr()) / 1024d;
                 file.acquisitionMethod = parser.getType();
                 file.manufacturer = parser.getAirdInfo().getInstruments().get(0).getManufacturer();
                 file.spectraCount = parser.getAirdInfo().getTotalCount();
@@ -95,9 +99,14 @@ public class DatasetTest {
                 file.vendor = vendorMap.get(i) / 1024 / 1024; //MB
                 file.zdpd = zdpdMap.get(i) / 1024 / 1024; //MB
                 file.comboComp = ccMap.get(i) / 1024 / 1024; //MB
-                file.zdpdJsonSize = zdpdJsonMap.get(i) / 1024;  //KB
-                file.ccJsonSize = ccJsonMap.get(i) / 1024; //KB
-                file.ccProtoSize = ccProtoMap.get(i) / 1024; //KB
+                file.zdpdJsonSize = zdpdJsonMap.get(i) / 1024d;  //KB
+                file.ccJsonSize = ccJsonMap.get(i) / 1024d; //KB
+                file.ccProtoSize = ccProtoMap.get(i) / 1024d; //KB
+                file.jsonZdpdVsCC = file.zdpdJsonSize / (file.ccJsonSize + file.ccJsonCompressedSize);
+                file.jsonVsProto = file.ccJsonSize / file.ccProtoSize;
+                file.dtZdpdVsCC = file.dtZdpdJson * 1.0 / file.dtJson;
+                file.dtJsonVsProto = file.dtJson * 1.0 / file.dtProto;
+                System.out.println(i+"-"+file.dtZdpdJson+"-"+file.dtJson+"-"+file.dtProto);
 
                 file.mzCC = String.join("-", parser.mzCompressor.getMethods());
                 file.intensityCC = String.join("-", parser.intCompressor.getMethods());
