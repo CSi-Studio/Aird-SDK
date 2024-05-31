@@ -212,7 +212,7 @@ public abstract class BaseParser {
     }
 
     public void parseIndexList() throws IOException {
-        if (airdInfo != null && airdInfo.getIndexList() == null) {
+        if (airdInfo != null && (airdInfo.getIndexList() == null || airdInfo.getIndexList().isEmpty())) {
             var delta = (int) (airdInfo.getIndexEndPtr() - airdInfo.getIndexStartPtr());
             if (delta > 0) {
                 raf.seek(airdInfo.getIndexStartPtr());

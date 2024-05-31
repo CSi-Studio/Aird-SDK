@@ -6,9 +6,12 @@ import com.alibaba.fastjson2.JSONObject;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import net.csibio.aird.AirdManager;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.parser.BaseParser;
+import net.csibio.aird.parser.DDAParser;
 import net.csibio.aird.util.CsvUtil;
 import net.csibio.aird.util.FileUtil;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,10 +19,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 
 public class DatasetTest {
@@ -27,7 +27,67 @@ public class DatasetTest {
     static int fileNum = 73; //总计有73个文件
     static String vendorPath = "D:\\Aird2.0\\Vendor";
     static String zdpdPath = "D:\\Aird2.0\\ZDPD";
-    static String ccPath = "D:\\Aird2.0\\Aird";
+    static String ccPath = "D:\\Aird2.0\\Aird-NoComp";
+
+    @Test
+    public void test() throws Exception {
+
+        TreeMap<Integer, Integer[]> map = new TreeMap<>();
+        map.put(10, generateUniqueRandomArray(0, 139054, 10));
+        map.put(20, generateUniqueRandomArray(0, 139054, 20));
+        map.put(50, generateUniqueRandomArray(0, 139054, 50));
+        map.put(100, generateUniqueRandomArray(0, 139054, 100));
+        map.put(200, generateUniqueRandomArray(0, 139054, 200));
+        map.put(500, generateUniqueRandomArray(0, 139054, 500));
+        map.put(1000, generateUniqueRandomArray(0, 139054, 1000));
+        map.put(2000, generateUniqueRandomArray(0, 139054, 2000));
+        map.put(5000, generateUniqueRandomArray(0, 139054, 5000));
+        map.put(10000, generateUniqueRandomArray(0, 139054, 10000));
+        map.put(20000, generateUniqueRandomArray(0, 139054, 20000));
+        map.put(50000, generateUniqueRandomArray(0, 139054, 50000));
+        DDAParser parser = new DDAParser("D:\\Aird2.0\\ZDPD\\18.json");
+        map.forEach((k, v) -> {
+            long start = System.currentTimeMillis();
+            Spectrum[] spectrum = parser.getSpectraByNums(v);
+            long delta = System.currentTimeMillis() - start;
+
+            long length = 0;
+            for (Spectrum s : spectrum) {
+                length += s.getMzs().length;
+            }
+            System.out.print( length / delta + ",");
+
+        });
+        System.out.println();
+        DDAParser parser1 = new DDAParser("D:\\Aird2.0\\Aird\\18.json");
+        map.forEach((k, v) -> {
+            long start = System.currentTimeMillis();
+            Spectrum[] spectrum = parser1.getSpectraByNums(v);
+            long delta = System.currentTimeMillis() - start;
+
+            long length = 0;
+            for (Spectrum s : spectrum) {
+                length += s.getMzs().length;
+            }
+            System.out.print( length / delta + ",");
+        });
+        System.out.println();
+    }
+
+    public Integer[] generateUniqueRandomArray(int minValue, int maxValue, int count) {
+        if (maxValue - minValue + 1 < count) {
+            throw new IllegalArgumentException("Range is too small to generate the requested number of unique integers.");
+        }
+
+        List<Integer> numbers = new ArrayList<>();
+        for (int i = minValue; i <= maxValue; i++) {
+            numbers.add(i);
+        }
+
+        Collections.shuffle(numbers, new Random()); // 随机打乱列表中的元素
+        return numbers.subList(0, count).toArray(new Integer[0]); // 取前count个元素转为数组
+    }
+
 
     public static Map<Integer, Long> scanFolder(String folderPath, String targetSuffix) {
         Map<Integer, Long> results = new TreeMap<>();
@@ -64,6 +124,8 @@ public class DatasetTest {
     public static void main(String[] args) throws Exception {
 
         //预热所有的编码
+        AirdManager.getInstance().load(zdpdPath + "/" + 15 + ".json");
+        AirdManager.getInstance().load(zdpdPath + "/" + 15 + ".index");
         AirdManager.getInstance().load(ccPath + "/" + 15 + ".json");
         AirdManager.getInstance().load(ccPath + "/" + 15 + ".index");
         System.out.println("代码预热结束");
@@ -75,7 +137,7 @@ public class DatasetTest {
         Map<Integer, Long> ccJsonMap = scanFolder(ccPath, "json");
         Map<Integer, Long> ccProtoMap = scanFolder(ccPath, "index");
         TreeMap<Integer, MsFile> fileMap = new TreeMap<>();
-
+        System.out.println("FileNo, m/z, intensity, ion mobility");
         for (int i = 1; i <= 58; i++) {
             MsFile file = new MsFile(i);
             try {
@@ -106,12 +168,13 @@ public class DatasetTest {
                 file.jsonVsProto = file.ccJsonSize / file.ccProtoSize;
                 file.dtZdpdVsCC = file.dtZdpdJson * 1.0 / file.dtJson;
                 file.dtJsonVsProto = file.dtJson * 1.0 / file.dtProto;
-                System.out.println(i+"-"+file.dtZdpdJson+"-"+file.dtJson+"-"+file.dtProto);
+//                System.out.println(i + "-" + file.dtZdpdJson + "-" + file.dtJson + "-" + file.dtProto);
 
                 file.mzCC = String.join("-", parser.mzCompressor.getMethods());
                 file.intensityCC = String.join("-", parser.intCompressor.getMethods());
                 file.mobiCC = String.join("-", parser.mobiCompressor.getMethods());
                 file.rtCC = String.join("-", parser.rtCompressor.getMethods());
+                System.out.println(file.fileNo + "," + file.mzCC + "," + file.intensityCC + "," + file.mobiCC);
                 file.tag = file.fileNo + "-" + file.manufacturer + "-" + file.acquisitionMethod;
             } catch (Exception e) {
                 continue;
