@@ -55,7 +55,7 @@ public class DatasetTest {
             for (Spectrum s : spectrum) {
                 length += s.getMzs().length;
             }
-            System.out.print( length / delta + ",");
+            System.out.print(length / delta + ",");
 
         });
         System.out.println();
@@ -69,7 +69,7 @@ public class DatasetTest {
             for (Spectrum s : spectrum) {
                 length += s.getMzs().length;
             }
-            System.out.print( length / delta + ",");
+            System.out.print(length / delta + ",");
         });
         System.out.println();
     }
@@ -141,18 +141,35 @@ public class DatasetTest {
         for (int i = 1; i <= 58; i++) {
             MsFile file = new MsFile(i);
             try {
-                long start = System.nanoTime();
+                long start = 0;
 
-                BaseParser parser1 = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".json");
-                file.dtJson = System.nanoTime() - start;
-                start = System.nanoTime();
+                int total = 5;
+                long time = 0;
+                for (int j = 0; j < total; j++) {
+                    start = System.nanoTime();
+                    BaseParser parser1 = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".json");
+                    time += System.nanoTime() - start;
+                }
+                file.dtJson = time / total;
 
-                BaseParser parser2 = AirdManager.getInstance().load(zdpdPath + "/" + file.fileNo + ".json");
-                file.dtZdpdJson = System.nanoTime() - start;
-                start = System.nanoTime();
+                time = 0;
+                for (int j = 0; j < total; j++) {
+                    start = System.nanoTime();
+                    BaseParser parser2 = AirdManager.getInstance().load(zdpdPath + "/" + file.fileNo + ".json");
+                    time += System.nanoTime() - start;
 
-                BaseParser parser = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".index");
-                file.dtProto = System.nanoTime() - start;
+                }
+                file.dtZdpdJson = time / total;
+
+                time = 0;
+                BaseParser parser = null;
+                for (int j = 0; j < total; j++) {
+                    start = System.nanoTime();
+                    parser = AirdManager.getInstance().load(ccPath + "/" + file.fileNo + ".index");
+                    time += System.nanoTime() - start;
+                }
+                file.dtProto = time / total;
+
                 file.ccJsonCompressedSize = (parser.getAirdInfo().getIndexEndPtr() - parser.getAirdInfo().getIndexStartPtr()) / 1024d;
                 file.acquisitionMethod = parser.getType();
                 file.manufacturer = parser.getAirdInfo().getInstruments().get(0).getManufacturer();
@@ -168,7 +185,6 @@ public class DatasetTest {
                 file.jsonVsProto = file.ccJsonSize / file.ccProtoSize;
                 file.dtZdpdVsCC = file.dtZdpdJson * 1.0 / file.dtJson;
                 file.dtJsonVsProto = file.dtJson * 1.0 / file.dtProto;
-//                System.out.println(i + "-" + file.dtZdpdJson + "-" + file.dtJson + "-" + file.dtProto);
 
                 file.mzCC = String.join("-", parser.mzCompressor.getMethods());
                 file.intensityCC = String.join("-", parser.intCompressor.getMethods());
