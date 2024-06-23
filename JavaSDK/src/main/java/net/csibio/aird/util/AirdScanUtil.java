@@ -11,12 +11,14 @@
 package net.csibio.aird.util;
 
 import com.alibaba.fastjson2.JSON;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.ColumnIndex;
 import net.csibio.aird.bean.ColumnInfo;
@@ -81,7 +83,7 @@ public class AirdScanUtil {
      */
     public static AirdInfo loadAirdInfo(String indexFile) {
         AirdInfo airdInfo = new AirdInfo();
-        if (indexFile.toLowerCase().endsWith(SuffixConst.JSON)){
+        if (indexFile.toLowerCase().endsWith(SuffixConst.JSON)) {
             File file = new File(indexFile);
             if (file.exists() && file.canRead()) {
                 String content = FileUtil.readFile(indexFile);
@@ -95,11 +97,11 @@ public class AirdScanUtil {
                 return airdInfo;
             }
         } else if (indexFile.toLowerCase().endsWith(SuffixConst.INDEX)) {
-            try{
+            try {
                 FileInputStream fis = new FileInputStream(indexFile);
                 net.csibio.aird.bean.proto.AirdInfo.AirdInfoProto proto = net.csibio.aird.bean.proto.AirdInfo.AirdInfoProto.parseFrom(fis);
                 airdInfo = AirdInfo.fromProto(proto);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
@@ -182,11 +184,43 @@ public class AirdScanUtil {
 
     /**
      * 根据aird文件路径获取对应的索引文件路径
-     *
+     * if proto index exists, return proto index first
      * @param airdPath aird文件路径
      * @return 索引文件路径
      */
     public static String getIndexPathByAirdPath(String airdPath) {
+        if (airdPath == null || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
+            return null;
+        }
+        String protoIndex = airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.INDEX;
+        File file = new File(protoIndex);
+        if (file.exists()) {
+            return protoIndex;
+        } else {
+            return airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.JSON;
+        }
+    }
+
+    /**
+     * 根据aird文件路径获取对应的索引文件路径
+     *
+     * @param airdPath aird文件路径
+     * @return 索引文件路径
+     */
+    public static String getProtoIndexPathByAirdPath(String airdPath) {
+        if (airdPath == null || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
+            return null;
+        }
+        return airdPath.substring(0, airdPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.INDEX;
+    }
+
+    /**
+     * 根据aird文件路径获取对应的索引文件路径
+     *
+     * @param airdPath aird文件路径
+     * @return 索引文件路径
+     */
+    public static String getJsonIndexPathByAirdPath(String airdPath) {
         if (airdPath == null || !airdPath.contains(SymbolConst.DOT) || !airdPath.endsWith(SuffixConst.AIRD)) {
             return null;
         }
@@ -207,8 +241,8 @@ public class AirdScanUtil {
      * @return aird文件路径
      */
     public static String getAirdPathByIndexPath(String protoPath) {
-        if (protoPath!= null && (protoPath.toLowerCase().endsWith(SuffixConst.CINDEX) || protoPath.toLowerCase().endsWith(SuffixConst.CJSON) ||
-            protoPath.toLowerCase().endsWith(SuffixConst.INDEX)  || protoPath.toLowerCase().endsWith(SuffixConst.JSON))) {
+        if (protoPath != null && (protoPath.toLowerCase().endsWith(SuffixConst.CINDEX) || protoPath.toLowerCase().endsWith(SuffixConst.CJSON) ||
+                protoPath.toLowerCase().endsWith(SuffixConst.INDEX) || protoPath.toLowerCase().endsWith(SuffixConst.JSON))) {
             return protoPath.substring(0, protoPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
         }
         return null;
