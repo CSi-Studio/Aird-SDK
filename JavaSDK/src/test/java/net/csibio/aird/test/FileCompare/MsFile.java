@@ -55,6 +55,21 @@ public class MsFile {
     long dtJson;
     long dtProto;
 
+    String mz511CC;
+    String intensity511CC;
+    String mobi511CC;
+    long size511;
+    long dt511;
+
+    String mz115CC;
+    String intensity115CC;
+    String mobi115CC;
+    long size115;
+    long dt115;
+
+    double sizeUp;
+    double dtUp;
+
     String tag;
 
     public MsFile() {

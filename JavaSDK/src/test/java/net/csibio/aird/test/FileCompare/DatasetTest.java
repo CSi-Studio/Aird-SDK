@@ -28,6 +28,8 @@ public class DatasetTest {
     static String vendorPath = "D:\\Aird2.0\\Vendor";
     static String zdpdPath = "D:\\Aird2.0\\ZDPD";
     static String ccPath = "D:\\Aird2.0\\Aird-NoComp";
+    static String cc511 = "D:\\Aird2.0\\Aird-HighComp";
+    static String cc115 = "D:\\Aird2.0\\Aird-HighDT";
 
     @Test
     public void test() throws Exception {
@@ -72,6 +74,58 @@ public class DatasetTest {
             System.out.print(length / delta + ",");
         });
         System.out.println();
+    }
+
+    @Test
+    public void getCC() throws Exception {
+        Map<Integer, Long> proto511Map = scanFolder(cc511, "index");
+        Map<Integer, Long> proto511Map2 = scanFolder(cc511, "aird");
+        Map<Integer, Long> proto115Map = scanFolder(cc115, "index");
+        Map<Integer, Long> proto115Map2 = scanFolder(cc115, "aird");
+        int testSpectra = 2500;
+        List<MsFile> msFiles = new ArrayList<>();
+        for (int i = 1; i <= 58; i++) {
+            try {
+                MsFile file = new MsFile(i);
+                int totalSpectra = 0;
+
+                BaseParser parser511 = AirdManager.getInstance().load(cc511 + "/" + file.fileNo + ".index");
+                totalSpectra = parser511.getAirdInfo().getTotalCount().intValue();
+                int midNum = totalSpectra / 2;
+                long start = System.currentTimeMillis();
+                for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
+                    Spectrum spectrum = parser511.getSpectrum(midNum);
+                }
+                file.dt511 = System.currentTimeMillis() - start;
+                file.mz511CC = String.join("-", parser511.mzCompressor.getMethods());
+                file.intensity511CC = String.join("-", parser511.intCompressor.getMethods());
+                file.mobi511CC = String.join("-", parser511.mobiCompressor.getMethods());
+                file.size511 = proto511Map.get(i) + proto511Map2.get(i);
+
+                BaseParser parser115 = AirdManager.getInstance().load(cc115 + "/" + file.fileNo + ".index");
+                start = System.currentTimeMillis();
+                for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
+                    Spectrum spectrum = parser115.getSpectrum(midNum);
+                }
+                file.dt115 = System.currentTimeMillis() - start;
+                file.mz115CC = String.join("-", parser115.mzCompressor.getMethods());
+                file.intensity115CC = String.join("-", parser115.intCompressor.getMethods());
+                file.mobi115CC = String.join("-", parser115.mobiCompressor.getMethods());
+                file.size115 = proto115Map.get(i) + proto115Map2.get(i);
+
+                file.sizeUp = (file.size115 - file.size511) * 1.0 / file.size511;
+                file.dtUp = (file.dt511 - file.dt115) * 1.0 / file.dt115;
+                msFiles.add(file);
+            } catch (Exception e) {
+
+            }
+
+        }
+
+        System.out.println("总计文件：" + msFiles.size());
+        String csv = CsvUtil.toCsv(msFiles);
+        Files.write(Paths.get("D:\\dataCCCompare.csv"), csv.getBytes(StandardCharsets.UTF_8));
+        System.out.println("CSV文件写入成功。");
     }
 
     public Integer[] generateUniqueRandomArray(int minValue, int maxValue, int count) {
