@@ -55,17 +55,23 @@ public class MsFile {
     long dtJson;
     long dtProto;
 
-    String mz511CC;
-    String intensity511CC;
-    String mobi511CC;
-    long size511;
-    long dt511;
+    String mzHighComp;
+    String intensityHighComp;
+    String mobiHighComp;
+    long sizeHighComp;
+    long dtHighComp;
 
-    String mz115CC;
-    String intensity115CC;
-    String mobi115CC;
-    long size115;
-    long dt115;
+    String mzHighDT;
+    String intensityHighDT;
+    String mobiHighDT;
+    long sizeHighDT;
+    long dtHighDT;
+
+   String mzBalance;
+    String intensityBalance;
+    String mobiBalance;
+    long sizeBalance;
+    long dtBalance;
 
     double sizeUp;
     double dtUp;

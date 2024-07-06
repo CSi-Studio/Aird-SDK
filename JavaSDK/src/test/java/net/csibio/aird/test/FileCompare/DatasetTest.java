@@ -7,8 +7,10 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import net.csibio.aird.AirdManager;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.compressor.ComboComp;
 import net.csibio.aird.parser.BaseParser;
 import net.csibio.aird.parser.DDAParser;
+import net.csibio.aird.util.ArrayUtil;
 import net.csibio.aird.util.CsvUtil;
 import net.csibio.aird.util.FileUtil;
 import org.junit.Test;
@@ -28,8 +30,10 @@ public class DatasetTest {
     static String vendorPath = "D:\\Aird2.0\\Vendor";
     static String zdpdPath = "D:\\Aird2.0\\ZDPD";
     static String ccPath = "D:\\Aird2.0\\Aird-NoComp";
-    static String cc511 = "D:\\Aird2.0\\Aird-HighComp";
-    static String cc115 = "D:\\Aird2.0\\Aird-HighDT";
+    static String ccHighComp = "D:\\Aird2.0\\Aird-HighComp";
+    static String ccHighDT = "D:\\Aird2.0\\Aird-HighDT";
+    static String ccBalance = "D:\\Aird2.0\\Aird";
+    static String vendor = "D:\\Aird2.0\\Vendor";
 
     @Test
     public void test() throws Exception {
@@ -76,57 +80,152 @@ public class DatasetTest {
         System.out.println();
     }
 
+
+    /**
+     * 论文中的图样
+     * ggplot(data_df, aes(x = type, y = sizeRatio, fill = type)) +
+     * +         geom_violin(trim = FALSE) +
+     * +      geom_boxplot(width = 0.1, fill = 'white', outlier.shape = NA) +
+     * +          labs(x = '', y = 'File Size Ratio (vs Vendor File Size)', title = 'A. File size ratio of Aird format to vendor format in different combinations') +
+     * +          theme_minimal() + theme(axis.text.x = element_text(size = 12),
+     * +                                  axis.text.y = element_text(size = 12),
+     * +                                  plot.title = element_text(hjust = 0, size = 18),
+     * +                                  axis.title.x = element_text(size = 16),
+     * +                                  axis.title.y = element_text(size = 16),
+     * +                                  legend.text = element_text(size = 16),
+     * +                                  legend.title = element_blank(),
+     * +                                  legend.position = "top")
+     *
+     * @throws Exception
+     */
     @Test
     public void getCC() throws Exception {
-        Map<Integer, Long> proto511Map = scanFolder(cc511, "index");
-        Map<Integer, Long> proto511Map2 = scanFolder(cc511, "aird");
-        Map<Integer, Long> proto115Map = scanFolder(cc115, "index");
-        Map<Integer, Long> proto115Map2 = scanFolder(cc115, "aird");
+        Map<Integer, Long> protoHighCompMap = scanFolder(ccHighComp, "index");
+        Map<Integer, Long> protoHighCompMap2 = scanFolder(ccHighComp, "aird");
+        Map<Integer, Long> protoHighDTMap = scanFolder(ccHighDT, "index");
+        Map<Integer, Long> protoHighDTMap2 = scanFolder(ccHighDT, "aird");
+        Map<Integer, Long> protoBalance = scanFolder(ccBalance, "index");
+        Map<Integer, Long> protoBalance2 = scanFolder(ccBalance, "aird");
+        Map<Integer, Long> vendorMap = scanFolder(vendor, null);
+
         int testSpectra = 2500;
         List<MsFile> msFiles = new ArrayList<>();
         for (int i = 1; i <= 58; i++) {
-            try {
-                MsFile file = new MsFile(i);
-                int totalSpectra = 0;
+            MsFile file = new MsFile(i);
+            int totalSpectra = 0;
 
-                BaseParser parser511 = AirdManager.getInstance().load(cc511 + "/" + file.fileNo + ".index");
-                totalSpectra = parser511.getAirdInfo().getTotalCount().intValue();
-                int midNum = totalSpectra / 2;
-                long start = System.currentTimeMillis();
-                for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
-                    Spectrum spectrum = parser511.getSpectrum(midNum);
-                }
-                file.dt511 = System.currentTimeMillis() - start;
-                file.mz511CC = String.join("-", parser511.mzCompressor.getMethods());
-                file.intensity511CC = String.join("-", parser511.intCompressor.getMethods());
-                file.mobi511CC = String.join("-", parser511.mobiCompressor.getMethods());
-                file.size511 = proto511Map.get(i) + proto511Map2.get(i);
-
-                BaseParser parser115 = AirdManager.getInstance().load(cc115 + "/" + file.fileNo + ".index");
-                start = System.currentTimeMillis();
-                for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
-                    Spectrum spectrum = parser115.getSpectrum(midNum);
-                }
-                file.dt115 = System.currentTimeMillis() - start;
-                file.mz115CC = String.join("-", parser115.mzCompressor.getMethods());
-                file.intensity115CC = String.join("-", parser115.intCompressor.getMethods());
-                file.mobi115CC = String.join("-", parser115.mobiCompressor.getMethods());
-                file.size115 = proto115Map.get(i) + proto115Map2.get(i);
-
-                file.sizeUp = (file.size115 - file.size511) * 1.0 / file.size511;
-                file.dtUp = (file.dt511 - file.dt115) * 1.0 / file.dt115;
-                msFiles.add(file);
-            } catch (Exception e) {
-
+            BaseParser parserHighComp = AirdManager.getInstance().load(ccHighComp + "/" + file.fileNo + ".index");
+            totalSpectra = parserHighComp.getAirdInfo().getTotalCount().intValue();
+            int midNum = totalSpectra / 2;
+            long start = System.nanoTime();
+            for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
+                Spectrum spectrum = parserHighComp.getSpectrum(midNum);
             }
+            file.dtHighComp = System.nanoTime() - start;
+            file.mzHighComp = String.join("-", parserHighComp.mzCompressor.getMethods());
+            file.intensityHighComp = String.join("-", parserHighComp.intCompressor.getMethods());
+            file.mobiHighComp = String.join("-", parserHighComp.mobiCompressor.getMethods());
+            file.sizeHighComp = protoHighCompMap.get(i) + protoHighCompMap2.get(i);
 
+            BaseParser parserHighDT = AirdManager.getInstance().load(ccHighDT + "/" + file.fileNo + ".index");
+            start = System.nanoTime();
+            for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
+                Spectrum spectrum = parserHighDT.getSpectrum(midNum);
+            }
+            file.dtHighDT = System.nanoTime() - start;
+            file.mzHighDT = String.join("-", parserHighDT.mzCompressor.getMethods());
+            file.intensityHighDT = String.join("-", parserHighDT.intCompressor.getMethods());
+            file.mobiHighDT = String.join("-", parserHighDT.mobiCompressor.getMethods());
+            file.sizeHighDT = protoHighDTMap.get(i) + protoHighDTMap2.get(i);
+
+            file.sizeUp = (file.sizeHighDT - file.sizeHighComp) * 1.0 / file.sizeHighComp;
+            file.dtUp = (file.dtHighComp - file.dtHighDT) * 1.0 / file.dtHighDT;
+
+            BaseParser parser = AirdManager.getInstance().load(ccBalance + "/" + file.fileNo + ".index");
+            start = System.nanoTime();
+            for (int k = (midNum - testSpectra); k < (midNum + testSpectra); k++) {
+                Spectrum spectrum = parser.getSpectrum(midNum);
+            }
+            file.vendor = vendorMap.get(i);
+            file.dtBalance = System.nanoTime() - start;
+            file.mzBalance = String.join("-", parser.mzCompressor.getMethods());
+            file.intensityBalance = String.join("-", parser.intCompressor.getMethods());
+            file.mobiBalance = String.join("-", parser.mobiCompressor.getMethods());
+            file.sizeBalance = protoBalance.get(i) + protoBalance2.get(i);
+            msFiles.add(file);
         }
+
+        List<SelectedTarget> targets = new ArrayList<>();
+        for (MsFile msFile : msFiles) {
+            SelectedTarget targetHighComp = new SelectedTarget(msFile.getFileNo());
+            targetHighComp.setType("High Compression Ratio");
+            targetHighComp.setSizeRatio(msFile.getSizeHighComp() * 1.0 / msFile.getVendor());
+            targetHighComp.setDtRatio(msFile.getDtHighComp() * 1.0 / msFile.getDtBalance());
+            targets.add(targetHighComp);
+
+            SelectedTarget targetHighDT = new SelectedTarget(msFile.getFileNo());
+            targetHighDT.setType("High Decompression Time");
+            targetHighDT.setSizeRatio(msFile.getSizeHighDT() * 1.0 / msFile.getVendor());
+            targetHighDT.setDtRatio(msFile.getDtHighDT() * 1.0 / msFile.getDtBalance());
+            targets.add(targetHighDT);
+
+            SelectedTarget targetBalance = new SelectedTarget(msFile.getFileNo());
+            targetBalance.setType("Balance");
+            targetBalance.setSizeRatio(msFile.getSizeBalance() * 1.0 / msFile.getVendor());
+            targetBalance.setDtRatio(msFile.getDtBalance() * 1.0 / msFile.getDtBalance());
+            targets.add(targetBalance);
+        }
+
 
         System.out.println("总计文件：" + msFiles.size());
         String csv = CsvUtil.toCsv(msFiles);
         Files.write(Paths.get("D:\\dataCCCompare.csv"), csv.getBytes(StandardCharsets.UTF_8));
         System.out.println("CSV文件写入成功。");
+
+        String json = JSON.toJSONString(targets);
+        Files.write(Paths.get("D:\\dataCCCompare.json"), json.getBytes(StandardCharsets.UTF_8));
+        System.out.println("JSON文件写入成功。");
     }
+
+    @Test
+    public void test2() throws IOException {
+        List<Map<String, Object>> list = CsvUtil.readCSV("D:\\dataCCCompare.csv");
+        List<SelectedTarget> targets = new ArrayList<>();
+        List<Double> sizeUp = new ArrayList<>();
+        List<Double> dtUp = new ArrayList<>();
+
+        for (Map<String, Object> map : list) {
+            sizeUp.add(Double.parseDouble(map.get("sizeHighComp").toString())/Double.parseDouble(map.get("sizeHighDT").toString()));
+            dtUp.add(Double.parseDouble(map.get("dtHighComp").toString())/Double.parseDouble(map.get("dtHighDT").toString()));
+            SelectedTarget targetHighComp = new SelectedTarget(Integer.parseInt(map.get("fileNo").toString()));
+            targetHighComp.setType("Smaller Size");
+            targetHighComp.setSizeRatio(Double.parseDouble(map.get("HighCompRatio").toString()));
+            targetHighComp.setDtRatio(Double.parseDouble(map.get("highCompVsBalance").toString()));
+            targets.add(targetHighComp);
+
+            SelectedTarget targetHighDT = new SelectedTarget(Integer.parseInt(map.get("fileNo").toString()));
+            targetHighDT.setType("Less Decompression Time");
+            targetHighDT.setSizeRatio(Double.parseDouble(map.get("HighDTRatio").toString()));
+            targetHighDT.setDtRatio(Double.parseDouble(map.get("highDTVsBalance").toString()));
+            targets.add(targetHighDT);
+
+            SelectedTarget targetBalance = new SelectedTarget(Integer.parseInt(map.get("fileNo").toString()));
+            targetBalance.setType("Balance");
+            targetBalance.setSizeRatio(Double.parseDouble(map.get("BalanceRatio").toString()));
+            targetBalance.setDtRatio(1);
+            targets.add(targetBalance);
+        }
+
+        System.out.println("SizeUP:"+ ArrayUtil.join(",", sizeUp));
+        System.out.println("DTUP:"+ArrayUtil.join(",", sizeUp));
+        System.out.println("MaxMinAve for Size Up List:");
+        System.out.println("MaxMinAve for DT Up List:");
+        String json = JSON.toJSONString(targets);
+        Files.write(Paths.get("D:\\dataCCCompare-new.json"), json.getBytes(StandardCharsets.UTF_8));
+        System.out.println("JSON文件写入成功。");
+    }
+
+
 
     public Integer[] generateUniqueRandomArray(int minValue, int maxValue, int count) {
         if (maxValue - minValue + 1 < count) {
@@ -141,6 +240,7 @@ public class DatasetTest {
         Collections.shuffle(numbers, new Random()); // 随机打乱列表中的元素
         return numbers.subList(0, count).toArray(new Integer[0]); // 取前count个元素转为数组
     }
+
 
 
     public static Map<Integer, Long> scanFolder(String folderPath, String targetSuffix) {
@@ -337,4 +437,5 @@ public class DatasetTest {
 
         return totalSeconds;
     }
+
 }

@@ -1,7 +1,9 @@
 package net.csibio.aird.util;
 
-import java.util.Arrays;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CsvUtil {
@@ -41,5 +43,35 @@ public class CsvUtil {
         }
 
         return csvContent.toString();
+    }
+
+    public static List<Map<String, Object>> readCSV(String filePath) {
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader(filePath));
+            String line = reader.readLine(); // 读取标题行（如果有）
+            String[] keys = line.split(",");
+            // 读取其余行
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(","); // 假设使用逗号分隔
+                HashMap<String, Object> map = new HashMap<>();
+                for (int i = 0; i < data.length; i++) {
+                    map.put(keys[i], data[i]);
+                }
+                dataList.add(map);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close(); // 关闭BufferedReader
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return dataList;
     }
 }
