@@ -29,10 +29,12 @@ public class DIAParserTest {
 
     @Test
     public void testDIA() throws Exception {
-        DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\File6.json");
+        DIAParser parser = new DIAParser("D:\\proteomics\\Project\\HYE_110_32fix\\HYE110_TTOF6600_32fix_lgillet_I160308_001.json");
+        AirdInfo airdInfo = parser.getAirdInfo();
         Spectrum spectrum = parser.getSpectrumByNum(100);
         System.out.printf("Spectrum Point:"+spectrum.getMzs().length);
     }
+
     @Test
     public void testXICSpeed() throws Exception {
         DIAParser parser = new DIAParser("C:\\Users\\LMS\\Desktop\\File6.json");

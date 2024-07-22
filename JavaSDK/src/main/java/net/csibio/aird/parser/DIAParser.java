@@ -11,9 +11,16 @@
 package net.csibio.aird.parser;
 
 import net.csibio.aird.bean.AirdInfo;
+import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.Compressor;
+import net.csibio.aird.bean.DDAMs;
+import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.exception.ScanException;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * DIA Parser

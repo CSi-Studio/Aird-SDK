@@ -341,7 +341,9 @@ public abstract class BaseParser {
         rtCompressor = fetchTargetCompressor(airdInfo.getCompressors(), Compressor.TARGET_RT);
         mzPrecision = mzCompressor.getPrecision();
         intPrecision = intCompressor.getPrecision();
-        mobiPrecision = mobiCompressor.getPrecision();
+        if (mobiCompressor != null){
+            mobiPrecision = mobiCompressor.getPrecision();
+        }
         if (rtCompressor != null) {
             rtPrecision = rtCompressor.getPrecision();
         }
@@ -508,6 +510,16 @@ public abstract class BaseParser {
     }
 
     /**
+     * 根据索引解码整个索引块内所有的光谱图
+     *
+     * @param index the index of the target block
+     * @return spectrum map for the search result
+     */
+    public TreeMap<Double, Spectrum> getSpectra(BlockIndex index, double rtStart, double rtEnd) {
+        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
+    }
+
+    /**
      * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
      * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
      * <p>
@@ -532,6 +544,47 @@ public abstract class BaseParser {
             raf.read(result);
             int iter = 0;
             for (int i = 0; i < rtList.size(); i++) {
+                map.put(rtList.get(i), getSpectrum(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+                iter = iter + mzOffsets.get(i) + intOffsets.get(i);
+            }
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
+        }
+    }
+
+    /**
+     * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
+     * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+     * <p>
+     * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+     * will not close the RAF object directly after using it. Users need to close the object manually
+     * after using the diaparser object
+     *
+     * @param start      起始指针位置 start point
+     * @param end        结束指针位置 end point
+     * @param rtList     rt列表,包含所有的光谱产出时刻 the retention time list
+     * @param mzOffsets  mz块的大小列表 the mz block size list
+     * @param intOffsets intensity块的大小列表 the intensity block size list
+     * @param rtStart rt开始时间 the target start rt
+     * @param rtEnd rt结束时间 the target end rt
+     *
+     * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
+     */
+    public TreeMap<Double, Spectrum> getSpectra(long start, long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, double rtStart, double rtEnd) {
+
+        TreeMap<Double, Spectrum> map = new TreeMap<>();
+        try {
+            raf.seek(start);
+            long delta = end - start;
+            byte[] result = new byte[(int) delta];
+            raf.read(result);
+            int iter = 0;
+            for (int i = 0; i < rtList.size(); i++) {
+                if (rtList.get(i) < rtStart || rtList.get(i) > rtEnd){
+                    continue;
+                }
                 map.put(rtList.get(i), getSpectrum(result, iter, mzOffsets.get(i), intOffsets.get(i)));
                 iter = iter + mzOffsets.get(i) + intOffsets.get(i);
             }
@@ -588,6 +641,71 @@ public abstract class BaseParser {
                 raf.read(result);
                 int iter = 0;
                 while (rtIndex < rtList.size()) {
+                    map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                    iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+                    rtIndex++;
+                }
+            }
+
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
+        }
+    }
+
+    /**
+     * 返回值是一个map,其中key为rt,value为这个rt对应点原始谱图信息
+     * 特别需要注意的是,本函数在使用完raf对象以后并不会直接关闭该对象,需要使用者在使用完DIAParser对象以后手动关闭该对象
+     * <p>
+     * the result key is rt,value is the spectrum(mz-intensity pairs) In particular, this function
+     * will not close the RAF object directly after using it. Users need to close the object manually
+     * after using the diaparser object
+     *
+     * @param start       起始指针位置 start point
+     * @param end         结束指针位置 end point
+     * @param rtList      rt列表,包含所有的光谱产出时刻 the retention time list
+     * @param mzOffsets   mz块的大小列表 the mz block size list
+     * @param intOffsets  intensity块的大小列表 the intensity block size list
+     * @param mobiOffsets mobiOffsets块的大小列表 the mobility block size list
+     * @return 每一个时刻对应的光谱信息 the spectrum of the target retention time
+     */
+    public TreeMap<Double, Spectrum> getSpectra(long start, long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets, double rtStart, double rtEnd) {
+        TreeMap<Double, Spectrum> map = new TreeMap<>();
+        try {
+            //首先计算压缩块的总大小
+            long delta = end - start;
+            int rtIndex = 0;
+            //如果块体积大于整数最大值,则进行分段解析
+            while (delta > MAX_READ_SIZE) {
+                raf.seek(start);//确认起始点
+                byte[] result = new byte[MAX_READ_SIZE];//读取一个最大块,其中的有效数据应该是小于该块的大小的
+                raf.read(result);
+                int iter = 0;//迭代指针,在处理每一个分段的时候都会归零
+                if (rtIndex == rtList.size()) {
+                    break;
+                }
+                while (rtIndex < rtList.size() && (iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex)) <= MAX_READ_SIZE) {
+                    if (rtList.get(rtIndex) < rtStart || rtList.get(rtIndex) > rtEnd){
+                        continue;
+                    }
+                    map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
+                    iter += mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
+                    rtIndex++;
+                }
+                delta = delta - iter;
+                start = start + iter;
+            }
+
+            if (delta > 0) {
+                raf.seek(start);
+                byte[] result = new byte[(int) delta];
+                raf.read(result);
+                int iter = 0;
+                while (rtIndex < rtList.size()) {
+                    if (rtList.get(rtIndex) < rtStart || rtList.get(rtIndex) > rtEnd){
+                        continue;
+                    }
                     map.put(rtList.get(rtIndex), getSpectrum(result, iter, mzOffsets.get(rtIndex), intOffsets.get(rtIndex), mobiOffsets.get(rtIndex)));
                     iter = iter + mzOffsets.get(rtIndex) + intOffsets.get(rtIndex) + mobiOffsets.get(rtIndex);
                     rtIndex++;
