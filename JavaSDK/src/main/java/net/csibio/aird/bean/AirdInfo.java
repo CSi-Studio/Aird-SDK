@@ -15,6 +15,7 @@ import net.csibio.aird.constant.Features;
 import net.csibio.aird.enums.AirdEngine;
 import net.csibio.aird.enums.AirdType;
 import net.csibio.aird.enums.MsLevel;
+import net.csibio.aird.bean.msi.MsiInfo;
 
 import java.util.*;
 
@@ -166,6 +167,12 @@ public class AirdInfo {
      * ion mobility information
      */
     MobiInfo mobiInfo = new MobiInfo();
+
+    /**
+     * Use in MSI
+     * 如果是空间代谢数据,本字段会启用
+     */
+    public MsiInfo msiInfo;
 
     /**
      * 实验的创建者 The aird file creator

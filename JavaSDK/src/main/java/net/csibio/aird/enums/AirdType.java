@@ -10,9 +10,12 @@
 
 package net.csibio.aird.enums;
 
+import lombok.Getter;
+
 /**
  * Aird Type
  */
+@Getter
 public enum AirdType {
 
     /**
@@ -54,17 +57,14 @@ public enum AirdType {
      * MRM parser
      */
     MRM("MRM", 8),
-    ;
-
     /**
-     * Aird Type code
+     * MSIMaldi parser
      */
-    public Integer code;
+    MSI_MALDI("MSI_MALDI", 9);
 
-    /**
-     * Aird Type name
-     */
-    public String name;
+
+    public final Integer code;
+    public final String name;
 
     /**
      * 构造函数
@@ -87,17 +87,4 @@ public enum AirdType {
         return valueOf(typeName);
     }
 
-    /**
-     * @return the type code
-     */
-    public Integer getCode() {
-        return code;
-    }
-
-    /**
-     * @return the type name
-     */
-    public String getName() {
-        return name;
-    }
 }

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (c) 2020 CSi Biotech
  * AirdSDK and AirdPro are licensed under Mulan PSL v2.
  * You can use this software according to the terms and conditions of the Mulan PSL v2.
@@ -8,20 +8,20 @@
  * See the Mulan PSL v2 for more details.
  */
 
-package net.csibio.aird.enums;
+package net.csibio.aird.enums.msi;
 
 import lombok.Getter;
 
 @Getter
-public enum MsLevel {
-    MS1("MS1", 1), MS2("MS2", 2);
+public enum CheckSum{
+    MD5("MD5", 1),
+    SHA1 ("SHA1",2);
 
     final String name;
     final Integer code;
 
-    MsLevel(String name, Integer code) {
+    CheckSum(String name, Integer code) {
         this.name = name;
         this.code = code;
     }
-
 }

@@ -151,7 +151,7 @@ public class DDAParser extends BaseParser {
      * @param includeMS2 if including the ms2 spectra
      * @return the search DDAMs results
      */
-    private List<DDAMs> buildDDAMsList(List<Double> rtList, int start, int end, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
+    public List<DDAMs> buildDDAMsList(List<Double> rtList, int start, int end, BlockIndex ms1Index, TreeMap<Double, Spectrum> ms1Map, boolean includeMS2) {
         List<DDAMs> ms1List = new ArrayList<>();
         Map<Integer, BlockIndex> ms2IndexMap = null;
         if (includeMS2) {
