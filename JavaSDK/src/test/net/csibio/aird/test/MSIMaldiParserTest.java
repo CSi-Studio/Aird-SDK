@@ -14,6 +14,7 @@ import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.parser.MSIMaldiParser;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

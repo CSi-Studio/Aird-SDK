@@ -3,11 +3,7 @@ package net.csibio.aird.test.AirdV3Try;
 import com.alibaba.fastjson2.JSON;
 import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.DDAMs;
-import net.csibio.aird.compressor.ByteTrans;
-import net.csibio.aird.compressor.bytecomp.ZstdWrapper;
-import net.csibio.aird.compressor.intcomp.BinPackingWrapper;
 import net.csibio.aird.parser.DDAParser;
-import net.csibio.aird.test.AirdV3Try.Compressor.CompressiveSensingCompressor;
 import net.csibio.aird.test.AirdV3Try.Compressor.WaveCompressor;
 import org.junit.Test;
 

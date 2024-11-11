@@ -2,11 +2,6 @@ package net.csibio.aird.test.AirdV3Try;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import net.csibio.aird.bean.BlockIndex;
-import net.csibio.aird.bean.DDAMs;
-import net.csibio.aird.parser.DDAParser;
-import net.csibio.aird.test.AirdV3Try.Compressor.CompressiveSensingCompressor;
-import net.csibio.aird.test.AirdV3Try.Compressor.WaveCompressor;
 import org.junit.Test;
 
 import java.io.File;
@@ -16,8 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AirdV2TestPrepare {
     static String indexPath = "E:\\msfile_converted\\Aird2Ex";
