@@ -10,16 +10,16 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class SpectraPosition
 {
-    public int[] x;
-    public int[] y;
-    public int[] z;
+    int[] x;
+    int[] y;
+    int[] z;
 
     public SpectraPosition(int[] x, int[] y, int[] z)
     {

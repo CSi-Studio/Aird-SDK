@@ -43,8 +43,8 @@ public class MSIMaldiParser extends DDAParser{
 
     public List<ImageData> GetImageDataList(double mz, double tolerance){
         imageDataList = new ArrayList<>();
-        int[] x = airdInfo.msiInfo.spectraPosition.x;
-        int[] y = airdInfo.msiInfo.spectraPosition.y;
+        int[] x = airdInfo.getMsiInfo().getSpectraPosition().getX();
+        int[] y = airdInfo.getMsiInfo().getSpectraPosition().getY();
         
         for (int index = 0; index < x.length; index++)
         {            

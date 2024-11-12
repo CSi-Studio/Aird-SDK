@@ -10,19 +10,18 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 public class ImageData{
-    public int x;
-    public int Y;
-    public double Intensity;
-
+    Integer x;
+    Integer y;
+    Double intensity;
     public ImageData(int x, int y, double intensity) {
         this.x = x;
-        Y = y;
-        Intensity = intensity;
+        this.y = y;
+        this.intensity = intensity;
     }
 }
