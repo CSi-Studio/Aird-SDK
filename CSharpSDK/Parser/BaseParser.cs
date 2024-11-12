@@ -334,7 +334,7 @@ public abstract class BaseParser
                         mobiIntComp = new BinPackingWrapper();
                         break;
                     case "DZVB":
-                        intIntComp = new DeltaZigzagVBWrapper();
+                        mobiIntComp = new DeltaZigzagVBWrapper();
                         break;
                     case "Empty":
                         mobiIntComp = new Empty();
