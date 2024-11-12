@@ -10,10 +10,13 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
+
+@Data
 public class ScanInfo
 {
-    public String scanSequence;
-    public String scanPattern;
-    public String scanType;
-    public String scanDirection;
+    String scanSequence;
+    String scanPattern;
+    String scanType;
+    String scanDirection;
 }

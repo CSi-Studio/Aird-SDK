@@ -10,12 +10,15 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
+
+@Data
 public class OffsetHandle
 {
-    public long[] mzExternalArrayLength;
-    public long[] mzExternalEncodedLength;
-    public long[] mzExternalOffset;
-    public long[] intensityExternalArrayLength;
-    public long[] intensityExternalEncodedLength;
-    public long[] intensityExternalOffset;
+    long[] mzExternalArrayLength;
+    long[] mzExternalEncodedLength;
+    long[] mzExternalOffset;
+    long[] intensityExternalArrayLength;
+    long[] intensityExternalEncodedLength;
+    long[] intensityExternalOffset;
 }

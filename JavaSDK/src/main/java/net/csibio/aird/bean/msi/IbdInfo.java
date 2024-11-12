@@ -10,10 +10,13 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
+
+@Data
 public class IbdInfo{
-    public String fileUri;
-    public String checkSum; // ibd MD5, ibd SHA-1
-    public String binaryType;    //continuous，processed
-    public String identification;
-    public OffsetHandle offsetHandle;
+    String fileUri;
+    String checkSum; // ibd MD5, ibd SHA-1
+    String binaryType;    //continuous，processed
+    String identification;
+    OffsetHandle offsetHandle;
 }

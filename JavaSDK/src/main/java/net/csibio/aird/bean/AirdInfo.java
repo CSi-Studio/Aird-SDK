@@ -172,7 +172,7 @@ public class AirdInfo {
      * Use in MSI
      * 如果是空间代谢数据,本字段会启用
      */
-    public MsiInfo msiInfo;
+    MsiInfo msiInfo;
 
     /**
      * 实验的创建者 The aird file creator
