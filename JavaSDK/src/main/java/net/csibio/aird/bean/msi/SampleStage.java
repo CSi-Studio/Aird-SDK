@@ -10,9 +10,12 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
+
+@Data
 public class SampleStage
 {
-    public double positionAccuracy;
-    public double stepSize;
-    public String targetMaterial;
+    Double positionAccuracy;
+    Double stepSize;
+    String targetMaterial;
 }

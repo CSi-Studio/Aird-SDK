@@ -10,12 +10,15 @@
 
 package net.csibio.aird.bean.msi;
 
+import lombok.Data;
+
+@Data
 public class MsiInfo
 {
-    public String fileOrganisation;
-    public IbdInfo ibdInfo;
-    public ImageInfo imageInfo;
-    public SpectraPosition spectraPosition;
-    public SampleStage sampleStage;
-    public ScanInfo scanInfo;
+    String fileOrganisation;
+    IbdInfo ibdInfo;
+    ImageInfo imageInfo;
+    SpectraPosition spectraPosition;
+    SampleStage sampleStage;
+    ScanInfo scanInfo;
 }
