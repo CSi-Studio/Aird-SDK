@@ -34,7 +34,7 @@ namespace AirdSDK.Beans
         
         public ParentFileProto ToProto()
         {
-            ParentFileProto proto = new ParentFileProto();
+            ParentFileProto proto = new();
             if (name != null)
             {
                 proto.Name = name;

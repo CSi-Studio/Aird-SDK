@@ -66,7 +66,7 @@ public class BlockIndex
 
     /**
          * Every Spectrum's total base peak intensity in the block
-         * 所有该块中的tic列表
+         * 所有该块中的base peak intensity列表
          */
     public List<double> basePeakIntensities = new();
 
@@ -78,7 +78,7 @@ public class BlockIndex
 
     /**
         * Every Spectrum's total base peak mz in the block
-        * 所有该块中的tic列表
+        * 所有该块中的base peak mz列表
         */
     public List<double> basePeakMzs = new();
 

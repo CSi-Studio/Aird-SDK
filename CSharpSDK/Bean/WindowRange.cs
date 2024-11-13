@@ -25,7 +25,7 @@ namespace AirdSDK.Beans
 
         //前体的带电量,大多情况为0,表示未知
         public int? charge;
-
+        #nullable enable
         public string? features;
 
         public WindowRange()
@@ -41,7 +41,7 @@ namespace AirdSDK.Beans
 
         public WindowRangeProto ToProto()
         {
-            WindowRangeProto proto = new WindowRangeProto()
+            WindowRangeProto proto = new()
             {
                 Start = this.start,
                 End = this.end,

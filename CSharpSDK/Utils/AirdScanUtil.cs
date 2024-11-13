@@ -32,9 +32,9 @@ public class AirdScanUtil
     public static List<FileInfo> ScanIndexFiles(string directoryPath)
     {
         //Check and filter for effective aird files
-        DirectoryInfo root = new DirectoryInfo(directoryPath);
+        DirectoryInfo root = new(directoryPath);
         FileInfo[] fileList = root.GetFiles();
-        List<FileInfo> indexFileList = new List<FileInfo>();
+        List<FileInfo> indexFileList = [];
 
         if (fileList.Length == 0)
         {
@@ -61,7 +61,7 @@ public class AirdScanUtil
     */
     public static AirdInfo LoadAirdInfo(string indexPath)
     {
-        AirdInfo airdInfo = new AirdInfo();
+        AirdInfo airdInfo = new();
         if (indexPath.ToLower().EndsWith(SuffixConst.JSON))
         {
             string content = FileUtil.ReadFile(new FileInfo(indexPath));
@@ -69,7 +69,7 @@ public class AirdScanUtil
         }
         else if (indexPath.ToLower().EndsWith(SuffixConst.INDEX))
         {
-            FileStream fis = new FileStream(indexPath, FileMode.Open);
+            FileStream fis = new(indexPath, FileMode.Open);
             AirdInfoProto proto = AirdInfoProto.Parser.ParseFrom(fis);
             airdInfo = AirdInfo.FromProto(proto);
         }
@@ -84,16 +84,16 @@ public class AirdScanUtil
      * @return 该索引文件内的JSON信息, 即ColumnInfo信息
      */
     public static ColumnInfo LoadColumnInfo(string indexPath) {
-        ColumnInfo columnInfo = new ColumnInfo();
+        ColumnInfo columnInfo = new();
         if (indexPath.ToLower().EndsWith(SuffixConst.CJSON)) {
             String content = FileUtil.ReadFile(new FileInfo(indexPath));
             columnInfo = JsonConvert.DeserializeObject<ColumnInfo>(content);
         } else if (indexPath.ToLower().EndsWith(SuffixConst.CINDEX)) {
             try {
-                FileStream fs = new FileStream(indexPath, FileMode.Open);
+                FileStream fs = new(indexPath, FileMode.Open);
                 ColumnInfoProto proto = ColumnInfoProto.Parser.ParseFrom(fs);
                 columnInfo = ColumnInfo.FromProto(proto);
-            } catch (System.Exception e) {
+            } catch (System.Exception) {
                 return null;
             }
         }

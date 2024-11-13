@@ -113,9 +113,7 @@ public abstract class BaseParser
     */
     public BaseParser(string indexPath, AirdInfo airdInfo)
     {
-        if (airdInfo == null) throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
-
-        this.airdInfo = airdInfo;
+        this.airdInfo = airdInfo ?? throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         airdFile = new FileInfo(AirdScanUtil.GetAirdPathByIndexPath(indexPath));
 
         fs = File.OpenRead(airdFile.FullName);
@@ -131,8 +129,10 @@ public abstract class BaseParser
         indexPath = AirdScanUtil.GetIndexPathByAirdPath(airdPath);
 
         //不使用Index文件初始化的时候,会直接初始化一个空AirdInfo,用于存放传入的基础信息
-        airdInfo = new AirdInfo();
-        airdInfo.type = airdType;
+        airdInfo = new AirdInfo
+        {
+            type = airdType
+        };
         airdFile = new FileInfo(airdPath);
         fs = File.OpenRead(airdFile.FullName);
 
@@ -160,30 +160,16 @@ public abstract class BaseParser
 
     public static BaseParser BuildParser(string indexPath)
     {
-        var airdInfo = AirdScanUtil.LoadAirdInfo(indexPath);
-        if (airdInfo == null) throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
-
-        BaseParser baseParser = null;
-
-        switch (airdInfo.type)
+        var airdInfo = AirdScanUtil.LoadAirdInfo(indexPath) ?? throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
+        BaseParser baseParser = airdInfo.type switch
         {
-            case "DDA_PASEF":
-                baseParser = new DDAPasefParser(indexPath, airdInfo);
-                break;
-            case "DIA_PASEF":
-                baseParser = new DIAPasefParser(indexPath, airdInfo);
-                break;
-            case "DDA":
-                baseParser = new DDAParser(indexPath, airdInfo);
-                break;
-            case "DIA":
-                baseParser = new DIAParser(indexPath, airdInfo);
-                break;
-            case "PRM":
-                baseParser = new PRMParser(indexPath, airdInfo);
-                break;
-            default: throw new System.Exception("Unexpected value: " + airdInfo.type);
-        }
+            "DDA_PASEF" => new DDAPasefParser(indexPath, airdInfo),
+            "DIA_PASEF" => new DIAPasefParser(indexPath, airdInfo),
+            "DDA" => new DDAParser(indexPath, airdInfo),
+            "DIA" => new DIAParser(indexPath, airdInfo),
+            "PRM" => new PRMParser(indexPath, airdInfo),
+            _ => throw new System.Exception("Unexpected value: " + airdInfo.type),
+        };
         return baseParser;
     }
 
@@ -199,7 +185,7 @@ public abstract class BaseParser
                 fs.Read(result, 0, delta);
                 byte[] indexListBytes = new ZstdWrapper().decode(result);
                 string indexListStr = System.Text.Encoding.UTF8.GetString(indexListBytes);
-                JsonSerializer serializer = new JsonSerializer();
+                //JsonSerializer serializer = new JsonSerializer();
                 List<BlockIndex> indexList = JsonConvert.DeserializeObject<List<BlockIndex>>(indexListStr);
                 airdInfo.indexList = indexList;
             }
@@ -334,7 +320,7 @@ public abstract class BaseParser
                         mobiIntComp = new BinPackingWrapper();
                         break;
                     case "DZVB":
-                        intIntComp = new DeltaZigzagVBWrapper();
+                        mobiIntComp = new DeltaZigzagVBWrapper();
                         break;
                     case "Empty":
                         mobiIntComp = new Empty();
@@ -402,10 +388,10 @@ public abstract class BaseParser
      */
     public Spectrum GetSpectrum(byte[] bytes, int offset, int mzOffset, int intOffset)
     {
-        if (mzOffset == 0) return new Spectrum(new double[0], new double[0]);
+        if (mzOffset == 0) return new Spectrum([], []);
 
         double[] mzArray = GetMzs(bytes, offset, mzOffset);
-        offset = offset + mzOffset;
+        offset += mzOffset;
         double[] intensityArray = GetInts(bytes, offset, intOffset);
         return new Spectrum(mzArray, intensityArray);
     }
@@ -463,7 +449,7 @@ public abstract class BaseParser
     public Dictionary<double, Spectrum> GetSpectra(long start, long end, List<double> rtList, List<int> mzOffsets,
         List<int> intOffsets)
     {
-        Dictionary<double, Spectrum> map = new Dictionary<double, Spectrum>();
+        Dictionary<double, Spectrum> map = [];
         fs.Seek(start, SeekOrigin.Begin);
         long delta = end - start;
         byte[] result = new byte[(int) delta];
@@ -496,7 +482,7 @@ public abstract class BaseParser
     public Dictionary<double, Spectrum> GetSpectra(long start, long end, List<double> rtList, List<int> mzOffsets,
         List<int> intOffsets, List<int> mobiOffsets)
     {
-        Dictionary<double, Spectrum> map = new Dictionary<double, Spectrum>();
+        Dictionary<double, Spectrum> map = [];
 
         //首先计算压缩块的总大小
         long delta = end - start;
@@ -514,8 +500,8 @@ public abstract class BaseParser
                 if ((iterA + mzOffsets[rtIndex] + intOffsets[rtIndex] + mobiOffsets[rtIndex]) > MAX_READ_SIZE)
                 {
                     //分段数据处理完毕, 移动指针至下一个分段的位置
-                    delta = delta - iterA;
-                    start = start + iterA;
+                    delta -= iterA;
+                    start += iterA;
                     break;
                 }
 
@@ -546,13 +532,13 @@ public abstract class BaseParser
     {
         if (mzOffset == 0)
         {
-            return new Spectrum(new double[0], new double[0], new double[0]);
+            return new Spectrum([], [], []);
         }
 
         double[] mzArray = GetMzs(bytes, offset, mzOffset);
-        offset = offset + mzOffset;
+        offset += mzOffset;
         double[] intensityArray = GetInts(bytes, offset, intOffset);
-        offset = offset + intOffset;
+        offset += intOffset;
         double[] mobiArray = GetMobilities(bytes, offset, mobiOffset);
         return new Spectrum(mzArray, intensityArray, mobiArray);
     }
@@ -914,8 +900,8 @@ public abstract class BaseParser
     //     return tags;
     // }
 
-    public String GetType()
+    public new string GetType()
     {
-        return airdInfo == null ? null : airdInfo.type;
+        return airdInfo?.type;
     }
 }

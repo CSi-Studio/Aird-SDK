@@ -7,10 +7,9 @@
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
  * See the Mulan PSL v2 for more details.
  */
-
+using AirdSDK.Bean.Msi;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace AirdSDK.Beans
 {
@@ -104,9 +103,9 @@ namespace AirdSDK.Beans
 
         /**
          * [Core Field]
-         * AcquisitionMethod, Support for DIA/SWATH, PRM, DDA, SRM/MRM, DDAPasef, DIAPasef
+         * AcquisitionMethod, Support for DIA/SWATH, PRM, DDA, SRM/MRM, DDAPasef, DIAPasef, MSI_MALDI
          * [核心字段]
-         * Aird支持的采集模式的类型,目前支持SRM/MRM, DIA, PRM, DDA, DDAPasef, DIAPasef 6种
+         * Aird支持的采集模式的类型,目前支持SRM/MRM, DIA, PRM, DDA, DDAPasef, DIAPasef, MSI_MALDI 7种
          */
         public string type;
 
@@ -172,6 +171,12 @@ namespace AirdSDK.Beans
          * 如果是Mobility采集模式,本字段会启用
          */
         public MobiInfo mobiInfo = new MobiInfo();
+
+        /**
+         * Use in MSI
+         * 如果是空间代谢数据,本字段会启用
+         */
+        public MsiInfo msiInfo;
 
         /**
         * the aird file creator

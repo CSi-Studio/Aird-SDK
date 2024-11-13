@@ -270,7 +270,7 @@ namespace Ionic.Zlib
                                                 // connect to last table, if there is one
                                                 if (h != 0)
                                                 {
-                                                        x[h] = i; // save pattern for backing up
+                                                        x[h] = i; // save scanPattern for backing up
                                                         r[0] = (sbyte) j; // bits in this table
                                                         r[1] = (sbyte) l; // bits to dump before this table
                                                         j = SharedUtils.URShift(i, (w - l));
