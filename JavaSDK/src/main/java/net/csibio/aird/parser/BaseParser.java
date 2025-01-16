@@ -287,6 +287,7 @@ public abstract class BaseParser {
             case DIA -> new DIAParser(indexPath, airdInfo);
             case PRM -> new PRMParser(indexPath, airdInfo);
             case MRM -> new MRMParser(indexPath, airdInfo);
+            case MSI_MALDI -> new MSIMaldiParser(indexPath);
             default -> throw new IllegalStateException("Unexpected value: " + AirdType.getType(airdInfo.getType()));
         };
     }

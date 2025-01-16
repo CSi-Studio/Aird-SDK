@@ -13,23 +13,25 @@ package net.csibio.aird.test;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.parser.BaseParser;
 import net.csibio.aird.parser.MSIMaldiParser;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class MSIMaldiParserTest {
 
-    String filePath1 = "D:\\test\\imzml\\aird\\77-20240424_mMALDI_neg_9AA_brain_30um_low_CLMC_ProcessedHugo.json";
+    String filePath1 = "D:\\data\\MSIdata\\Test-batch\\test-aird\\78-regions-total ion count.json";
     String filePath2 = "D:\\test\\imzml-raw\\aird-raw\\11-test_POS.json";
 
     @Test
     public void testXICSpeed() throws Exception {
-        MSIMaldiParser parser = new MSIMaldiParser(filePath1);
+        BaseParser parser = BaseParser.buildParser(filePath1);
         AirdInfo airdInfo = parser.getAirdInfo();
         try {
-            List<DDAMs> allMsList = parser.readAllToMemory();
+            List<DDAMs> allMsList = ((MSIMaldiParser)parser).readAllToMemory();
             AtomicInteger total = new AtomicInteger(0);
             total.getAndAdd(allMsList.size());
             System.out.println("理论光谱图数目:" + airdInfo.getTotalCount() + "");

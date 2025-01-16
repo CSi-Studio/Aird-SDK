@@ -14,6 +14,7 @@ import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.bean.msi.ImageData;
 import net.csibio.aird.bean.BlockIndex;
+import net.csibio.aird.bean.msi.SpectraPosition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,8 @@ import java.util.TreeMap;
 public class MSIMaldiParser extends DDAParser{
     public List<DDAMs> msList;
     private List<ImageData> imageDataList;
+
+
 
     public MSIMaldiParser(String indexFilePath) throws Exception {
         super(indexFilePath);
@@ -61,6 +64,15 @@ public class MSIMaldiParser extends DDAParser{
             imageDataList.add(new ImageData(x[index], y[index], intensity));
         }
         return imageDataList;
+    }
+
+    public SpectraPosition getSpectraPosition()
+    {
+        var x = airdInfo.getMsiInfo().getSpectraPosition().getX();
+        var y = airdInfo.getMsiInfo().getSpectraPosition().getY();
+        var z = airdInfo.getMsiInfo().getSpectraPosition().getZ();
+        SpectraPosition sp = new SpectraPosition(x,y,z);
+        return  sp;
     }
 
 }
