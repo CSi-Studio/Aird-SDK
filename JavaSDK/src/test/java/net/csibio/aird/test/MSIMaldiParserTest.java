@@ -23,19 +23,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MSIMaldiParserTest {
 
-    String filePath1 = "D:\\data\\MSIdata\\Test-batch\\test-aird\\78-regions-total ion count.json";
-    String filePath2 = "D:\\test\\imzml-raw\\aird-raw\\11-test_POS.json";
+    String filePath1 = "C:\\Users\\LMS\\Desktop\\78-regions-total ion count.json";
+    String filePath11 = "C:\\Users\\LMS\\Desktop\\Origin\\78-regions-total ion count.json";
+    String filePath2 = "C:\\Users\\LMS\\Desktop\\test\\imzml-raw\\aird-raw\\11-test_POS.json";
 
     @Test
     public void testXICSpeed() throws Exception {
+        long start = System.currentTimeMillis();
         BaseParser parser = BaseParser.buildParser(filePath1);
+        System.out.println("CostA:" + (System.currentTimeMillis() - start));
+
         AirdInfo airdInfo = parser.getAirdInfo();
         try {
-            List<DDAMs> allMsList = ((MSIMaldiParser)parser).readAllToMemory();
-            AtomicInteger total = new AtomicInteger(0);
-            total.getAndAdd(allMsList.size());
+            start = System.currentTimeMillis();
+            List<Spectrum> spectra = ((MSIMaldiParser)parser).readAllToMemory();
+            System.out.println("CostB:" + (System.currentTimeMillis() - start));
             System.out.println("理论光谱图数目:" + airdInfo.getTotalCount() + "");
-            System.out.println("实际光谱图数目:" + total.get() + "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,9 +77,9 @@ public class MSIMaldiParserTest {
 
     @Test
     public void testReadSpectra() throws Exception {
-        MSIMaldiParser parser = new MSIMaldiParser(filePath1);
-        long start = System.currentTimeMillis();
-        List<DDAMs> ms1List = parser.getSpectraByRtRange(0d, 10d, false);
-        System.out.println("Cost:" + (System.currentTimeMillis() - start));
+//        MSIMaldiParser parser = new MSIMaldiParser(filePath1);
+//        long start = System.currentTimeMillis();
+//        List<DDAMs> ms1List = parser.getSpectraByRtRange(0d, 10d, false);
+//        System.out.println("Cost:" + (System.currentTimeMillis() - start));
     }
 }

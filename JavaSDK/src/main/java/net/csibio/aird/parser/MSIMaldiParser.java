@@ -10,49 +10,53 @@
 
 package net.csibio.aird.parser;
 
-import net.csibio.aird.bean.DDAMs;
+import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.common.Spectrum;
 import net.csibio.aird.bean.msi.ImageData;
-import net.csibio.aird.bean.BlockIndex;
 import net.csibio.aird.bean.msi.SpectraPosition;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeMap;
 
-public class MSIMaldiParser extends DDAParser{
-    public List<DDAMs> msList;
+public class MSIMaldiParser extends BaseParser{
+    public List<Spectrum> msList;
     private List<ImageData> imageDataList;
 
 
 
     public MSIMaldiParser(String indexFilePath) throws Exception {
         super(indexFilePath);
-        msList = ReadAllToMemory();
     }
 
-    public List<DDAMs> ReadAllToMemory(){
-        BlockIndex ms1Index = getMs1Index(); //所有的ms1谱图都在第一个index中
-        List<Double> rts = new ArrayList<>();
-        for (int i = 0; i < ms1Index.getNums().size(); i++){
-            double rt = i + 1;
-            rts.add(rt);
+    /**
+     * DDA只有一个MS1 BlockIndex,因此是归属于DDAParser的特殊算法
+     *
+     * @return the index of all the ms1
+     */
+    public BlockIndex getMs1Index() {
+        if (airdInfo != null && airdInfo.getIndexList() != null && airdInfo.getIndexList().size() > 0) {
+            return airdInfo.getIndexList().get(0);
         }
-        ms1Index.setRts(rts);
-        TreeMap<Double, Spectrum> ms1Map = getSpectra(ms1Index);
-        List<Double> ms1RtList = new ArrayList<>(ms1Map.keySet());
-        return buildDDAMsList(ms1RtList, 0, ms1RtList.size(), ms1Index, ms1Map, false);
+        return null;
     }
 
-    public List<ImageData> GetImageDataList(double mz, double tolerance){
+    public List<Spectrum> readAllToMemory(){
+        BlockIndex ms1Index = getMs1Index(); //所有的ms1谱图都在第一个index中
+        long start = System.currentTimeMillis();
+        List<Spectrum> msList = getSpectraList(ms1Index);
+        System.out.println("Read ms1 spectra time: " + (System.currentTimeMillis() - start)/1000 + " s");
+        return msList;
+    }
+
+    public List<ImageData> getImageDataList(double mz, double tolerance){
         imageDataList = new ArrayList<>();
         int[] x = airdInfo.getMsiInfo().getSpectraPosition().getX();
         int[] y = airdInfo.getMsiInfo().getSpectraPosition().getY();
         
         for (int index = 0; index < x.length; index++)
         {            
-            double[] mzArray = msList.get(index).getSpectrum().getMzs();
-            double[] intArray = msList.get(index).getSpectrum().getInts();
+            double[] mzArray = msList.get(index).getMzs();
+            double[] intArray = msList.get(index).getInts();
             double intensity = 0;
             for (int i = 0; i < mzArray.length; i++)
             {

@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -277,6 +278,7 @@ public abstract class BaseParser {
      */
     public static BaseParser buildParser(String indexPath) throws Exception {
         AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexPath);
+        airdInfo.setType(AirdType.MSI_MALDI.name());
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }
@@ -506,6 +508,16 @@ public abstract class BaseParser {
      * @param index the index of the target block
      * @return spectrum map for the search result
      */
+    public List<Spectrum> getSpectraList(BlockIndex index) {
+        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getMzs(), index.getInts());
+    }
+
+    /**
+     * 根据索引解码整个索引块内所有的光谱图
+     *
+     * @param index the index of the target block
+     * @return spectrum map for the search result
+     */
     public TreeMap<Double, Spectrum> getSpectra(BlockIndex index) {
         return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
     }
@@ -549,6 +561,25 @@ public abstract class BaseParser {
                 iter = iter + mzOffsets.get(i) + intOffsets.get(i);
             }
             return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
+        }
+    }
+
+    public List<Spectrum> getSpectra(long start, long end, List<Integer> mzOffsets, List<Integer> intOffsets) {
+        List<Spectrum> spectra = new ArrayList<>();
+        try {
+            raf.seek(start);
+            long delta = end - start;
+            byte[] result = new byte[(int) delta];
+            raf.read(result);
+            int iter = 0;
+            for (int i = 0; i < mzOffsets.size(); i++) {
+                spectra.add(getSpectrum(result, iter, mzOffsets.get(i), intOffsets.get(i)));
+                iter = iter + mzOffsets.get(i) + intOffsets.get(i);
+            }
+            return spectra;
         } catch (Exception e) {
             e.printStackTrace();
             throw new ScanException(ResultCodeEnum.BLOCK_PARSE_ERROR);
