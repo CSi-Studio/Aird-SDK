@@ -278,7 +278,6 @@ public abstract class BaseParser {
      */
     public static BaseParser buildParser(String indexPath) throws Exception {
         AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexPath);
-        airdInfo.setType(AirdType.MSI_MALDI.name());
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }

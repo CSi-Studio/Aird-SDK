@@ -6,7 +6,7 @@
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>2.5.0</version>
+    <version>2.5.1.1</version>
     <name>Aird-SDK</name>
     <packaging>jar</packaging>
     <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage
@@ -44,17 +44,17 @@
         <dependency>
             <artifactId>commons-codec</artifactId>
             <groupId>commons-codec</groupId>
-            <version>1.13</version>
+            <version>1.18.0</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>
             <artifactId>fastjson2</artifactId>
-            <version>2.0.25</version>
+            <version>2.0.53</version>
         </dependency>
         <dependency>
             <artifactId>JavaFastPFOR</artifactId>
             <groupId>me.lemire.integercompression</groupId>
-            <version>0.1.12</version>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <artifactId>commons-math3</artifactId>
@@ -89,7 +89,7 @@
         <dependency>
             <artifactId>commons-io</artifactId>
             <groupId>commons-io</groupId>
-            <version>2.11.0</version>
+            <version>2.14.0</version>
         </dependency>
         <dependency>
             <artifactId>annotations</artifactId>
@@ -160,36 +160,36 @@
 
     <developers>
         <developer>
-            <email>csi@csibio.net</email>
+            <email>lumiaoshan@qq.com</email>
             <name>MiaoShan Lu</name>
             <organization>csi biotech</organization>
         </developer>
     </developers>
     <distributionManagement>
         <!--        远程仓库 当需要Deploy到Aliyun私有仓库时使用本插件-->
-                <repository>
-                    <id>rdc-releases</id>
-                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>rdc-snapshots</id>
-                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>
-                </snapshotRepository>
+<!--                <repository>-->
+<!--                    <id>rdc-releases</id>-->
+<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>-->
+<!--                </repository>-->
+<!--                <snapshotRepository>-->
+<!--                    <id>rdc-snapshots</id>-->
+<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>-->
+<!--                </snapshotRepository>-->
 <!--                <repository>-->
 <!--                    <id>space-csi</id>-->
 <!--                    <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
 <!--                </repository>-->
         <!--        远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus-staging</id>-->
-<!--            <name>Nexus Release Repository</name>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>sonatype-nexus-snapshots</id>-->
-<!--            <name>Sonatype Nexus Snapshots</name>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-<!--        </snapshotRepository>-->
+        <repository>
+            <id>sonatype-nexus-staging</id>
+            <name>Nexus Release Repository</name>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sonatype-nexus-snapshots</id>
+            <name>Sonatype Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
     </distributionManagement>
 
     <repositories>
