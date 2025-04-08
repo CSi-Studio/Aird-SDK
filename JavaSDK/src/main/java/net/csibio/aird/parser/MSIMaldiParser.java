@@ -42,9 +42,7 @@ public class MSIMaldiParser extends BaseParser{
 
     public List<Spectrum> readAllToMemory(){
         BlockIndex ms1Index = getMs1Index(); //所有的ms1谱图都在第一个index中
-        long start = System.currentTimeMillis();
         List<Spectrum> msList = getSpectraList(ms1Index);
-        System.out.println("Read ms1 spectra time: " + (System.currentTimeMillis() - start)/1000 + " s");
         return msList;
     }
 
