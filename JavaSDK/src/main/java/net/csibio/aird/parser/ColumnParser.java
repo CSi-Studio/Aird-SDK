@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+
 
 import jdk.incubator.vector.*;
 import net.csibio.aird.bean.ColumnIndex;
 import net.csibio.aird.bean.ColumnInfo;
+import net.csibio.aird.bean.WindowRange;
 import net.csibio.aird.bean.common.IntPair;
 import net.csibio.aird.bean.common.Xic;
 import net.csibio.aird.compressor.ByteTrans;
@@ -116,6 +115,10 @@ public class ColumnParser {
         return calcXicSIMD(mz - mzWindow, mz + mzWindow, null, null, null);
     }
 
+    public Xic calcXicArrayByMz(Double mz, Double mzWindow) throws IOException{
+        return calcXicArray(mz - mzWindow, mz + mzWindow, null, null, null);
+    }
+
     public Xic calcXicByWindow(Double mz, Double mzWindow, Double rt, Double rtWindow, Double precursorMz) throws IOException {
         return calcXic(mz - mzWindow, mz + mzWindow, rt - rtWindow, rt + rtWindow, precursorMz);
     }
@@ -198,6 +201,141 @@ public class ColumnParser {
         }
 
         return new Xic(rts, intensities);
+    }
+
+    public Xic calcXicArray(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
+        // 1. 索引选择逻辑（保持不变）
+        if (columnInfo.getIndexList() == null || columnInfo.getIndexList().isEmpty()) {
+            return null;
+        }
+        ColumnIndex index = null;
+        if (precursorMz != null) {
+            for (ColumnIndex columnIndex : columnInfo.getIndexList()) {
+                WindowRange mzRange = columnIndex.getRange();
+                if (mzRange != null && mzRange.getStart() <= precursorMz && mzRange.getEnd() > precursorMz) {
+                    index = columnIndex;
+                    break;  // 找到即停止
+                }
+            }
+        } else {
+            index = columnInfo.getIndexList().get(0);
+        }
+        if (index == null) {
+            return null;
+        }
+
+        // 2. 计算m/z边界
+        int[] mzs = index.getMzs();
+        int start = (int) (mzStart * mzPrecision);
+        int end = (int) (mzEnd * mzPrecision);
+        IntPair leftMzPair = AirdMathUtil.binarySearch(mzs, start);
+        int leftMzIndex = leftMzPair.right();
+        IntPair rightMzPair = AirdMathUtil.binarySearch(mzs, end);
+        int rightMzIndex = rightMzPair.left();
+
+        // 处理无匹配m/z的情况
+        if (leftMzIndex > rightMzIndex || leftMzIndex < 0 || rightMzIndex >= mzs.length) {
+            return new Xic(new double[0], new double[0]);
+        }
+
+        // 3. 计算rt边界
+        int[] rtArray = index.getRts();
+        int leftRtIndex = 0;
+        int rightRtIndex = rtArray.length - 1;
+
+        if (rtStart != null) {
+            int rtStartMs = (int) (rtStart * 1000);
+            IntPair leftRtPair = AirdMathUtil.binarySearch(rtArray, rtStartMs);
+            leftRtIndex = Math.max(leftRtPair.right(), 0);
+        }
+
+        if (rtEnd != null) {
+            int rtEndMs = (int) (rtEnd * 1000);
+            IntPair rightRtPair = AirdMathUtil.binarySearch(rtArray, rtEndMs);
+            rightRtIndex = Math.min(rightRtPair.left(), rtArray.length - 1);
+        }
+
+        // 处理无效rt范围
+        if (leftRtIndex > rightRtIndex) {
+            return new Xic(new double[0], new double[0]);
+        }
+
+        // 4. 准备累加数组
+        final int rtRange = rightRtIndex - leftRtIndex + 1;
+        final double[] intensitySum = new double[rtRange]; // 自动初始化为0
+
+        // 5. 定位数据起始指针
+        int[] spectraIdLengths = index.getSpectraIds();
+        int[] intensityLengths = index.getIntensities();
+        long[] anchors = index.getAnchors();
+
+        // 计算起始指针（优化：减少循环次数）
+        int anchorIndex = leftMzIndex / 100000;
+        long startPtr = anchors[anchorIndex];
+
+        // 快速跳过前面的索引
+        int startBlock = anchorIndex * 100000;
+        if (startBlock < leftMzIndex) {
+            for (int i = startBlock; i < leftMzIndex; i++) {
+                startPtr += spectraIdLengths[i] + intensityLengths[i];
+            }
+        }
+
+        // 6. 批量读取数据（关键优化）
+        long totalBytes = 0;
+        for (int k = leftMzIndex; k <= rightMzIndex; k++) {
+            totalBytes += spectraIdLengths[k] + intensityLengths[k];
+        }
+
+        byte[] buffer = new byte[0];
+        if (totalBytes > 0) {
+            buffer = readByte(startPtr, (int) totalBytes); // 单次I/O读取
+        }
+        int bufferOffset = 0;
+
+        // 7. 处理每个m/z通道
+        for (int k = leftMzIndex; k <= rightMzIndex; k++) {
+            // 7.1 解码spectra IDs
+            int idLen = spectraIdLengths[k];
+            byte[] idBytes = Arrays.copyOfRange(buffer, bufferOffset, bufferOffset + idLen);
+            bufferOffset += idLen;
+            int[] spectraIds = fastDecodeAsSortedInteger(idBytes);
+
+            // 7.2 解码强度值
+            int intLen = intensityLengths[k];
+            byte[] intBytes = Arrays.copyOfRange(buffer, bufferOffset, bufferOffset + intLen);
+            bufferOffset += intLen;
+            int[] rawIntensities = fastDecode(intBytes);
+
+            // 7.3 累加有效数据点（优化：避免重复计算）
+            for (int t = 0; t < spectraIds.length; t++) {
+                int spectraId = spectraIds[t];
+                // 快速跳过不在范围内的点
+                if (spectraId < leftRtIndex) continue;
+                if (spectraId > rightRtIndex) break; // 利用有序特性
+
+                int pos = spectraId - leftRtIndex;
+                intensitySum[pos] += decodeIntensity(rawIntensities[t]);
+            }
+        }
+
+        // 8. 构建结果
+        double[] rts = new double[rtRange];
+        for (int i = 0; i < rtRange; i++) {
+            rts[i] = rtArray[i + leftRtIndex] / 1000.0;
+        }
+
+        return new Xic(rts, intensitySum);
+    }
+
+    // 强度值解码方法（避免重复计算）
+    private double decodeIntensity(int raw) {
+        if (raw >= 0) {
+            return raw / (double) intPrecision;
+        } else {
+            // 负值表示对数压缩数据：2^(-raw/100000)
+            return Math.pow(2, -raw / 100000.0) / intPrecision;
+        }
     }
     public Xic calcXicSIMD(Double mzStart, Double mzEnd, Double rtStart, Double rtEnd, Double precursorMz) throws IOException {
         if (columnInfo.getIndexList() == null || columnInfo.getIndexList().size() == 0) {
