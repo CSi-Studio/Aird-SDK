@@ -12,8 +12,12 @@ package net.csibio.aird.bean.common;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Spectrum {
+public class Spectrum implements Serializable {
+
+    private static final long serialVersionUID = -12398864543222L;
 
     private double[] mzs;
     private double[] ints;
