@@ -12,9 +12,12 @@ package net.csibio.aird.bean;
 
 import lombok.Data;
 
-@Data
-public class WindowRange {
+import java.io.Serializable;
 
+@Data
+public class WindowRange implements Serializable {
+
+    private static final long serialVersionUID = -1232223122L;
     /**
      * 前体质量起始数值 precursor mz start
      */

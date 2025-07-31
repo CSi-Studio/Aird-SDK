@@ -198,7 +198,6 @@ public abstract class BaseParser {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }
         this.airdInfo = airdInfo;
-
         this.airdFile = new File(AirdScanUtil.getAirdPathByIndexPath(indexPath));
         try {
             raf = new RandomAccessFile(airdFile, "r");
@@ -278,7 +277,6 @@ public abstract class BaseParser {
      */
     public static BaseParser buildParser(String indexPath) throws Exception {
         AirdInfo airdInfo = AirdScanUtil.loadAirdInfo(indexPath);
-        airdInfo.setType(AirdType.MSI_MALDI.name());
         if (airdInfo == null) {
             throw new ScanException(ResultCodeEnum.AIRD_INDEX_FILE_PARSE_ERROR);
         }

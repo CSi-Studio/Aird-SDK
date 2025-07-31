@@ -176,6 +176,7 @@ public class ColumnParser {
                     if (intensity < 0) {
                         intensity = Math.pow(2, -intensity / 100000d);
                     }
+                    //TODO WXX Optimizer
                     map.merge(spectraId, intensity / intPrecision, Double::sum);
                 }
             }

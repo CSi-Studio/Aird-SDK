@@ -237,13 +237,13 @@ public class AirdScanUtil {
     /**
      * 根据索引文件路径获取aird文件路径
      *
-     * @param protoPath 索引文件路径
+     * @param indexPath 索引文件路径
      * @return aird文件路径
      */
-    public static String getAirdPathByIndexPath(String protoPath) {
-        if (protoPath != null && (protoPath.toLowerCase().endsWith(SuffixConst.CINDEX) || protoPath.toLowerCase().endsWith(SuffixConst.CJSON) ||
-                protoPath.toLowerCase().endsWith(SuffixConst.INDEX) || protoPath.toLowerCase().endsWith(SuffixConst.JSON))) {
-            return protoPath.substring(0, protoPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
+    public static String getAirdPathByIndexPath(String indexPath) {
+        if (indexPath != null && (indexPath.toLowerCase().endsWith(SuffixConst.CINDEX) || indexPath.toLowerCase().endsWith(SuffixConst.CJSON) ||
+                indexPath.toLowerCase().endsWith(SuffixConst.INDEX) || indexPath.toLowerCase().endsWith(SuffixConst.JSON))) {
+            return indexPath.substring(0, indexPath.lastIndexOf(SymbolConst.DOT)) + SuffixConst.AIRD;
         }
         return null;
     }
