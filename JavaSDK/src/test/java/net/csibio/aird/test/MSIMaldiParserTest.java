@@ -13,6 +13,7 @@ package net.csibio.aird.test;
 import net.csibio.aird.bean.AirdInfo;
 import net.csibio.aird.bean.DDAMs;
 import net.csibio.aird.bean.common.Spectrum;
+import net.csibio.aird.bean.msi.ImageData;
 import net.csibio.aird.parser.BaseParser;
 import net.csibio.aird.parser.MSIMaldiParser;
 import org.junit.Test;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class MSIMaldiParserTest {
 
-    String filePath1 = "C:\\Users\\LMS\\Desktop\\78-regions-total ion count.json";
+    String filePath1 = "D:\\data\\MSIdata\\Aird\\54-E3B3S15_1wk infected.json";
     String filePath11 = "C:\\Users\\LMS\\Desktop\\Origin\\78-regions-total ion count.json";
     String filePath2 = "C:\\Users\\LMS\\Desktop\\test\\imzml-raw\\aird-raw\\11-test_POS.json";
 
@@ -51,7 +52,7 @@ public class MSIMaldiParserTest {
         parser1.readAllToMemory();
         System.out.println("Cost1:" + (System.currentTimeMillis() - start1));
 
-        MSIMaldiParser parser2 = new MSIMaldiParser(filePath2);
+        MSIMaldiParser parser2 = new MSIMaldiParser(filePath1);
         long start2 = System.currentTimeMillis();
         parser2.readAllToMemory();
         System.out.println("Cost2:" + (System.currentTimeMillis() - start2));
@@ -77,9 +78,13 @@ public class MSIMaldiParserTest {
 
     @Test
     public void testReadSpectra() throws Exception {
-//        MSIMaldiParser parser = new MSIMaldiParser(filePath1);
-//        long start = System.currentTimeMillis();
-//        List<DDAMs> ms1List = parser.getSpectraByRtRange(0d, 10d, false);
-//        System.out.println("Cost:" + (System.currentTimeMillis() - start));
+        BaseParser parser = BaseParser.buildParser(filePath1);
+        AirdInfo airdInfo = parser.getAirdInfo();
+        try {
+            List<Spectrum> spectra = ((MSIMaldiParser)parser).readAllToMemory();
+            List<ImageData> data = ((MSIMaldiParser)parser).getImageDataList(360,0.005);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
