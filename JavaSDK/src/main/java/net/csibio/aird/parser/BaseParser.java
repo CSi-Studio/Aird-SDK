@@ -527,7 +527,7 @@ public abstract class BaseParser {
      * @return spectrum map for the search result
      */
     public TreeMap<Double, Spectrum> getSpectra(BlockIndex index, double rtStart, double rtEnd) {
-        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts());
+        return getSpectra(index.getStartPtr(), index.getEndPtr(), index.getRts(), index.getMzs(), index.getInts(), rtStart, rtEnd);
     }
 
     /**
