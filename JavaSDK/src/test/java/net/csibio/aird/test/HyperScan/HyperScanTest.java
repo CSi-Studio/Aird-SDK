@@ -11,7 +11,7 @@ import java.util.List;
 
 public class HyperScanTest {
 
-    static String indexPath = "/Users/cicci/Documents/TestFile/SampleA_1.cjson";
+    static String indexPath = "/Users/cicci/Documents/TestFile/negativeD24.cjson";
 
     @Test
     public void testEIC() throws IOException {
