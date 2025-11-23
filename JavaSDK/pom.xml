@@ -16,7 +16,7 @@
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>23</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -263,8 +263,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>16</source>
-                    <target>16</target>
+                    <source>23</source>
+                    <target>23</target>
+                    <compilerArgs>
+                        <arg>--add-modules</arg>
+                        <arg>jdk.incubator.vector</arg>
+                    </compilerArgs>
                 </configuration>
                 <groupId>org.apache.maven.plugins</groupId>
                 <version>3.8.0</version>
@@ -291,14 +295,15 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>true</skip>
+                    <skip>false</skip>
+                    <argLine>--add-modules jdk.incubator.vector</argLine>
                 </configuration>
                 <groupId>org.apache.maven.plugins</groupId>
                 <version>2.5</version>
             </plugin>
         </plugins>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <testSourceDirectory>src/main/java</testSourceDirectory>
+        <testSourceDirectory>src/test/java</testSourceDirectory>
     </build>
 
     <scm>
