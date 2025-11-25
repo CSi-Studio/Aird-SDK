@@ -31,3 +31,4 @@ hs_err_pid*
 *.pyc
 /*.iml
 /target/
+/.vscode/settings.json

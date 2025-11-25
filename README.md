@@ -52,7 +52,7 @@ Demo code: see SampleCode.java in the project or in the "How to use" chapter
     <dependency>
         <groupId>net.csibio.aird</groupId>
         <artifactId>aird-sdk</artifactId>
-        <version>2.4.1.2</version>
+        <version>2.5.1.1</version>
     </dependency>
 
 ## 2.2 Nuget for C# SDK
@@ -71,6 +71,7 @@ Search "AirdSDK" in Nuget Package Manager
 |--------------------------|----------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | version                  | String               | True     | Aird format version                                                                                                                                     |
 | versionCode              | Integer              | True     | Aird format version code                                                                                                                                |
+| engine                   | Integer              | True     | Compression engine type (0: Row Compression, 1: Column Compression)                                                                                     |
 | compressors              | List<Compressor>     | True     | The compression strategies for m/z, intensity and mobility array                                                                                        |
 | instruments              | List<Instrument>     | True     | General information about the MS instrument                                                                                                             |
 | dataProcessings          | List<DataProcessing> | False    | Description of any manipulation (from the first conversion to Aird format until the creation of the current Aird instance document) applied to the data |
@@ -78,7 +79,10 @@ Search "AirdSDK" in Nuget Package Manager
 | parentFiles              | List<ParentFile>     | False    | Path to all the ancestor files (up to the native acquisition file) used to generate the current Aird document                                           |
 | rangeList                | List<WindowRange>    | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format                    |
 | indexList                | List<BlockIndex>     | True     | The index for mass spectrometry data                                                                                                                    |
-| type                     | String               | True     | Aird Type. There are four types now: DIA, DDA, PRM, DIA_PASEF, DDA_PASEF, COMMON                                                                        |
+| indexStartPtr            | Long                 | False    | Start position of compressed binary index data (version code >=7)                                                                                       |
+| indexEndPtr              | Long                 | False    | End position of compressed binary index data (version code >=7)                                                                                         |
+| chromatogramIndex        | ChromatogramIndex    | False    | Chromatogram information for MRM acquisition mode                                                                                                       |
+| type                     | String               | True     | Aird Type. Supported types: DIA, DDA, PRM, DIA_PASEF, DDA_PASEF, MRM, MSI_MALDI, COMMON                                                                 |
 | fileSize                 | Long                 | True     | The file size for Aird file and JSON file                                                                                                               |
 | totalCount               | Long                 | True     | Total spectrums count                                                                                                                                   |
 | airdPath                 | String               | False    | The .aird file path                                                                                                                                     |
@@ -87,21 +91,24 @@ Search "AirdSDK" in Nuget Package Manager
 | msType                   | String               | True     | Mass Spectrum Type, PROFILE, CENTROIDED                                                                                                                 |
 | rtUnit                   | String               | True     | rt unit, always second                                                                                                                                  |
 | polarity                 | String               | True     | Polarity type, POSITIVE, NEGATIVE, NEUTRAL                                                                                                              |
+| filterString             | String               | False    | Filter string for spectrum selection                                                                                                                   |
 | ignoreZeroIntensityPoint | Boolean              | True     | Whether ignore the point which intensity is 0                                                                                                           |
 | mobiInfo                 | MobiInfo             | False    | ion mobility information                                                                                                                                |
+| msiInfo                  | MsiInfo              | False    | MSI (Mass Spectrometry Imaging) information                                                                                                            |
 | creator                  | String               | False    | The file creator, this field can be set up in the AirdPro                                                                                               |
 | createDate               | String               | False    | The create date for the aird file                                                                                                                       |
-| features                 | String               | False    | Some other features stored with “key:value;key:value” format                                                                                            |
+| features                 | String               | False    | Some other features stored with "key:value;key:value" format                                                                                            |
+| startTimeStamp           | String               | False    | Experiment start timestamp                                                                                                                              |
 
 ## 3.2 Compressor
 
 | Name      | Type         | Required | Description                                           |
 |-----------|--------------|----------|-------------------------------------------------------|
-| target    | String       | True     | mz, intensity, ion mobility                           |
-| methods   | List<String> | True     | Combination Compressors like ["VB","Zstd"]            |
-| precision | Integer      | False    | 10^N, the N means N decimal places for the final data |
-| digit     | Integer      | False    | Use for StackZDPD algorithm, 2^digit = layers         |
-| byteOrder | String       | True     | LITTLE_ENDIAN(default), BIG_ENDIAN                    |
+| target    | String       | True     | Compression target: mz, intensity, mobility, rt      |
+| methods   | List<String> | True     | Compression methods in order, e.g. ["VB","Zstd"]     |
+| precision | Integer      | True     | Precision multiplier: 1000=3dp, 10000=4dp, etc.      |
+| digit     | Integer      | False    | Use for StackZDPD algorithm, 2^digit = layers (Python SDK only) |
+| byteOrder | String       | False    | Byte order: LITTLE_ENDIAN(default), BIG_ENDIAN        |
 
 ## 3.3 WindowRange
 
@@ -111,7 +118,7 @@ Search "AirdSDK" in Nuget Package Manager
 | end      | Double  | True     | Precursor m/z end                                            |
 | mz       | Double  | True     | Precursor m/z                                                |
 | charge   | Integer | False    | Precursor charge, 0 when empty                               |
-| features | String  | False    | Some other features stored with “key:value;key:value” format |
+| features | String  | False    | Some other features stored with "key:value;key:value" format |
 
 ## 3.4 BlockIndex
 
@@ -120,31 +127,37 @@ Search "AirdSDK" in Nuget Package Manager
 | level               | Integer           | True     | 1:MS1, 2:MS2                                                                                                                         |
 | startPtr            | Long              | True     | The start point for the block                                                                                                        |
 | endPtr              | Long              | True     | The endpoint for the block                                                                                                           |
-| num                 | Integer           | False    | The scan number in the vendor file. If a block has a list of MS2, this field is the related MS1’s number                             |
+| num                 | Integer           | False    | The scan number in the vendor file. If a block has a list of MS2, this field is the related MS1's number                             |
 | rangeList           | List<WindowRange> | False    | The precursor m/z window ranges which have been adjusted with experiment overlap. This field is targeted for DIA and PRM type format |
 | nums                | List<Integer>     | False    | Scan numbers in the block                                                                                                            |
 | rts                 | List<Double>      | True     | All the retention times in the block                                                                                                 |
+| tics                | List<Long>        | False    | Every Spectrum's total intensity in the block                                                                                        |
+| injectionTimes      | List<Float>       | False    | Every Spectrum's injection time in the block (C# and Java SDK only)                                                                  |
 | basePeakIntensities | List<Double>      | True     | Every Spectrum's total base peak intensity in the block                                                                              |
 | basePeakMzs         | List<Double>      | True     | Every Spectrum's total base peak mz in the block                                                                                     |
-| tags                | List<Integer>     | False    | Used in StackZDPD, the original layers of every mz point                                                                             |
-| tics                | List<Long>        | False    | Every Spectrum's total intensity in the block                                                                                        |
+| filterStrings       | List<String>      | False    | Every Spectrum's filter string in the block                                                                                          |
+| activators          | List<String>      | False    | Every Spectrum's activator in the block                                                                                              |
+| energies            | List<Float>       | False    | Every Spectrum's energy in the block                                                                                                 |
+| polarities          | List<String>      | False    | Every Spectrum's polarity in the block                                                                                              |
+| msTypes             | List<String>      | False    | Every Spectrum's msType in the block                                                                                                |
+| tags                | List<Integer>     | False    | Used in StackZDPD, the original layers of every mz point (Python SDK only)                                                          |
 | mzs                 | List<Integer>     | True     | Size for every m/z bytes size                                                                                                        |
 | ints                | List<Integer>     | True     | Size for every intensity bytes size                                                                                                  |
 | mobilities          | List<Integer>     | False    | Size for every ion mobility bytes size                                                                                               |
-| cvList              | List<List<CV>>    | False    | PSI Controlled Vocabulary                                                                                                            |
-| features            | String            | False    | Some other features stored with “key:value;key:value” format                                                                         |
+| cvList              | List<List<CV>>    | False    | PSI Controlled Vocabulary (Python SDK only)                                                                                         |
+| features            | String            | False    | Some other features stored with "key:value;key:value" format                                                                         |
 
 ## 3.5 Instrument
 
 | Name         | Type         | Required | Description                                                  |
 |--------------|--------------|----------|--------------------------------------------------------------|
-| manufacturer | String       | False    | Instrument manufacturer: ”ABSciex”,”Thermo Fisher”           |
-| ionization   | String       | False    | Ionization                                                   |
+| manufacturer | String       | False    | Instrument manufacturer: "ABSciex","Thermo Fisher"           |
+| ionisation   | String       | False    | Ionisation method                                            |
 | resolution   | String       | False    | Resolution                                                   |
 | model        | String       | False    | Instrument model                                             |
-| source       | List<String> | False    | Source: ”electrospray ionization”, ”electrospray inlet”      |
-| analyzer     | List<String> | False    | Analyzer: “quadrupole”, “orbitrap”                           |
-| detector     | List<String> | False    | Detector: ”inductive detector”                               |
+| source       | List<String> | False    | Source: "electrospray ionization", "electrospray inlet"      |
+| analyzer     | List<String> | False    | Analyzer: "quadrupole", "orbitrap"                           |
+| detector     | List<String> | False    | Detector: "inductive detector"                               |
 
 ## 3.6 DataProcessing
 
@@ -237,6 +250,55 @@ This is only for DDAParser with small DDA data file(< 200MB as an advice). Read 
     DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
+
+# 5 Detailed Documentation
+
+## 5.1 Multi-language SDK Documentation
+
+### Java SDK Documentation
+- [中文使用指南](./docs/Java/Java_SDK_Parser_使用指南_中文.md)
+- [English Usage Guide](./docs/Java/Java_SDK_Parser_Usage_Guide_English.md)
+
+### C# SDK Documentation
+- [中文使用指南](./docs/CSharp/CSharp_SDK_Parser_使用指南_中文.md)
+- [English Usage Guide](./docs/CSharp/CSharp_SDK_Parser_Usage_Guide_English.md)
+
+### Python SDK Documentation
+- [中文使用指南](./docs/Python/Python_SDK_Parser_使用指南_中文.md)
+- [English Usage Guide](./docs/Python/Python_SDK_Parser_Usage_Guide_English.md)
+
+## 5.2 Project Structure
+
+```
+Aird-SDK/
+├── CSharpSDK/          # C# SDK Source Code
+├── JavaSDK/            # Java SDK Source Code
+├── PyAirdSDK/          # Python SDK Source Code
+├── docs/               # Documentation Directory
+│   ├── Java/           # Java SDK Documentation
+│   ├── CSharp/         # C# SDK Documentation
+│   └── Python/         # Python SDK Documentation
+└── README.md           # Project Overview
+```
+
+## 5.3 Supported Parser Classes
+
+All SDKs support the following core Parser classes:
+
+### Base Parsers
+- **BaseParser** - Base class for all Parser classes, providing common functionality
+
+### Data Acquisition Mode Parsers
+- **DDAParser** - Data-Dependent Acquisition (DDA) mode
+- **DIAParser** - Data-Independent Acquisition (DIA) mode
+- **MRMParser** - Multiple Reaction Monitoring (MRM) mode
+- **PRMParser** - Parallel Reaction Monitoring (PRM) mode
+
+### Advanced Feature Parsers
+- **DDAPasefParser** - DDA-PASEF mode (with ion mobility)
+- **DIAPasefParser** - DIA-PASEF mode (with ion mobility)
+- **MSIMaldiParser** - MALDI imaging
+- **ColumnParser** - Column data parsing
 
 # Sample Code
 
