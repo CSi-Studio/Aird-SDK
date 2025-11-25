@@ -192,63 +192,161 @@ Search "AirdSDK" in Nuget Package Manager
 
 # 4 API Document
 
-## 4.1 Scan Aird files from target directory
+## 4.1 Parser Classes Overview
 
-```
-    List<File> files = AirdScanUtil.scanIndexFiles("E:\\data\\SGS");
-    files.forEach(file -> {
-        AirdManager.getInstance().load(file.getPath());
-    });
-```
+AirdSDK provides the following core Parser classes for different mass spectrometry data acquisition modes:
+
+- **BaseParser**: Abstract base class providing common spectrum reading functionality
+- **DDAParser**: DDA (Data-Dependent Acquisition) mode parser
+- **DIAParser**: DIA (Data-Independent Acquisition) mode parser
+- **PRMParser**: PRM (Parallel Reaction Monitoring) mode parser (inherits from DIAParser)
+- **MRMParser**: MRM/SRM (Multiple/Selected Reaction Monitoring) mode parser
+- **MSIMaldiParser**: MSI MALDI (Mass Spectrometry Imaging) mode parser
 
 ## 4.2 Load Aird Info into memory
 
 ```
-    DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
-    DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
-    DDAPasefParser ddaPasefParser = new DDAPasefParser("\\FilePath\\file.json");
-    DIAPasefParser diaPasefParser = new DIAPasefParser("\\FilePath\\file.json");
-    PRMParser prmParser = new PRMParser("\\FilePath\\file.json");
+    // Load DIA data
+    DIAParser diaParser = new DIAParser("/FilePath/file.json");
+    
+    // Load DDA data
+    DDAParser ddaParser = new DDAParser("/FilePath/file.json");
+    
+    // Load PRM data
+    PRMParser prmParser = new PRMParser("/FilePath/file.json");
+    
+    // Load MRM data
+    MRMParser mrmParser = new MRMParser("/FilePath/file.json");
+    
+    // Load MSI MALDI data
+    MSIMaldiParser msiParser = new MSIMaldiParser("/FilePath/file.json");
 ```
 
 ## 4.3 Read AirdInfo
 
 ```
-    DDAParser parser1 = new DDAParser(YOUR_AIRD_INDEX_FILE_PATH);
+    DDAParser parser = new DDAParser(YOUR_AIRD_INDEX_FILE_PATH);
     AirdInfo airdInfo = parser.getAirdInfo();
 ```
 
-## 4.4 Read Spectrum by spectrum number
+## 4.4 Read Spectrum by Retention Time
 
 ```
-    int num = 12
-    Spectrum pairs = parser.getSpectrum(num);
+    // Use BlockIndex and retention time to read single spectrum
+    double rt = 12.3456;
+    Spectrum spectrum = parser.getSpectrumByRt(blockIndex, rt);
+    
+    // Use multi-parameter version to read single spectrum
+    Spectrum spectrum = parser.getSpectrumByRt(startPtr, rtList, mzOffsets, intOffsets, rt);
 ```
 
-## 4.5 Read Spectrum by spectrum number
+## 4.5 Read Spectrum by Index
 
 ```
-    double rt = 12.3456
-    Spectrum pairs = parser.getSpectrum(num);
+    // Read spectrum by sequence number
+    int index = 12;
+    Spectrum spectrum = parser.getSpectrum(index);
+    
+    // Read spectrum by BlockIndex and block index
+    Spectrum spectrum = parser.getSpectrumByIndex(blockIndex, index);
 ```
 
-## 4.6 Read DIA/SWATH window block one by one
+## 4.6 Read Multiple Spectra
 
 ```
-    DIAParser diaParser = new DIAParser("\\FilePath\\file.json");
+    // Read all spectra from specified BlockIndex
+    TreeMap<Double, Spectrum> spectraMap = parser.getSpectra(blockIndex);
+    
+    // Read spectra within specified retention time range
+    TreeMap<Double, Spectrum> spectraMap = parser.getSpectra(start, end, rtList, mzOffsets, intOffsets);
+```
+
+## 4.7 DDA-Specific Operations
+
+```
+    // Get MS1 spectrum index
+    BlockIndex ms1Index = ddaParser.getMs1Index();
+    
+    // Get all MS2 spectrum indexes
+    List<BlockIndex> ms2Indexes = ddaParser.getAllMs2Index();
+    
+    // Read all DDA data into memory (recommended for small files <200MB)
+    List<DDAMs> cycleList = ddaParser.readAllToMemory();
+    
+    // Get MS1 spectrum mapping
+    TreeMap<Double, Spectrum> ms1Map = ddaParser.getMs1SpectraMap();
+```
+
+## 4.8 DIA/SWATH Operations
+
+```
+    DIAParser diaParser = new DIAParser("/FilePath/file.json");
     AirdInfo airdInfo = diaParser.getAirdInfo();
+    
+    // Read DIA window blocks one by one
     airdInfo.getIndexList().forEach(blockIndex -> {
-       TreeMap<Double, Spectrum> map = diaParser.getSpectrums(blockIndex); //key is retention time
+        TreeMap<Double, Spectrum> map = diaParser.getSpectra(blockIndex); // key is retention time
     });
 ```
 
-## 4.7 Read All data into memory
-
-This is only for DDAParser with small DDA data file(< 200MB as an advice). Read all spectra into the memory
+## 4.9 MRM-Specific Operations
 
 ```
-    DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
-    List<DDAMs> cycleList = ddaParser.readAllToMemory();
+    MRMParser mrmParser = new MRMParser("/FilePath/file.json");
+    
+    // Get chromatogram index
+    ChromatogramIndex chromaIndex = mrmParser.getChromatogramIndex();
+    
+    // Get all MRM ion pairs
+    List<MrmPair> mrmPairs = mrmParser.getAllMrmPairs();
+    
+    // Batch get chromatogram data
+    HashMap<String, Xic> chromatograms = mrmParser.getChromatograms(start, end, keyList, rtOffsets, intOffsets);
+    
+    // Get chromatogram data for specified retention time range
+    double[] rtData = mrmParser.getRts4Chroma(bytes, offset, length);
+    double[] intensityData = mrmParser.getInts4Chroma(bytes, start, length);
+```
+
+## 4.10 MSI MALDI Operations
+
+```
+    MSIMaldiParser msiParser = new MSIMaldiParser("/FilePath/file.json");
+    
+    // Get MS1 index for MSI data
+    BlockIndex ms1Index = msiParser.getMs1Index();
+    
+    // Read all MSI spectra into memory
+    List<Spectrum> spectra = msiParser.readAllToMemory();
+    
+    // Get image data
+    List<ImageData> imageData = msiParser.getImageDataList(mz, tolerance);
+```
+
+## 4.11 Data Processing Functions
+
+```
+    // Decompress M/Z data
+    double[] mzValues = parser.getMzs(compressedBytes);
+    double[] mzValues = parser.getMzs(compressedBytes, offset, length);
+    int[] mzIntegerValues = parser.getMzsAsInteger(compressedBytes);
+    
+    // Decompress intensity data
+    double[] intensities = parser.getInts(compressedBytes);
+    double[] intensities = parser.getInts(compressedBytes, start, length);
+    
+    // Decompress mobility data
+    double[] mobilities = parser.getMobilities(compressedBytes, start, length);
+    
+    // Calculate extracted ion chromatogram
+    Xic xic = parser.calcXic(spectraMap, mzStart, mzEnd);
+```
+
+## 4.12 Resource Management
+
+```
+    // Close resources when done
+    parser.close();
 ```
 
 # 5 Detailed Documentation

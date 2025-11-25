@@ -217,8 +217,16 @@ https://github.com/CSi-Studio/AirdPro/releases/ <br/>
 ## 4.5 按保留时间读取谱图
 
 ```
-    double rt = 12.3456
-    Spectrum pairs = parser.getSpectrum(num);
+    DDAParser parser = new DDAParser("\\FilePath\\file.json");
+    
+    // 方法1：通过BlockIndex读取指定保留时间的谱图
+    double rt = 12.3456;
+    BlockIndex blockIndex = parser.getAirdInfo().getIndexList().get(0); // 获取第一个块索引
+    Spectrum pairs = parser.getSpectrumByRt(blockIndex, rt);
+    
+    // 方法2：通过谱图编号读取
+    int spectrumNum = 12;
+    Spectrum spectrum = parser.getSpectrum(spectrumNum);
 ```
 
 ## 4.6 逐个读取 DIA/SWATH 窗口块
@@ -239,6 +247,28 @@ https://github.com/CSi-Studio/AirdPro/releases/ <br/>
     DDAParser ddaParser = new DDAParser("\\FilePath\\file.json");
     List<DDAMs> cycleList = ddaParser.readAllToMemory();
 ```
+
+## 4.8 BaseParser 常用接口
+
+BaseParser 提供以下核心接口（所有具体解析器都继承这些接口）：
+
+### 谱图读取接口
+- **getSpectrum(int index)**: 根据谱图编号读取谱图
+- **getSpectrumByRt(BlockIndex index, double rt)**: 根据块索引和保留时间读取谱图
+- **getSpectrumByRt(long startPtr, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, double rt)**: 根据起始指针和完整参数读取指定保留时间的谱图
+- **getSpectrumByIndex(BlockIndex blockIndex, int index)**: 根据块索引和块内索引读取谱图
+
+### 数据解析接口
+- **getMzs(byte[] value)**: 从压缩数据中解压缩m/z值
+- **getInts(byte[] value)**: 从压缩数据中解压缩强度值
+- **getMobilities(byte[] value, int start, int length)**: 从压缩数据中解压缩离子淌度值
+- **getSpectra(long start, long end, List<Double> rtList, List<Integer> mzOffsets, List<Integer> intOffsets, List<Integer> mobiOffsets, double rtStart, double rtEnd)**: 读取指定保留时间范围内的谱图集合
+
+### 辅助功能接口
+- **calcXic(TreeMap<Double, Spectrum> map, double mzStart, double mzEnd)**: 计算提取离子色谱图(XIC)
+- **getType()**: 获取数据类型
+- **close()**: 关闭文件资源
+- **getAirdInfo()**: 获取AirdInfo信息（从索引文件中加载的元数据）
 
 # 5 详细文档
 
