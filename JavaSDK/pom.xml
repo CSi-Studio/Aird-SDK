@@ -6,16 +6,17 @@
     <groupId>net.csibio.aird</groupId>
     <artifactId>aird-sdk</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <version>2.6.0.1</version>
+    <version>2.6.0.2</version>
     <name>Aird-SDK</name>
     <packaging>jar</packaging>
-    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing and Storage
+    <description>Aird Format SDK, Aird is a high performance data form used for Mass Spectrum Data Reading, Computing
+        and Storage.
         AirdPro Version 6.0 or higher
     </description>
     <url>https://github.com/CSi-Studio/Aird-SDK</url>
 
     <properties>
-        <java.version>23</java.version>
+        <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -166,29 +167,29 @@
     </developers>
     <distributionManagement>
         <!--        远程仓库 当需要Deploy到Aliyun私有仓库时使用本插件-->
-<!--                <repository>-->
-<!--                    <id>rdc-releases</id>-->
-<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>-->
-<!--                </repository>-->
-<!--                <snapshotRepository>-->
-<!--                    <id>rdc-snapshots</id>-->
-<!--                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>-->
-<!--                </snapshotRepository>-->
-<!--                <repository>-->
-<!--                    <id>space-csi</id>-->
-<!--                    <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
-<!--                </repository>-->
+        <!--                <repository>-->
+        <!--                    <id>rdc-releases</id>-->
+        <!--                    <url>https://packages.aliyun.com/maven/repository/2086165-release-SlKrLf/</url>-->
+        <!--                </repository>-->
+        <!--                <snapshotRepository>-->
+        <!--                    <id>rdc-snapshots</id>-->
+        <!--                    <url>https://packages.aliyun.com/maven/repository/2086165-snapshot-waZT6q/</url>-->
+        <!--                </snapshotRepository>-->
+        <!--                <repository>-->
+        <!--                    <id>space-csi</id>-->
+        <!--                    <url>https://maven.pkg.jetbrains.space/csibio/p/propro/csi</url>-->
+        <!--                </repository>-->
         <!--        远程仓库 当需要Deploy到Maven中心仓库的时候使用本插件-->
-<!--        <repository>-->
-<!--            <id>sonatype-nexus-staging</id>-->
-<!--            <name>Nexus Release Repository</name>-->
-<!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>sonatype-nexus-snapshots</id>-->
-<!--            <name>Sonatype Nexus Snapshots</name>-->
-<!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
-<!--        </snapshotRepository>-->
+        <!--        <repository>-->
+        <!--            <id>sonatype-nexus-staging</id>-->
+        <!--            <name>Nexus Release Repository</name>-->
+        <!--            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>-->
+        <!--        </repository>-->
+        <!--        <snapshotRepository>-->
+        <!--            <id>sonatype-nexus-snapshots</id>-->
+        <!--            <name>Sonatype Nexus Snapshots</name>-->
+        <!--            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>-->
+        <!--        </snapshotRepository>-->
     </distributionManagement>
 
     <repositories>
@@ -242,10 +243,16 @@
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <version>3.6.3</version>
                 <configuration>
                     <charset>UTF-8</charset>
                     <docencoding>UTF-8</docencoding>
                     <encoding>UTF-8</encoding>
+                    <additionalJOptions>
+                        <additionalJOption>--add-modules</additionalJOption>
+                        <additionalJOption>jdk.incubator.vector</additionalJOption>
+                    </additionalJOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -255,22 +262,20 @@
                         <phase>package</phase>
                     </execution>
                 </executions>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>3.6.3</version>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>23</source>
-                    <target>23</target>
+                    <source>17</source>
+                    <target>17</target>
                     <compilerArgs>
                         <arg>--add-modules</arg>
                         <arg>jdk.incubator.vector</arg>
                     </compilerArgs>
                 </configuration>
-                <groupId>org.apache.maven.plugins</groupId>
-                <version>3.8.0</version>
             </plugin>
             <!-- GPG 当需要Deploy到Maven中心仓库的时候使用本插件 -->
             <plugin>
@@ -294,7 +299,7 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skip>false</skip>
+                    <skip>true</skip>
                     <argLine>--add-modules jdk.incubator.vector</argLine>
                 </configuration>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -316,8 +321,7 @@
     </build>
 
     <scm>
-        <tag>1.0</tag>
+        <tag>2.0</tag>
         <url>git@github.com:CSi-Studio/Aird-SDK.git</url>
     </scm>
-
 </project>

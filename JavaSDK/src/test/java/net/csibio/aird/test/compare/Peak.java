@@ -22,7 +22,9 @@ public class Peak {
 
     @Override
     public boolean equals(Object arg0) {
+        if (this == arg0) return true;
+        if (arg0 == null || getClass() != arg0.getClass()) return false;
         Peak o = (Peak) arg0;
-      return Math.abs(this.mz - o.mz) <= 0.001 && Math.abs(this.rt - o.rt) <= 0.1;
+        return Math.abs(this.mz - o.mz) <= 0.001 && Math.abs(this.rt - o.rt) <= 0.1;
     }
 }

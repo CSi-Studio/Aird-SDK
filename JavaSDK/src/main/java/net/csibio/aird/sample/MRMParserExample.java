@@ -1,7 +1,6 @@
-package net.csibio.aird.examples;
+package net.csibio.aird.sample;
 
 import net.csibio.aird.bean.common.MrmPair;
-import net.csibio.aird.bean.common.Xic;
 import net.csibio.aird.parser.MRMParser;
 
 import java.util.List;

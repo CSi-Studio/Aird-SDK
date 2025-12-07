@@ -139,22 +139,22 @@ public class BlockIndex {
      * @return window range
      */
     public WindowRange getWindowRange() {
-        if (rangeList == null || rangeList.size() == 0) {
+        if (rangeList == null || rangeList.isEmpty()) {
             return null;
         } else {
             return rangeList.get(0);
         }
     }
 
-    /**
-     * @param windowRange set the windowRange
-     */
-    public void setWindowRange(WindowRange windowRange) {
-        if (rangeList == null) {
-            rangeList = new ArrayList<>();
-        }
-        rangeList.add(windowRange);
-    }
+//    /**
+//     * @param windowRange set the windowRange
+//     */
+//    public void setWindowRange(WindowRange windowRange) {
+//        if (rangeList == null) {
+//            rangeList = new ArrayList<>();
+//        }
+//        rangeList.add(windowRange);
+//    }
 
     /**
      * @return get the parent num

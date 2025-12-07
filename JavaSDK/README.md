@@ -8,28 +8,59 @@ AirdSDK Java版本是一个用于处理Aird格式质谱数据的高性能Java库
 
 ```
 JavaSDK/
-├── docs/                          # 文档目录
-│   ├── Java_SDK_Parser_使用指南_中文.md     # 中文使用指南
-│   └── Java_SDK_Parser_Usage_Guide_English.md  # 英文使用指南
-├── examples/                      # 示例代码
-│   ├── BasicDDAParserExample.java    # 基础DDA解析器示例
-│   ├── DDAPasefParserExample.java    # DDA-PASEF解析器示例
-│   └── MRMParserExample.java         # MRM解析器示例
-├── src/                          # 源代码
+├── src/                          # 源代码目录
 │   ├── main/
-│   │   └── java/net/csibio/aird/
-│   │       ├── parser/           # Parser类目录
-│   │       │   ├── BaseParser.java
-│   │       │   ├── DDAParser.java
-│   │       │   ├── DDAPasefParser.java
-│   │       │   ├── DIAParser.java
-│   │       │   ├── DIAPasefParser.java
-│   │       │   ├── MRMParser.java
-│   │       │   ├── PRMParser.java
-│   │       │   └── MSIMaldiParser.java
-│   │       └── ...
-│   └── test/                     # 测试代码
-└── pom.xml                      # Maven配置文件
+│   │   ├── java/net/csibio/aird/
+│   │   │   ├── bean/            # 数据模型类
+│   │   │   │   ├── common/      # 通用数据模型
+│   │   │   │   ├── msi/         # MSI相关数据模型
+│   │   │   │   └── proto/       # Protobuf相关数据模型
+│   │   │   ├── compressor/      # 压缩器相关类
+│   │   │   │   ├── bytecomp/    # 字节压缩器
+│   │   │   │   ├── intcomp/     # 整数压缩器
+│   │   │   │   └── sortedintcomp/ # 排序整数压缩器
+│   │   │   ├── constant/        # 常量定义
+│   │   │   ├── eic/             # EIC提取相关
+│   │   │   ├── enums/           # 枚举类
+│   │   │   │   └── msi/         # MSI相关枚举
+│   │   │   ├── exception/       # 异常类
+│   │   │   ├── opencl/          # OpenCL相关
+│   │   │   ├── parser/          # Parser类目录
+│   │   │   │   ├── BaseParser.java
+│   │   │   │   ├── DDAParser.java
+│   │   │   │   ├── DDAPasefParser.java
+│   │   │   │   ├── DIAParser.java
+│   │   │   │   ├── DIAPasefParser.java
+│   │   │   │   ├── MRMParser.java
+│   │   │   │   ├── PRMParser.java
+│   │   │   │   └── MSIMaldiParser.java
+│   │   │   ├── sample/          # 示例代码
+│   │   │   │   ├── BasicDDAParserExample.java
+│   │   │   │   ├── DDAPasefParserExample.java
+│   │   │   │   └── MRMParserExample.java
+│   │   │   ├── structure/       # 数据结构类
+│   │   │   ├── util/            # 工具类
+│   │   │   └── AirdManager.java # Aird管理器主类
+│   │   └── resources/           # 资源文件
+│   │       └── clkernel/        # OpenCL内核文件
+│   └── test/                    # 测试代码
+│       └── java/net/csibio/aird/test/
+│           ├── AirdV3Try/       # Aird V3测试
+│           ├── FileCompare/     # 文件比较测试
+│           ├── HyperScan/       # 超扫描测试
+│           ├── airdslice/       # Aird切片测试
+│           ├── compare/         # 比较测试
+│           ├── compressor/      # 压缩器测试
+│           ├── datamodel/       # 数据模型测试
+│           ├── sliceV2/         # 切片V2测试
+│           ├── util/            # 工具类测试
+│           ├── xixi/            # 其他测试
+│           └── 各种功能测试类
+├── .gitignore                   # Git忽略文件
+├── AirdMetaData.json           # Aird元数据配置
+├── LICENSE                     # 许可证文件
+├── README.md                   # 项目说明文档
+└── pom.xml                     # Maven配置文件
 ```
 
 ## 快速开始
@@ -42,7 +73,7 @@ JavaSDK/
 <dependency>
     <groupId>net.csibio</groupId>
     <artifactId>aird-sdk</artifactId>
-    <version>1.0.0</version>
+    <version>2.6.0.2</version>
 </dependency>
 ```
 
@@ -120,9 +151,9 @@ public class BasicExample {
 
 项目提供了多个实用的示例代码：
 
-1. [BasicDDAParserExample](examples/BasicDDAParserExample.java) - 基础DDA数据读取示例
-2. [DDAPasefParserExample](examples/DDAPasefParserExample.java) - DDA-PASEF数据处理示例
-3. [MRMParserExample](examples/MRMParserExample.java) - MRM色谱图分析示例
+1. [BasicDDAParserExample](src/main/java/net/csibio/aird/sample/BasicDDAParserExample.java) - 基础DDA数据读取示例
+2. [DDAPasefParserExample](src/main/java/net/csibio/aird/sample/DDAPasefParserExample.java) - DDA-PASEF数据处理示例
+3. [MRMParserExample](src/main/java/net/csibio/aird/sample/MRMParserExample.java) - MRM色谱图分析示例
 
 ## 最佳实践
 
